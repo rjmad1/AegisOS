@@ -1,0 +1,12 @@
+{
+  "app": {
+    "name": "AI Operations Console",
+    "version": "2.0.0",
+    "theme": "dark",
+    "features": {
+      "artifacts": true,
+      "models": false,
+      "logs": false
+    }
+  }
+}

@@ -1,0 +1,4 @@
+OS Name: Microsoft Windows 11 Pro
+Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+GPU: NVIDIA GeForce RTX 5080
+RAM: 64 GB DDR5

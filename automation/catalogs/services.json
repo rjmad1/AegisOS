@@ -1,0 +1,30 @@
+[
+  {
+    "serviceName": "Ollama",
+    "displayName": "Ollama Service",
+    "port": 11434,
+    "runAs": "LocalSystem",
+    "dependencies": []
+  },
+  {
+    "serviceName": "LiteLLMService",
+    "displayName": "LiteLLM Routing Proxy",
+    "port": 4000,
+    "runAs": "LocalSystem",
+    "dependencies": ["Ollama"]
+  },
+  {
+    "serviceName": "OpenClawService",
+    "displayName": "OpenClaw AI Gateway",
+    "port": 18789,
+    "runAs": "LocalSystem",
+    "dependencies": ["LiteLLMService", "Ollama"]
+  },
+  {
+    "serviceName": "OmniRouteService",
+    "displayName": "OmniRoute Dashboard",
+    "port": 20128,
+    "runAs": "LocalSystem",
+    "dependencies": ["LiteLLMService", "Ollama"]
+  }
+]

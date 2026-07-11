@@ -1,0 +1,20 @@
+[
+  {
+    "agentId": "main",
+    "name": "Main Orchestrator Agent",
+    "role": "Routes generic developer inquiries and breaks down execution steps",
+    "models": ["gemma4:latest", "gemma2:9b"]
+  },
+  {
+    "agentId": "developer",
+    "name": "Coding Agent",
+    "role": "Writes clean code, fixes syntax issues, and performs code generation",
+    "models": ["qwen2.5:14b", "gpt-oss:20b"]
+  },
+  {
+    "agentId": "reviewer",
+    "name": "Code Reviewer Agent",
+    "role": "Reviews diffs, looks for memory leaks, and checks engineering standards",
+    "models": ["deepseek-r1:32b"]
+  }
+]

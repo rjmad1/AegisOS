@@ -1,0 +1,32 @@
+[
+  {
+    "name": "gemma4:latest",
+    "size": "9.6 GB",
+    "role": "Primary chat/reasoning model"
+  },
+  {
+    "name": "gemma2:9b",
+    "size": "9.6 GB",
+    "role": "Lightweight chat"
+  },
+  {
+    "name": "qwen2.5:14b",
+    "size": "9.3 GB",
+    "role": "High-performance text and coding"
+  },
+  {
+    "name": "deepseek-r1:32b",
+    "size": "19 GB",
+    "role": "Deep reasoning and code review"
+  },
+  {
+    "name": "all-minilm:latest",
+    "size": "45 MB",
+    "role": "Semantic search embeddings"
+  },
+  {
+    "name": "smollm:135m",
+    "size": "91 MB",
+    "role": "Ultra-lightweight terminal fallback"
+  }
+]

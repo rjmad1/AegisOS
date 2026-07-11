@@ -1,0 +1,14 @@
+[
+  {
+    "databaseId": "openclaw-agent-metadata",
+    "engine": "SQLite",
+    "path": "databases/sqlite/openclaw-agent.sqlite",
+    "purpose": "Maintains session states, model routing context, and agent execution parameters."
+  },
+  {
+    "databaseId": "open-webui-history",
+    "engine": "SQLite",
+    "path": "docker/open-webui/webui.db",
+    "purpose": "Stores chat lists, authentication sessions, and custom parameters inside Open-WebUI container."
+  }
+]

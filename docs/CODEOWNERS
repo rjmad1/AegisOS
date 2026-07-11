@@ -1,0 +1,14 @@
+# Repository Code Owners
+
+# Global owners
+*       @rajajeevankumar
+
+# Automation scripts
+/automation/    @rajajeevankumar
+
+# Documentation
+/docs/          @rajajeevankumar
+/adr/           @rajajeevankumar
+
+# Frontend Console
+/src/           @rajajeevankumar

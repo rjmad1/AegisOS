@@ -1,0 +1,32 @@
+[
+  {
+    "name": "system-code-generation",
+    "purpose": "Prompts coding expert to produce clean, documented code syntaxes.",
+    "activeVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "content": "You are an expert coder. Write modular, commented code complying with version specifications. Exclude markdown preambles.",
+        "timestamp": "2026-07-10T02:34:36.689Z",
+        "author": "System Platform Admin",
+        "changeDescription": "Initial seed prompt template from catalogs",
+        "commitHash": "init-seed-001"
+      }
+    ]
+  },
+  {
+    "name": "system-code-review",
+    "purpose": "Prompts reasoning models to audit diff files.",
+    "activeVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "content": "Analyze the following code change. Find potential edge-case crashes, memory consumption issues, and security leaks.",
+        "timestamp": "2026-07-10T02:34:36.690Z",
+        "author": "System Platform Admin",
+        "changeDescription": "Initial seed prompt template from catalogs",
+        "commitHash": "init-seed-001"
+      }
+    ]
+  }
+]

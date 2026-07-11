@@ -1,0 +1,18 @@
+{
+  "profileName": "development",
+  "platformRoot": "C:\\AIPlatformDev",
+  "networkMode": "loopback",
+  "ports": {
+    "ollama": 11434,
+    "litellm": 4000,
+    "openclaw": 18789,
+    "omniroute": 20128,
+    "openwebui": 8090
+  },
+  "logRotation": false,
+  "modelsToPull": [
+    "smollm:135m",
+    "all-minilm:latest",
+    "gemma2:9b"
+  ]
+}

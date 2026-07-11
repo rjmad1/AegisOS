@@ -1,0 +1,12 @@
+[
+  {
+    "workflowId": "file-vectorization-pipeline",
+    "name": "File Vectorization RAG Ingestion",
+    "stages": [
+      "File Parsing (PDF/MD/HTML extractions)",
+      "Text Chunking (Recursive character splitting)",
+      "Embedding Generation (all-minilm vector mapping)",
+      "Search Indexing (SQLite vector tables storage)"
+    ]
+  }
+]

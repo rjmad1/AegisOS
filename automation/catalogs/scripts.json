@@ -1,0 +1,42 @@
+[
+  {
+    "script": "Bootstrap.ps1",
+    "cwd": "root",
+    "purpose": "Interactive wizard to install, configure, and validate the platform."
+  },
+  {
+    "script": "Install.ps1",
+    "cwd": "automation",
+    "purpose": "Winget dependency resolver and layout builder."
+  },
+  {
+    "script": "Configure.ps1",
+    "cwd": "automation",
+    "purpose": "Registers SCM registry values and sets environment paths."
+  },
+  {
+    "script": "Validate.ps1",
+    "cwd": "automation",
+    "purpose": "Runs hardware check, ports bind check, and model inference test."
+  },
+  {
+    "script": "Backup.ps1",
+    "cwd": "automation",
+    "purpose": "Bundles system data, configs, and containers into timestamped zip backups."
+  },
+  {
+    "script": "Restore.ps1",
+    "cwd": "automation",
+    "purpose": "Orchestrates database restoration and handles DPAPI credential rekeying."
+  },
+  {
+    "script": "Migrate.ps1",
+    "cwd": "automation",
+    "purpose": "Copies files and updates directory paths across drives or partitions."
+  },
+  {
+    "script": "Package.ps1",
+    "cwd": "automation",
+    "purpose": "Creates a clean, shareable codebase package by excluding logs, cache, and secrets."
+  }
+]

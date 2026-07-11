@@ -1,0 +1,9 @@
+[
+  {
+    "id": "raja-markdown-personality",
+    "name": "Raja's Personal RAG Library",
+    "pathPattern": "knowledge/",
+    "contentType": "Markdown (.md) files",
+    "purpose": "Contains custom playbooks, coding personal profiles, and guidelines accessed by models."
+  }
+]

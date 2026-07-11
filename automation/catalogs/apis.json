@@ -1,0 +1,27 @@
+[
+  {
+    "endpoint": "/api/v1/auth/login",
+    "method": "POST",
+    "description": "Authenticates administrative console session."
+  },
+  {
+    "endpoint": "/api/v1/artifacts",
+    "method": "GET",
+    "description": "Queries registered artifacts from metadata catalog."
+  },
+  {
+    "endpoint": "/api/v1/services",
+    "method": "GET",
+    "description": "Queries status of Windows SCM/NSSM services."
+  },
+  {
+    "endpoint": "/api/v1/jobs",
+    "method": "POST",
+    "description": "Enqueues background task execution pipelines."
+  },
+  {
+    "endpoint": "/api/v1/system",
+    "method": "GET",
+    "description": "Exposes hardware metrics (CPU, RAM, GPU, Disk, Network)."
+  }
+]

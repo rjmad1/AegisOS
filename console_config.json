@@ -1,0 +1,40 @@
+{
+  "artifacts": {
+    "rootDir": "./artifacts_storage",
+    "ignoredFolders": [
+      "node_modules",
+      ".git",
+      ".next",
+      "cache",
+      "tmp",
+      "temp",
+      "dist"
+    ],
+    "ignoredExtensions": [
+      ".exe",
+      ".dll",
+      ".log",
+      ".pyc"
+    ],
+    "maxPreviewSize": 10485760,
+    "maxUploadSize": 52428800,
+    "supportedPreviewProviders": [
+      "markdown",
+      "pdf",
+      "image",
+      "json",
+      "yaml",
+      "csv",
+      "html",
+      "text",
+      "mermaid",
+      "svg",
+      "code",
+      "word",
+      "excel",
+      "powerpoint",
+      "zip",
+      "unknown"
+    ]
+  }
+}

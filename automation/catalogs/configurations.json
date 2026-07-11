@@ -1,0 +1,23 @@
+[
+  {
+    "configId": "litellm-routing-rules",
+    "name": "LiteLLM Router config",
+    "filePattern": "configs/litellm/config.yaml",
+    "format": "YAML",
+    "purpose": "Configures model alias targets, weights, fallbacks, and port bindings."
+  },
+  {
+    "configId": "openclaw-gateway-profile",
+    "name": "OpenClaw configuration profile",
+    "filePattern": "configs/openclaw/openclaw.json",
+    "format": "JSON",
+    "purpose": "Configures active MCP endpoints, token limits, and agent profiles."
+  },
+  {
+    "configId": "console-dashboard-runtime",
+    "name": "Next Console Configuration",
+    "filePattern": "console_config.json",
+    "format": "JSON",
+    "purpose": "Configures file storage root and preview limitations in the dashboard."
+  }
+]

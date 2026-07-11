@@ -1,0 +1,14 @@
+{
+  "profileName": "offline",
+  "platformRoot": "D:\\AIPlatform",
+  "networkMode": "loopback",
+  "ports": {
+    "ollama": 11434,
+    "litellm": 4000,
+    "openclaw": 18789,
+    "omniroute": 20128,
+    "openwebui": 8090
+  },
+  "logRotation": true,
+  "modelsToPull": []
+}

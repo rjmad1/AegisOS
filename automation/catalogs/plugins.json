@@ -1,0 +1,14 @@
+[
+  {
+    "pluginId": "local-artifact-storage-provider",
+    "name": "Local File System Storage Provider",
+    "type": "storage",
+    "status": "active"
+  },
+  {
+    "pluginId": "markdown-preview-provider",
+    "name": "Markdown Rendering Extension",
+    "type": "preview",
+    "status": "active"
+  }
+]

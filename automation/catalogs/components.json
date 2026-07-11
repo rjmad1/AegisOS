@@ -1,0 +1,26 @@
+[
+  {
+    "id": "git",
+    "name": "Git",
+    "requiredVersion": "v2.x+",
+    "purpose": "Source control management and tracking files"
+  },
+  {
+    "id": "node",
+    "name": "Node.js",
+    "requiredVersion": "v24.x+",
+    "purpose": "Server-side JavaScript runtime engine for gateways"
+  },
+  {
+    "id": "ollama",
+    "name": "Ollama",
+    "requiredVersion": "v0.3.x+",
+    "purpose": "Local LLM weights executor and inference provider"
+  },
+  {
+    "id": "docker",
+    "name": "Docker Desktop",
+    "requiredVersion": "v29.x+",
+    "purpose": "Isolated container engine for Open-WebUI"
+  }
+]
