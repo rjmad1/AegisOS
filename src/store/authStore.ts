@@ -59,7 +59,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  logout: () => {
+  logout: async () => {
+    try {
+      await fetch("/api/v1/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Server logout request failed:", err);
+    }
     localStorage.removeItem("ops_auth_token");
     localStorage.removeItem("ops_user");
     set({

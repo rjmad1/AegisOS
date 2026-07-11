@@ -27,7 +27,8 @@ export class SyncScheduler {
   private state: SyncCheckpoint;
 
   private constructor() {
-    this.checkpointPath = path.resolve(process.cwd(), 'databases', 'sync_checkpoint.json');
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), 'databases');
+    this.checkpointPath = path.resolve(dbDir, 'sync_checkpoint.json');
     this.state = this.loadCheckpoint();
   }
 

@@ -7,12 +7,12 @@ export class CentralConfiguration implements IConfigurationProvider {
   private config: Record<string, any> = {};
 
   constructor() {
-    this.configPath = path.resolve(process.cwd(), "console_config.json");
+    this.configPath = process.env.OPS_CONFIG_PATH || path.resolve(process.cwd(), "console_config.json");
     this.load();
   }
 
   private load() {
-    const defaultRootDir = path.resolve(process.cwd(), "artifacts_storage");
+    const defaultRootDir = process.env.OPS_ARTIFACTS_DIR || path.resolve(process.cwd(), "artifacts_storage");
     const defaults = {
       artifacts: {
         rootDir: defaultRootDir.replace(/\\/g, "/"),

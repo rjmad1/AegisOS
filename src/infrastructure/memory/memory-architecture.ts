@@ -35,7 +35,8 @@ export class MemoryArchitecture {
   private memoryStore: Map<string, MemoryObject> = new Map();
 
   private constructor() {
-    this.memoryDbPath = path.resolve(process.cwd(), "databases", "memory_store.json");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
+    this.memoryDbPath = path.resolve(dbDir, "memory_store.json");
     this.ensureDirs();
     this.loadMemory();
   }

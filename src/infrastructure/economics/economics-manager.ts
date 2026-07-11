@@ -15,7 +15,8 @@ export class EconomicsManager {
   private dbPath: string;
 
   private constructor() {
-    this.dbPath = path.resolve(process.cwd(), "databases", "platform_economics.json");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
+    this.dbPath = path.resolve(dbDir, "platform_economics.json");
     this.ensureDirs();
   }
 

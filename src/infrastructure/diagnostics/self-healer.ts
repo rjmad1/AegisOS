@@ -27,7 +27,7 @@ export class SelfHealer {
     const remediationsApplied: string[] = [];
 
     // 1. Check if database directory is missing (Common Workstation Drift)
-    const dbDir = path.resolve(process.cwd(), "databases");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
     if (!fs.existsSync(dbDir)) {
       issues.push("Missing databases folder");
       fs.mkdirSync(dbDir, { recursive: true });

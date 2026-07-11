@@ -23,8 +23,9 @@ export class ResilientJobQueue {
   private pausedJobs: Set<string> = new Set();
 
   private constructor() {
-    this.jobsDbPath = path.resolve(process.cwd(), "databases", "jobs.json");
-    this.checkpointsDbPath = path.resolve(process.cwd(), "databases", "checkpoints.json");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
+    this.jobsDbPath = path.resolve(dbDir, "jobs.json");
+    this.checkpointsDbPath = path.resolve(dbDir, "checkpoints.json");
     this.ensureDirs();
     this.loadJobs();
     this.registerDefaultResilientHandlers();
@@ -39,7 +40,7 @@ export class ResilientJobQueue {
   }
 
   private ensureDirs() {
-    const dbDir = path.resolve(process.cwd(), "databases");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
     if (!fs.existsSync(dbDir)) {
       fs.mkdirSync(dbDir, { recursive: true });
     }

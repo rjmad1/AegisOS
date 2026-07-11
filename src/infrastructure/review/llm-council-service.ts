@@ -34,7 +34,8 @@ export class LlmCouncilService {
   private reportsDir: string;
 
   private constructor() {
-    this.reportsDir = path.resolve(process.cwd(), "databases", "reviews");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
+    this.reportsDir = path.resolve(dbDir, "reviews");
     this.ensureReportsDir();
     this.registerReviewWorker();
   }

@@ -1,0 +1,75 @@
+name: AI Operations Console CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-package:
+    name: Build, Lint, and Package Console
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js LTS version
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Install dependencies
+      - name: Install Dependencies
+        run: npm ci
+
+      # 4. Run Linter
+      - name: Code Quality Linting
+        run: npm run lint
+
+      # 5. Run TypeScript type compilation checks
+      - name: Static Type Compilation Verification
+        run: npx tsc --noEmit
+
+      # 6. Run Next.js production build
+      - name: Production Build Execution
+        run: npm run build
+        env:
+          NODE_ENV: production
+          # Inject dummy environment vars for compilation validation
+          OPS_JWT_SECRET: dummy-compile-secret-key-do-not-use-in-production-1234
+          OLLAMA_BASE_URL: http://127.0.0.1:11434
+          LITELLM_BASE_URL: http://127.0.0.1:4000
+
+      # 7. Package build artifacts (ZIP)
+      - name: Archive and Package Production Bundle
+        run: |
+          zip -r production_release.zip \
+            .next \
+            public \
+            package.json \
+            package-lock.json \
+            Caddyfile \
+            automation \
+            deploy.bat \
+            manage.bat \
+            backup.bat \
+            restore.bat \
+            health.bat \
+            -x "*.git*" "node_modules/*" "databases/*" "backups/*" "logs/*"
+
+      # 8. Upload Build Artifact
+      - name: Upload Build Artifact Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-console-release
+          path: production_release.zip
+          retention-days: 14

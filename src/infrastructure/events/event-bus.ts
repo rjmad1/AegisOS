@@ -26,8 +26,9 @@ export class HardenedEventBus {
   private constructor() {
     this.emitter = new EventEmitter();
     this.emitter.setMaxListeners(200);
-    this.dlqPath = path.resolve(process.cwd(), "databases", "event_dlq.json");
-    this.auditLogPath = path.resolve(process.cwd(), "databases", "event_audit.json");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
+    this.dlqPath = path.resolve(dbDir, "event_dlq.json");
+    this.auditLogPath = path.resolve(dbDir, "event_audit.json");
     this.ensureDirs();
   }
 
@@ -39,7 +40,7 @@ export class HardenedEventBus {
   }
 
   private ensureDirs() {
-    const dbDir = path.resolve(process.cwd(), "databases");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
     if (!fs.existsSync(dbDir)) {
       fs.mkdirSync(dbDir, { recursive: true });
     }

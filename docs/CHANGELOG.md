@@ -2,6 +2,13 @@
 
 All notable changes to the AI Workstation platform will be documented in this file.
 
+## [1.1.0] - 2026-07-11
+### Added
+- Implemented robust security hardening: true JWT signing, HttpOnly cookies, brute-force lockout, CSRF protection, rate limiting, and security headers via proxy middleware.
+- Created production infrastructure components: Caddy reverse proxy configuration, CI/CD GitHub Actions pipeline, deployment automation scripts, and health/liveness probes.
+### Changed
+- Externalized environment configuration for all infrastructure services to use `OPS_*` variables instead of hardcoded paths.
+
 ## [1.0.0] - 2026-07-10
 ### Added
 - Created interactive `Bootstrap.ps1` installer at the root directory.

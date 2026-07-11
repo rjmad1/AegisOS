@@ -39,7 +39,8 @@ export class EvaluationPipeline {
   ];
 
   private constructor() {
-    this.historyPath = path.resolve(process.cwd(), "databases", "evaluations.json");
+    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
+    this.historyPath = path.resolve(dbDir, "evaluations.json");
     this.ensureDatabaseDir();
     this.loadHistory();
   }

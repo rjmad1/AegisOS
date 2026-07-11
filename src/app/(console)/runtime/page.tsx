@@ -13,7 +13,7 @@ import Editor from "@monaco-editor/react";
 import { EventBus } from "@/platform/event-bus/EventBus";
 
 export default function RuntimePage() {
-  const [activeTab, setActiveTab] = React.useState<"health" | "version" | "config" | "caps" | "status" | "inspector">("health");
+  const [activeTab, setActiveTab] = React.useState<"health" | "version" | "config" | "caps" | "status" | "inspector" | "diagnostics">("health");
   const [loading, setLoading] = React.useState(false);
   const [runtime, setRuntime] = React.useState<any>(null);
   const [error, setError] = React.useState<string | null>(null);
@@ -21,6 +21,21 @@ export default function RuntimePage() {
   // Status Center States
   const [statusMetrics, setStatusMetrics] = React.useState<any>(null);
   const [providers, setProviders] = React.useState<any[]>([]);
+  
+  // Deployment Diagnostics State
+  const [diagnostics, setDiagnostics] = React.useState<any>(null);
+
+  const fetchDiagnostics = async () => {
+    try {
+      const res = await fetch("/api/v1/diagnostics/deployment");
+      if (res.ok) {
+        const data = await res.json();
+        setDiagnostics(data);
+      }
+    } catch (e) {
+      console.error("[RuntimePage] Failed to fetch diagnostics:", e);
+    }
+  };
 
   // Event Inspector States
   const [inspectorEvents, setInspectorEvents] = React.useState<any[]>([]);
@@ -68,11 +83,16 @@ export default function RuntimePage() {
   React.useEffect(() => {
     fetchRuntime();
     fetchStatusCenter();
+    if (activeTab === "diagnostics") {
+      fetchDiagnostics();
+    }
     
     // Auto-refresh Status Center every 5s if on that tab
     const interval = setInterval(() => {
       if (activeTab === "status") {
         fetchStatusCenter();
+      } else if (activeTab === "diagnostics") {
+        fetchDiagnostics();
       }
     }, 5000);
 
@@ -207,7 +227,7 @@ export default function RuntimePage() {
 
       {/* Tabs Navigation */}
       <div className="flex border-b border-border/40 space-x-4 overflow-x-auto">
-        {(["health", "version", "config", "caps", "status", "inspector"] as const).map((tab) => (
+        {(["health", "version", "config", "caps", "status", "inspector", "diagnostics"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -217,7 +237,7 @@ export default function RuntimePage() {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {tab === "caps" ? "capabilities" : tab === "status" ? "Status Center" : tab === "inspector" ? "Event Inspector" : tab}
+            {tab === "caps" ? "capabilities" : tab === "status" ? "Status Center" : tab === "inspector" ? "Event Inspector" : tab === "diagnostics" ? "Diagnostics" : tab}
           </button>
         ))}
       </div>
@@ -733,6 +753,126 @@ export default function RuntimePage() {
                       <p className="text-[10px] mt-1">Select an event from the stream to view its payload, metadata and re-execute it.</p>
                     </div>
                   )}
+                </Card>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "diagnostics" && diagnostics && (
+            <div className="space-y-6">
+              {/* Top Cards Grid */}
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 text-left">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">Console Version</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold font-mono">{diagnostics.buildVersion}</div>
+                    <p className="text-[10px] text-muted-foreground mt-1">Commit: {diagnostics.gitCommit}</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">Console Uptime</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold font-mono">
+                      {Math.floor(diagnostics.uptimeSeconds / 3600)}h {Math.floor((diagnostics.uptimeSeconds % 3600) / 60)}m
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">Started: {new Date(diagnostics.runningSince).toLocaleTimeString()}</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">Environment</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold font-mono capitalize">{diagnostics.environment}</div>
+                    <p className="text-[10px] text-muted-foreground mt-1">Deploy Date: {diagnostics.deploymentDate}</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">HTTPS Gateway</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center space-x-2">
+                      <div className={`h-2.5 w-2.5 rounded-full ${diagnostics.certificate.status === 'bound' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                      <span className="text-xl font-bold font-mono capitalize">{diagnostics.certificate.status}</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">{diagnostics.certificate.provider}</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Service & Directory Details */}
+              <div className="grid gap-6 md:grid-cols-2 text-left">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Downstream Providers Uptime</CardTitle>
+                    <CardDescription>Uptime states of services managed via SCM.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {diagnostics.providers.map((p: any) => (
+                      <div key={p.id} className="flex items-center justify-between p-3 rounded-lg border border-border/30 bg-accent/5">
+                        <div className="flex items-center space-x-3">
+                          {getStatusIcon(p.status)}
+                          <span className="text-sm font-semibold">{p.name}</span>
+                        </div>
+                        <Badge variant={getBadgeVariant(p.status)}>
+                          {p.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Disk Space & Allocations</CardTitle>
+                    <CardDescription>Physical disk storage consumption telemetry.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {diagnostics.diskUsage.map((d: any) => (
+                      <div key={d.drive} className="space-y-1.5">
+                        <div className="flex items-center justify-between text-xs font-semibold">
+                          <span>Partition {d.drive}</span>
+                          <span>{d.percentUsed}% Used ({Math.round(d.usedBytes / 1024 / 1024 / 1024)}GB / {Math.round(d.totalBytes / 1024 / 1024 / 1024)}GB)</span>
+                        </div>
+                        <div className="h-2 w-full bg-accent/10 rounded-full overflow-hidden">
+                          <div className={`h-full ${d.percentUsed > 85 ? 'bg-rose-500' : 'bg-primary'}`} style={{ width: `${d.percentUsed}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                <Card className="md:col-span-2">
+                  <CardHeader>
+                    <CardTitle>Deployment Layout Paths</CardTitle>
+                    <CardDescription>Directories configured outside of application source context.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3 font-mono text-xs text-left">
+                    <div className="grid grid-cols-3 gap-2 border-b border-border/20 pb-2 font-bold text-muted-foreground">
+                      <span>Variable / Context</span>
+                      <span className="col-span-2">Target Folder Location</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 border-b border-border/10 pb-2">
+                      <span className="font-semibold">Config File Path</span>
+                      <span className="col-span-2 break-all">{diagnostics.configuration.path}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 border-b border-border/10 pb-2">
+                      <span className="font-semibold">Databases Directory</span>
+                      <span className="col-span-2 break-all">{diagnostics.configuration.databasesDir}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 pb-1">
+                      <span className="font-semibold">Artifacts Repository</span>
+                      <span className="col-span-2 break-all">{diagnostics.configuration.artifactsDir}</span>
+                    </div>
+                  </CardContent>
                 </Card>
               </div>
             </div>
