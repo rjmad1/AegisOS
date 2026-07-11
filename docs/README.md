@@ -13,11 +13,13 @@ Welcome to the AI Workstation platform documentation repository. This directory 
 * **[Deployment Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Deployment_Guide.md)**: Step-by-step instructions for installation, configuration, and migrations.
 * **[Operations Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md)**: Runbook for logs rotation, telemetry diagnostics, and scheduled tasks.
 * **[Disaster Recovery Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Disaster_Recovery_Guide.md)**: Backups pipeline and recovery procedures.
+* **[Troubleshooting Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Troubleshooting_Guide.md)**: Diagnostics runbook for service failures, GPU VRAM issues, and Tailscale connection drops.
 
 ### 3. Engineering & Governance
 * **[Developer Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Developer_Guide.md)**: Setup for the Next.js Console frontend, extending stubbed API routes, and testing.
 * **[Administrator Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Administrator_Guide.md)**: Scopes, registry variables, Tailscale setup, and DPAPI keys management.
 * **[Git Governance & Quality Assurance Standard](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Git_Governance_and_QA_Standard.md)**: Defines lifecycle standards, quality gates, and security requirements for repository changes.
+* **[User Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/User_Guide.md)**: Walkthrough for managing local models, configuring editor connections, and creating plugins.
 
 ### 4. Audit & Verification Reports
 * **[Audit Walkthrough](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Walkthrough.md)**: Verification checklist and audit history.
