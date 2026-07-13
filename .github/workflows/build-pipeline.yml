@@ -45,7 +45,12 @@ jobs:
         env:
           NODE_ENV: production
           # Inject dummy environment vars for compilation validation
-          OPS_JWT_SECRET: dummy-compile-secret-key-do-not-use-in-production-1234
+          OPS_JWT_SECRET: dummy-compile-secret-key-do-not-use-in-production-1234-extremely-long-string
+          AUTH_SECRET: dummy-compile-auth-secret-do-not-use-in-production-1234-extremely-long-string
+          OPS_ADMIN_USERNAME: compile-dummy-admin-username
+          OPS_ADMIN_PASSWORD: compile-dummy-admin-password
+          GOOGLE_CLIENT_ID: compile-dummy-google-client-id.apps.googleusercontent.com
+          GOOGLE_CLIENT_SECRET: compile-dummy-google-client-secret
           OLLAMA_BASE_URL: http://127.0.0.1:11434
           LITELLM_BASE_URL: http://127.0.0.1:4000
 
