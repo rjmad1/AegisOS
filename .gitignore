@@ -42,3 +42,14 @@ next-env.d.ts
 
 # databases
 databases/
+
+# release artifacts
+/release/
+
+# support bundles
+/support_bundle_*/
+
+# SQLite journals
+*.db-journal
+*.db-shm
+*.db-wal

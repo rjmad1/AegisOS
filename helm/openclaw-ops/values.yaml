@@ -1,0 +1,85 @@
+# Default values for openclaw-ops Helm Chart
+replicaCount: 2
+
+image:
+  console:
+    repository: openclaw-console
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  litellm:
+    repository: openclaw-litellm
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  ollama:
+    repository: openclaw-ollama
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  consolePort: 3000
+  litellmPort: 4000
+  ollamaPort: 11434
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: console.openclaw.ai
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: openclaw-tls-secret
+      hosts:
+        - console.openclaw.ai
+
+resources:
+  console:
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  litellm:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  ollama:
+    limits:
+      cpu: 4000m
+      memory: 16Gi
+      nvidia.com/gpu: "1"
+    requests:
+      cpu: 1000m
+      memory: 4Gi
+
+persistence:
+  postgres:
+    size: 10Gi
+  redis:
+    size: 2Gi
+  minio:
+    size: 10Gi
+  ollama:
+    size: 30Gi
+
+# Secrets & Platform configurations
+config:
+  databaseProvider: "postgres"
+  sessionTimeout: "480"
+  rateLimitMax: "150"
+  otelEndpoint: "http://otel-collector-service:4318"
+
+# Default admin auth passwords (override on deploy via --set)
+secrets:
+  adminUsername: "console_admin_dev"
+  adminPassword: "DevConsolePassword9023!"
+  jwtSecret: "secrets_encryption_key_dev_secure_901283"
+  authSecret: "console_jwt_session_auth_secret_dev_secure_120938"

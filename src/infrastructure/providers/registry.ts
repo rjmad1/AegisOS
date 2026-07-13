@@ -26,6 +26,10 @@ export class ProviderRegistry {
     return (provider as T) || null;
   }
 
+  public getAllProviders(): IInfrastructureProvider[] {
+    return Array.from(this.providers.values());
+  }
+
   public getProvidersByType<T extends IInfrastructureProvider>(type: ProviderType): T[] {
     const list: T[] = [];
     this.providers.forEach((provider) => {

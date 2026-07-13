@@ -18,6 +18,10 @@ import { administrationModule } from '@/modules/administration/administration.mo
 import { settingsModule } from '@/modules/settings/settings.module';
 import { aiRuntimeModule } from '@/modules/ai-runtime/ai-runtime.module';
 import { infrastructureModule } from '@/modules/infrastructure/infrastructure.module';
+import { workflowsModule } from '@/modules/workflows/workflows.module';
+import { observabilityModule } from '@/modules/observability/observability.module';
+import { reliabilityModule } from '@/modules/reliability/reliability.module';
+import { developerModule } from '@/modules/developer/developer.module';
 
 const allModules: PlatformModule[] = [
   platformModule,
@@ -28,6 +32,10 @@ const allModules: PlatformModule[] = [
   settingsModule,
   aiRuntimeModule,
   infrastructureModule,
+  workflowsModule,
+  observabilityModule,
+  reliabilityModule,
+  developerModule,
 ];
 
 let booted = false;
@@ -39,3 +47,4 @@ export async function bootPlatform(): Promise<void> {
 }
 
 export { PlatformKernel };
+

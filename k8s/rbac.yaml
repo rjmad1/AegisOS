@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openclaw-sa
+  namespace: openclaw-ops
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openclaw-pod-reader
+  namespace: openclaw-ops
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "endpoints"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openclaw-rb
+  namespace: openclaw-ops
+subjects:
+  - kind: ServiceAccount
+    name: openclaw-sa
+    namespace: openclaw-ops
+roleRef:
+  kind: Role
+  name: openclaw-pod-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: console-pdb
+  namespace: openclaw-ops
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: console

@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import { usageMeteringEngine } from "../../enterprise";
 
 export interface SystemEconomicMetric {
   timestamp: string;
@@ -36,6 +37,9 @@ export class EconomicsManager {
 
   public logMetric(tokens: number, compressedTokensSaved: number) {
     try {
+      // Report usage to the multi-tenant SaaS metering engine
+      usageMeteringEngine.recordAiUsage(tokens, 0);
+
       let metrics: SystemEconomicMetric[] = [];
       if (fs.existsSync(this.dbPath)) {
         metrics = JSON.parse(fs.readFileSync(this.dbPath, "utf-8"));

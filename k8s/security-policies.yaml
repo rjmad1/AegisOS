@@ -1,0 +1,89 @@
+# Kubernetes Pod Security Standards & Workload Identity Policies
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openclaw-console-sa
+  namespace: openclaw-ops
+  annotations:
+    # Google Cloud Workload Identity binding
+    iam.gke.io/gcp-service-account: "openclaw-console@openclaw-ops.iam.gserviceaccount.com"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: litellm-sa
+  namespace: openclaw-ops
+  annotations:
+    # AWS IAM Roles for Service Accounts (IRSA) binding
+    eks.amazonaws.com/role-arn: "arn:aws:iam::123456789012:role/litellm-vault-secrets-role"
+---
+# OPA Gatekeeper Constraint to enforce Read-Only Root Filesystems
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredReadOnlyRootFilesystem
+metadata:
+  name: enforce-read-only-root
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - openclaw-ops
+---
+# OPA Gatekeeper Constraint to prevent privilege escalation
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPAllowPrivilegeEscalationContainer
+metadata:
+  name: prevent-privilege-escalation
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    allowPrivilegeEscalation: false
+---
+# Kyverno ClusterPolicy to enforce Pod Security Standards (Restricted Profile)
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: enforce-restricted-security
+  annotations:
+    policies.kyverno.io/title: "Enforce Restricted Pod Security Standards"
+    policies.kyverno.io/category: "Pod Security Standards (Restricted)"
+    policies.kyverno.io/severity: "medium"
+    policies.kyverno.io/description: "Enforce restricted security rules: run as non-root, drop all capabilities, etc."
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+    - name: require-run-as-non-root
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Running as root is prohibited."
+        pattern:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+            containers:
+              - =(securityContext):
+                  runAsNonRoot: true
+    - name: drop-all-capabilities
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Containers must drop all capabilities."
+        pattern:
+          spec:
+            containers:
+              - securityContext:
+                  capabilities:
+                    drop:
+                      - ALL

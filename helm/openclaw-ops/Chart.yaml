@@ -1,0 +1,6 @@
+apiVersion: v2
+name: openclaw-ops
+description: Helm Chart for the Enterprise Operations Console and local AI infrastructure.
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

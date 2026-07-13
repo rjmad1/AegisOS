@@ -1,0 +1,37 @@
+import { NextResponse } from 'next/server';
+import { userRepository } from '../../../../repositories/user.repository';
+import { Role } from '../../../../platform/auth/authorization';
+
+export async function GET(request: Request) {
+  const users = await userRepository.getAllUsers();
+  return NextResponse.json(users);
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    if (!body.email || !body.role) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const user = {
+      id: body.id || crypto.randomUUID(),
+      googleSubjectId: body.googleSubjectId || '',
+      email: body.email,
+      displayName: body.displayName || body.email.split('@')[0],
+      role: body.role as Role,
+      status: body.status || 'Enabled',
+      createdDate: body.createdDate || new Date().toISOString(),
+      lastLogin: body.lastLogin || null,
+      createdBy: body.createdBy || 'System',
+      permissions: body.permissions || [],
+      allowedNetworks: body.allowedNetworks || [],
+      notes: body.notes || ''
+    };
+
+    await userRepository.saveUser(user);
+    return NextResponse.json(user);
+  } catch (error) {
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}

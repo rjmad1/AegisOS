@@ -18,6 +18,12 @@ import { SearchEngine } from '../search/SearchEngine';
 import { useSettingsStore } from '../settings/SettingsService';
 import { PermissionService } from '../permissions/PermissionService';
 
+import { serviceRegistry } from './ServiceRegistry';
+import { configurationPlatform } from '../configuration/ConfigurationPlatform';
+import { architectureValidator } from '../governance/ArchitectureValidator';
+import { platformDiagnostics } from '../diagnostics/PlatformDiagnostics';
+import { platformHealth } from '../health/PlatformHealth';
+
 class PlatformKernelImpl {
   // ---- State ----
   private phase: LifecyclePhase = 'created';
@@ -33,44 +39,131 @@ class PlatformKernelImpl {
     return this.phase;
   }
 
+  /**
+   * Boot the platform with the given modules, supporting retries and healing recovery.
+   */
   async boot(modules: PlatformModule[]): Promise<void> {
-    if (this.phase !== 'created' && this.phase !== 'stopped') {
+    if (this.phase !== 'created' && this.phase !== 'stopped' && this.phase !== 'error') {
       console.warn(`[Kernel] Already in phase "${this.phase}", skipping boot.`);
       return;
     }
 
-    this.phase = 'initializing';
-    this.bootTime = Date.now();
-    console.log('[Kernel] Boot sequence started');
+    let retryCount = 0;
+    const maxRetries = 3;
 
-    // 1. Register all modules
+    while (retryCount < maxRetries) {
+      try {
+        await this.executeBootSequence(modules);
+        return; // Success
+      } catch (err: any) {
+        retryCount++;
+        console.error(`[Kernel] Boot sequence failed (Attempt ${retryCount}/${maxRetries}): ${err.message}`);
+        this.phase = 'degraded';
+
+        // Run recovery heuristics
+        platformDiagnostics.reportError();
+        const diagnosis = await platformDiagnostics.diagnoseAndHeal();
+        console.log(`[Kernel:Recovery] Executed diagnostics:`, diagnosis.remediationsApplied);
+
+        if (retryCount >= maxRetries) {
+          this.phase = 'error';
+          console.error('[Kernel] Unrecoverable platform bootstrap failure.');
+          this.emit('platform:error', { error: err.message, timestamp: Date.now() });
+          throw err;
+        }
+
+        // Exponential Backoff
+        const delay = 500 * Math.pow(2, retryCount - 1);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  /**
+   * Internal execution of individual bootstrap stages.
+   */
+  private async executeBootSequence(modules: PlatformModule[]): Promise<void> {
+    this.bootTime = Date.now();
+
+    // 1. Stage: bootstrapping
+    this.phase = 'bootstrapping';
+    console.log('[Kernel] Boot sequence: bootstrapping...');
+
+    // Load initial configurations
+    configurationPlatform.reload();
+
+    // Register all modules
     for (const mod of modules) {
       this.registerModule(mod);
     }
 
-    // 2. Register services from modules
+    // Register all services from modules in ServiceRegistry
     for (const mod of modules) {
       if (mod.services) {
         for (const svc of mod.services) {
+          serviceRegistry.register(
+            svc.token as string,
+            () => svc.factory(),
+            svc.singleton !== false ? 'singleton' : 'transient'
+          );
+          // Sync local mapping
           this.registerService(svc);
         }
       }
     }
 
-    // 3. Initialize modules (call lifecycle hooks)
-    for (const mod of modules) {
+    // 2. Stage: initializing
+    this.phase = 'initializing';
+    console.log('[Kernel] Boot sequence: initializing...');
+
+    // Load DB overrides for configuration
+    await configurationPlatform.loadFromDb();
+
+    // Initialize modules
+    for (const mod of this.modules.values()) {
       try {
         await mod.lifecycle?.onInit?.();
       } catch (err) {
         console.error(`[Kernel] Module "${mod.id}" onInit failed:`, err);
+        throw err;
       }
     }
 
+    // Initialize registered services
+    await serviceRegistry.initializeServices();
+
+    // 3. Stage: resolving
+    this.phase = 'resolving';
+    console.log('[Kernel] Boot sequence: resolving capabilities...');
+    // Capabilities resolution is completed (dynamic registries binding)
+
+    // 4. Stage: ready
     this.phase = 'ready';
+    console.log('[Kernel] Boot sequence: verifying system fitness and health...');
+
+    // Run architectural & circular dependency validation
+    const archReport = architectureValidator.validate();
+    if (!archReport.clean) {
+      console.warn(`[Kernel] Architecture validator warnings found: ${archReport.violationsFound} issues.`);
+      if (archReport.results.some(r => r.rule.includes('circular') && !r.passed)) {
+        throw new Error('Fatal circular dependency in Service Registry configuration.');
+      }
+    }
+
+    // Run platform health check
+    const healthReport = await platformHealth.getHealthReport();
+    if (healthReport.status === 'unhealthy') {
+      throw new Error(`Critical platform component is unhealthy: ${healthReport.components.database.message}`);
+    }
+
     this.emit('platform:ready', { timestamp: Date.now() });
 
-    // 4. Fire onReady hooks
-    for (const mod of modules) {
+    // 5. Stage: running
+    this.phase = 'running';
+    console.log('[Kernel] Boot sequence: triggering ready hooks...');
+
+    // Execute onReady module lifecycle hooks
+    for (const mod of this.modules.values()) {
       try {
         await mod.lifecycle?.onReady?.();
       } catch (err) {
@@ -78,13 +171,17 @@ class PlatformKernelImpl {
       }
     }
 
-    this.phase = 'running';
-    console.log(`[Kernel] Boot complete — ${this.modules.size} modules loaded`);
+    console.log(`[Kernel] Boot complete — ${this.modules.size} modules operational.`);
   }
 
+  /**
+   * Shut down the kernel and clean up all resources.
+   */
   async shutdown(): Promise<void> {
     this.phase = 'stopping';
+    console.log('[Kernel] Shutdown initiated...');
 
+    // Shutdown modules
     for (const mod of this.modules.values()) {
       try {
         await mod.lifecycle?.onDestroy?.();
@@ -93,11 +190,14 @@ class PlatformKernelImpl {
       }
     }
 
+    // Shutdown services in registry
+    await serviceRegistry.shutdownServices();
+
     this.modules.clear();
     this.singletons.clear();
     this.serviceDescriptors.clear();
     this.phase = 'stopped';
-    console.log('[Kernel] Shutdown complete');
+    console.log('[Kernel] Shutdown complete.');
   }
 
   // ---- Module Registration ----
@@ -203,16 +303,28 @@ class PlatformKernelImpl {
     return Array.from(this.modules.values());
   }
 
-  // ---- Service Container (simple DI) ----
+  // ---- Service Container ----
 
   registerService<T>(descriptor: ServiceDescriptor<T>): void {
     this.serviceDescriptors.set(descriptor.token as string, descriptor as ServiceDescriptor);
+    // Ensure sync in serviceRegistry
+    if (!serviceRegistry.has(descriptor.token as string)) {
+      serviceRegistry.register(
+        descriptor.token as string,
+        () => descriptor.factory(),
+        descriptor.singleton !== false ? 'singleton' : 'transient'
+      );
+    }
   }
 
   getService<T>(token: ServiceToken<T>): T {
     const key = token as string;
+    // Resolve via advanced ServiceRegistry if exists
+    if (serviceRegistry.has(key)) {
+      return serviceRegistry.get<T>(key);
+    }
 
-    // Return cached singleton
+    // Fallback for custom un-registered cached services
     if (this.singletons.has(key)) {
       return this.singletons.get(key) as T;
     }
@@ -225,12 +337,13 @@ class PlatformKernelImpl {
     const instance = descriptor.factory() as T;
     if (descriptor.singleton !== false) {
       this.singletons.set(key, instance);
+      serviceRegistry.registerValue(key, instance);
     }
     return instance;
   }
 
   hasService(token: string): boolean {
-    return this.serviceDescriptors.has(token);
+    return serviceRegistry.has(token) || this.serviceDescriptors.has(token);
   }
 
   // ---- Health ----
@@ -298,3 +411,4 @@ class PlatformKernelImpl {
 
 // Singleton
 export const PlatformKernel = new PlatformKernelImpl();
+export default PlatformKernel;

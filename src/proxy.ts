@@ -1,106 +1,216 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import crypto from "crypto";
+import { jwtVerify } from "jose";
+import { telemetryTracker } from "@/infrastructure/observability/telemetry";
+import { metricsPlatform } from "@/infrastructure/observability/metrics-platform";
+
+const authSecret = process.env.AUTH_SECRET;
+
+if (!authSecret || authSecret === "super-secret-random-hash-key-for-console-jwt-signing-2026" || authSecret === "fallback_secret_must_change_in_production_extremely_long") {
+  throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
+}
+
+const key = new TextEncoder().encode(authSecret);
 
 // In-memory rate limiting map: IP -> { count, resetTime }
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-
-// In-memory brute force map: IP -> { attempts, lockUntil }
-const loginLockoutMap = new Map<string, { attempts: number; lockUntil: number }>();
-
-// Load configurations or defaults
-const JWT_SECRET = process.env.OPS_JWT_SECRET || "super-secret-random-hash-key-for-console-jwt-signing-2026";
 const RATE_LIMIT_MAX = parseInt(process.env.OPS_RATE_LIMIT_MAX || "150", 10);
 const RATE_LIMIT_WINDOW = parseInt(process.env.OPS_RATE_LIMIT_WINDOW_MS || "60000", 10);
 
-// Helper to verify custom JWT token signature (using native crypto)
-function verifyToken(token: string, secret: string): any | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-    const [header, data, signature] = parts;
-    const expectedSignature = crypto
-      .createHmac("sha256", secret)
-      .update(`${header}.${data}`)
-      .digest("base64url");
-    
-    if (signature !== expectedSignature) return null;
+// Helper to determine the required permission based on HTTP path and method
+function getRequiredPermission(pathname: string, method: string): string | null {
+  const isWrite = ["POST", "PUT", "DELETE", "PATCH"].includes(method);
 
-    const payload = JSON.parse(Buffer.from(data, "base64url").toString("utf-8"));
-    if (payload.expires && Date.now() > payload.expires) {
-      return null; // Expired
-    }
-    return payload;
-  } catch (err) {
-    return null;
+  if (pathname.startsWith("/api/v1/admin/secrets") || pathname.startsWith("/api/v1/admin/users")) {
+    return "Administration";
   }
+  if (pathname.startsWith("/api/v1/workflows") || pathname.startsWith("/api/v1/jobs") || pathname.startsWith("/api/v1/executions")) {
+    return isWrite ? "Administration" : "ViewRuntime";
+  }
+  if (pathname.startsWith("/api/v1/infrastructure")) {
+    return "ViewInfrastructure";
+  }
+  if (pathname.startsWith("/api/v1/knowledge")) {
+    return "ViewKnowledge";
+  }
+  if (pathname.startsWith("/api/v1/models") || pathname.startsWith("/api/v1/providers")) {
+    return "ViewModels";
+  }
+  if (pathname.startsWith("/api/v1/conversations")) {
+    return "ViewConversations";
+  }
+  if (pathname.startsWith("/api/v1/events") || pathname.startsWith("/api/v1/metrics")) {
+    return "ViewLogs";
+  }
+  if (pathname.startsWith("/api/v1/diagnostics") || pathname.startsWith("/api/v1/status") || pathname.startsWith("/api/v1/runtime/health")) {
+    return "ViewHealth";
+  }
+  if (pathname.startsWith("/api/v1/configuration") || pathname.startsWith("/api/v1/system")) {
+    return "ViewSettings";
+  }
+  if (pathname.startsWith("/api/v1/reliability")) {
+    return "ViewInfrastructure";
+  }
+  
+  // Default to ViewRuntime for general API endpoints
+  if (pathname.startsWith("/api/v1")) {
+    return "ViewRuntime";
+  }
+
+  return null;
 }
 
-// Next.js 16 Named Proxy Hook
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0] || request.headers.get("x-real-ip") || "127.0.0.1";
 
-  // 1. Static Assets & Login Exemptions
-  const isStatic =
+  // Skip static assets early
+  if (
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/static/") ||
     pathname.startsWith("/favicon.ico") ||
-    pathname === "/globals.css";
+    pathname === "/globals.css"
+  ) {
+    return NextResponse.next();
+  }
+
+  // Check trace context headers (Trace Context Propagation)
+  const incomingTraceParent = request.headers.get("traceparent") || undefined;
+  const incomingBaggage = request.headers.get("baggage") || undefined;
+  
+  const parsedTrace = telemetryTracker.parseTraceParent(incomingTraceParent);
+  const parsedBaggage = telemetryTracker.parseBaggage(incomingBaggage);
+
+  const context = telemetryTracker.createTrace(
+    parsedTrace?.traceId,
+    parsedTrace?.activeSpanId,
+    parsedBaggage
+  );
+
+  const spanId = telemetryTracker.startSpan(
+    context.traceId,
+    `HTTP ${request.method} ${pathname}`,
+    context.activeSpanId,
+    {
+      "http.method": request.method,
+      "http.target": pathname,
+      "client.ip": request.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1"
+    }
+  );
+
+  const startTime = Date.now();
+  metricsPlatform.counter("api_requests_total", 1, { method: request.method, path: pathname });
+
+  try {
+    const res = await executeProxySecurityAndRouting(request);
+    const duration = Date.now() - startTime;
+    metricsPlatform.gauge("api_latency_ms", duration, { method: request.method, path: pathname });
+
+    if (res.status >= 400) {
+      metricsPlatform.counter("api_errors_total", 1, { method: request.method, path: pathname, status: String(res.status) });
+      telemetryTracker.endSpan(context.traceId, spanId, {
+        status: "failed",
+        error: true,
+        errorMessage: `HTTP Error ${res.status}`,
+        "http.status_code": res.status
+      });
+    } else {
+      telemetryTracker.endSpan(context.traceId, spanId, {
+        status: "succeeded",
+        "http.status_code": res.status
+      });
+    }
+
+    res.headers.set("traceparent", `00-${context.traceId}-${spanId}-01`);
+    return res;
+  } catch (err: any) {
+    const duration = Date.now() - startTime;
+    metricsPlatform.gauge("api_latency_ms", duration, { method: request.method, path: pathname });
+    metricsPlatform.counter("api_errors_total", 1, { method: request.method, path: pathname, status: "500" });
+
+    telemetryTracker.endSpan(context.traceId, spanId, {
+      status: "failed",
+      error: true,
+      errorMessage: err.message,
+      "http.status_code": 500
+    });
+
+    const errResponse = new NextResponse(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+    errResponse.headers.set("traceparent", `00-${context.traceId}-${spanId}-01`);
+    return errResponse;
+  }
+}
+
+async function executeProxySecurityAndRouting(request: NextRequest): Promise<NextResponse> {
+  const { pathname } = request.nextUrl;
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0] || request.headers.get("x-real-ip") || "127.0.0.1";
 
   const isAuthRoute =
-    pathname === "/login" ||
-    pathname === "/api/v1/auth/login";
-
-  const isHealthRoute =
-    pathname === "/health" ||
+    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/api/v1/auth") ||
+    pathname === "/live" ||
     pathname === "/ready" ||
-    pathname === "/live";
+    pathname === "/health" ||
+    pathname === "/status" ||
+    pathname === "/login" ||
+    pathname === "/unauthorized";
 
-  // 2. Rate Limiting Check (all non-static requests)
-  if (!isStatic) {
-    const now = Date.now();
-    let limitData = rateLimitMap.get(ip);
-    if (!limitData || now > limitData.resetTime) {
-      limitData = { count: 0, resetTime: now + RATE_LIMIT_WINDOW };
-    }
-    limitData.count++;
-    rateLimitMap.set(ip, limitData);
-
-    if (limitData.count > RATE_LIMIT_MAX) {
-      console.warn(`[Proxy Security] Rate limit exceeded by IP: ${ip}`);
-      return new NextResponse(
-        JSON.stringify({ code: "TOO_MANY_REQUESTS", message: "Too many requests. Please slow down." }),
-        {
-          status: 429,
-          headers: { "Content-Type": "application/json" }
+  // 1. Rate Limiting Check
+  if (Math.random() < 0.05) {
+    const nowTime = Date.now();
+    if (rateLimitMap.size > 1000) {
+      for (const [k, v] of rateLimitMap.entries()) {
+        if (nowTime > v.resetTime) {
+          rateLimitMap.delete(k);
         }
-      );
+      }
     }
   }
 
-  // 3. Brute Force Protection on Login
-  if (pathname === "/api/v1/auth/login") {
-    const now = Date.now();
-    const lockout = loginLockoutMap.get(ip);
-    if (lockout && now < lockout.lockUntil) {
-      const waitSeconds = Math.ceil((lockout.lockUntil - now) / 1000);
-      console.warn(`[Proxy Security] Locked out login attempt from IP: ${ip}`);
-      return new NextResponse(
-        JSON.stringify({
-          code: "LOCKED_OUT",
-          message: `Brute force protection active. Please wait ${waitSeconds} seconds.`
-        }),
-        {
-          status: 429,
-          headers: { "Content-Type": "application/json" }
-        }
-      );
+  const now = Date.now();
+  let limitData = rateLimitMap.get(ip);
+  if (!limitData || now > limitData.resetTime) {
+    limitData = { count: 0, resetTime: now + RATE_LIMIT_WINDOW };
+  }
+  limitData.count++;
+  rateLimitMap.set(ip, limitData);
+
+  if (limitData.count > RATE_LIMIT_MAX) {
+    return new NextResponse(
+      JSON.stringify({ error: "Too many requests. Please slow down." }),
+      { status: 429, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  // 2. Request Size & API Key check
+  if (!isAuthRoute) {
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 5 * 1024 * 1024) { // 5MB limit
+      return new NextResponse(JSON.stringify({ error: "Payload too large. Limit is 5MB." }), { status: 413 });
+    }
+
+    const apiKey = request.headers.get("x-api-key");
+    const apiSig = request.headers.get("x-api-signature");
+    const apiTs = request.headers.get("x-api-timestamp");
+    if (apiKey) {
+      if (!apiSig || !apiTs) {
+        return new NextResponse(JSON.stringify({ error: "Missing API request signature or timestamp headers" }), { status: 400 });
+      }
+      const nowTs = Date.now();
+      const reqTime = parseInt(apiTs, 10);
+      if (isNaN(reqTime) || Math.abs(nowTs - reqTime) > 5 * 60 * 1000) {
+        return new NextResponse(JSON.stringify({ error: "API Request timestamp expired or clock skew too high" }), { status: 400 });
+      }
+      if (apiSig.length !== 64) {
+        return new NextResponse(JSON.stringify({ error: "Invalid API signature" }), { status: 401 });
+      }
     }
   }
 
-  // 4. CSRF Validation for State-Mutating requests (POST, PUT, DELETE, PATCH)
-  if (["POST", "PUT", "DELETE", "PATCH"].includes(request.method) && !isStatic) {
+  // 3. CSRF Validation
+  if (["POST", "PUT", "DELETE", "PATCH"].includes(request.method) && !isAuthRoute) {
     const origin = request.headers.get("origin");
     const referer = request.headers.get("referer");
     const host = request.headers.get("host") || "";
@@ -108,60 +218,71 @@ export function proxy(request: NextRequest) {
     if (origin) {
       const originUrl = new URL(origin);
       if (originUrl.host !== host) {
-        console.error(`[Proxy Security] CSRF Blocked: origin ${originUrl.host} !== host ${host}`);
-        return new NextResponse(
-          JSON.stringify({ code: "CSRF_DETECTED", message: "Forbidden - Cross-Site Request Blocked." }),
-          { status: 403, headers: { "Content-Type": "application/json" } }
-        );
+        return new NextResponse(JSON.stringify({ error: "CSRF Blocked" }), { status: 403 });
       }
     } else if (referer) {
       const refererUrl = new URL(referer);
       if (refererUrl.host !== host) {
-        console.error(`[Proxy Security] CSRF Blocked: referer ${refererUrl.host} !== host ${host}`);
-        return new NextResponse(
-          JSON.stringify({ code: "CSRF_DETECTED", message: "Forbidden - Cross-Site Referer Blocked." }),
-          { status: 403, headers: { "Content-Type": "application/json" } }
-        );
+        return new NextResponse(JSON.stringify({ error: "CSRF Blocked" }), { status: 403 });
       }
     }
   }
 
-  // 5. Session Cookie Validation for Protected Routes
-  if (!isStatic && !isAuthRoute && !isHealthRoute) {
-    const cookieToken = request.cookies.get("ops_auth_token")?.value;
-    const verified = cookieToken ? verifyToken(cookieToken, JWT_SECRET) : null;
+  // 4. Zero Trust Intrusion & Authorization checks
+  if (!isAuthRoute) {
+    const token = request.cookies.get("ops_auth_token")?.value || 
+                  request.headers.get("Authorization")?.split(" ")[1];
+    
+    if (!token) {
+      if (pathname.startsWith("/api")) {
+        return new NextResponse(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+      }
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
 
-    if (!verified) {
-      console.info(`[Proxy Auth] Unauthenticated request to protected route: ${pathname} from IP: ${ip}`);
-      
-      // If it's an API request, return JSON 401
-      if (pathname.startsWith("/api/")) {
-        return new NextResponse(
-          JSON.stringify({ code: "UNAUTHORIZED", message: "Session expired or invalid. Please sign in again." }),
-          {
-            status: 401,
-            headers: {
-              "Content-Type": "application/json",
-              "Set-Cookie": "ops_auth_token=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
-            }
-          }
-        );
+    try {
+      const requiredPermission = getRequiredPermission(pathname, request.method);
+      const introspectUrl = new URL("/api/v1/auth/token/introspect", request.url);
+      const verifyRes = await fetch(introspectUrl.toString(), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, clientIp: ip, requiredPermission }),
+      });
+
+      if (!verifyRes.ok) {
+        throw new Error("Introspection service failed");
       }
 
-      // Otherwise, redirect to login page
-      const loginUrl = request.nextUrl.clone();
-      loginUrl.pathname = "/login";
-      const response = NextResponse.redirect(loginUrl);
-      // Clear invalid cookie
+      const check = await verifyRes.json();
+      if (!check.active) {
+        throw new Error(check.reason || "Session inactive or revoked");
+      }
+
+      if (requiredPermission && !check.authorized) {
+        if (pathname.startsWith("/api")) {
+          return new NextResponse(JSON.stringify({ error: "Forbidden", reason: check.reason }), { status: 403 });
+        }
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
+      }
+
+      if (pathname.startsWith("/admin") && check.role !== "Administrator" && check.role !== "admin") {
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
+      }
+
+    } catch (err: any) {
+      console.error(`[Security Proxy] Authorization failed for ${pathname}:`, err.message);
+      if (pathname.startsWith("/api")) {
+        return new NextResponse(JSON.stringify({ error: "Unauthorized", reason: err.message }), { status: 401 });
+      }
+      const response = NextResponse.redirect(new URL("/login", request.url));
       response.cookies.delete("ops_auth_token");
       return response;
     }
   }
 
-  // 6. Security Headers injection for all processed requests
+  // 5. Response headers
   const response = NextResponse.next();
-  
-  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  response.headers.set("X-Frame-Options", "DENY");
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set(
@@ -170,7 +291,6 @@ export function proxy(request: NextRequest) {
   );
   response.headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
   
-  // Set strict transport security in production (HSTS)
   if (process.env.NODE_ENV === "production") {
     response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   }
@@ -178,5 +298,8 @@ export function proxy(request: NextRequest) {
   return response;
 }
 
-// Export lockout trackers so login route can increment them on failures
-export { loginLockoutMap };
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+  ],
+};

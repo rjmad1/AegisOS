@@ -11,6 +11,7 @@ export interface DiagnosticsReport {
 
 export class SelfHealer {
   private static instance: SelfHealer | null = null;
+  private restartAttempts: Map<string, number> = new Map();
 
   private constructor() {}
 
@@ -42,12 +43,22 @@ export class SelfHealer {
     ];
 
     for (const p of ports) {
-      // Simulate port checks
       const portActive = await deploymentManager.checkPort(p.port);
       if (!portActive) {
         issues.push(`Service port ${p.port} (${p.name}) is unresponsive.`);
-        // Self-heal remediation simulation
-        remediationsApplied.push(`Triggered mock restart command for service: ${p.name}`);
+        
+        // Track restart attempts (circuit-breaker check)
+        const currentAttempts = this.restartAttempts.get(p.name) || 0;
+        if (currentAttempts >= 3) {
+          issues.push(`Auto-healing for ${p.name} suspended. Circuit-breaker threshold reached (3 failed restart attempts).`);
+        } else {
+          const nextAttempt = currentAttempts + 1;
+          this.restartAttempts.set(p.name, nextAttempt);
+          remediationsApplied.push(`Triggered mock restart command for service: ${p.name} (Attempt ${nextAttempt}/3)`);
+        }
+      } else {
+        // Reset attempts count on healthy socket check
+        this.restartAttempts.set(p.name, 0);
       }
     }
 

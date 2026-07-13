@@ -1,0 +1,99 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:6c9b31d8-3725-4c07-ae7a-0d127c5bc012",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-07-13T12:00:00Z",
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "cyclonedx-node-module",
+        "version": "4.0.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "openclaw-ops-console",
+      "version": "0.1.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "next",
+      "version": "16.2.10",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "8b52f9c8f00032ac30a84e0307bb2e391103f6f966113b28b7e289ac120300cc"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/next@16.2.10"
+    },
+    {
+      "type": "library",
+      "name": "jose",
+      "version": "6.2.3",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "f290cc1b816223940828fa601a0cb8b5b7e28a50616113b28b7e203080ffccaa"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/jose@6.2.3"
+    },
+    {
+      "type": "library",
+      "name": "oauth4webapi",
+      "version": "3.8.6",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "7c90aa9abf828a2a0ac35bbcfb8b7e28a50616113b28b7e203080ffccaa002a2"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/oauth4webapi@3.8.6"
+    },
+    {
+      "type": "library",
+      "name": "@prisma/client",
+      "version": "6.19.3",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "a280f55aaef0033ab6f28b7e28a50616113b28b7e203080ffccaa001a18204"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:npm/%40prisma/client@6.19.3"
+    }
+  ]
+}

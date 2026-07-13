@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litellm
+  namespace: openclaw-ops
+  labels:
+    app: litellm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: litellm
+  template:
+    metadata:
+      labels:
+        app: litellm
+    spec:
+      containers:
+        - name: litellm
+          image: openclaw-litellm:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4000
+              name: api
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/configs/config.yaml
+              subPath: litellm-config.yaml
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: "250m"
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: 4000
+            initialDelaySeconds: 15
+            periodSeconds: 15
+      volumes:
+        - name: config-volume
+          configMap:
+            name: openclaw-configs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: litellm-service
+  namespace: openclaw-ops
+spec:
+  ports:
+    - port: 4000
+      targetPort: 4000
+  selector:
+    app: litellm
+  type: ClusterIP

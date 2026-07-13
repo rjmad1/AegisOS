@@ -10,7 +10,9 @@ import type { ComponentType } from 'react';
 
 export type LifecyclePhase =
   | 'created'
+  | 'bootstrapping'
   | 'initializing'
+  | 'resolving'
   | 'ready'
   | 'running'
   | 'degraded'

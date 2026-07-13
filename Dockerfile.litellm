@@ -1,0 +1,30 @@
+# Stage 1: Install LiteLLM
+FROM python:3.11-slim AS builder
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir --user litellm[router]
+
+# Stage 2: Runner
+FROM python:3.11-slim AS runner
+WORKDIR /app
+
+RUN groupadd -r litellm && useradd -r -g litellm litellm
+RUN mkdir -p /app/configs /app/logs && chown -R litellm:litellm /app
+
+COPY --from=builder /root/.local /home/litellm/.local
+ENV PATH=/home/litellm/.local/bin:$PATH
+
+USER litellm
+
+EXPOSE 4000
+
+# Health check probe
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:4000/health/readiness', timeout=5)"
+
+CMD ["litellm", "--config", "/app/configs/config.yaml", "--port", "4000", "--host", "0.0.0.0"]

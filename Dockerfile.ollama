@@ -1,0 +1,16 @@
+FROM ollama/ollama:latest
+
+# Create non-root ollama user
+RUN useradd -r -s /bin/false -u 10001 -U -m -d /home/ollama ollama
+
+# Expose Ollama default port
+EXPOSE 11434
+
+ENV OLLAMA_MODELS=/home/ollama/.ollama/models
+RUN mkdir -p /home/ollama/.ollama/models && chown -R ollama:ollama /home/ollama
+
+USER ollama
+
+# Health check probe using the local ollama CLI client
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+  CMD ollama list || exit 1

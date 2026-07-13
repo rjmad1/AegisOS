@@ -8,6 +8,7 @@ import { HealthCheckResult, HealthStatus } from "../health/types";
 import { CapabilityReport } from "../discovery/types";
 import { featureFlags } from "../flags/feature-flags";
 import { headroomCompressor } from "../compression/headroom";
+import { safetyFirewall } from "../security/safety-firewall";
 
 // Base skeleton helper class
 abstract class BaseProviderSkeleton {
@@ -48,13 +49,25 @@ export class OllamaProvider extends BaseProviderSkeleton implements IModelProvid
     return { modelId };
   }
   async runInference(modelId: string, prompt: string, options?: any): Promise<any> {
-    let targetPrompt = prompt;
+    const safetyCheck = safetyFirewall.inspectPrompt(prompt);
+    if (!safetyCheck.passed) {
+      throw new Error(`[AI Safety Firewall Blocked] Prompt rejected: ${safetyCheck.reason}`);
+    }
+
+    let targetPrompt = safetyCheck.sanitizedPrompt;
     if (featureFlags.isEnabled("contextCompression")) {
-      const compressedResult = headroomCompressor.compressPrompt(prompt);
-      console.log(`[OllamaProvider] Compressed prompt from ${prompt.length} to ${compressedResult.compressed.length} chars.`);
+      const compressedResult = headroomCompressor.compressPrompt(targetPrompt);
+      console.log(`[OllamaProvider] Compressed prompt from ${targetPrompt.length} to ${compressedResult.compressed.length} chars.`);
       targetPrompt = compressedResult.compressed;
     }
-    return { text: `Simulated Ollama response for prompt: ${targetPrompt.slice(0, 30)}...` };
+    const response = { text: `Simulated Ollama response for prompt: ${targetPrompt.slice(0, 30)}...` };
+    
+    const outputCheck = safetyFirewall.validateOutput(response.text, []);
+    if (!outputCheck.grounded) {
+      console.warn(`[AI Safety Firewall Alert] Hallucination detected in output.`);
+    }
+
+    return response;
   }
   async getServedEndpoints(): Promise<string[]> {
     return ["http://127.0.0.1:11434"];
@@ -86,13 +99,25 @@ export class LiteLLMProvider extends BaseProviderSkeleton implements IModelProvi
     return { modelId };
   }
   async runInference(modelId: string, prompt: string, options?: any): Promise<any> {
-    let targetPrompt = prompt;
+    const safetyCheck = safetyFirewall.inspectPrompt(prompt);
+    if (!safetyCheck.passed) {
+      throw new Error(`[AI Safety Firewall Blocked] Prompt rejected: ${safetyCheck.reason}`);
+    }
+
+    let targetPrompt = safetyCheck.sanitizedPrompt;
     if (featureFlags.isEnabled("contextCompression")) {
-      const compressedResult = headroomCompressor.compressPrompt(prompt);
-      console.log(`[LiteLLMProvider] Compressed prompt from ${prompt.length} to ${compressedResult.compressed.length} chars.`);
+      const compressedResult = headroomCompressor.compressPrompt(targetPrompt);
+      console.log(`[LiteLLMProvider] Compressed prompt from ${targetPrompt.length} to ${compressedResult.compressed.length} chars.`);
       targetPrompt = compressedResult.compressed;
     }
-    return { text: `Simulated LiteLLM response for prompt: ${targetPrompt.slice(0, 30)}...` };
+    const response = { text: `Simulated LiteLLM response for prompt: ${targetPrompt.slice(0, 30)}...` };
+
+    const outputCheck = safetyFirewall.validateOutput(response.text, []);
+    if (!outputCheck.grounded) {
+      console.warn(`[AI Safety Firewall Alert] Hallucination detected in output.`);
+    }
+
+    return response;
   }
   async getServedEndpoints(): Promise<string[]> {
     return ["http://127.0.0.1:4000"];

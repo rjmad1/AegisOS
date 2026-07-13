@@ -1,0 +1,30 @@
+# installers/docker-compose.prod.yml
+# Production deployment composition for OpenClaw Console.
+
+version: '3.8'
+
+services:
+  console:
+    build:
+      context: ..
+      dockerfile: installers/Dockerfile.prod
+    container_name: openclaw-console-prod
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:./databases/prod.db
+      - AUTH_SECRET=console_jwt_session_auth_secret_production_secure_778103
+      - OPS_JWT_SECRET=secrets_encryption_key_production_secure_889210
+      - AUTH_PROVIDER=google
+      - SEED_MODELS_ON_BOOT=true
+    volumes:
+      - console-databases:/app/databases
+      - console-artifacts:/app/artifacts_storage
+    restart: always
+
+volumes:
+  console-databases:
+    driver: local
+  console-artifacts:
+    driver: local

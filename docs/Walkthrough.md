@@ -233,3 +233,89 @@ sequenceDiagram
    - In `/runtime` -> **Event Inspector**, click on a captured event.
    - Click the **Replay Event** button.
    - **Expected Result**: The event is re-injected onto the client event bus, triggering a toast notification or layout update.
+
+---
+
+## 5. Phase 11 Walkthrough: Workflow, Automation & Orchestration Platform
+
+This phase transforms the platform from an Operations Console into an Automation Platform, introducing a first-class Workflow Engine capable of orchestrating long-running, event-driven, and scheduled pipelines across all registered system providers.
+
+### Workflow Architecture
+The orchestration platform is decoupled from direct infrastructure mutations. It coordinates tasks through the `ProviderRegistry` using canonical interfaces. The architecture consists of:
+- **Workflow Registry**: Persists workflow definitions, template configurations, schedules, and active approvals in `databases/workflows.json`, `databases/workflow_templates.json`, etc.
+- **Workflow Service**: Governs the step-by-step pipeline state transitions and runs a background loop to process queued, delayed, or approval-blocked executions.
+- **Condition Engine**: Evaluates Boolean flags, custom JS expressions, JSONPath mappings, provider states, user permissions, and metadata targets.
+
+```
+   [System Events / Timers] ──► [Trigger Framework] ──► [Workflow Service]
+                                                               │
+                                                               ▼ (Checkpoints)
+   [Provider Registry]  ◄─── [Provider Calls]  ◄─── [Execution Engine]
+```
+
+### Execution Engine & Lifecycle
+The Execution Engine executes nodes sequentially, conditionally, or in parallel branches:
+1. **Queued**: Execution is initialized, variables are seeded from trigger parameters, and the initial step starts.
+2. **Running**: Nodes (e.g. Script, Provider Call) are executed, and output fields are merged back into execution variables.
+3. **Delayed**: Execution is suspended and marked `delayed` with a resume timestamp. The background engine tick wakes it.
+4. **Waiting Approval**: Interrupted on an Approval node. Suspends until human input resolves it.
+5. **Succeeded / Failed / Cancelled**: Finalized states which write final performance metrics and duration logs.
+
+### Checkpoint & Recovery Strategy
+- **Saga Checkpoints**: Before and after each step execution, the state (current node, execution variables, loops counters) is serialized into `databases/workflow_executions.json`.
+- **Interruption Recovery**: On platform boot (`onInit` lifecycle hook), the engine automatically scans the database for any execution in `queued` or `running` states. It recovers the context state and resumes execution from the last completed node checkpoint.
+
+### Scheduler, Triggers, & Actions
+- **Trigger Framework**: Listens for manual, scheduler, and event-based inputs (such as `ArtifactCreated` and `ConversationStarted`) via the `hardenedEventBus` and forwards them to instantiate executions.
+- **Scheduler**: Supports Cron, One-Time, Recurring, and Delayed checks using a lightweight cron evaluator.
+- **Action Framework**: Maps nodes to core tasks: calling provider APIs dynamically, running scripts, triggering sub-workflows, sending notification alerts, and managing artifacts.
+
+### Approval Engine
+- Supports single-approver and multi-approver quorum models.
+- **Timeouts & Escalation**: Monitors pending approvals. If a timeout occurs, it either delegates the gate to the escalation user or fails the execution path.
+- **Delegation**: Allows forwarding active approval gates to delegated user email targets.
+
+### Workflow APIs
+All routes return canonical models and are located under:
+- `GET/POST /api/v1/workflows` - Manage definitions
+- `GET/PUT/DELETE /api/v1/workflows/[id]` - Retrieve, update graph nodes, or delete
+- `GET/POST /api/v1/workflows/templates` - Instantiate pipeline templates
+- `GET/POST /api/v1/workflows/executions` - List runs, trigger, resume, or cancel executions
+- `GET /api/v1/workflows/history` - Read definition edit audit logs
+- `GET/POST /api/v1/workflows/schedules` - Retrieve and toggle timer/cron schedules
+- `GET/POST /api/v1/workflows/approvals` - Fetch pending gates and submit decisions
+- `GET /api/v1/workflows/triggers` - Available triggers
+- `GET /api/v1/workflows/actions` - Available action templates
+
+### UI Modules
+- **Workflow Explorer**: List registered workflows, capabilities, and run details.
+- **Visual Node Designer**: Connection graph editor to add, remove, and configure trigger/task parameters and validate execution loops.
+- **Execution Monitor & Timeline**: Renders step-by-step progress, duration, log events, and error details.
+- **Automation Center**: Dashboard tracking active queues, schedules list, dead letter logs, and approval queues.
+
+---
+
+## 6. Phase 11 Acceptance Tests
+
+1. **Verify Workflow Designer & Save**:
+   - Navigate to `/workflows` and click **Create Workflow**.
+   - Select node types, configure next steps, and click **Save Definition**.
+   - **Expected Result**: Graph validation runs successfully. The workflow is written to `databases/workflows.json` and appears in the registry.
+
+2. **Verify Manual Execution Timeline**:
+   - On the **Workflow Explorer**, click **Trigger** on "Workspace Audit Pipeline".
+   - Enter input variables and launch.
+   - Go to `/executions` and click **Timeline** on the newly created execution.
+   - **Expected Result**: Displays chronological list of nodes, duration, log events, and completion output.
+
+3. **Verify Approval Gate Delegation & Decision**:
+   - Trigger a workflow containing an approval node.
+   - Navigate to `/automation` -> **Approvals Queue** tab.
+   - Click **Delegate** on the pending request, enter email, and submit.
+   - Approve the delegated request.
+   - **Expected Result**: Execution resumes and proceeds to completion.
+
+4. **Verify Checkpoint Recovery**:
+   - Restart the Next.js server while a workflow is sleeping or executing.
+   - **Expected Result**: On server boot, the lifecycle hook recovers the execution state and resumes.
+

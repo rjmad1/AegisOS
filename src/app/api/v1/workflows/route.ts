@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { runtimeService } from "@/services/runtime.service";
-import { handleCaching } from "@/utils/api-helper";
+import { workflowRepository } from "@/repositories/workflow.repository";
+import { handleCaching, formatErrorResponse } from "@/utils/api-helper";
+import { ValidationError } from "@/utils/errors";
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,6 +14,37 @@ export async function GET(request: NextRequest) {
     const result = await runtimeService.getWorkflows({ page, limit, search });
     return handleCaching(request, result);
   } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+    return formatErrorResponse(err);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { id, name, description, version, nodes, capabilities, dependencies, relationships, metadata } = body;
+    
+    if (!id || !name) {
+      throw new ValidationError("Missing required fields: id and name");
+    }
+
+    const newWf = {
+      id,
+      name,
+      description: description || "",
+      version: version || "1.0.0",
+      status: "draft" as const,
+      nodes: nodes || [],
+      capabilities: capabilities || [],
+      dependencies: dependencies || [],
+      relationships: relationships || [],
+      metadata: metadata || {},
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    await workflowRepository.saveWorkflow(newWf);
+    return Response.json({ success: true, workflow: newWf }, { status: 201 });
+  } catch (err: any) {
+    return formatErrorResponse(err);
   }
 }

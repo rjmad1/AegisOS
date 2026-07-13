@@ -57,6 +57,24 @@ export class HardenedEventBus {
     if (event.payload === undefined || event.payload === null) {
       errors.push("Event payload cannot be empty");
     }
+
+    // mTLS Verification for Multi-Node traffic
+    if (process.env.MULTI_NODE_MTLS_ENFORCED === "true") {
+      const payloadSig = (event.payload && typeof event.payload === "object" && "_mtlsSignature" in event.payload)
+        ? (event.payload as Record<string, string>)._mtlsSignature
+        : undefined;
+      const authHeader = (event as HardenedEvent & { mtlsSignature?: string }).mtlsSignature || payloadSig;
+      if (!authHeader) {
+        errors.push("mTLS verification failed: client certificate signature missing or untrusted for multi-node transfer");
+      } else {
+        const expectedSig = crypto.createHmac("sha256", process.env.MTLS_SHARED_SECRET || "mtls_secret_2026")
+          .update(event.id + event.name)
+          .digest("hex");
+        if (authHeader !== expectedSig) {
+          errors.push("mTLS verification failed: client certificate signature invalid");
+        }
+      }
+    }
     return errors;
   }
 

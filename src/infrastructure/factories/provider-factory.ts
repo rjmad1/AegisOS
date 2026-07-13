@@ -10,7 +10,7 @@ import {
   DockerProvider,
   MockProvider,
 } from "../providers/skeletons";
-import { LocalArtifactStorageProvider } from "../providers/local-artifact-storage";
+import { ObjectStoragePlatformProvider } from "../providers/object-storage";
 import { OpenClawRuntimeProvider } from "../providers/openclaw-runtime";
 import { OllamaAIRuntimeProvider } from "../providers/ollama-ai-runtime";
 import { LiteLLMAIRuntimeProvider } from "../providers/litellm-ai-runtime";
@@ -77,7 +77,7 @@ export class ProviderFactory {
         provider = new FilesystemProvider();
         break;
       case "local-artifact-storage-provider":
-        provider = new LocalArtifactStorageProvider();
+        provider = new ObjectStoragePlatformProvider();
         break;
       case "windows-provider":
         provider = new WindowsProvider();

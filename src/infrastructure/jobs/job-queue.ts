@@ -1,8 +1,10 @@
+// src/infrastructure/jobs/job-queue.ts
+// Relational SQLite Persistence for Resilient Background Jobs and Sagas using Prisma ORM
+
 import { Job, TaskStatus, Priority, RetryPolicy } from "@/api/types/background-processing";
 import { hardenedEventBus } from "../events/event-bus";
+import prisma from "../db/prisma";
 import * as crypto from "crypto";
-import * as fs from "fs";
-import * as path from "path";
 
 export interface WorkflowCheckpoint {
   jobId: string;
@@ -18,18 +20,10 @@ export class ResilientJobQueue {
   private handlers: Map<string, (job: Job, checkpoint: (state: any) => Promise<void>) => Promise<any>> = new Map();
   private compensations: Map<string, (job: Job) => Promise<void>> = new Map();
   private processingInterval: NodeJS.Timeout | null = null;
-  private jobsDbPath: string;
-  private checkpointsDbPath: string;
   private pausedJobs: Set<string> = new Set();
 
   private constructor() {
-    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
-    this.jobsDbPath = path.resolve(dbDir, "jobs.json");
-    this.checkpointsDbPath = path.resolve(dbDir, "checkpoints.json");
-    this.ensureDirs();
-    this.loadJobs();
-    this.registerDefaultResilientHandlers();
-    this.startQueueWorker();
+    this.initQueue();
   }
 
   public static getInstance(): ResilientJobQueue {
@@ -39,61 +33,92 @@ export class ResilientJobQueue {
     return ResilientJobQueue.instance;
   }
 
-  private ensureDirs() {
-    const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
-    if (!fs.existsSync(dbDir)) {
-      fs.mkdirSync(dbDir, { recursive: true });
+  private async initQueue() {
+    await this.loadJobs();
+    this.registerDefaultResilientHandlers();
+    this.startQueueWorker();
+  }
+
+  private async loadJobs() {
+    try {
+      const list = await prisma.job.findMany();
+      list.forEach((j) => {
+        this.jobs.set(j.id, {
+          id: j.id,
+          name: j.name,
+          payload: JSON.parse(j.payload),
+          status: j.status as TaskStatus,
+          priority: j.priority as Priority,
+          progress: j.progress,
+          retryPolicy: JSON.parse(j.retryPolicy),
+          errors: JSON.parse(j.errors),
+          createdAt: j.createdAt,
+          startedAt: j.startedAt || undefined,
+          completedAt: j.completedAt || undefined,
+          result: j.result ? JSON.parse(j.result) : undefined,
+        });
+      });
+      console.log(`[JobQueue] Loaded ${this.jobs.size} background tasks from SQLite.`);
+    } catch (err: any) {
+      console.error("[JobQueue] Failed to load jobs from SQLite:", err.message);
     }
   }
 
-  private loadJobs() {
+  private async saveJobToDb(job: Job) {
     try {
-      if (fs.existsSync(this.jobsDbPath)) {
-        const raw = fs.readFileSync(this.jobsDbPath, "utf-8");
-        const list = JSON.parse(raw) as Job[];
-        list.forEach((j) => this.jobs.set(j.id, j));
-      }
-    } catch (err) {
-      console.error("[JobQueue] Failed to load jobs file:", err);
-    }
-  }
-
-  private saveJobs() {
-    try {
-      const list = Array.from(this.jobs.values());
-      fs.writeFileSync(this.jobsDbPath, JSON.stringify(list, null, 2), "utf-8");
-    } catch (err) {
-      console.error("[JobQueue] Failed to save jobs file:", err);
+      await prisma.job.upsert({
+        where: { id: job.id },
+        update: {
+          name: job.name,
+          payload: JSON.stringify(job.payload || {}),
+          status: job.status,
+          priority: job.priority,
+          progress: job.progress,
+          retryPolicy: JSON.stringify(job.retryPolicy),
+          errors: JSON.stringify(job.errors),
+          startedAt: job.startedAt || null,
+          completedAt: job.completedAt || null,
+          result: job.result ? JSON.stringify(job.result) : null,
+        },
+        create: {
+          id: job.id,
+          name: job.name,
+          payload: JSON.stringify(job.payload || {}),
+          status: job.status,
+          priority: job.priority,
+          progress: job.progress,
+          retryPolicy: JSON.stringify(job.retryPolicy),
+          errors: JSON.stringify(job.errors),
+          createdAt: job.createdAt,
+          startedAt: job.startedAt || null,
+          completedAt: job.completedAt || null,
+          result: job.result ? JSON.stringify(job.result) : null,
+        },
+      });
+    } catch (err: any) {
+      console.error("[JobQueue] Failed to save job to SQLite:", err.message);
     }
   }
 
   private registerDefaultResilientHandlers() {
-    // Vectorization handler simulation with checkpoint logging and compensation
     this.handlers.set("file-vectorization-pipeline", async (job: Job, checkpoint) => {
       const stages = [
         { name: "File Parsing (PDF/MD/HTML extractions)", targetProgress: 25 },
         { name: "Text Chunking (Recursive character splitting)", targetProgress: 50 },
         { name: "Embedding Generation (all-minilm vector mapping)", targetProgress: 75 },
-        { name: "Search Indexing (SQLite vector tables storage)", targetProgress: 100 }
+        { name: "Search Indexing (SQLite vector tables storage)", targetProgress: 100 },
       ];
 
       for (let i = 0; i < stages.length; i++) {
         const stage = stages[i];
 
-        // Check Pause/Cancel status
         await this.checkExecutionGates(job.id);
-
-        // Simulate stage execution delay
         await new Promise((resolve) => setTimeout(resolve, 600));
         await this.checkExecutionGates(job.id);
 
-        // Save State Checkpoint
         await checkpoint({ lastCompletedStage: stage.name });
+        await this.updateJobProgress(job.id, stage.targetProgress);
 
-        // Update progress
-        this.updateJobProgress(job.id, stage.targetProgress);
-
-        // Publish index telemetry
         await hardenedEventBus.publish({
           name: "SearchIndexed",
           source: "JobQueue",
@@ -105,22 +130,20 @@ export class ResilientJobQueue {
             entityId: job.id,
             entityType: "job",
             indexedFields: [stage.name],
-            durationMs: 600
-          }
+            durationMs: 600,
+          },
         });
       }
 
       return {
         vectorCount: 142,
         status: "indexed_successfully",
-        fileSize: job.payload?.fileSize || 1024
+        fileSize: job.payload?.fileSize || 1024,
       };
     });
 
-    // Compensation callback if vectorization fails
     this.compensations.set("file-vectorization-pipeline", async (job: Job) => {
-      console.log(`[JobQueue:SagaCompensation] Undoing partial works for job: ${job.id}`);
-      // Simulates deleting partial workspace index rows
+      console.log(`[JobQueue:SagaCompensation] Undoing partial work for job: ${job.id}`);
       await hardenedEventBus.publish({
         name: "ArtifactDeleted",
         source: "JobQueue",
@@ -129,8 +152,8 @@ export class ResilientJobQueue {
         securityClassification: "internal",
         retentionPolicy: "temp",
         payload: {
-          artifactId: `partial-${job.id}`
-        }
+          artifactId: `partial-${job.id}`,
+        },
       });
     });
   }
@@ -140,7 +163,6 @@ export class ResilientJobQueue {
     if (!job) throw new Error("Job deleted");
     if (job.status === "cancelled") throw new Error("Job was cancelled");
 
-    // Pause wait loop
     while (this.pausedJobs.has(id)) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       const reCheck = this.jobs.get(id);
@@ -152,7 +174,7 @@ export class ResilientJobQueue {
 
   private startQueueWorker() {
     if (this.processingInterval) return;
-    
+
     this.processingInterval = setInterval(async () => {
       const queuedJobs = Array.from(this.jobs.values())
         .filter((j) => j.status === "queued")
@@ -171,14 +193,33 @@ export class ResilientJobQueue {
   }
 
   private async runJob(job: Job) {
+    const { telemetryTracker } = await import("../observability/telemetry");
+    const { metricsPlatform } = await import("../observability/metrics-platform");
+
     const handler = this.handlers.get(job.name);
     if (!handler) {
-      this.updateJobStatus(job.id, "failed", undefined, new Error(`No worker handler for: ${job.name}`));
+      await this.updateJobStatus(job.id, "failed", undefined, new Error(`No worker handler for: ${job.name}`));
       return;
     }
 
-    this.updateJobStatus(job.id, "running");
-    
+    const activeJobs = Array.from(this.jobs.values()).filter((j) => j.status === "queued" || j.status === "running").length;
+    metricsPlatform.gauge("queue_job_backlog_count", activeJobs);
+
+    // Start Telemetry Span
+    const traceId = crypto.randomBytes(16).toString("hex");
+    const spanId = telemetryTracker.startSpan(
+      traceId,
+      `Background Job: ${job.name}`,
+      undefined,
+      {
+        jobId: job.id,
+        jobName: job.name,
+        priority: job.priority
+      }
+    );
+
+    await this.updateJobStatus(job.id, "running");
+
     await hardenedEventBus.publish({
       name: "JobStarted",
       source: "JobQueue",
@@ -189,26 +230,25 @@ export class ResilientJobQueue {
       payload: {
         jobId: job.id,
         jobName: job.name,
-        priority: job.priority
-      }
+        priority: job.priority,
+      },
     });
 
-    // Checkpoint callback closure
     const checkpointCallback = async (checkpointState: any) => {
       const checkpointLog: WorkflowCheckpoint = {
         jobId: job.id,
         stageName: job.status,
         progress: job.progress,
         checkpointState,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-      this.saveCheckpoint(checkpointLog);
+      await this.saveCheckpoint(checkpointLog);
     };
 
     try {
       const result = await handler(job, checkpointCallback);
-      this.updateJobStatus(job.id, "completed", result);
-      
+      await this.updateJobStatus(job.id, "completed", result);
+
       await hardenedEventBus.publish({
         name: "JobCompleted",
         source: "JobQueue",
@@ -219,44 +259,67 @@ export class ResilientJobQueue {
         payload: {
           jobId: job.id,
           jobName: job.name,
-          result
-        }
+          result,
+        },
+      });
+
+      telemetryTracker.endSpan(traceId, spanId, {
+        status: "succeeded",
+        resultKeys: Object.keys(result || {})
       });
     } catch (err: any) {
       if (job.status === "cancelled") {
-        return; // Marked cancelled explicitly
+        telemetryTracker.endSpan(traceId, spanId, { status: "cancelled" });
+        return;
       }
 
-      // Trigger Saga compensation
+      // Trace Saga Compensation
       const compensator = this.compensations.get(job.name);
       if (compensator) {
+        const compSpanId = telemetryTracker.startSpan(
+          traceId,
+          `Saga Compensation: ${job.name}`,
+          spanId,
+          { jobId: job.id }
+        );
         try {
+          console.log(`[JobQueue:SagaCompensation] Undoing partial work for job: ${job.id}`);
           await compensator(job);
+          telemetryTracker.endSpan(traceId, compSpanId, { status: "succeeded" });
         } catch (compErr: any) {
           console.error(`[JobQueue:CompensationFailed] Saga failed to revert state:`, compErr.message);
+          telemetryTracker.endSpan(traceId, compSpanId, { status: "failed", error: true, errorMessage: compErr.message });
         }
       }
 
       const retryPolicy = job.retryPolicy;
       if (retryPolicy.currentAttempt < retryPolicy.maxRetries) {
         retryPolicy.currentAttempt++;
-        this.updateJobStatus(job.id, "retrying");
+        await this.updateJobStatus(job.id, "retrying");
         console.log(`[JobQueue] Saga failed. Retrying attempt ${retryPolicy.currentAttempt}/${retryPolicy.maxRetries}...`);
-        
-        const delay = retryPolicy.backoffType === "exponential" 
-          ? retryPolicy.backoffDelayMs * Math.pow(2, retryPolicy.currentAttempt - 1)
-          : retryPolicy.backoffDelayMs;
-          
-        setTimeout(() => {
-          this.jobs.set(job.id, {
-            ...this.jobs.get(job.id)!,
-            status: "queued"
-          });
-          this.saveJobs();
+
+        telemetryTracker.endSpan(traceId, spanId, {
+          status: "failed_retry",
+          currentAttempt: retryPolicy.currentAttempt,
+          errorMessage: err.message
+        });
+
+        const delay =
+          retryPolicy.backoffType === "exponential"
+            ? retryPolicy.backoffDelayMs * Math.pow(2, retryPolicy.currentAttempt - 1)
+            : retryPolicy.backoffDelayMs;
+
+        setTimeout(async () => {
+          const freshJob = this.jobs.get(job.id);
+          if (freshJob) {
+            freshJob.status = "queued";
+            this.jobs.set(job.id, freshJob);
+            await this.saveJobToDb(freshJob);
+          }
         }, delay);
       } else {
-        this.updateJobStatus(job.id, "failed", undefined, err);
-        
+        await this.updateJobStatus(job.id, "failed", undefined, err);
+
         await hardenedEventBus.publish({
           name: "JobFailed",
           source: "JobQueue",
@@ -268,28 +331,37 @@ export class ResilientJobQueue {
             jobId: job.id,
             jobName: job.name,
             error: {
-              message: err.message || "Unknown error occurred"
-            }
-          }
+              message: err.message || "Unknown error occurred",
+            },
+          },
+        });
+
+        telemetryTracker.endSpan(traceId, spanId, {
+          status: "failed_exhausted",
+          error: true,
+          errorMessage: err.message
         });
       }
     }
   }
 
-  private saveCheckpoint(cp: WorkflowCheckpoint) {
+  private async saveCheckpoint(cp: WorkflowCheckpoint) {
     try {
-      let list: WorkflowCheckpoint[] = [];
-      if (fs.existsSync(this.checkpointsDbPath)) {
-        list = JSON.parse(fs.readFileSync(this.checkpointsDbPath, "utf-8"));
-      }
-      list.push(cp);
-      fs.writeFileSync(this.checkpointsDbPath, JSON.stringify(list, null, 2), "utf-8");
+      await prisma.jobCheckpoint.create({
+        data: {
+          jobId: cp.jobId,
+          stageName: cp.stageName,
+          progress: cp.progress,
+          checkpointState: JSON.stringify(cp.checkpointState),
+          timestamp: cp.timestamp,
+        },
+      });
     } catch (err) {
       console.error("[JobQueue] Failed to write checkpoint:", err);
     }
   }
 
-  private updateJobStatus(id: string, status: TaskStatus, result?: any, error?: Error) {
+  private async updateJobStatus(id: string, status: TaskStatus, result?: any, error?: Error) {
     const job = this.jobs.get(id);
     if (!job) return;
 
@@ -305,23 +377,27 @@ export class ResilientJobQueue {
       job.errors.push({
         message: error?.message || "Unknown error",
         timestamp: new Date().toISOString(),
-        stack: error?.stack
+        stack: error?.stack,
       });
     }
-    
+
     this.jobs.set(id, { ...job });
-    this.saveJobs();
+    await this.saveJobToDb(job);
   }
 
-  private updateJobProgress(id: string, progress: number) {
+  private async updateJobProgress(id: string, progress: number) {
     const job = this.jobs.get(id);
     if (!job) return;
     job.progress = progress;
     this.jobs.set(id, { ...job });
-    this.saveJobs();
+    await this.saveJobToDb(job);
   }
 
-  public registerWorker(name: string, handler: (job: Job, cp: (state: any) => Promise<void>) => Promise<any>, compensation?: (job: Job) => Promise<void>) {
+  public registerWorker(
+    name: string,
+    handler: (job: Job, cp: (state: any) => Promise<void>) => Promise<any>,
+    compensation?: (job: Job) => Promise<void>
+  ) {
     this.handlers.set(name, handler);
     if (compensation) {
       this.compensations.set(name, compensation);
@@ -329,7 +405,6 @@ export class ResilientJobQueue {
     console.log(`[JobQueue] Registered resilient handler: ${name}`);
   }
 
-  // IJobQueue implementations
   public async add<TPayload = any, TResult = any>(
     name: string,
     payload: TPayload,
@@ -347,14 +422,14 @@ export class ResilientJobQueue {
         maxRetries: options?.retryPolicy?.maxRetries ?? 2,
         backoffType: options?.retryPolicy?.backoffType ?? "constant",
         backoffDelayMs: options?.retryPolicy?.backoffDelayMs ?? 1000,
-        currentAttempt: 0
+        currentAttempt: 0,
       },
       errors: [],
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     this.jobs.set(id, job);
-    this.saveJobs();
+    await this.saveJobToDb(job);
     return job as any;
   }
 
@@ -383,7 +458,7 @@ export class ResilientJobQueue {
       job.status = "cancelled";
       job.completedAt = new Date().toISOString();
       this.jobs.set(id, { ...job });
-      this.saveJobs();
+      await this.saveJobToDb(job);
       return true;
     }
     return false;
@@ -417,7 +492,7 @@ export class ResilientJobQueue {
       job.retryPolicy.currentAttempt = 0;
       job.errors = [];
       this.jobs.set(id, { ...job });
-      this.saveJobs();
+      await this.saveJobToDb(job);
       return true;
     }
     return false;
@@ -425,7 +500,7 @@ export class ResilientJobQueue {
 
   public async clearQueue(): Promise<void> {
     this.jobs.clear();
-    this.saveJobs();
+    await prisma.job.deleteMany();
   }
 
   public shutdown() {

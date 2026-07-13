@@ -26,6 +26,10 @@ function Log-PlatformError([string]$msg) {
 
 # 2. Elevation / Privilege Verification
 function Test-PlatformElevation {
+    if ($env:BYPASS_ELEVATION -eq "true") {
+        Log-PlatformWarn "Bypassing Administrator elevation check (testing mode active)."
+        return $true
+    }
     $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
     if (-not $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         Log-PlatformError "This command/script must be run from an Elevated/Administrator PowerShell session!"

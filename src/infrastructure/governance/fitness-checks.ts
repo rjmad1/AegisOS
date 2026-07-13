@@ -91,6 +91,75 @@ export class FitnessChecker {
     });
     if (!manifestPassed) violations++;
 
+    // Rule 3: No direct imports of raw repositories/database layers inside view components (app or components)
+    const repositoryBypasses: string[] = [];
+    const componentsFolder = path.resolve(process.cwd(), "src", "components");
+    
+    const scanRepoImports = (dir: string) => {
+      if (!fs.existsSync(dir)) return;
+      const files = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of files) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          scanRepoImports(fullPath);
+        } else if (entry.isFile() && /\.(ts|tsx)$/.test(entry.name)) {
+          const content = fs.readFileSync(fullPath, "utf-8");
+          const lines = content.split("\n");
+          lines.forEach((line, idx) => {
+            if (line.includes("from \"@/repositories/") || line.includes("from \"../repositories/")) {
+              const relFile = path.relative(process.cwd(), fullPath).replace(/\\/g, "/");
+              repositoryBypasses.push(`${relFile}:${idx + 1} - View layer imports raw database repository: ${line.trim()}`);
+            }
+          });
+        }
+      }
+    };
+
+    scanRepoImports(viewFolder);
+    scanRepoImports(componentsFolder);
+
+    results.push({
+      rule: "No direct repository/database import bypasses in view components",
+      passed: repositoryBypasses.length === 0,
+      details: repositoryBypasses.length > 0 ? repositoryBypasses : undefined
+    });
+    violations += repositoryBypasses.length;
+
+    // Rule 4: Circular dependencies (services or infrastructure importing from the app/view plane)
+    const circularViolations: string[] = [];
+    const servicesFolder = path.resolve(process.cwd(), "src", "services");
+    const infraFolder = path.resolve(process.cwd(), "src", "infrastructure");
+
+    const scanCircular = (dir: string) => {
+      if (!fs.existsSync(dir)) return;
+      const files = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of files) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          scanCircular(fullPath);
+        } else if (entry.isFile() && /\.(ts|tsx)$/.test(entry.name)) {
+          const content = fs.readFileSync(fullPath, "utf-8");
+          const lines = content.split("\n");
+          lines.forEach((line, idx) => {
+            if (line.includes("from \"@/app/") || line.includes("from \"@/components/") || line.includes("from \"../app/") || line.includes("from \"../components/")) {
+              const relFile = path.relative(process.cwd(), fullPath).replace(/\\/g, "/");
+              circularViolations.push(`${relFile}:${idx + 1} - Circular import: Backend layer imports frontend view: ${line.trim()}`);
+            }
+          });
+        }
+      }
+    };
+
+    scanCircular(servicesFolder);
+    scanCircular(infraFolder);
+
+    results.push({
+      rule: "No circular layer dependencies (backend importing view plane)",
+      passed: circularViolations.length === 0,
+      details: circularViolations.length > 0 ? circularViolations : undefined
+    });
+    violations += circularViolations.length;
+
     return {
       timestamp: new Date().toISOString(),
       violationsFound: violations,

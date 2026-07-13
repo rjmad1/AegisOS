@@ -1,0 +1,565 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  googleSubjectId String   @unique
+  email           String   @unique
+  displayName     String
+  role            String   // "Administrator", "Operator", "Viewer", "Auditor"
+  status          String   // "Enabled", "Disabled"
+  createdDate     String
+  lastLogin       String?
+  createdBy       String
+  permissions     String   // JSON string of permissions
+  allowedNetworks String   // JSON string of IPs
+  notes           String
+  
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+}
+
+model RolePermission {
+  role        String @id // "Administrator", "Operator", "Viewer", "Auditor"
+  permissions String // JSON array of permissions
+}
+
+model Artifact {
+  id                 String   @id @default(uuid())
+  name               String
+  description        String
+  type               String
+  mimeType           String
+  size               Int
+  createdDate        String
+  modifiedDate       String
+  createdBy          String
+  tags               String   // JSON string
+  status             String   // "active", "deleted"
+  location           String
+  previewSupported   Boolean
+  downloadSupported  Boolean
+  deleteSupported    Boolean
+  version            String
+  conversationId     String
+  workflowId         String
+  metadata           String   // JSON string
+  lifecycleState     String
+  storage            String   // JSON string
+  relationships      String   // JSON string
+  preview            String   // JSON string
+  processing         String   // JSON string
+  search             String   // JSON string
+  
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  deletedAt          DateTime?
+}
+
+model Workflow {
+  id            String   @id
+  name          String
+  description   String
+  version       String
+  status        String   // "active", "draft", "deprecated"
+  nodes         String   // JSON string
+  capabilities  String   // JSON string
+  dependencies  String   // JSON string
+  relationships String   // JSON string
+  metadata      String   // JSON string
+  createdAt     String
+  updatedAt     String
+  
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+  
+  deletedAt     DateTime?
+}
+
+model WorkflowTemplate {
+  id          String   @id
+  name        String
+  description String
+  version     String
+  nodes       String   // JSON string
+  metadata    String   // JSON string
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model WorkflowExecution {
+  id              String    @id
+  workflowId      String
+  workflowVersion String
+  workflowName    String
+  conversationId  String?
+  status          String    // "queued", "running", "succeeded", "failed", "cancelled", etc.
+  currentNodeId   String?
+  variables       String    // JSON string
+  checkpointState String    // JSON string
+  createdAt       String
+  startedAt       String?
+  endedAt         String?
+  durationMs      Int?
+  error           String?
+  steps           String    // JSON string
+  logs            String    // JSON string
+  artifacts       String    // JSON string
+  approvals       String    // JSON string
+  retryCount      Int
+  maxRetries      Int
+  metadata        String    // JSON string
+  
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+  
+  deletedAt       DateTime?
+}
+
+model WorkflowSchedule {
+  id              String   @id
+  workflowId      String
+  name            String
+  type            String   // "cron", "one-time", "recurring", "event-based", "manual", "delayed"
+  cronExpression  String?
+  intervalSeconds Int?
+  runAt           String?
+  enabled         Boolean
+  lastRun         String?
+  nextRun         String?
+  retryConfig     String?  // JSON string
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model WorkflowApproval {
+  id                String   @id
+  executionId       String
+  nodeId            String
+  workflowId        String
+  workflowName      String
+  type              String   // "single", "multiple", "quorum"
+  approvers         String   // JSON string
+  quorumPercentage  Int?
+  timeoutSeconds    Int?
+  escalationUser    String?
+  status            String   // "pending", "approved", "rejected", "timed_out", "delegated"
+  decisions         String   // JSON string
+  delegatedTo       String?
+  createdAt         String
+  actionedAt        String?
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model WorkflowHistory {
+  id         String   @id
+  workflowId String
+  changeType String   // "create", "update_definition", "new_version", "deprecate"
+  version    String
+  userId     String
+  userEmail  String
+  details    String
+  timestamp  String
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model AuditLogEntry {
+  id         String   @id
+  timestamp  String
+  userId     String
+  action     String
+  category   String   // "authentication" | "authorization" | "configuration" etc.
+  details    String
+  ipAddress  String
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model AuditEvent {
+  id        String   @id @default(uuid())
+  timestamp String
+  eventType String   // "Login Success", "Login Failure", etc.
+  userId    String?
+  userEmail String?
+  ipAddress String?
+  details   String
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model Config {
+  id                    String   @id @default("active")
+  port                  Int
+  rateLimitMax          Int
+  rateLimitWindowMs     Int
+  sessionTimeoutMinutes Int
+  databasesDir          String
+  artifactsDir          String
+  logsDir               String
+  uploadsDir            String
+  exportsDir            String
+  maintenanceMode       Boolean
+  readOnlyMode          Boolean
+  maintenanceBanner     String
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model ConfigHistory {
+  version   Int      @id
+  timestamp String
+  changedBy String
+  config    String   // JSON string
+  notes     String
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model FeatureFlag {
+  id          String   @id
+  name        String
+  category    String
+  description String
+  enabled     Boolean
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model Secret {
+  key            String   @id
+  encryptedValue String
+  iv             String
+  authTag        String
+  updatedAt      String
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model SchedulerJob {
+  id             String   @id
+  name           String
+  cronExpression String
+  type           String   // 'backup' | 'cleanup' | 'health_check' | 'sync'
+  status         String   // 'idle' | 'running' | 'failed' | 'success'
+  lastRun        String?
+  nextRun        String?
+  enabled        Boolean
+  message        String?
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model Job {
+  id          String   @id
+  name        String
+  payload     String   // JSON string
+  status      String   // "queued", "running", "completed", "failed", etc.
+  priority    String   // "critical", "high", "medium", "low"
+  progress    Int
+  retryPolicy String   // JSON string
+  errors      String   // JSON string
+  createdAt   String
+  startedAt   String?
+  completedAt String?
+  result      String?  // JSON string
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model SecurityState {
+  key   String @id // e.g. "lockout:ip", "ban:ip", etc.
+  value String // JSON data
+}
+
+model JobCheckpoint {
+  id              String   @id @default(uuid())
+  jobId           String
+  stageName       String
+  progress        Int
+  checkpointState String   // JSON string
+  timestamp       String
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+model Session {
+  id         String @id
+  userId     String
+  role       String
+  createdAt  Int
+  lastActive Int
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+}
+
+// ============================================================================
+// Enterprise SaaS Models
+// ============================================================================
+
+model Organization {
+  id            String   @id @default(uuid())
+  name          String
+  slug          String   @unique
+  displayName   String
+  status        String   // "active" | "suspended" | "deleted"
+  tier          String   // "free" | "professional" | "business" | "enterprise" | "custom"
+  domain        String?
+  customDomain  String?
+  logoUrl       String?
+  primaryRegion String
+  settings      String   // JSON string representing OrganizationSettings
+  metadata      String   // JSON string representing custom metadata
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deletedAt     DateTime?
+}
+
+model Tenant {
+  id             String   @id @default(uuid())
+  organizationId String
+  name           String
+  slug           String   @unique
+  displayName    String
+  status         String   // "provisioning" | "active" | "suspended" | "archived" | "deleted"
+  environment    String   // "development" | "staging" | "production" | "testing"
+  region         String
+  isolationLevel String   // "shared" | "dedicated" | "airgapped"
+  tier           String   // "free" | "professional" | "business" | "enterprise" | "custom"
+  settings       String   // JSON string representing TenantSettings
+  resourceQuotas String   // JSON string representing ResourceQuotas
+  metadata       String   // JSON string representing custom metadata
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  suspendedAt    DateTime?
+  archivedAt     DateTime?
+  deletedAt      DateTime?
+}
+
+model Workspace {
+  id             String   @id @default(uuid())
+  tenantId       String
+  organizationId String
+  name           String
+  slug           String
+  description    String
+  status         String   // "active" | "archived" | "deleted"
+  departmentId   String?
+  businessUnitId String?
+  projectId      String?
+  settings       String   // JSON string representing WorkspaceSettings
+  metadata       String   // JSON string representing custom metadata
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  deletedAt      DateTime?
+}
+
+model Department {
+  id             String   @id @default(uuid())
+  tenantId       String
+  organizationId String
+  name           String
+  description    String
+  code           String
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model BusinessUnit {
+  id             String   @id @default(uuid())
+  tenantId       String
+  organizationId String
+  name           String
+  description    String
+  code           String
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model License {
+  id                  String   @id @default(uuid())
+  organizationId      String
+  tenantId            String
+  licenseKey          String   @unique
+  type                String   // "trial" | "subscription" | "enterprise" | "offline" | "usage" | "floating" | "node"
+  tier                String   // "free" | "professional" | "business" | "enterprise" | "custom"
+  status              String   // "active" | "expired" | "suspended" | "revoked" | "pending-activation"
+  seats               Int
+  nodes               Int
+  features            String   // JSON string (array of string feature IDs)
+  usageLimits         String   // JSON string (metric name -> limit)
+  activatedAt         DateTime?
+  expiresAt           DateTime
+  renewalDate         DateTime?
+  offlineCapable      Boolean
+  hardwareFingerprint String?
+  metadata            String   // JSON string representing custom metadata
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Subscription {
+  id                 String   @id @default(uuid())
+  organizationId     String
+  tenantId           String
+  planId             String
+  tier               String   // "free" | "professional" | "business" | "enterprise" | "custom"
+  status             String   // "active" | "trialing" | "past-due" | "cancelled" | "suspended" | "expired"
+  billingCycle       String   // "monthly" | "annual" | "custom"
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  seats              Int
+  additionalSeats    Int
+  addOns             String   // JSON string representing array of SubscriptionAddOn
+  supportPlan        String   // "community" | "basic" | "standard" | "premium" | "dedicated"
+  licenseId          String?
+  trialEndsAt        DateTime?
+  cancelledAt        DateTime?
+  cancelReason       String?
+  metadata           String   // JSON string representing custom metadata
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model UsageRecord {
+  id             String   @id @default(uuid())
+  tenantId       String
+  organizationId String
+  workspaceId    String?
+  userId         String?
+  category       String   // "ai" | "gpu" | "storage" | "api" | "knowledge" | "marketplace" | "workflow" | "compute"
+  metric         String
+  quantity       Float
+  unit           String
+  unitCost       Float
+  totalCost      Float
+  metadata       String   // JSON string representing custom metadata
+  timestamp      DateTime
+}
+
+model Invoice {
+  id                 String   @id @default(uuid())
+  organizationId     String
+  tenantId           String
+  subscriptionId     String
+  invoiceNumber      String   @unique
+  status             String   // "draft" | "issued" | "paid" | "past-due" | "void" | "refunded"
+  periodStart        DateTime
+  periodEnd          DateTime
+  lineItems          String   // JSON string representing array of InvoiceLineItem
+  subtotalCents      Int
+  discountCents      Int
+  creditAppliedCents Int
+  taxCents           Int
+  totalCents         Int
+  currency           String
+  dueDate            DateTime
+  paidAt             DateTime?
+  metadata           String   // JSON string representing custom metadata
+  
+  createdAt          DateTime @default(now())
+}
+
+model GovernancePolicy {
+  id               String   @id @default(uuid())
+  organizationId   String
+  tenantId         String?
+  name             String
+  type             String   // "authentication" | "authorization" | "network" | "data-classification" | etc.
+  enabled          Boolean
+  configuration    String   // JSON string representing policy configuration
+  enforcementLevel String   // "advisory" | "enforced" | "strict"
+  createdBy        String
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model WhiteLabelConfig {
+  id                         String   @id @default(uuid())
+  tenantId                   String   @unique
+  organizationId             String
+  primaryColor               String
+  secondaryColor             String
+  accentColor                String
+  backgroundColor            String
+  surfaceColor               String
+  textColor                  String
+  fontFamily                 String
+  headingFontFamily          String
+  theme                      String
+  customCss                  String?
+  customDomain               String?
+  customDomainVerified       Boolean
+  customDomainCertificateId  String?
+  navigationItems            String   // JSON string representing array of NavigationItem
+  hideDefaultBranding        Boolean
+  emailFromName              String
+  emailFromAddress           String?
+  emailTemplateOverrides     String   // JSON string representing overrides
+  helpCenterUrl              String?
+  supportEmail               String?
+  termsUrl                   String?
+  privacyUrl                 String?
+  loginPageTitle             String
+  loginPageSubtitle          String
+  loginPageBackgroundUrl     String?
+  ssoButtonLabel             String
+  marketplaceName            String
+  marketplaceLogoUrl         String?
+  
+  updatedAt                  DateTime @updatedAt
+}

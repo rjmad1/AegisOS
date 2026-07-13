@@ -1,6 +1,9 @@
+// src/app/api/v1/auth/login/route.ts
+// Secure login route utilizing persistent DB Lockout management and strict credential verification
+
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { loginLockoutMap } from "@/proxy";
+import LockoutManager from "@/infrastructure/security/lockout-manager";
 
 function signToken(payload: any, secret: string): string {
   const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
@@ -18,14 +21,26 @@ export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
 
-    const expectedUsername = process.env.OPS_ADMIN_USERNAME || "admin";
-    const expectedPassword = process.env.OPS_ADMIN_PASSWORD || "AdminPassword123!";
-    const secret = process.env.OPS_JWT_SECRET || "super-secret-random-hash-key-for-console-jwt-signing-2026";
+    const expectedUsername = process.env.OPS_ADMIN_USERNAME;
+    const expectedPassword = process.env.OPS_ADMIN_PASSWORD;
+    const jwtSecret = process.env.AUTH_SECRET || process.env.OPS_JWT_SECRET;
+
+    // Fail startup/runtime if admin configurations are default or insecure
+    if (!expectedUsername || expectedUsername === "admin") {
+      throw new Error("FATAL: OPS_ADMIN_USERNAME is missing or insecure! Customize credentials in .env.");
+    }
+    if (!expectedPassword || expectedPassword === "AdminPassword123!") {
+      throw new Error("FATAL: OPS_ADMIN_PASSWORD is missing or insecure! Customize credentials in .env.");
+    }
+    if (!jwtSecret || jwtSecret === "super-secret-random-hash-key-for-console-jwt-signing-2026" || jwtSecret === "fallback_secret_must_change_in_production_extremely_long") {
+      throw new Error("FATAL: AUTH_SECRET / OPS_JWT_SECRET is missing or matches default fallback!");
+    }
+
     const sessionMinutes = parseInt(process.env.OPS_SESSION_TIMEOUT_MINUTES || "480", 10);
 
-    // 1. Verify brute-force lockout status first
+    // 1. Verify brute-force lockout status from SQLite
     const now = Date.now();
-    const lockout = loginLockoutMap.get(ip);
+    const lockout = await LockoutManager.getLockout(ip);
     if (lockout && now < lockout.lockUntil) {
       const waitSeconds = Math.ceil((lockout.lockUntil - now) / 1000);
       return NextResponse.json(
@@ -35,8 +50,8 @@ export async function POST(request: Request) {
     }
 
     if (username === expectedUsername && password === expectedPassword) {
-      // Clear lockout count on success
-      loginLockoutMap.delete(ip);
+      // Clear lockout attempts on success
+      await LockoutManager.clearLockout(ip);
 
       const mockUser = {
         id: "usr-admin-01",
@@ -46,14 +61,14 @@ export async function POST(request: Request) {
       };
 
       const expires = Date.now() + sessionMinutes * 60 * 1000;
-      const token = signToken({ username, role: "admin", expires }, secret);
+      const token = signToken({ username, role: "admin", expires }, jwtSecret);
 
       const response = NextResponse.json({
         user: mockUser,
         token,
       });
 
-      // Set Secure, HttpOnly cookie with Strict SameSite enforcement
+      // Set Secure, HttpOnly cookie with SameSite: strict
       response.cookies.set({
         name: "ops_auth_token",
         value: token,
@@ -67,22 +82,20 @@ export async function POST(request: Request) {
       return response;
     }
 
-    // 2. Increment failed login attempts count for IP
-    const currentLockout = lockout || { attempts: 0, lockUntil: 0 };
-    currentLockout.attempts++;
-    if (currentLockout.attempts >= 5) {
-      currentLockout.lockUntil = now + 15 * 60 * 1000; // 15 minutes lockout
+    // 2. Increment failed login attempts count for IP in SQLite
+    const updatedLockout = await LockoutManager.incrementLockout(ip);
+    if (updatedLockout.attempts >= 5) {
       console.warn(`[Proxy Security] IP ${ip} has been locked out due to brute force attempts.`);
     }
-    loginLockoutMap.set(ip, currentLockout);
 
     return NextResponse.json(
       { code: "UNAUTHORIZED", message: "Invalid username or password" },
       { status: 401 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    console.error("[Login API Error]", error);
     return NextResponse.json(
-      { code: "BAD_REQUEST", message: "Invalid request payload" },
+      { code: "BAD_REQUEST", message: error?.message || "Invalid request payload" },
       { status: 400 }
     );
   }

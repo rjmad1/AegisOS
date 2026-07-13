@@ -406,16 +406,15 @@ export class RuntimeService {
       try {
         const rows = db.prepare("SELECT * FROM task_runs ORDER BY created_at DESC").all();
         for (const r of rows) {
-          // Compute duration
           const durationMs = r.ended_at && r.started_at ? r.ended_at - r.started_at : undefined;
           
           executions.push({
             id: r.task_id,
             conversationId: `execution-${r.task_id}`,
-            workflowId: r.runtime === "workflow" ? "audit" : undefined, // Map to a workflow if matched
+            workflowId: r.runtime === "workflow" ? "audit" : undefined,
             agentId: r.agent_id,
             task: r.task || "",
-            status: r.status as any, // succeeded, failed, running, queued, cancelled
+            status: r.status as any,
             createdAt: new Date(r.created_at).toISOString(),
             startedAt: r.started_at ? new Date(r.started_at).toISOString() : undefined,
             endedAt: r.ended_at ? new Date(r.ended_at).toISOString() : undefined,
@@ -428,6 +427,31 @@ export class RuntimeService {
       } catch (err) {
         console.error("Failed to query executions:", err);
       }
+    }
+
+    // Merge Workflow Executions from JSON DB
+    try {
+      const { workflowRepository } = require("../repositories/workflow.repository");
+      const wfExecs = await workflowRepository.getExecutions();
+      for (const r of wfExecs) {
+        executions.push({
+          id: r.id,
+          conversationId: r.conversationId || `wf-exec-${r.id}`,
+          workflowId: r.workflowId,
+          agentId: "workflows",
+          task: `Workflow Pipeline: ${r.workflowName}`,
+          status: r.status === "succeeded" ? "succeeded" : r.status === "failed" ? "failed" : r.status === "running" ? "running" : r.status === "queued" ? "queued" : "running",
+          createdAt: r.createdAt,
+          startedAt: r.startedAt,
+          endedAt: r.endedAt,
+          durationMs: r.durationMs,
+          error: r.error,
+          retryCount: r.retryCount,
+          metadata: r.metadata
+        });
+      }
+    } catch (e) {
+      console.error("[RuntimeService] Failed to load workflow executions:", e);
     }
 
     // Apply Filter & Search
@@ -449,6 +473,9 @@ export class RuntimeService {
       filtered = filtered.filter(e => e.workflowId === workflowFilter);
     }
 
+    // Sort by createdAt descending
+    filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
     const total = filtered.length;
     const startIndex = (page - 1) * limit;
     const paginated = filtered.slice(startIndex, startIndex + limit);
@@ -460,6 +487,42 @@ export class RuntimeService {
   }
 
   public async getExecution(id: string): Promise<Execution | null> {
+    if (id.startsWith("exec-")) {
+      try {
+        const { workflowRepository } = require("../repositories/workflow.repository");
+        const r = await workflowRepository.getExecution(id);
+        if (!r) return null;
+
+        return {
+          id: r.id,
+          conversationId: r.conversationId || `wf-exec-${r.id}`,
+          workflowId: r.workflowId,
+          agentId: "workflows",
+          task: `Workflow Pipeline: ${r.workflowName}`,
+          status: r.status === "succeeded" ? "succeeded" : r.status === "failed" ? "failed" : r.status === "running" ? "running" : r.status === "queued" ? "queued" : "running",
+          createdAt: r.createdAt,
+          startedAt: r.startedAt,
+          endedAt: r.endedAt,
+          durationMs: r.durationMs,
+          error: r.error,
+          retryCount: r.retryCount,
+          steps: r.steps.map((s: any) => ({
+            id: s.id,
+            executionId: s.executionId,
+            name: s.name,
+            status: s.status === "completed" ? "completed" : s.status === "failed" ? "failed" : "running",
+            timestamp: s.startedAt || r.createdAt,
+            durationMs: s.durationMs,
+            message: s.error || (s.output ? `Output: ${JSON.stringify(s.output)}` : `Step ${s.name} executed successfully.`)
+          })),
+          metadata: r.metadata
+        };
+      } catch (err) {
+        console.error("Failed to query workflow execution detail:", err);
+        return null;
+      }
+    }
+
     const db = this.getDbConnection();
     if (!db) return null;
 
@@ -519,11 +582,9 @@ export class RuntimeService {
 
       // Detect tools used from terminal summary or error message
       const toolsUsed: string[] = [];
-      if (r.terminal_summary && r.terminal_summary.includes("tools")) {
-        toolsUsed.push("filesystem", "git");
-      }
-      if (r.error && r.error.includes("browser")) {
-        toolsUsed.push("browser");
+      if (r.terminal_summary && r.terminal_summary.includes("Executed tool")) {
+        const match = r.terminal_summary.match(/Executed tool (\w+)/);
+        if (match) toolsUsed.push(match[1]);
       }
 
       return {
@@ -533,7 +594,7 @@ export class RuntimeService {
         agentId: r.agent_id,
         task: r.task || "",
         status: r.status as any,
-        createdAt: createTime,
+        createdAt: new Date(r.created_at).toISOString(),
         startedAt: r.started_at ? new Date(r.started_at).toISOString() : undefined,
         endedAt: r.ended_at ? new Date(r.ended_at).toISOString() : undefined,
         durationMs,
@@ -560,76 +621,42 @@ export class RuntimeService {
     const limit = options.limit || 10;
     const search = options.search?.toLowerCase() || "";
 
-    const workflows: Workflow[] = [
-      {
-        id: "audit-workflow",
-        name: "Workspace Audit Pipeline",
-        description: "Scans repository directories for over-engineering and compliance check logs",
-        version: "1.2.0",
-        status: "active",
-        capabilities: ["file-analysis", "code-compliance"],
-        dependencies: ["reviewer", "developer"],
-        relationships: [
-          { targetId: "reviewer", type: "agent", description: "Performs audit code validation checks" },
-          { targetId: "audit-agent", type: "workspace", description: "Runs directory check operations" }
-        ],
-        executionHistory: [],
-        metadata: { folder: "D:/OpenClaw/Workspace/audit-agent" }
-      },
-      {
-        id: "development-workflow",
-        name: "Interactive Code Developer",
-        description: "Orchestrates direct code modifications, compilation checks, and Git commits",
-        version: "2.1.0",
-        status: "active",
-        capabilities: ["code-writing", "git-ops", "npx-execution"],
-        dependencies: ["developer", "reviewer"],
-        relationships: [
-          { targetId: "developer", type: "agent", description: "Responsible for modifying source files" }
-        ],
-        executionHistory: [],
-        metadata: { folder: "D:/OpenClaw/Workspace/developer" }
-      },
-      {
-        id: "reviewer-workflow",
-        name: "Security & Quality Reviewer",
-        description: "Validates security policies, credentials leak checks, and WMI hardware telemetry audits",
-        version: "1.0.4",
-        status: "active",
-        capabilities: ["security-scans", "performance-audits"],
-        dependencies: ["reviewer"],
-        relationships: [
-          { targetId: "reviewer", type: "agent", description: "Runs static reviews and leaks check audits" }
-        ],
-        executionHistory: [],
-        metadata: { folder: "D:/OpenClaw/Workspace/reviewer" }
-      }
-    ];
-
-    // Compute execution history from DB
-    const db = this.getDbConnection();
-    if (db) {
-      try {
-        const rows = db.prepare("SELECT * FROM task_runs LIMIT 50").all();
-        for (const w of workflows) {
-          const runs = rows.filter((r: any) => {
-            if (w.id === "audit-workflow" && r.agent_id === "audit-agent") return true;
-            if (w.id === "development-workflow" && r.agent_id === "developer") return true;
-            if (w.id === "reviewer-workflow" && r.agent_id === "reviewer") return true;
-            return false;
-          });
-
-          w.executionHistory = runs.map((r: any) => ({
-            id: r.task_id,
-            status: r.status,
-            date: new Date(r.created_at).toISOString(),
-            durationMs: r.ended_at && r.started_at ? r.ended_at - r.started_at : 0
-          }));
-        }
-      } catch (e) {}
+    let dbWorkflows: any[] = [];
+    try {
+      const { workflowRepository } = require("../repositories/workflow.repository");
+      dbWorkflows = await workflowRepository.getWorkflows();
+    } catch (err) {
+      console.error("[RuntimeService] Failed to load workflows from repository:", err);
     }
 
-    let filtered = workflows;
+    let filtered = dbWorkflows.map((w: any) => ({
+      id: w.id,
+      name: w.name,
+      description: w.description,
+      version: w.version,
+      status: w.status,
+      capabilities: w.capabilities,
+      dependencies: w.dependencies,
+      relationships: w.relationships,
+      executionHistory: [],
+      metadata: w.metadata
+    }));
+
+    // Compute execution history from JSON DB
+    try {
+      const { workflowRepository } = require("../repositories/workflow.repository");
+      const runs = await workflowRepository.getExecutions();
+      for (const w of filtered) {
+        const matchingRuns = runs.filter((r: any) => r.workflowId === w.id);
+        w.executionHistory = matchingRuns.map((r: any) => ({
+          id: r.id,
+          status: r.status === "succeeded" ? "succeeded" : r.status === "failed" ? "failed" : "running",
+          date: r.startedAt || r.createdAt,
+          durationMs: r.durationMs || 0
+        }));
+      }
+    } catch (e) {}
+
     if (search) {
       filtered = filtered.filter(w => 
         w.name.toLowerCase().includes(search) || 
