@@ -2,10 +2,26 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  serverExternalPackages: ["node:sqlite", "node-vault", "@aws-sdk/client-secrets-manager", "@google-cloud/secret-manager", "@azure/keyvault-secrets", "@azure/identity"],
+  serverExternalPackages: [
+    "node:sqlite",
+    "node-vault",
+    "@aws-sdk/client-secrets-manager",
+    "@google-cloud/secret-manager",
+    "@azure/keyvault-secrets",
+    "@azure/identity",
+    "@aws-sdk/client-s3",
+    "@google-cloud/storage",
+    "@azure/storage-blob"
+  ],
   webpack: (config, { isServer }) => {
     if (isServer) {
-      config.externals = [...(config.externals || []), "node:sqlite"];
+      config.externals = [
+        ...(config.externals || []),
+        "node:sqlite",
+        "@aws-sdk/client-s3",
+        "@google-cloud/storage",
+        "@azure/storage-blob"
+      ];
     } else {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -23,6 +39,9 @@ const nextConfig: NextConfig = {
         '@google-cloud/secret-manager': false,
         '@azure/keyvault-secrets': false,
         '@azure/identity': false,
+        '@aws-sdk/client-s3': false,
+        '@google-cloud/storage': false,
+        '@azure/storage-blob': false,
       };
     }
     return config;
