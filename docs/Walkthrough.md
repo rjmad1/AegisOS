@@ -319,3 +319,53 @@ All routes return canonical models and are located under:
    - Restart the Next.js server while a workflow is sleeping or executing.
    - **Expected Result**: On server boot, the lifecycle hook recovers the execution state and resumes.
 
+---
+
+## 7. Phase 12 Walkthrough: Command & Control Subsystem (C2)
+
+We implemented a secure, audited, and policy-driven Command & Control (C2) subsystem to govern all workstation mutations requested from external pathways (such as the mobile companion app).
+
+### C2 Architecture
+The C2 engine consists of:
+- **Command Bus (`CommandBus`)**: The central entry point. Validates cryptographic signatures, verifies replay nonces, checks active policies, and dispatches commands to handlers.
+- **Execution Engine (`ExecutionEngine`)**: Runs commands in a prioritized worker pool. Runs high-priority system actions ahead of background tasks.
+- **Approval Engine (`ApprovalEngine`)**: Manages human-in-the-loop (HITL) approval steps. Halts execution, generates signing requests, and verifies signed approval tokens before resuming.
+- **Rollback Engine (`RollbackEngine`)**: Reverts mutated state when operations fail or are explicitly cancelled, executing compensating actions.
+- **Command Handlers**:
+  - `AiRuntimeHandler`: Reloads LLMs, modifies temperature, cleans prompts.
+  - `AgentHandler`: Manages agent registration, allowed tool bounds.
+  - `InfrastructureHandler`: Reboots background daemons (Ollama, LiteLLM, VPN) via SCM.
+  - `SystemHandler`: System shutdown, volume mounting, system resources controls.
+  - `WorkflowHandler`: Triggers pipelines and controls schedules.
+
+### Security & Integrity Controls
+1. **ECDSA Signature Verification**: Public keys are exchanged during QR pairing. Commands must be signed using the client's private key. The Command Bus verifies this before dispatching.
+2. **Replay Attack Mitigation**: Enforces a strict 5-minute clock skew window and checks database-logged transaction nonces.
+3. **Compensating Actions**: Handlers define rollback payloads (e.g., if a model configuration update fails, the previous `ModelManifest.json` is restored).
+
+---
+
+## 8. Phase 13 Walkthrough: Mobile Application & Platform Integration
+
+We developed a Flutter-based Mobile Companion App (`aegis_mobile`) and corresponding backend integration endpoints to provide executive monitoring, command center interface, and remote approval control.
+
+### Mobile Client Architecture
+The mobile application is a lightweight, local-first client built using Flutter:
+- **SQLCipher Cache**: Local encrypted caching of workstation state (models list, active agents, past approvals).
+- **Secure Enclave / Android KeyStore**: Generates and stores the client's private ECDSA signing key.
+- **WebSocket Sync**: Connects to `WebSocketServer` on port `18789` for live GPU, CPU, RAM metrics, and agent activity logs.
+
+### Backend Mobile Endpoints (`/api/v1/mobile`)
+- `/auth/pair`: Handles initial QR pairing, credential negotiation, and client key storage.
+- `/auth/session`: Validates current mobile sessions.
+- `/commands`: Submits cryptographically-signed commands and queries execution queues.
+- `/commands/[id]/approve`: Approves high-risk actions.
+- `/commands/[id]/reject`: Rejects actions and returns replanning parameters.
+- `/assistant/chat`: Streams conversation requests to LiteLLM/Ollama.
+- `/assistant/execute`: Submits raw execution queries.
+- `/infrastructure/*`: Exposes status, metrics, Docker, and agent lists.
+
+### Voice Feedback Subsystem
+- **Voice Feedback Button (`VoiceFeedbackButton`)**: A reactive, dark-themed UI component integrated into the console sidebar that supports direct microphone recording using the browser's MediaRecorder API.
+- **Upload API (`/api/v1/feedback/voice`)**: Receives recorded `.webm` feedback payloads and writes them to the secure storage root.
+- **Download API (`/api/v1/feedback/voice/download`)**: Handles playback and analysis pipelines.

@@ -2,6 +2,15 @@
 
 All notable changes to the AI Workstation platform will be documented in this file.
 
+## [1.2.0] - 2026-07-14
+### Added
+- Implemented Command & Control (C2) subsystem supporting ECDSA signature verification, replay protection, dynamic risk-based policies, and compensating actions (rollbacks).
+- Developed Flutter-based Mobile Companion App (`aegis_mobile`) for remote executive monitoring and Human-in-the-Loop (HITL) approval gates.
+- Added WebSocket-based real-time telemetry syncing.
+- Integrated Voice Feedback subsystem in the Console sidebar with REST API upload and secure download endpoints.
+### Changed
+- Rebranded console interfaces and API routes from "OpenClaw" to "AegisOS".
+
 ## [1.1.0] - 2026-07-11
 ### Added
 - Implemented robust security hardening: true JWT signing, HttpOnly cookies, brute-force lockout, CSRF protection, rate limiting, and security headers via proxy middleware.
