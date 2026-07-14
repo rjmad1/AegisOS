@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUser } from "../route";
+import { getAuthenticatedUser } from "../../route";
 import { rollbackEngine } from "@/platform/control/RollbackEngine";
 
 export async function POST(

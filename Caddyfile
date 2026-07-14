@@ -8,6 +8,17 @@
 
 # HTTPS service endpoint on port 8443 (abstracts transport layer, supports LAN, WAN, Custom Domain)
 localhost:8443 {
+	# Enforce TLS 1.3 only
+	tls {
+		protocols tls1.3
+	}
+
+	# Serve static APK/IPA release downloads directly from the releases folder
+	handle /downloads/* {
+		root * D:\AI-Operations\releases
+		file_server
+	}
+
 	# Reverse proxy to the local Next.js Operations Console (internal port 3000)
 	reverse_proxy localhost:3000 {
 		# Preserve client details and support Server-Sent Events (SSE) & WebSockets

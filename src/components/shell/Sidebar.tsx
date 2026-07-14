@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, Cpu } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Cpu } from "lucide-react";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useAppStore } from "@/store/appStore";
 import { cn } from "@/utils/cn";
@@ -15,6 +15,28 @@ export const Sidebar: React.FC = () => {
   const { getNavigationGroups } = useNavigation();
 
   const groups = getNavigationGroups();
+
+  const [collapsedGroups, setCollapsedGroups] = React.useState<Record<string, boolean>>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("sidebar:collapsed-groups");
+        return saved ? JSON.parse(saved) : {};
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  });
+
+  const toggleGroup = (groupId: string) => {
+    setCollapsedGroups((prev) => {
+      const next = { ...prev, [groupId]: !prev[groupId] };
+      if (typeof window !== "undefined") {
+        localStorage.setItem("sidebar:collapsed-groups", JSON.stringify(next));
+      }
+      return next;
+    });
+  };
 
   return (
     <aside
@@ -37,61 +59,74 @@ export const Sidebar: React.FC = () => {
 
       {/* Navigation Groups */}
       <div className="flex-1 space-y-4 p-2 overflow-y-auto custom-scrollbar">
-        {groups.map((group) => (
-          <div key={group.id} className="space-y-1">
-            {!sidebarCollapsed && (
-              <h4 className="px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-left">
-                {group.label}
-              </h4>
-            )}
-            <div className="space-y-0.5">
-              {group.items.map((item) => {
-                if (item.hidden) return null;
-                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-                const Icon = item.icon;
-                
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => router.push(item.href)}
-                    className={cn(
-                      "flex w-full items-center rounded-lg p-2.5 text-sm font-semibold transition-all relative group text-left",
-                      isActive
-                        ? "text-primary bg-primary/10 border border-primary/20 shadow-sm"
-                        : "text-muted-foreground hover:bg-accent/40 hover:text-foreground border border-transparent"
-                    )}
-                  >
-                    {Icon && (
-                      <div className="flex-shrink-0">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                    )}
-                    {!sidebarCollapsed && (
-                      <span className="ml-3 truncate">{item.label}</span>
-                    )}
-                    {item.badge !== undefined && item.badge !== null && item.badge !== "" && !sidebarCollapsed && (
-                      <Badge variant="secondary" className="ml-auto text-[9px] font-extrabold px-1.5 py-0">
-                        {item.badge}
-                      </Badge>
-                    )}
+        {groups.map((group) => {
+          const isCollapsed = !sidebarCollapsed && !!collapsedGroups[group.id];
+          return (
+            <div key={group.id} className="space-y-1">
+              {!sidebarCollapsed && (
+                <button
+                  onClick={() => toggleGroup(group.id)}
+                  className="flex w-full items-center justify-between px-3 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors group text-left"
+                >
+                  <span>{group.label}</span>
+                  {isCollapsed ? (
+                    <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+                  ) : (
+                    <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+                  )}
+                </button>
+              )}
+              {!isCollapsed && (
+                <div className="space-y-0.5">
+                  {group.items.map((item) => {
+                    if (item.hidden) return null;
+                    const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                    const Icon = item.icon;
                     
-                    {/* Collapsed Tooltip */}
-                    {sidebarCollapsed && (
-                      <div className="absolute left-16 z-30 hidden rounded-md bg-popover border border-border px-2.5 py-1.5 text-xs text-popover-foreground shadow-lg group-hover:block whitespace-nowrap">
-                        {item.label}
-                      </div>
-                    )}
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => router.push(item.href)}
+                        className={cn(
+                          "flex w-full items-center rounded-lg p-2.5 text-sm font-semibold transition-all relative group text-left",
+                          isActive
+                            ? "text-primary bg-primary/10 border border-primary/20 shadow-sm"
+                            : "text-muted-foreground hover:bg-accent/40 hover:text-foreground border border-transparent"
+                        )}
+                      >
+                        {Icon && (
+                          <div className="flex-shrink-0">
+                            <Icon className="h-5 w-5" />
+                          </div>
+                        )}
+                        {!sidebarCollapsed && (
+                          <span className="ml-3 truncate">{item.label}</span>
+                        )}
+                        {item.badge !== undefined && item.badge !== null && item.badge !== "" && !sidebarCollapsed && (
+                          <Badge variant="secondary" className="ml-auto text-[9px] font-extrabold px-1.5 py-0">
+                            {item.badge}
+                          </Badge>
+                        )}
+                        
+                        {/* Collapsed Tooltip */}
+                        {sidebarCollapsed && (
+                          <div className="absolute left-16 z-30 hidden rounded-md bg-popover border border-border px-2.5 py-1.5 text-xs text-popover-foreground shadow-lg group-hover:block whitespace-nowrap">
+                            {item.label}
+                          </div>
+                        )}
 
-                    {/* Active dot indicator */}
-                    {isActive && !sidebarCollapsed && (
-                      <div className="absolute right-2.5 h-1.5 w-1.5 rounded-full bg-primary" />
-                    )}
-                  </button>
-                );
-              })}
+                        {/* Active dot indicator */}
+                        {isActive && !sidebarCollapsed && (
+                          <div className="absolute right-2.5 h-1.5 w-1.5 rounded-full bg-primary" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Collapse/Expand Sidebar Toggle */}

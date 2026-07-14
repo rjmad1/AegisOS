@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUser } from "../route";
+import { getAuthenticatedUser } from "../../route";
 import { approvalEngine } from "@/platform/control/ApprovalEngine";
 import { executionEngine } from "@/platform/control/ExecutionEngine";
 import { auditEngine } from "@/platform/control/AuditEngine";

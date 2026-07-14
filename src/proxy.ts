@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 import { telemetryTracker } from "@/infrastructure/observability/telemetry";
 import { metricsPlatform } from "@/infrastructure/observability/metrics-platform";
+import redisPlatform from "@/infrastructure/providers/redis-platform";
 
 const authSecret = process.env.AUTH_SECRET;
 
@@ -20,8 +21,6 @@ if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
 
 const key = new TextEncoder().encode(authSecret);
 
-// In-memory rate limiting map: IP -> { count, resetTime }
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_MAX = parseInt(process.env.OPS_RATE_LIMIT_MAX || "150", 10);
 const RATE_LIMIT_WINDOW = parseInt(process.env.OPS_RATE_LIMIT_WINDOW_MS || "60000", 10);
 
@@ -166,26 +165,8 @@ async function executeProxySecurityAndRouting(request: NextRequest): Promise<Nex
     pathname === "/unauthorized";
 
   // 1. Rate Limiting Check
-  if (Math.random() < 0.05) {
-    const nowTime = Date.now();
-    if (rateLimitMap.size > 1000) {
-      for (const [k, v] of rateLimitMap.entries()) {
-        if (nowTime > v.resetTime) {
-          rateLimitMap.delete(k);
-        }
-      }
-    }
-  }
-
-  const now = Date.now();
-  let limitData = rateLimitMap.get(ip);
-  if (!limitData || now > limitData.resetTime) {
-    limitData = { count: 0, resetTime: now + RATE_LIMIT_WINDOW };
-  }
-  limitData.count++;
-  rateLimitMap.set(ip, limitData);
-
-  if (limitData.count > RATE_LIMIT_MAX) {
+  const rateLimitResult = await redisPlatform.rateLimit.checkRateLimit(`ip:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW);
+  if (!rateLimitResult.allowed) {
     return new NextResponse(
       JSON.stringify({ error: "Too many requests. Please slow down." }),
       { status: 429, headers: { "Content-Type": "application/json" } }

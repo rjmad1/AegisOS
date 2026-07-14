@@ -109,6 +109,25 @@ class _QrScannerPageState extends ConsumerState<QrScannerPage> {
     }
   }
 
+  Widget _buildDiagnosticItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.check_box_outline_blank, size: 14, color: Colors.grey),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -171,14 +190,69 @@ class _QrScannerPageState extends ConsumerState<QrScannerPage> {
                 ),
               ),
               
-              const SizedBox(height: 24),
-              if (_errorMessage != null)
-                Text(
-                  _errorMessage!,
-                  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 16),
+                Card(
+                  color: Colors.red.withOpacity(0.08),
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Colors.red, width: 1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.error_outline, color: Colors.red, size: 24),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Connection & Pairing Issue',
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _errorMessage!,
+                          style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                        const Divider(height: 24, color: Colors.grey),
+                        const Text(
+                          'Troubleshooting Checklist:',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        const SizedBox(height: 6),
+                        _buildDiagnosticItem('Are both devices on the same Wi-Fi subnet?'),
+                        _buildDiagnosticItem('Is your Tailscale/VPN interface active?'),
+                        _buildDiagnosticItem('Is the workstation console running on port 3000?'),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: () => context.go('/manual'),
+                          icon: const Icon(Icons.edit, size: 16),
+                          label: const Text('Switch to Manual IP Pairing'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: theme.primaryColor,
+                            elevation: 0,
+                            side: BorderSide(color: theme.primaryColor),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 16),
+              ] else ...[
+                const SizedBox(height: 24),
+              ],
               
               // Simulation Panel (Headless/CI testing)
               Card(

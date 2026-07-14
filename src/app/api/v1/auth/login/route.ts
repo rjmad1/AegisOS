@@ -5,6 +5,9 @@ import { NextResponse } from "next/server";
 import { SignJWT } from "jose";
 import LockoutManager from "@/infrastructure/security/lockout-manager";
 
+import { comparePassword } from "@/platform/auth/hashing";
+import prisma from "@/infrastructure/db/prisma";
+
 // Blocklist of known-insecure default values that must never be accepted
 const INSECURE_USERNAMES = new Set(["admin", "administrator", "root", ""]);
 const INSECURE_PASSWORDS = new Set(["AdminPassword123!", "password", "admin", ""]);
@@ -49,7 +52,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (username === expectedUsername && password === expectedPassword) {
+    const isPasswordCorrect = await comparePassword(password, expectedPassword);
+
+    if (username === expectedUsername && isPasswordCorrect) {
       // Clear lockout attempts on success
       await LockoutManager.clearLockout(ip);
 
@@ -82,6 +87,18 @@ export async function POST(request: Request) {
         maxAge: sessionMinutes * 60,
       });
 
+      // Audit Log on successful login
+      await prisma.auditEvent.create({
+        data: {
+          eventType: "Login Success",
+          userId: mockUser.id,
+          userEmail: mockUser.email,
+          ipAddress: ip,
+          details: `User ${username} logged in successfully from IP ${ip}`,
+          timestamp: new Date().toISOString(),
+        },
+      });
+
       return response;
     }
 
@@ -90,6 +107,18 @@ export async function POST(request: Request) {
     if (updatedLockout.attempts >= 5) {
       console.warn(`[Proxy Security] IP ${ip} has been locked out due to brute force attempts.`);
     }
+
+    // Audit Log on failed login
+    await prisma.auditEvent.create({
+      data: {
+        eventType: "Login Failure",
+        userId: "system",
+        userEmail: "unknown@aegis-os.local",
+        ipAddress: ip,
+        details: `Failed login attempt for username '${username}' from IP ${ip}`,
+        timestamp: new Date().toISOString(),
+      },
+    });
 
     return NextResponse.json(
       { code: "UNAUTHORIZED", message: "Invalid username or password" },

@@ -22,7 +22,12 @@ export type ProviderType =
   | "database-provider"
   | "service-provider"
   | "power-provider"
-  | "environment-provider";
+  | "environment-provider"
+  | "workspace-provider"
+  | "execution-provider"
+  | "executor-provider"
+  | "execution-stream-provider"
+  | "merge-provider";
 
 export interface IInfrastructureProvider {
   id: string;

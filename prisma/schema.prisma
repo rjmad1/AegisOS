@@ -678,4 +678,16 @@ model Message {
   createdAt      DateTime      @default(now())
 }
 
+model FeedbackTicket {
+  id                   String   @id @default(uuid())
+  timestamp            DateTime @default(now())
+  reportType           String   // "BUG", "FEATURE", "GENERAL"
+  userEmail            String
+  appVersion           String
+  devicePlatform       String   // "web", "android", "ios"
+  audioLocation        String   // Path to file on disk
+  emailNotificationSent Boolean  @default(false)
+}
+
+
 

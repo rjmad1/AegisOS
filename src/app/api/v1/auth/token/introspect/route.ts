@@ -96,6 +96,16 @@ export async function POST(request: Request) {
       // 4. Role Permissions evaluation
       // Map display roles to permission arrays
       const rolePermissionsMap: Record<string, string[]> = {
+        "Super Admin": ["ViewArtifacts", "DownloadArtifacts", "ViewRuntime", "ViewInfrastructure", "ViewKnowledge", "ViewModels", "ViewConversations", "ViewLogs", "ViewSettings", "ViewHealth", "ViewProviders", "Administration"],
+        "Admin": ["ViewArtifacts", "DownloadArtifacts", "ViewRuntime", "ViewInfrastructure", "ViewKnowledge", "ViewModels", "ViewConversations", "ViewLogs", "ViewSettings", "ViewHealth", "ViewProviders", "Administration"],
+        "Manager": ["ViewArtifacts", "DownloadArtifacts", "ViewRuntime", "ViewInfrastructure", "ViewKnowledge", "ViewModels", "ViewConversations", "ViewLogs", "ViewSettings", "ViewHealth", "ViewProviders"],
+        "Developer": ["ViewArtifacts", "ViewRuntime", "ViewInfrastructure", "ViewKnowledge", "ViewModels", "ViewConversations", "ViewLogs", "ViewHealth"],
+        "Tester": ["ViewRuntime", "ViewInfrastructure", "ViewModels", "ViewHealth", "ViewProviders"],
+        "Support": ["ViewHealth", "ViewLogs", "ViewSettings", "ViewProviders"],
+        "Standard User": ["ViewArtifacts", "ViewConversations", "ViewModels"],
+        "Read Only": ["ViewHealth", "ViewRuntime"],
+
+        // Compatibility aliases
         "Administrator": ["ViewArtifacts", "DownloadArtifacts", "ViewRuntime", "ViewInfrastructure", "ViewKnowledge", "ViewModels", "ViewConversations", "ViewLogs", "ViewSettings", "ViewHealth", "ViewProviders", "Administration"],
         "Operator": ["ViewArtifacts", "DownloadArtifacts", "ViewRuntime", "ViewInfrastructure", "ViewKnowledge", "ViewModels", "ViewConversations", "ViewLogs", "ViewSettings", "ViewHealth", "ViewProviders"],
         "Viewer": ["ViewArtifacts", "ViewRuntime", "ViewInfrastructure", "ViewKnowledge", "ViewModels", "ViewConversations", "ViewLogs", "ViewSettings", "ViewHealth", "ViewProviders"],

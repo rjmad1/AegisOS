@@ -65,6 +65,37 @@ try {
         Copy-Item -Path (Join-Path $databasesDir "*") -Destination $dbDest -Recurse -Force
     }
 
+    # 4.5 PostgreSQL Schema & Data Backup
+    $dbUrl = $env:DATABASE_URL
+    if ($dbUrl -and $dbUrl.StartsWith("postgresql://")) {
+        Log-PlatformInfo "Detecting PostgreSQL database. Preparing pg_dump..."
+        try {
+            if ($dbUrl -match "postgresql://([^:]+):([^@]+)@([^:/]+):?(\d+)?/(.+)") {
+                $pgUser = $Matches[1]
+                $pgPass = $Matches[2]
+                $pgHost = $Matches[3]
+                $pgPort = if ($Matches[4]) { $Matches[4] } else { "5432" }
+                $pgDb = $Matches[5]
+
+                $pgDumpPath = "pg_dump.exe"
+                if (-not (Get-Command pg_dump -ErrorAction SilentlyContinue)) {
+                    $progFiles = $env:ProgramFiles
+                    $pgDumps = Get-ChildItem -Path "$progFiles\PostgreSQL" -Filter "pg_dump.exe" -Recurse -ErrorAction SilentlyContinue
+                    if ($pgDumps) { $pgDumpPath = $pgDumps[0].FullName }
+                }
+
+                $env:PGPASSWORD = $pgPass
+                $dumpFile = Join-Path $dbDest "postgres_backup.sql"
+                Log-PlatformInfo "Dumping database $pgDb from host $pgHost to $dumpFile..."
+                & $pgDumpPath -h $pgHost -p $pgPort -U $pgUser -F p -b -v -f $dumpFile $pgDb 2>&1 | Out-Null
+                Remove-Item Env:\PGPASSWORD
+                Log-PlatformSuccess "PostgreSQL database dump created."
+            }
+        } catch {
+            Log-PlatformWarn "PostgreSQL backup failed: $_"
+        }
+    }
+
     # 5. Copy Knowledge & Metadata assets
     Log-PlatformInfo "Backing up knowledge context files..."
     $knowledgeSrc = Join-Path (Get-PlatformRoot $null) "knowledge"
@@ -72,6 +103,23 @@ try {
         $knowledgeDest = Join-Path $stagingDir "knowledge"
         New-Item -ItemType Directory -Path $knowledgeDest -Force | Out-Null
         Copy-Item -Path (Join-Path $knowledgeSrc "*") -Destination $knowledgeDest -Recurse -Force
+    }
+
+    # 5.5 Backup MinIO Volume (if Docker is running)
+    if (Get-Command docker -ErrorAction SilentlyContinue) {
+        Log-PlatformInfo "Detecting MinIO Docker container. Backing up volume..."
+        try {
+            $minioCheck = & docker ps --filter "name=aegisos-minio" --format "{{.Names}}"
+            if ($minioCheck -eq "aegisos-minio") {
+                $minioDest = Join-Path $stagingDir "minio_data"
+                New-Item -ItemType Directory -Path $minioDest -Force | Out-Null
+                Log-PlatformInfo "Copying minio volume contents to $minioDest..."
+                & docker run --rm -v aegisos_minio_data:/data -v ${minioDest}:/backup alpine tar czf /backup/minio_data.tar.gz -C /data . | Out-Null
+                Log-PlatformSuccess "MinIO data volume successfully backed up."
+            }
+        } catch {
+            Log-PlatformWarn "MinIO volume backup failed: $_"
+        }
     }
 
     # 6. Copy Artifacts Storage

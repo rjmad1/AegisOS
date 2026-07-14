@@ -151,7 +151,7 @@ describe("AI Orchestration Layer Unit and Integration Tests", () => {
         role: "Administrator", // Bypass approval
       });
 
-      const response = await executePost(request);
+      const response = await executePost(request as any);
       expect(response.status).toBe(200);
 
       const body = await response.json();

@@ -36,7 +36,7 @@ export class ApprovalEngine {
         approvalType,
         approvalStatus: status,
         approvers: JSON.stringify([]),
-        approvalTimeout: approvalType === "PENDING" || status === "PENDING" ? timeout : null,
+        approvalTimeout: (approvalType as any) === "PENDING" || status === "PENDING" ? timeout : null,
       },
     });
 

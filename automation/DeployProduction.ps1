@@ -112,6 +112,29 @@ foreach ($s in $services) {
     }
 }
 
+# 6.5. Configure Scoped Service User
+Log-PlatformAction "Configuring scoped service user..."
+$serviceUser = "AI_Service_User"
+$servicePass = "AegisPassword123!@#"
+$existingUser = Get-LocalUser -Name $serviceUser -ErrorAction SilentlyContinue
+if (-not $existingUser) {
+    $secPass = ConvertTo-SecureString $servicePass -AsPlainText -Force
+    New-LocalUser -Name $serviceUser -Password $secPass -Description "Scoped runtime account for AegisOS Platform Services" -PasswordNeverExpires $true | Out-Null
+    Log-PlatformSuccess "Scoped service user '$serviceUser' created."
+}
+
+# Grant directory permissions
+try {
+    $acl = Get-Acl $TargetRoot
+    $permission = "$env:COMPUTERNAME\$serviceUser", "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
+    $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule $permission
+    $acl.SetAccessRule($accessRule)
+    Set-Acl $TargetRoot $acl
+    Log-PlatformSuccess "Directory permissions granted to '$serviceUser' on $TargetRoot."
+} catch {
+    Log-PlatformWarn "Failed to set directory permissions: $_"
+}
+
 # 7. Register/Patch Next.js service via NSSM
 Log-PlatformAction "Registering Next.js console service in SCM..."
 $nodePath = & where.exe node.exe 2>$null
@@ -141,6 +164,7 @@ if (Test-Path $nssmPath) {
     & $nssmPath set $svcName AppRotateSeconds 86400
     & $nssmPath set $svcName AppRotateBytes 10485760 # 10MB
     & $nssmPath set $svcName Start SERVICE_AUTO_START
+    & $nssmPath set $svcName ObjectName "$env:COMPUTERNAME\$serviceUser" $servicePass
     Log-PlatformInfo "NSSM parameters successfully configured."
 } else {
     Log-PlatformError "NSSM not found. Could not configure Next.js service."
@@ -160,6 +184,9 @@ if ($caddyPath) {
         & $caddyPath service install --config $caddyfileDest
         Log-PlatformSuccess "Caddy service configuration refreshed."
     }
+    # Configure Caddy service logon account
+    & sc.exe config caddy obj= "$env:COMPUTERNAME\$serviceUser" password= $servicePass | Out-Null
+    Log-PlatformInfo "Caddy service SCM credentials configured."
 }
 
 # 9. Start Services

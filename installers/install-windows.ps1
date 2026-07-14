@@ -57,9 +57,14 @@ if ($Upgrade) {
         Log "Backup written: $backupPath" "Green"
     }
     
-    # Run Prisma migrations
+    # Run Prisma migrations safely
     Log "Syncing database schema migrations..."
-    & npx prisma db push --accept-data-loss | Out-Null
+    $env:DATABASE_URL="file:./databases/dev.db"
+    & npx prisma migrate deploy | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Log "No migrations found or deploy failed. Falling back to non-destructive schema push..."
+        & npx prisma db push --skip-generate | Out-Null
+    }
     
     if ($LASTEXITCODE -eq 0) {
         Log "Database upgraded successfully." "Green"
@@ -80,6 +85,28 @@ if (-not (Test-Path $InstallDir)) {
     New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
 }
 
+# Configure Scoped Service User
+$serviceUser = "AI_Service_User"
+$servicePass = "AegisPassword123!@#"
+$existingUser = Get-LocalUser -Name $serviceUser -ErrorAction SilentlyContinue
+if (-not $existingUser) {
+    Log "Creating restricted system service user account '$serviceUser'..."
+    $secPass = ConvertTo-SecureString $servicePass -AsPlainText -Force
+    New-LocalUser -Name $serviceUser -Password $secPass -Description "Scoped runtime account for AegisOS Platform Services" -PasswordNeverExpires $true | Out-Null
+}
+
+# Grant directory permissions
+try {
+    $acl = Get-Acl $InstallDir
+    $permission = "$env:COMPUTERNAME\$serviceUser", "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
+    $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule $permission
+    $acl.SetAccessRule($accessRule)
+    Set-Acl $InstallDir $acl
+    Log "Directory permissions granted to '$serviceUser' on $InstallDir."
+} catch {
+    Log "WARNING: Failed to configure directory ACLs: $_"
+}
+
 $folders = @("databases", "artifacts_storage", "configs", "logs")
 foreach ($f in $folders) {
     $p = Join-Path $InstallDir $f
@@ -96,9 +123,13 @@ Log "Installing production dependencies..."
 Set-Location $InstallDir
 & npm install --production | Out-Null
 
-Log "Orchestrating DB Schema push..."
+Log "Orchestrating DB Schema migrations..."
 $env:DATABASE_URL="file:./databases/dev.db"
-& npx prisma db push | Out-Null
+& npx prisma migrate deploy | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Log "Falling back to non-destructive database schema push..."
+    & npx prisma db push --skip-generate | Out-Null
+}
 
 Log "AegisOS Platform Installation Complete." "Green"
 Exit 0

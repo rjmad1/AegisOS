@@ -405,6 +405,13 @@ class DashboardPage extends ConsumerWidget {
                     icon: Icons.cloud_upload_outlined,
                     route: '/upload',
                   ),
+                  _buildNavCard(
+                    context,
+                    title: 'Voice Feedback',
+                    subtitle: 'Secure audio reports',
+                    icon: Icons.mic_none_outlined,
+                    route: '/feedback',
+                  ),
                 ],
               ),
               const SizedBox(height: 20),

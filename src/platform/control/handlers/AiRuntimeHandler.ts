@@ -58,7 +58,7 @@ export class AiRuntimeHandler {
             contextLength: 4096,
             status: "online",
             version: "latest",
-          });
+          } as any);
         }
         
         // Register rollback: Remove the model from catalog

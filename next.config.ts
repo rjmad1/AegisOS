@@ -11,7 +11,8 @@ const nextConfig: NextConfig = {
     "@azure/identity",
     "@aws-sdk/client-s3",
     "@google-cloud/storage",
-    "@azure/storage-blob"
+    "@azure/storage-blob",
+    "ioredis"
   ],
   webpack: (config, { isServer }) => {
     if (isServer) {
@@ -20,7 +21,8 @@ const nextConfig: NextConfig = {
         "node:sqlite",
         "@aws-sdk/client-s3",
         "@google-cloud/storage",
-        "@azure/storage-blob"
+        "@azure/storage-blob",
+        "ioredis"
       ];
     } else {
       config.resolve.fallback = {
@@ -42,6 +44,7 @@ const nextConfig: NextConfig = {
         '@aws-sdk/client-s3': false,
         '@google-cloud/storage': false,
         '@azure/storage-blob': false,
+        'ioredis': false,
       };
     }
     return config;

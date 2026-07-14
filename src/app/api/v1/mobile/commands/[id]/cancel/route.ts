@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/infrastructure/db/prisma";
-import { getAuthenticatedUser } from "../route";
+import { getAuthenticatedUser } from "../../route";
 import { auditEngine } from "@/platform/control/AuditEngine";
 import { eventBus } from "@/infrastructure/events/event-bus";
 

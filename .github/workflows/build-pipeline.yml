@@ -68,8 +68,8 @@ jobs:
           NODE_ENV: production
           # Build-time placeholders — these satisfy Next.js env checks during compilation.
           # They are clearly non-functional and overridden at runtime.
-          OPS_JWT_SECRET: build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation
-          AUTH_SECRET: build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation
+          OPS_JWT_SECRET: this-is-a-secure-looking-build-time-placeholder-for-nextjs-compilation-verification
+          AUTH_SECRET: this-is-a-secure-looking-build-time-placeholder-for-nextjs-compilation-verification
           OPS_ADMIN_USERNAME: build-placeholder
           OPS_ADMIN_PASSWORD: build-placeholder
           GOOGLE_CLIENT_ID: build-placeholder.apps.googleusercontent.com

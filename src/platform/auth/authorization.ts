@@ -1,4 +1,14 @@
 export enum Role {
+  SuperAdmin = 'Super Admin',
+  Admin = 'Admin',
+  Manager = 'Manager',
+  Developer = 'Developer',
+  Tester = 'Tester',
+  Support = 'Support',
+  StandardUser = 'Standard User',
+  ReadOnly = 'Read Only',
+  
+  // Compatibility aliases
   Administrator = 'Administrator',
   Operator = 'Operator',
   Viewer = 'Viewer',
@@ -21,6 +31,34 @@ export enum Permission {
 }
 
 export const RolePermissions: Record<Role, Permission[]> = {
+  [Role.SuperAdmin]: Object.values(Permission),
+  [Role.Admin]: Object.values(Permission),
+  [Role.Manager]: [
+    Permission.ViewArtifacts, Permission.DownloadArtifacts, Permission.ViewRuntime,
+    Permission.ViewInfrastructure, Permission.ViewKnowledge, Permission.ViewModels,
+    Permission.ViewConversations, Permission.ViewLogs, Permission.ViewSettings,
+    Permission.ViewHealth, Permission.ViewProviders
+  ],
+  [Role.Developer]: [
+    Permission.ViewArtifacts, Permission.ViewRuntime, Permission.ViewInfrastructure,
+    Permission.ViewKnowledge, Permission.ViewModels, Permission.ViewConversations,
+    Permission.ViewLogs, Permission.ViewHealth
+  ],
+  [Role.Tester]: [
+    Permission.ViewRuntime, Permission.ViewInfrastructure, Permission.ViewModels,
+    Permission.ViewHealth, Permission.ViewProviders
+  ],
+  [Role.Support]: [
+    Permission.ViewHealth, Permission.ViewLogs, Permission.ViewSettings, Permission.ViewProviders
+  ],
+  [Role.StandardUser]: [
+    Permission.ViewArtifacts, Permission.ViewConversations, Permission.ViewModels
+  ],
+  [Role.ReadOnly]: [
+    Permission.ViewHealth, Permission.ViewRuntime
+  ],
+
+  // Mappings for compatibility
   [Role.Administrator]: Object.values(Permission),
   [Role.Operator]: [
     Permission.ViewArtifacts, Permission.DownloadArtifacts, Permission.ViewRuntime,

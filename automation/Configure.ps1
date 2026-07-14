@@ -65,19 +65,78 @@ if ($DryRun) {
     Log-PlatformAction "  - AEGISOS_CONFIG_PATH = $(Join-Path $configDir 'aegisos\aegisos.json')"
     Log-PlatformAction "  - AEGISOS_STATE_DIR = $PlatformRoot"
     Log-PlatformAction "  - OLLAMA_MODELS = $(Join-Path $PlatformRoot 'models')"
+    Log-PlatformAction "  - OLLAMA_HOST = 127.0.0.1"
 } else {
     [System.Environment]::SetEnvironmentVariable("AEGISOS_CONFIG_PATH", (Join-Path $configDir "aegisos\aegisos.json"), "Machine")
     [System.Environment]::SetEnvironmentVariable("AEGISOS_STATE_DIR", $PlatformRoot, "Machine")
     [System.Environment]::SetEnvironmentVariable("OLLAMA_MODELS", (Join-Path $PlatformRoot "models"), "Machine")
+    [System.Environment]::SetEnvironmentVariable("OLLAMA_HOST", "127.0.0.1", "Machine")
     
     [System.Environment]::SetEnvironmentVariable("AEGISOS_CONFIG_PATH", (Join-Path $configDir "aegisos\aegisos.json"), "User")
     [System.Environment]::SetEnvironmentVariable("AEGISOS_STATE_DIR", $PlatformRoot, "User")
+    [System.Environment]::SetEnvironmentVariable("OLLAMA_HOST", "127.0.0.1", "User")
     
     Log-PlatformSuccess "System and User environment variables updated."
 }
 
+# 3.5. Configure Windows Firewall Inbound Rules
+Log-PlatformAction "Configuring local network firewall rules..."
+if ($DryRun) {
+    Log-PlatformAction "[DRY-RUN] Would create block rules for ports 11434, 4000, and 3000 to isolate LAN access"
+} else {
+    try {
+        $ruleNames = @("Block_Ollama_LAN", "Block_LiteLLM_LAN", "Block_Console_LAN")
+        $ports = @("11434", "4000", "3000")
+        
+        for ($i = 0; $i -lt $ruleNames.Length; $i++) {
+            $name = $ruleNames[$i]
+            $port = $ports[$i]
+            $existing = Get-NetFirewallRule -Name $name -ErrorAction SilentlyContinue
+            if ($existing) {
+                Log-PlatformInfo "Firewall rule '$name' already exists."
+            } else {
+                New-NetFirewallRule -Name $name -DisplayName $name -Description "Blocks unauthorized external LAN access to port $port" -Direction Inbound -LocalPort $port -Protocol TCP -Action Block -RemoteAddress Any -ErrorAction Stop | Out-Null
+                Log-PlatformSuccess "Created firewall block rule: $name (Port $port)"
+            }
+        }
+    } catch {
+        Log-PlatformWarn "Failed to configure firewall rules: $_"
+    }
+}
+
 # 4. Patch Services Registry Parameters (NSSM configuration)
 Log-PlatformAction "Configuring SCM and NSSM parameters in Registry..."
+
+# 4.0 Configure Scoped Service User
+Log-PlatformAction "Configuring scoped service user..."
+$serviceUser = "AI_Service_User"
+$servicePass = "AegisPassword123!@#"
+$existingUser = Get-LocalUser -Name $serviceUser -ErrorAction SilentlyContinue
+if (-not $existingUser) {
+    if ($DryRun) {
+        Log-PlatformAction "[DRY-RUN] Would create local user '$serviceUser'"
+    } else {
+        $secPass = ConvertTo-SecureString $servicePass -AsPlainText -Force
+        New-LocalUser -Name $serviceUser -Password $secPass -Description "Scoped runtime account for AegisOS Platform Services" -PasswordNeverExpires $true | Out-Null
+        Log-PlatformSuccess "Scoped service user '$serviceUser' created."
+    }
+}
+
+# Grant directory permissions
+try {
+    if ($DryRun) {
+        Log-PlatformAction "[DRY-RUN] Would grant directory permissions to '$serviceUser' on $PlatformRoot"
+    } else {
+        $acl = Get-Acl $PlatformRoot
+        $permission = "$env:COMPUTERNAME\$serviceUser", "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
+        $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule $permission
+        $acl.SetAccessRule($accessRule)
+        Set-Acl $PlatformRoot $acl
+        Log-PlatformSuccess "Directory permissions granted to '$serviceUser' on $PlatformRoot."
+    }
+} catch {
+    Log-PlatformWarn "Failed to set directory permissions: $_"
+}
 
 function Patch-NSSMProperty($service, $name, $value) {
     $keyPath = "HKLM:\System\CurrentControlSet\Services\$service\Parameters"
@@ -105,6 +164,17 @@ Patch-NSSMProperty "LiteLLMService" "AppStderr" (Join-Path $logsDir "litellm\Lit
 # OmniRoute
 Patch-NSSMProperty "OmniRouteService" "AppStdout" (Join-Path $logsDir "OmniRouteService.log")
 Patch-NSSMProperty "OmniRouteService" "AppStderr" (Join-Path $logsDir "OmniRouteService_error.log")
+
+# Set ObjectName credentials for registered services
+if (-not $DryRun) {
+    foreach ($svc in @("AegisOSService", "LiteLLMService", "OmniRouteService", "Ollama")) {
+        $existing = Get-Service -Name $svc -ErrorAction SilentlyContinue
+        if ($existing) {
+            & sc.exe config $svc obj= "$env:COMPUTERNAME\$serviceUser" password= $servicePass | Out-Null
+            Log-PlatformSuccess "Credentials configured for service: $svc"
+        }
+    }
+}
 
 # 5. Establish directory junctions
 $srcJunction = Join-Path $env:USERPROFILE ".aegisos"

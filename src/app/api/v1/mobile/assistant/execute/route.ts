@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     for (const step of plan.steps) {
       const dispatchRes = await commandBus.dispatch(
         {
-          type: step.commandType,
+          type: step.commandType as any,
           priority: "MEDIUM",
           payload: step.payload,
           origin: "mobile",

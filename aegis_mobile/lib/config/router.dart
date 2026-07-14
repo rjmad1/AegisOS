@@ -23,6 +23,7 @@ import '../features/dashboard/presentation/pages/assistant_chat_page.dart';
 import '../features/dashboard/presentation/pages/assistant_plan_approve_page.dart';
 import '../features/dashboard/presentation/pages/projects_page.dart';
 import '../features/dashboard/presentation/pages/upload_center_page.dart';
+import '../features/dashboard/presentation/pages/voice_feedback_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authStatus = ref.watch(authStateNotifierProvider);
@@ -130,6 +131,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/upload',
         builder: (context, state) => const UploadCenterPage(),
+      ),
+      GoRoute(
+        path: '/feedback',
+        builder: (context, state) => const VoiceFeedbackPage(),
       ),
       GoRoute(
         path: '/commands',

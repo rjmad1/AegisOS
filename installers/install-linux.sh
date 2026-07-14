@@ -60,10 +60,17 @@ if [ "$UPGRADE" = true ]; then
         log "Database snapshot backup written."
     fi
 
-    # Run Prisma migration sync
+    # Run Prisma migration sync safely
     cd "$INSTALL_DIR" || exit 1
-    DATABASE_URL="file:./databases/dev.db" npx prisma db push --accept-data-loss
-    if [ $? -eq 0 ]; then
+    DATABASE_URL="file:./databases/dev.db" npx prisma migrate deploy
+    MIGRATE_STATUS=$?
+    if [ $MIGRATE_STATUS -ne 0 ]; then
+        log_warn "No migrations found or deploy failed. Falling back to schema push..."
+        DATABASE_URL="file:./databases/dev.db" npx prisma db push --skip-generate
+        MIGRATE_STATUS=$?
+    fi
+
+    if [ $MIGRATE_STATUS -eq 0 ]; then
         log "Database schema migration successful."
     else
         log_error "Schema migration failed! Rolling back database..."
@@ -93,8 +100,12 @@ log "Installing production node modules..."
 cd "$INSTALL_DIR" || exit 1
 npm install --production
 
-# DB sync
-DATABASE_URL="file:./databases/dev.db" npx prisma db push
+# DB sync safely
+DATABASE_URL="file:./databases/dev.db" npx prisma migrate deploy
+if [ $? -ne 0 ]; then
+    log_warn "Falling back to non-destructive database schema push..."
+    DATABASE_URL="file:./databases/dev.db" npx prisma db push --skip-generate
+fi
 
 # Owner permissions
 chown -R aiuser:aiuser "$INSTALL_DIR"

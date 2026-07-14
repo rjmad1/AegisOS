@@ -10,6 +10,7 @@ import { StatusBar } from "./StatusBar";
 import { NotificationCenter } from "./NotificationCenter";
 import { GlobalSearch } from "../search/GlobalSearch";
 import { CommandPalette } from "../command-palette/CommandPalette";
+import { VoiceFeedbackButton } from "./VoiceFeedbackButton";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -86,6 +87,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Operational Logs Center */}
       <NotificationCenter isOpen={notifOpen} onClose={() => setNotifOpen(false)} />
+
+      {/* Floating Voice Feedback Button */}
+      <VoiceFeedbackButton />
     </div>
   );
 }
