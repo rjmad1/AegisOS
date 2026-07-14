@@ -1,17 +1,19 @@
-# UAWOS Mobile Command Center: Architecture Overview
+# AegisOS Mobile Command Center: Architecture Overview
 
-This document details the System Integration, Client-Server Interaction Models, Human Approval Framework, Agent Interaction Model, and Observability architecture.
+* **Governing Directive**: `SCOPE_REDUCTION_DIRECTIVE_V1.md`
+
+This document details the System Integration, Client-Server Interaction Models, Human Approval Framework, Agent Monitoring Model, and Observability architecture for the thin-client Executive Command Center.
 
 ---
 
 ## 1. System Integration Topology
 
-The mobile application acts as a secure, remote extension of the local UAWOS ecosystem.
+The mobile application acts as a secure, thin-client remote extension of the local AegisOS ecosystem. It never executes AI locally, never performs orchestration, and never duplicates workstation capabilities.
 
 ```mermaid
 graph TD
     subgraph Mobile Device
-        App[UAWOS Mobile App]
+        App[AegisOS Mobile App]
         DB[(SQLCipher Cache)]
         App <--> DB
     end
@@ -41,7 +43,7 @@ graph TD
 
 ## 2. Client-Server Interaction Models
 
-To balance responsiveness, data usage, and battery consumption, UAWOS Mobile employs three communication protocols:
+To balance responsiveness, data usage, and battery consumption, AegisOS Mobile employs three communication protocols:
 
 ### A. Real-Time Telemetry: WebSocket (WS) / EventStream
 *   **Use Case**: Live GPU VRAM metrics, queue latency graphs, and agent execution logs.
@@ -87,18 +89,18 @@ stateDiagram-v2
 
 ---
 
-## 4. AI Agent Interaction Model
+## 4. Agent Monitoring Model (Read-Only)
 
-The mobile app interacts with agents through the **AegisOS Agent Protocol**:
-*   **Agent Node Graph**: The app displays active agent runs as a dynamic node tree, highlighting which agent is executing, which node is active, and which tools are being utilized.
-*   **Log Streaming**: Every step of the agent's chain-of-thought (reasoning, tool selection, observation, execution) is streamed to the mobile device.
-*   **Manual Intervention (MINT)**: The operator can inject thoughts or prompts directly into the agent's memory stream mid-execution to redirect its reasoning path.
+The mobile app monitors agents through the **AegisOS Agent Protocol**. All agent execution, orchestration, and reasoning remain on the workstation. The mobile app only visualizes and controls (approve/reject):
+*   **Agent Registry**: The app displays active agent instances with their current state (idle, busy, executing_tool), role, allowed models, allowed tools, and performance metrics.
+*   **Log Streaming**: Agent execution steps are streamed to the mobile device for read-only observation.
+*   **Approval Gates**: When an agent triggers a high-risk action, the approval card is pushed to the Human Approval Center. The operator can Approve, Reject, or Request Changes — but cannot inject prompts or modify agent behavior directly.
 
 ---
 
 ## 5. Observability & SRE Dashboard Hookups
 
-UAWOS Mobile integrates directly with standard telemetry pipelines to verify cluster health:
+AegisOS Mobile integrates directly with standard telemetry pipelines to verify cluster health. All metric collection and processing occurs on the workstation; the mobile app only visualizes the results:
 *   **Prometheus Exporters**: Queries hardware statistics from NVIDIA System Management Interface (NVML) and Docker Engine daemon.
 *   **LiteLLM Logs**: Logs latency per request, model fallback counts, cache hit percentages (Prompt Cache), and token cost calculations.
 *   **OmniRoute Console**: Connects to the OmniRoute metrics collector to visually map routing paths and balance loads across auxiliary local machines.

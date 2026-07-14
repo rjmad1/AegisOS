@@ -18,7 +18,7 @@ Each backlog item is designated with:
 ### Capability Area A: Zero-Trust Connection & Security
 Focuses on mTLS tunneling, device registration, and Secure Enclave cryptographic verification.
 
-#### Story SEC-1: Secure Device Pairing & Certificate Exchange (P0)
+#### Story SEC-1: Secure Device Pairing & Certificate Exchange (P0) [COMPLETED]
 * **Description**: As a new operator, I want to pair my mobile client with the workstation host by scanning a QR code, so that an mTLS tunnel is securely established.
 * **Dependencies**: None (Sprint 0 Baseline).
 * **Acceptance Criteria**:
@@ -31,7 +31,7 @@ Focuses on mTLS tunneling, device registration, and Secure Enclave cryptographic
   * CSR exchange verified via integration test using mock host API.
   * Verified that private keys cannot be extracted from hardware storage.
 
-#### Story SEC-2: Biometric App Locking & Lifecycle Protection (P1)
+#### Story SEC-2: Biometric App Locking & Lifecycle Protection (P1) [COMPLETED]
 * **Description**: As a security-conscious user, I want the mobile application to prompt for biometrics (FaceID/Fingerprint) on launch or when returning from the background, so that my local command panel remains protected.
 * **Dependencies**: SEC-1.
 * **Acceptance Criteria**:

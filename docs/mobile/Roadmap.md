@@ -1,25 +1,24 @@
-# UAWOS Mobile Command Center: Product Roadmap
+# AegisOS Mobile Command Center: Product Roadmap
 
-This document defines the phases, releases, and milestones for the UAWOS Mobile Command Center.
+* **Governing Directive**: `SCOPE_REDUCTION_DIRECTIVE_V1.md`
+
+This document defines the phased release plan for the AegisOS Mobile Command Center, scoped to the 8 approved thin-client modules.
 
 ---
 
-## 1. Roadmap Phasing Overview
-
-Our roadmap is structured into three primary releases to systematically establish stable connectivity, expand agent control, and eventually enable edge intelligence.
+## 1. Roadmap Overview
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                          PRODUCT ROADMAP                               │
 ├────────────────────────────────────────────────────────────────────────┤
-│ V1: Establish Command & Control (Months 1-3)                          │
-│ Core Connection (Tailscale), Telemetry, Chat SSE, HITL Approvals.      │
+│ V1.0: Executive Command Center MVP (Months 1-3)                       │
+│ mTLS Pairing, Telemetry, Chat Relay, HITL Approvals, Notifications,   │
+│ Infrastructure Monitoring, Projects, Upload Center, Settings           │
 ├────────────────────────────────────────────────────────────────────────┤
-│ V2: Agent Swarms & Workspace (Months 4-6)                              │
-│ Node Graph, Model Management, Multi-Host Support, Rule-based Approvals.│
-├────────────────────────────────────────────────────────────────────────┤
-│ V3: Offline Edge & Plugins (Months 7-9)                                │
-│ On-device SLM execution, Deep RAG Browser, Mobile MCP plugins.        │
+│ V1.1: Polish & Hardening (Months 4-5)                                 │
+│ Offline cache improvements, adaptive tablet layouts, performance       │
+│ optimization, accessibility audit                                      │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -27,37 +26,53 @@ Our roadmap is structured into three primary releases to systematically establis
 
 ## 2. Release Milestones
 
-### V1.0.0 — Command, Control & HITL (Months 1–3)
-*   **Focus**: Establishing a secure link and providing primary command-and-control features.
-*   **Key Capabilities**:
-    *   **Secure Tunneling**: Automated Tailscale VPN state validation and pairing via secure local QR code exchange.
-    *   **Telemetry Panel**: Real-time display of GPU, VRAM, and RAM metrics at 5Hz using WebSockets.
-    *   **Streaming Chat**: SSE token stream with markdown and code rendering.
-    *   **Approvals Queue**: Human-in-the-loop approval cards for critical file and shell commands.
-    *   **Mobile Security**: On-device encryption (SQLCipher) and biometric locks (FaceID/Fingerprint).
-*   **Success Criteria**: Stable connection over cellular VPN in under 1.5 seconds; 100% of telemetry updates rendered smoothly at 60fps.
+### V1.0.0 — Executive Command Center MVP (Months 1–3)
 
-### V2.0.0 — Agent Workspace & Orchestration (Months 4–6)
-*   **Focus**: Rich agent inspection, task scheduling, and rule-based workflow delegation.
+*   **Focus**: Establishing secure remote pairing, streaming system metrics, chat relay, signed approvals, project context switching, file uploads, and notification display.
 *   **Key Capabilities**:
-    *   **Node Graph Inspector**: Visualizing multi-agent runs as interactive dependency trees.
-    *   **Model Manager**: Downloading, unloading, and re-routing models directly from the client.
-    *   **Multi-Host Aggregations**: Switching between home workstation, office cluster, and private cloud.
-    *   **Rule-based HITL**: User-defined rules for auto-approving low-risk agent tool calls (e.g., auto-approve read tools).
-    *   **SCM Terminal logs**: Direct view of LiteLLM/Ollama server log stdout.
-*   **Success Criteria**: Average approval task response time reduced by 50% through auto-approval configurations.
+    *   **Secure Tunneling**: Automated Tailscale connection checks and secure device pairing via local QR code exchanges.
+    *   **Executive Dashboard**: Real-time display of GPU, CPU, RAM, storage metrics, health score, service status, active models, active agents, queue depth, and critical alerts.
+    *   **AI Executive Chat**: Message forwarding to workstation with streamed responses. No local memory or context.
+    *   **Human Approval Center**: Biometric-gated swipe approvals. Signs command verification payloads with private keys inside the Secure Enclave.
+    *   **Infrastructure Monitoring**: Drill-down views for hardware, services, models, and agents.
+    *   **Notifications**: Push notification display for critical alerts, job completions, approval requests, security events, and failures.
+    *   **Projects**: List and select workstation projects to set active context.
+    *   **Upload Center**: Send voice, images, PDFs, documents, and URLs to the workstation.
+    *   **Settings**: Connected workstations, pairing, notification preferences, theme, preferred model, VPN status.
+    *   **Secure Mobile Cache**: SQLCipher local database for active telemetry snapshots and session data.
+*   **Success Criteria**:
+    *   Secure handshake over Tailscale in under 1.5 seconds
+    *   100% of telemetry updates rendered smoothly at 5Hz
+    *   Biometric signatures successfully verified by workstation
+    *   File uploads complete within 5 seconds for files under 10MB
+    *   All 8 modules functional and navigable
 
-### V3.0.0 — Local Edge & Plugin Extension (Months 7–9)
-*   **Focus**: Offline independence and extending mobile workspace capabilities.
+### V1.1.0 — Polish & Hardening (Months 4–5)
+
+*   **Focus**: Production hardening, performance optimization, and multi-device support.
 *   **Key Capabilities**:
-    *   **On-Device Inference**: Compiling and running lightweight models (e.g., Llama-1B, smollm-135m) directly on the device GPU via CoreML/WebGPU for offline note search.
-    *   **RAG Browser**: Detailed semantic search and metadata lineage navigator over the Raja Knowledge Repository.
-    *   **Mobile MCP Integrations**: Exposing mobile-native device interfaces (e.g., Contacts, GPS location, Calendar) as local MCP context servers to the host workstation.
-    *   **Voice Streaming**: Continuous speech-to-text input with low-latency audio response.
-*   **Success Criteria**: 100% functionality of local searching and message drafting available when offline.
+    *   **Offline Resilience**: Cached telemetry snapshots shown when disconnected. Queued approvals flush on reconnect.
+    *   **Adaptive Layouts**: Full foldable/tablet split-pane support with 8-column and 12-column grid layouts.
+    *   **Performance**: Optimized WebSocket reconnection, battery-efficient background sync.
+    *   **Accessibility**: VoiceOver/TalkBack support, minimum touch targets, contrast ratios per WCAG 2.1 AA.
+*   **Success Criteria**:
+    *   Smooth UI on all supported breakpoints (compact, medium, expanded)
+    *   Background sync consumes < 2% battery per hour
+    *   WCAG 2.1 AA compliance on all interactive elements
 
 ---
 
-## 3. Future Vision (10+ Months)
+## 3. Deferred to Future Backlog
 
-In the long term, UAWOS Mobile will shift from being a remote control for a desktop workstation to becoming an independent, cooperative node in a **Decentralized Cognitive Mesh**. Multiple mobile clients will share task processing duties, delegating lightweight jobs to local edge devices while routing large-scale reasoning tasks to local GPU clusters or private data center networks.
+The following capabilities have been archived per the Scope Reduction Directive V1.0. They may be reconsidered for future releases pending project owner approval:
+
+*   Self-Healing Feed & Autonomous Remediation
+*   LLM Council & Critique Monitor
+*   Multimodal Workspace Ingestion with edge chunking
+*   Financial Intelligence Dashboard
+*   On-Device SLM (Edge Compute)
+*   Mobile MCP Plugins
+*   Natural Language Operations (NL Ops)
+*   Decentralized Cognitive Mesh
+
+See `archive/ARCHIVE_MANIFEST.md` for the complete list.

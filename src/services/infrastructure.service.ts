@@ -4,6 +4,7 @@
 
 import { ProviderRegistry } from "../infrastructure/providers/registry";
 import { eventBus } from "../infrastructure/events/event-bus";
+import { providerFactory } from "../infrastructure/factories/provider-factory";
 import {
   OperatingSystemProvider,
   CpuProvider,
@@ -232,7 +233,6 @@ export class InfrastructureService {
     let provider = this.registry.getProvider<any>(providerId);
     if (!provider) {
       // Create and register via factory fallback fallback
-      const { providerFactory } = require("../infrastructure/factories/provider-factory");
       provider = providerFactory.createAndRegisterProvider(providerId);
     }
     return provider as T;

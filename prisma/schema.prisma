@@ -563,3 +563,119 @@ model WhiteLabelConfig {
   
   updatedAt                  DateTime @updatedAt
 }
+
+model MobileDevice {
+  id           String    @id @default(uuid())
+  name         String
+  publicKey    String
+  fingerprint  String    @unique
+  status       String    // "PENDING", "APPROVED", "REVOKED"
+  metadata     String    // JSON string for OS info, model, etc.
+  pushToken    String?
+  pairingToken String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  approvedAt   DateTime?
+  revokedAt    DateTime?
+}
+
+model MobileSession {
+  id         String   @id @default(uuid())
+  deviceId   String
+  userId     String?
+  jwtJti     String   @unique
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  lastActive DateTime @default(now())
+  status     String   // "ACTIVE", "REVOKED", "EXPIRED"
+}
+
+model MobileRefreshToken {
+  id         String   @id @default(uuid())
+  tokenHash  String   @unique
+  deviceId   String
+  userId     String?
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  revoked    Boolean  @default(false)
+  replacedBy String?
+}
+
+model PairingChallenge {
+  token      String   @id
+  code       String   @unique
+  expiresAt  DateTime
+  used       Boolean  @default(false)
+}
+
+model Command {
+  id              String    @id @default(uuid())
+  type            String    // e.g. "infrastructure:start_service", "ai:load_model", "agent:start", etc.
+  status          String    // "QUEUED", "PENDING_APPROVAL", "RUNNING", "COMPLETED", "FAILED", "CANCELLED", "ROLLED_BACK"
+  priority        String    // "LOW", "MEDIUM", "HIGH", "CRITICAL"
+  payload         String    // JSON string parameters
+  riskLevel       String    // "LOW", "MEDIUM", "HIGH", "CRITICAL"
+  
+  // Security & Authentication
+  userId          String?
+  userEmail       String?
+  deviceId        String?
+  origin          String    // "mobile" | "console" | "system"
+  signature       String?   // Cryptographic signature from secure enclave
+  replayNonce     String?   // UUID nonce
+  expiresAt       DateTime? // Expiry timestamp for signature validation
+
+  // Approval Engine State
+  approvalType    String    // "AUTO" | "MANUAL" | "MULTI_STAGE" | "EMERGENCY"
+  approvalStatus  String    // "PENDING" | "APPROVED" | "REJECTED" | "EXPIRED" | "BYPASSED"
+  approvers       String    // JSON array of decisions: [{userId, action, timestamp, signature}]
+  approvalTimeout DateTime? // Expiration time for manual approvals
+
+  // Execution & Timing
+  scheduledAt     DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  startedAt       DateTime?
+  completedAt     DateTime?
+  durationMs      Int?
+  
+  // Workers & Queuing
+  retryCount      Int       @default(0)
+  maxRetries      Int       @default(3)
+  nextAttemptAt   DateTime?
+  errorMessage    String?
+  result          String?   // JSON result payload
+  rollbackResult  String?   // JSON rollback outcome
+
+  // Rollback Configuration
+  rollbackPayload String?   // JSON arguments needed to undo this command
+  rolledBackAt    DateTime?
+  rolledBackBy    String?
+
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model Conversation {
+  id         String    @id @default(uuid())
+  title      String
+  userId     String?
+  deviceId   String?
+  messages   Message[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Message {
+  id             String        @id @default(uuid())
+  conversationId String
+  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String        // "user" | "assistant" | "system"
+  content        String
+  intent         String?
+  entities       String?       // JSON string
+  executionPlan  String?       // JSON string
+  commands       String?       // JSON string
+  createdAt      DateTime      @default(now())
+}
+
+

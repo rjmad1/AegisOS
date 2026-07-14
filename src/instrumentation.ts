@@ -52,6 +52,16 @@ export async function register() {
       const { workflowService } = await import("@/services/workflow.service");
       await workflowService.start();
       console.log("[Instrumentation] Server-side Workflow Engine background service initialized.");
+
+      // Boot Command & Control Subsystem Execution workers
+      const { executionEngine } = await import("@/platform/control/ExecutionEngine");
+      executionEngine.start();
+      console.log("[Instrumentation] C2 Subsystem background workers initialized.");
+
+      // Boot WebSocket Telemetry Server
+      const { startWebSocketServer } = await import("@/platform/realtime/WebSocketServer");
+      startWebSocketServer();
+      console.log("[Instrumentation] Telemetry WebSocket server initialized on port 3001.");
     } catch (err: any) {
       console.error("[Instrumentation] Server-side initialization error during register():", err.message);
       process.exit(1); // Force server to exit as per EDRB instructions

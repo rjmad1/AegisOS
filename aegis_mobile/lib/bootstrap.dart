@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'infrastructure/persistence/drift_database.dart';
+import 'features/auth/presentation/pages/auth_providers.dart';
 
 final loggerProvider = Provider<Logger>((ref) {
   return Logger(
@@ -15,14 +17,18 @@ final loggerProvider = Provider<Logger>((ref) {
 
 // Bootstrapping helper. Prepares system services before rendering app.
 Future<ProviderContainer> bootstrap() async {
-  final container = ProviderContainer();
+  // Initialize local SQLite database
+  final dbInstance = await AppDatabase.getInstance();
+
+  final container = ProviderContainer(
+    overrides: [
+      databaseProvider.overrideWithValue(dbInstance),
+    ],
+  );
   
   final logger = container.read(loggerProvider);
   logger.i('AegisOS Mobile: Starting bootstrap procedure...');
-  
-  // Future setups like database migrations, secure keystore readiness:
-  // await container.read(databaseProvider).initialize();
-  // await container.read(secureStorageProvider).initialize();
+  logger.i('AegisOS Mobile: Local SQLite persistence loaded.');
   
   logger.i('AegisOS Mobile: Bootstrap complete.');
   return container;

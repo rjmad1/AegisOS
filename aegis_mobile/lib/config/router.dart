@@ -2,29 +2,72 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../features/auth/presentation/pages/pairing_page.dart';
+import '../features/auth/presentation/pages/auth_providers.dart';
+import '../features/auth/presentation/pages/welcome_page.dart';
+import '../features/auth/presentation/pages/qr_scanner_page.dart';
+import '../features/auth/presentation/pages/manual_pairing_page.dart';
+import '../features/auth/presentation/pages/approval_pending_page.dart';
+import '../features/auth/presentation/pages/pairing_success_page.dart';
+import '../features/auth/presentation/pages/biometric_unlock_page.dart';
+import '../features/auth/presentation/pages/device_settings_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
-
-// Providers mimicking pairing and authentication state
-final pairingStateProvider = StateProvider<bool>((ref) => false);
-final authStateProvider = StateProvider<bool>((ref) => false);
+import '../features/dashboard/presentation/pages/infrastructure_page.dart';
+import '../features/dashboard/presentation/pages/services_page.dart';
+import '../features/dashboard/presentation/pages/models_page.dart';
+import '../features/dashboard/presentation/pages/agents_page.dart';
+import '../features/dashboard/presentation/pages/alerts_page.dart';
+import '../features/dashboard/presentation/pages/command_center_page.dart';
+import '../features/dashboard/presentation/pages/command_details_page.dart';
+import '../features/dashboard/presentation/pages/approval_screen_page.dart';
+import '../features/dashboard/presentation/pages/assistant_chat_page.dart';
+import '../features/dashboard/presentation/pages/assistant_plan_approve_page.dart';
+import '../features/dashboard/presentation/pages/projects_page.dart';
+import '../features/dashboard/presentation/pages/upload_center_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  return GoRouter(
-    initialLocation: '/',
-    redirect: (context, state) {
-      final isPaired = ref.read(pairingStateProvider);
-      final isUnlocked = ref.read(authStateProvider);
+  final authStatus = ref.watch(authStateNotifierProvider);
 
-      if (!isPaired && state.matchedLocation != '/pair') {
-        return '/pair';
+  return GoRouter(
+    initialLocation: '/welcome',
+    redirect: (context, state) {
+      final matched = state.matchedLocation;
+
+      // 1. If unpaired, force onboarding views
+      if (authStatus == MobileAuthStatus.unpaired) {
+        if (matched != '/welcome' && matched != '/scan' && matched != '/manual') {
+          return '/welcome';
+        }
+        return null;
       }
-      if (isPaired && !isUnlocked && state.matchedLocation != '/unlock') {
-        return '/unlock';
+
+      // 2. If pairing is waiting for console approval
+      if (authStatus == MobileAuthStatus.pendingApproval) {
+        if (matched != '/pending') {
+          return '/pending';
+        }
+        return null;
       }
-      if (isPaired && isUnlocked && (state.matchedLocation == '/pair' || state.matchedLocation == '/unlock')) {
-        return '/';
+
+      // 3. If device is paired but biometric gate is locked
+      if (authStatus == MobileAuthStatus.pairedLocked) {
+        if (matched != '/unlock') {
+          return '/unlock';
+        }
+        return null;
       }
+
+      // 4. If device is paired and unlocked, allow access to dashboard and settings
+      if (authStatus == MobileAuthStatus.pairedUnlocked) {
+        if (matched == '/welcome' ||
+            matched == '/scan' ||
+            matched == '/manual' ||
+            matched == '/pending' ||
+            matched == '/unlock') {
+          return '/';
+        }
+        return null;
+      }
+
       return null;
     },
     routes: [
@@ -33,20 +76,81 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
-        path: '/pair',
-        builder: (context, state) => const PairingPage(),
+        path: '/welcome',
+        builder: (context, state) => const WelcomePage(),
+      ),
+      GoRoute(
+        path: '/scan',
+        builder: (context, state) => const QrScannerPage(),
+      ),
+      GoRoute(
+        path: '/manual',
+        builder: (context, state) => const ManualPairingPage(),
+      ),
+      GoRoute(
+        path: '/pending',
+        builder: (context, state) => const ApprovalPendingPage(),
+      ),
+      GoRoute(
+        path: '/success',
+        builder: (context, state) => const PairingSuccessPage(),
       ),
       GoRoute(
         path: '/unlock',
-        builder: (context, state) => const UnlockMockPage(),
+        builder: (context, state) => const BiometricUnlockPage(),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const DeviceSettingsPage(),
+      ),
+      GoRoute(
+        path: '/infra',
+        builder: (context, state) => const InfrastructurePage(),
+      ),
+      GoRoute(
+        path: '/services',
+        builder: (context, state) => const ServicesPage(),
+      ),
+      GoRoute(
+        path: '/models',
+        builder: (context, state) => const ModelsPage(),
+      ),
+      GoRoute(
+        path: '/agents',
+        builder: (context, state) => const AgentsPage(),
+      ),
+      GoRoute(
+        path: '/alerts',
+        builder: (context, state) => const AlertsPage(),
+      ),
+      GoRoute(
+        path: '/projects',
+        builder: (context, state) => const ProjectsPage(),
+      ),
+      GoRoute(
+        path: '/upload',
+        builder: (context, state) => const UploadCenterPage(),
+      ),
+      GoRoute(
+        path: '/commands',
+        builder: (context, state) => const CommandCenterPage(),
+      ),
+      GoRoute(
+        path: '/commands/:id',
+        builder: (context, state) => CommandDetailsPage(commandId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/commands/:id/approve',
+        builder: (context, state) => ApprovalScreenPage(commandId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/assistant',
+        builder: (context, state) => const AssistantChatPage(),
+      ),
+      GoRoute(
+        path: '/commands/pending_chat_approve',
+        builder: (context, state) => AssistantPlanApprovePage(messageId: state.extra as String),
       ),
     ],
   );
 });
-
-// Temporary placeholder mock pages to bootstrap UI routing
-class UnlockMockPage extends StatelessWidget {
-  const UnlockMockPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Biometric Unlock Page')));
-}

@@ -1,47 +1,49 @@
-# UAWOS Mobile Command Center: Vision
+# AegisOS Mobile Command Center: Vision
 
-This document details the Executive Summary, Product Vision, Mission Statement, and Product Philosophy for the UAWOS (Universal AI Work Operating System) Mobile Command Center. It establishes the high-level conceptual framework for building the elite mobile portal for local-first AI ecosystem management.
+* **Governing Directive**: `SCOPE_REDUCTION_DIRECTIVE_V1.md`
+
+This document details the Executive Summary, Product Vision, Mission Statement, and Product Philosophy for the AegisOS Mobile Command Center.
 
 ---
 
 ## 1. Executive Summary
 
-The **UAWOS Mobile Command Center** is the unified mobile control pane for the local-first Universal AI Work Operating System (UAWOS). Unlike traditional chat applications that only query remote cloud LLM endpoints, the Mobile Command Center serves as an elite, production-grade mobile portal. It allows users to securely monitor GPU usage, configure model-routing, deploy autonomous agents, approve automated workflows, and orchestrate Model Context Protocol (MCP) servers across one or more local machines.
+The **AegisOS Mobile Command Center** is a secure, lightweight thin-client that connects to an already-running AI infrastructure on a local workstation. Rather than duplicating capabilities already provided by OpenClaw, LiteLLM, Ollama, or the agent framework, the mobile application acts as the **Executive Control Plane** for the entire AI ecosystem.
 
-By using local mesh VPNs (like Tailscale) and end-to-end encrypted push relays, UAWOS Mobile ensures that complete privacy and data ownership are preserved while providing real-time, remote administrative power. The application represents the convergence of a developer console, a SRE performance dashboard, a team collaboration hub, and an interactive AI orchestrator.
+It provides a single, unified interface to visualize, control, approve, monitor, upload, and communicate with every AI capability running across local-first, privacy-preserving infrastructure. The application minimizes manual intervention, maximizes automation, and surfaces only the information and actions that require human decision-making.
+
+By using local mesh VPNs (Tailscale) and end-to-end encrypted push relays, AegisOS Mobile ensures complete privacy and data ownership while delivering real-time, remote administrative authority.
 
 ---
 
 ## 2. Product Vision
 
-Our vision is to build the **"Tesla Mobile App meets Kubernetes Dashboard"** for local AI. 
+Our vision is to build the **"Tesla Mobile App meets Kubernetes Dashboard"** for local AI ecosystems.
 
-Just as the Tesla app gives owners real-time telemetry, hardware control, and software updates for their physical vehicle, UAWOS Mobile gives developers, researchers, and enterprise administrators real-time control over their local AI rigs and model runtimes. 
-
-Just as Kubernetes Dashboard aggregates container status, log streams, and job definitions, UAWOS Mobile aggregates local model configurations, active agent processes, MCP database connections, and hardware metrics.
-
-Eventually, UAWOS Mobile will mature into the official mobile client for the Universal AI Work Operating System, transforming mobile devices from simple consumption screens into active nodes in a decentralized, privacy-respecting cognitive mesh.
+*   **Vehicle Telemetry meets AI Ops**: Just as the Tesla app provides real-time hardware status, battery health, temperature, and software actions for a physical vehicle, AegisOS Mobile provides real-time telemetry over GPU/CPU utilization, model loads, queue depths, database health, active agent networks, and routing latency.
+*   **Kubernetes-level Governance & Self-Healing**: Just as a Kubernetes dashboard monitors container lifecycles and handles failovers, AegisOS Mobile monitors service health, displays autonomous self-healing events, and handles Human-in-the-Loop approvals.
+*   **Executive Decision Support**: The mobile application surfaces only what requires human judgment — approval gates, critical alerts, and high-level status. The workstation handles all intelligence, orchestration, and execution autonomously.
 
 ---
 
 ## 3. Mission Statement
 
-> To empower developers, operators, and enterprises with the tools to securely monitor, control, and collaborate with their local AI ecosystems from anywhere, without compromising privacy, ownership, or performance.
+> To empower developers, operators, and power users with a secure, elite mobile command center to monitor, control, and approve actions within their entire local-first AI ecosystem from anywhere, without compromising privacy, sovereignty, or computational efficiency.
 
 ---
 
 ## 4. Product Philosophy
 
-The UAWOS Mobile Command Center is built upon four architectural pillars:
+The AegisOS Mobile Command Center is built upon four architectural pillars:
 
 ### A. Privacy-First & Local-First (True Sovereignty)
-Your data never traverses unencrypted public clouds. Remote access is established over private mesh VPN networks. Conversational databases, RAG indices, and code graphs reside on your own hardware. The mobile device is a secure, authenticated window into your local workstation or private datacenter.
+All primary conversational histories, vector databases, and knowledge graphs reside on local hardware. The mobile device is a secure, authenticated window into this workstation, utilizing Tailscale mesh connections and mTLS with zero-knowledge encrypted push relays. No data is sent to external cloud services.
 
-### B. High-Fidelity Telemetry & Direct Action
-We treat AI models, workflows, and agents as living system processes. The app provides instant visibility into GPU memory load, queue times, routing fallbacks, and agent logs. If an agent goes rogue or consumes excessive compute, the operator can pause, throttle, or kill it with a single tap.
+### B. Thin Client Architecture
+The mobile device is a thin client. It caches only minimal telemetry snapshots and session tokens in an encrypted local database (`SQLCipher`) protected by biometrics. All AI execution, orchestration, routing, reasoning, memory, RAG, workflows, and prompt engineering remain exclusively on the workstation.
 
-### C. Humans-in-the-Loop
-Autonomous agents are powerful but require supervision. The application bridges the gap by acting as a mobile pager for human-in-the-loop approvals. Whether an agent needs permission to execute a shell command, read a sensitive database table, or commit code to a production branch, the request is delivered to the operator's pocket for quick swipe approval.
+### C. Humans-in-the-Loop & Governance
+Autonomous agents require oversight. AegisOS Mobile acts as the security pager for the operator. Any high-risk tool call, high-cost routing, or security violation pauses execution, pushing a card to the mobile screen that must be cryptographically signed using keys protected by the Secure Enclave before execution resumes.
 
-### D. Multi-Device Continuity
-Whether on an iPhone, an Android tablet, or a foldout screen, the experience adapts. SRE dashboards expand on tablets; quick actions stay accessible on mobile home screens; conversation flows sync seamlessly across devices.
+### D. Multi-Device Continuity & Density
+The user interface is designed for high-density, premium data presentation (reminiscent of developer consoles like Raycast). It adapts gracefully from standard mobile screens (single-pane, bottom tab navigation) to foldables and large tablets (split-pane grid navigation showing live metrics and approval queues side-by-side).

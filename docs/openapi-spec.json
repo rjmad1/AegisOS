@@ -73,6 +73,240 @@
         }
       }
     },
+    "/mobile/auth/pair": {
+      "get": {
+        "summary": "Retrieve new pairing challenge",
+        "description": "Serves a temporary token, human-readable code, and list of workstation network interface endpoints.",
+        "responses": {
+          "200": {
+            "description": "Pairing challenge generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" },
+                    "code": { "type": "string" },
+                    "expiresAt": { "type": "string" },
+                    "endpoints": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ip": { "type": "string" },
+                          "httpUrl": { "type": "string" },
+                          "httpsUrl": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register mobile device pairing",
+        "description": "Registers device public keys in PENDING status using the pairing token or manual pairing code.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pairingToken": { "type": "string" },
+                  "pairingCode": { "type": "string" },
+                  "publicKey": { "type": "string" },
+                  "deviceName": { "type": "string" },
+                  "metadata": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Device pairing registered as pending",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "deviceId": { "type": "string" },
+                    "status": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Pairing challenge expired or invalid"
+          }
+        }
+      }
+    },
+    "/mobile/auth/approve": {
+      "post": {
+        "summary": "Approve pending companion device",
+        "description": "Allows console admin session to approve pending companion devices for cryptographic signing.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["deviceId"],
+                "properties": {
+                  "deviceId": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Device approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "status": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Administrator role required"
+          }
+        }
+      }
+    },
+    "/mobile/auth/session": {
+      "post": {
+        "summary": "Establish or refresh mobile session",
+        "description": "Authenticates approved devices via signature verification over dynamic challenge or rotates refresh tokens.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["deviceId"],
+                "properties": {
+                  "deviceId": { "type": "string" },
+                  "challenge": { "type": "string" },
+                  "signature": { "type": "string" },
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jwt": { "type": "string" },
+                    "refreshToken": { "type": "string" },
+                    "expiresAt": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Session established",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jwt": { "type": "string" },
+                    "refreshToken": { "type": "string" },
+                    "expiresAt": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized signature or invalid refresh token"
+          }
+        }
+      }
+    },
+    "/mobile/auth/logout": {
+      "post": {
+        "summary": "Revoke active session token",
+        "description": "Invalidates the active refresh token and associated JWT session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["deviceId", "refreshToken"],
+                "properties": {
+                  "deviceId": { "type": "string" },
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged out successfully"
+          }
+        }
+      }
+    },
+    "/mobile/auth/devices": {
+      "get": {
+        "summary": "List all registered devices",
+        "description": "Lists all pending, approved, and revoked companion devices. Gated by console admin credentials.",
+        "responses": {
+          "200": {
+            "description": "Array of registered devices"
+          },
+          "403": {
+            "description": "Forbidden - Administrator role required"
+          }
+        }
+      }
+    },
+    "/mobile/auth/device/{id}": {
+      "delete": {
+        "summary": "Revoke and delete paired device",
+        "description": "Permanently revokes a mobile companion device's credentials. Gated by console admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device revoked successfully"
+          },
+          "403": {
+            "description": "Forbidden - Administrator role required"
+          }
+        }
+      }
+    },
     "/workflows": {
       "get": {
         "summary": "List active workflow definitions",
@@ -177,6 +411,105 @@
           "200": {
             "description": "Action executed successfully"
           }
+        }
+      }
+    },
+    "/mobile/commands": {
+      "get": {
+        "summary": "List command execution history",
+        "description": "Retrieves audit trails of command dispatches with status, risk, and type filters.",
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string" } },
+          { "name": "type", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "offset", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Filtered list of commands" }
+        }
+      },
+      "post": {
+        "summary": "Submit command execution request",
+        "description": "Submits a signed command payload from paired devices, triggering validation checks and policy gates.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["type", "payload"],
+                "properties": {
+                  "type": { "type": "string" },
+                  "payload": { "type": "object" },
+                  "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+                  "deviceId": { "type": "string" },
+                  "signature": { "type": "string" },
+                  "replayNonce": { "type": "string" },
+                  "timestamp": { "type": "integer" },
+                  "emergencyOverride": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Command received and scheduled or pending approval" }
+        }
+      }
+    },
+    "/mobile/commands/{id}": {
+      "get": {
+        "summary": "Retrieve command details by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Details of the command lifecycle and results" }
+        }
+      }
+    },
+    "/mobile/commands/{id}/approve": {
+      "post": {
+        "summary": "Approve command",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Command approved and enqueued" }
+        }
+      }
+    },
+    "/mobile/commands/{id}/reject": {
+      "post": {
+        "summary": "Reject command",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Command rejected and cancelled" }
+        }
+      }
+    },
+    "/mobile/commands/{id}/cancel": {
+      "post": {
+        "summary": "Cancel command",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Command cancelled" }
+        }
+      }
+    },
+    "/mobile/commands/{id}/rollback": {
+      "post": {
+        "summary": "Rollback completed command",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Command rolled back successfully" }
         }
       }
     }
