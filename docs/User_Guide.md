@@ -25,13 +25,13 @@ graph TD
 To manage services directly from the command line:
 ```powershell
 # Check service uptime status
-Get-Service -Name "Ollama", "LiteLLMService", "OpenClawService"
+Get-Service -Name "Ollama", "LiteLLMService", "AegisOSService"
 
 # Start the gateway and model proxies
-Start-Service -Name "Ollama", "LiteLLMService", "OpenClawService"
+Start-Service -Name "Ollama", "LiteLLMService", "AegisOSService"
 
 # Stop all services to free GPU resources
-Stop-Service -Name "Ollama", "LiteLLMService", "OpenClawService"
+Stop-Service -Name "Ollama", "LiteLLMService", "AegisOSService"
 ```
 
 ---
@@ -70,10 +70,10 @@ The following diagram shows how code completion requests are routed and enriched
 
 ```mermaid
 flowchart LR
-    IDE[IDE Editor Cursor] -->|Trigger Inline Suggestion| OpenClaw[OpenClaw Gateway :18789]
-    OpenClaw -->|Fetch Cursor File Context| FS[Filesystem MCP]
-    FS -->|Inject Neighboring Code| OpenClaw
-    OpenClaw -->|Forward Request| LiteLLM[LiteLLM Proxy :4000]
+    IDE[IDE Editor Cursor] -->|Trigger Inline Suggestion| AegisOS[AegisOS Gateway :18789]
+    AegisOS -->|Fetch Cursor File Context| FS[Filesystem MCP]
+    FS -->|Inject Neighboring Code| AegisOS
+    AegisOS -->|Forward Request| LiteLLM[LiteLLM Proxy :4000]
     LiteLLM -->|Execute Inference| Ollama[Ollama Engine :11434]
     Ollama -->|Return Suggestion| IDE
 ```
@@ -110,7 +110,7 @@ You can extend the workstation's context capabilities by writing custom tools an
 ```mermaid
 flowchart TD
     A[Write Custom Node.js script] --> B[Register tool definitions in config]
-    B --> C[Restart OpenClawService]
+    B --> C[Restart AegisOSService]
     C --> D[MCP Host initializes connection]
     D --> E[Model queries new tool context]
     E --> F[Tool executes action on host]
@@ -146,5 +146,5 @@ To create a custom filesystem tool that extracts file metadata:
     const transport = new StdioServerTransport();
     await server.connect(transport);
     ```
-2.  Register the tool command in the OpenClaw configuration file located at `$PlatformRoot\configs\openclaw_config.json`.
-3.  Restart the `OpenClawService` service to apply changes.
+2.  Register the tool command in the AegisOS configuration file located at `$PlatformRoot\configs\aegisos_config.json`.
+3.  Restart the `AegisOSService` service to apply changes.

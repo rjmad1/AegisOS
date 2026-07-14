@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     const registry = ProviderRegistry.getInstance();
     const defaultProviderIds = [
-      'openclaw-runtime-provider',
+      'aegisos-runtime-provider',
       'local-artifact-storage-provider',
       'ollama-provider',
       'litellm-provider',

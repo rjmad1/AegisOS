@@ -62,7 +62,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">4 Active</div>
-            <p className="text-xs text-muted-foreground mt-1">OpenClaw agent clusters</p>
+            <p className="text-xs text-muted-foreground mt-1">AegisOS agent clusters</p>
           </CardContent>
         </Card>
 
@@ -101,7 +101,7 @@ export default function DashboardPage() {
             {[
               { name: "Ollama Inference Proxy", port: 11434, status: "healthy", role: "Model Inference" },
               { name: "LiteLLM Router", port: 4000, status: "healthy", role: "Capability Routing" },
-              { name: "OpenClaw Gateway", port: 18789, status: "healthy", role: "MCP Host & Agents" },
+              { name: "AegisOS Gateway", port: 18789, status: "healthy", role: "MCP Host & Agents" },
               { name: "OmniRoute ELO Scorer", port: 20128, status: "healthy", role: "ELO Arena Engine" },
             ].map((service, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 rounded-lg border border-border/40 bg-accent/10">

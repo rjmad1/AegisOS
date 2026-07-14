@@ -4,7 +4,7 @@
 Approved
 
 ## Context
-The platform configurations contained hardcoded absolute drive references (`D:\OpenClaw`, `C:\LiteLLM`, etc.) and hardcoded user profiles (e.g. `C:\Users\rjkum\.openclaw`), which prevented deploying the workstation on different drives, usernames, or machine architectures.
+The platform configurations contained hardcoded absolute drive references (`D:\AegisOS`, `C:\LiteLLM`, etc.) and hardcoded user profiles (e.g. `C:\Users\rjkum\.aegisos`), which prevented deploying the workstation on different drives, usernames, or machine architectures.
 
 ## Decision
 Decouple and externalize all path calculations:

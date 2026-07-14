@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aegisos-ops.fullname" . }}-console
+  labels:
+    {{- include "aegisos-ops.labels" . | nindent 4 }}
+    app: console
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      {{- include "aegisos-ops.selectorLabels" . | nindent 6 }}
+      app: console
+  template:
+    metadata:
+      labels:
+        {{- include "aegisos-ops.selectorLabels" . | nindent 8 }}
+        app: console
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+        - name: console
+          image: "{{ .Values.image.console.repository }}:{{ .Values.image.console.tag }}"
+          imagePullPolicy: {{ .Values.image.console.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ include "aegisos-ops.fullname" . }}-secrets
+          env:
+            - name: DATABASE_PROVIDER
+              value: {{ .Values.config.databaseProvider | quote }}
+            - name: PORT
+              value: {{ .Values.service.consolePort | quote }}
+          ports:
+            - containerPort: {{ .Values.service.consolePort }}
+              name: http
+          resources:
+            {{- toYaml .Values.resources.console | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.service.consolePort }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.service.consolePort }}
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.service.consolePort }}
+            periodSeconds: 10
+            timeoutSeconds: 5

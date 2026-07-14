@@ -69,7 +69,7 @@ export class DecisionIntelligence {
         codeFilePaths: ["src/platform/kernel/PlatformKernel.ts", "src/platform/kernel/ServiceRegistry.ts"],
         testFilePaths: ["src/platform/kernel/PlatformKernel.test.ts"],
         riskIds: ["risk-circular-dependencies"],
-        projectIds: ["project-openclaw"]
+        projectIds: ["project-aegisos"]
       },
       {
         id: "dec-sec-002",
@@ -83,7 +83,7 @@ export class DecisionIntelligence {
         codeFilePaths: ["src/repositories/secret.repository.ts"],
         testFilePaths: [],
         riskIds: ["risk-compromised-keys"],
-        projectIds: ["project-openclaw"]
+        projectIds: ["project-aegisos"]
       },
       {
         id: "dec-inc-003",
@@ -97,7 +97,7 @@ export class DecisionIntelligence {
         codeFilePaths: ["src/platform/health/PlatformHealth.ts"],
         testFilePaths: [],
         riskIds: ["risk-system-stagnation"],
-        projectIds: ["project-openclaw"]
+        projectIds: ["project-aegisos"]
       }
     ];
 

@@ -30,7 +30,7 @@ A third party can deploy the entire workstation suite on a clean machine by exec
 4. **Credential Input**: Prompt for `GITHUB_TOKEN` and `TELEGRAM_BOT_TOKEN`. The tokens are encrypted at rest using machine-scope DPAPI.
 5. **Execution**: Automatically invokes:
    - `automation/Install.ps1`: Downloads Astral `uv.exe` and sets up the standardized folder tree.
-   - `automation/Configure.ps1`: Registers user and machine environment variables, configures NSSM service keys in the registry, and establishes user-profile junctions (`%USERPROFILE%\.openclaw` -> `$PlatformRoot`).
+   - `automation/Configure.ps1`: Registers user and machine environment variables, configures NSSM service keys in the registry, and establishes user-profile junctions (`%USERPROFILE%\.aegisos` -> `$PlatformRoot`).
    - `automation/Validate.ps1`: Runs health checks, binds network sockets, and verifies local LLM generation.
 
 ---
@@ -45,10 +45,10 @@ If you need to move the platform installation from one partition or machine to a
 ```
 
 ### Migration Engine Process
-1. **Service Suspension**: Automatically stops running services (`OpenClawService`, `LiteLLMService`, `OmniRouteService`, `Ollama`) to release file locks.
+1. **Service Suspension**: Automatically stops running services (`AegisOSService`, `LiteLLMService`, `OmniRouteService`, `Ollama`) to release file locks.
 2. **File Migration**: Copies all folders and database blocks via robocopy with timestamps preserved.
 3. **Path Rewriting**: Scans JSON/YAML configs in the new destination, replacing old paths with the new base path.
-4. **Junction Redirection**: Deletes the old `%USERPROFILE%\.openclaw` directory junction and points it to the new path.
+4. **Junction Redirection**: Deletes the old `%USERPROFILE%\.aegisos` directory junction and points it to the new path.
 5. **SCM Registry Update**: Patches service working directories, executables, and stdout/stderr paths in the registry.
-6. **Environment Update**: Rewrites the system/user variables for `OPENCLAW_CONFIG_PATH`, `OPENCLAW_STATE_DIR`, and `OLLAMA_MODELS`.
+6. **Environment Update**: Rewrites the system/user variables for `AEGISOS_CONFIG_PATH`, `AEGISOS_STATE_DIR`, and `OLLAMA_MODELS`.
 7. **Service Resumption**: Restarts services and runs the validation check to verify migration success.

@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: openclaw-ingress
-  namespace: openclaw-ops
+  name: aegisos-ingress
+  namespace: aegisos-ops
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -10,10 +10,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - console.openclaw.ai
-      secretName: openclaw-tls-secret
+        - console.aegisos.ai
+      secretName: aegisos-tls-secret
   rules:
-    - host: console.openclaw.ai
+    - host: console.aegisos.ai
       http:
         paths:
           - path: /

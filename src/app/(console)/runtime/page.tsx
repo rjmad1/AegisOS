@@ -202,7 +202,7 @@ export default function RuntimePage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">OpenClaw Runtime Console</h1>
+          <h1 className="text-2xl font-bold tracking-tight">AegisOS Runtime Console</h1>
           <p className="text-sm text-muted-foreground">
             Monitor real-time synchronization, infrastructure health, and streaming system events.
           </p>
@@ -221,7 +221,7 @@ export default function RuntimePage() {
 
       {error && (
         <Alert variant="destructive" title="Connection Failure">
-          Could not communicate with OpenClaw integration: {error}
+          Could not communicate with AegisOS integration: {error}
         </Alert>
       )}
 
@@ -251,7 +251,7 @@ export default function RuntimePage() {
               <Card glow className="md:col-span-1">
                 <CardHeader>
                   <CardTitle>System Health</CardTitle>
-                  <CardDescription>Overall operational status of OpenClaw Service.</CardDescription>
+                  <CardDescription>Overall operational status of AegisOS Service.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center py-6 space-y-4">
                   <div className="p-4 rounded-full bg-accent/5 border border-border/60">
@@ -304,7 +304,7 @@ export default function RuntimePage() {
             <Card>
               <CardHeader>
                 <CardTitle>SCM Version & Environment</CardTitle>
-                <CardDescription>OpenClaw runtime build hashes and deployment attributes.</CardDescription>
+                <CardDescription>AegisOS runtime build hashes and deployment attributes.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -406,7 +406,7 @@ export default function RuntimePage() {
 
               <Card className="overflow-hidden border border-border/30">
                 <CardHeader className="pb-3 border-b border-border/20">
-                  <CardTitle className="text-sm font-mono">openclaw.json Raw Config</CardTitle>
+                  <CardTitle className="text-sm font-mono">aegisos.json Raw Config</CardTitle>
                 </CardHeader>
                 <div className="bg-black/60">
                   <Editor

@@ -14,7 +14,7 @@ if "%~1"=="" (
     echo Usage: manage.bat [start ^| stop ^| restart ^| status] [service_name]
     echo Example: manage.bat status
     echo Example: manage.bat restart console
-    echo Options for service_name: console, proxy, ollama, litellm, openclaw, omniroute, all
+    echo Options for service_name: console, proxy, ollama, litellm, aegisos, omniroute, all
     exit /b 1
 )
 

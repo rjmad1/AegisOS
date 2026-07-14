@@ -42,7 +42,7 @@ const sbom = {
     timestamp: new Date().toISOString(),
     component: {
       type: 'application',
-      name: pkgJson.name || 'openclaw-console',
+      name: pkgJson.name || 'aegisos-console',
       version: version
     }
   },
@@ -97,10 +97,10 @@ fs.writeFileSync(path.join(releaseDir, 'release-manifest.json'), JSON.stringify(
 console.log(' - Generated release-manifest.json');
 
 // 6. Generate Release Notes & Support Matrix Markdown
-const releaseNotes = `# Release Notes: OpenClaw Console ${releaseTag}
+const releaseNotes = `# Release Notes: AegisOS Console ${releaseTag}
 
 ## Overview
-This Release Candidate transitions the OpenClaw AI Operations Console into a true Enterprise-grade production platform. It resolves all Critical, High, and Medium findings from the independent architecture audit.
+This Release Candidate transitions the AegisOS AI Operations Console into a true Enterprise-grade production platform. It resolves all Critical, High, and Medium findings from the independent architecture audit.
 
 ## Remediation & Enhancements
 - **Active Directory/Entra ID Integration**: Added LDAP bind authentication and OIDC Microsoft Entra ID support to the Auth Module.

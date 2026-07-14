@@ -1,4 +1,4 @@
-# Enterprise Validation Report — OpenClaw AI Workstation Console V1.0
+# Enterprise Validation Report — AegisOS AI Workstation Console V1.0
 
 | Field | Value |
 |---|---|
@@ -13,7 +13,7 @@
 
 ## 1. Executive Summary
 
-This report presents the results of the functional validation of the OpenClaw AI Workstation Console V1.0 platform. Every documented module was audited against its specification, implementation, and integration boundaries.
+This report presents the results of the functional validation of the AegisOS AI Workstation Console V1.0 platform. Every documented module was audited against its specification, implementation, and integration boundaries.
 
 **Overall Platform Verdict: CONDITIONAL PASS**
 
@@ -160,7 +160,7 @@ This report presents the results of the functional validation of the OpenClaw AI
 | Execution management | `/api/v1/executions` CRUD | **PASS** |
 | Conversation tracking | `/api/v1/conversations` with search | **PASS** |
 | Status monitoring | `/api/v1/status` route | **PASS** |
-| Provider orchestration | Aggregates from Ollama + LiteLLM + OpenClaw providers | **PASS** |
+| Provider orchestration | Aggregates from Ollama + LiteLLM + AegisOS providers | **PASS** |
 
 **Module Verdict: PASS**
 
@@ -314,7 +314,7 @@ This report presents the results of the functional validation of the OpenClaw AI
 |-----------|----------|--------|
 | Self-healing engine | `self-healer.ts` with directory, port, and memory checks | **PASS** |
 | Database directory recovery | Creates missing `databases/` directory | **PASS** |
-| Port health scanning | Checks Ollama (11434), LiteLLM (4000), OpenClaw (18789) | **PASS** |
+| Port health scanning | Checks Ollama (11434), LiteLLM (4000), AegisOS (18789) | **PASS** |
 | Memory store size monitoring | Alerts on >10MB memory database | **PASS** |
 | Remediation logging | Records issues and remediations applied | **PASS** |
 | API endpoint | `/api/v1/admin/diagnostics` | **PASS** |
@@ -345,7 +345,7 @@ This report presents the results of the functional validation of the OpenClaw AI
 | Singleton registry | `ProviderRegistry` with `getInstance()` | **PASS** |
 | Provider registration/unregistration | `registerProvider()` / `unregisterProvider()` with overwrite warning | **PASS** |
 | Type-based querying | `getProvidersByType()` returns typed provider arrays | **PASS** |
-| Provider catalog | 8 provider files: Ollama, LiteLLM, OpenClaw, infrastructure, knowledge, local storage, skeletons, registry | **PASS** |
+| Provider catalog | 8 provider files: Ollama, LiteLLM, AegisOS, infrastructure, knowledge, local storage, skeletons, registry | **PASS** |
 | Provider contracts | 15 contract interfaces in `infrastructure/contracts/` | **PASS** |
 | Clear registry | `clearRegistry()` for testing/reset | **PASS** |
 

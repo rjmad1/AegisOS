@@ -337,7 +337,7 @@ export class LicenseEngine {
   // ======== Key Generation ========
 
   private generateLicenseKey(type: LicenseType, tier: TenantTier): string {
-    const prefix = 'LIC-OPENCLAW';
+    const prefix = 'LIC-AEGISOS';
     const typeCode = type.toUpperCase().slice(0, 4);
     const tierCode = tier.toUpperCase().slice(0, 4);
     const segments = Array.from({ length: 3 }, () =>

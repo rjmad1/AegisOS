@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const analytics = developerPlatform.getAnalytics();
 
     return NextResponse.json({
-      name: "OpenClaw Developer Platform API",
+      name: "AegisOS Developer Platform API",
       version: "1.0.0",
       status: "ready",
       endpoints: {
@@ -22,11 +22,11 @@ export async function GET(request: NextRequest) {
         analytics: "/api/v1/developer/analytics"
       },
       sdks: [
-        { language: "TypeScript", path: "/sdks/openclaw-sdk.ts" },
-        { language: "Python", path: "/sdks/openclaw_sdk.py" },
-        { language: "Go", path: "/sdks/openclaw-sdk.go" },
-        { language: "DotNet", path: "/sdks/OpenClawSdk.cs" },
-        { language: "Java", path: "/sdks/OpenClawClient.java" }
+        { language: "TypeScript", path: "/sdks/aegisos-sdk.ts" },
+        { language: "Python", path: "/sdks/aegisos_sdk.py" },
+        { language: "Go", path: "/sdks/aegisos-sdk.go" },
+        { language: "DotNet", path: "/sdks/AegisOSSdk.cs" },
+        { language: "Java", path: "/sdks/AegisOSClient.java" }
       ],
       registryCounts: {
         extensionPoints: points.length,

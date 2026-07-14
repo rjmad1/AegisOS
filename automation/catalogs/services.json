@@ -14,8 +14,8 @@
     "dependencies": ["Ollama"]
   },
   {
-    "serviceName": "OpenClawService",
-    "displayName": "OpenClaw AI Gateway",
+    "serviceName": "AegisOSService",
+    "displayName": "AegisOS AI Gateway",
     "port": 18789,
     "runAs": "LocalSystem",
     "dependencies": ["LiteLLMService", "Ollama"]

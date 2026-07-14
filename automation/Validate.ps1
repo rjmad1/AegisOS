@@ -71,7 +71,7 @@ Append-ReportSection "1. Graphics Compute (GPU)" $gpuResult
 
 # 2. Services Check
 Log-PlatformInfo "Checking Windows Service Statuses..."
-$services = @("Ollama", "LiteLLMService", "OmniRouteService", "OpenClawService")
+$services = @("Ollama", "LiteLLMService", "OmniRouteService", "AegisOSService")
 $servicesResult = "| Service | Status | Description |`n|---|---|---|`n"
 foreach ($s in $services) {
     $service = Get-Service -Name $s -ErrorAction SilentlyContinue
@@ -96,7 +96,7 @@ Log-PlatformInfo "Checking active port allocations..."
 $portsToCheck = @(
     @{ Name = "Ollama API"; Port = 11434; Host = "127.0.0.1"; Required = $true }
     @{ Name = "LiteLLM Proxy"; Port = 4000; Host = "127.0.0.1"; Required = $true }
-    @{ Name = "OpenClaw Gateway"; Port = 18789; Host = "127.0.0.1"; Required = $true }
+    @{ Name = "AegisOS Gateway"; Port = 18789; Host = "127.0.0.1"; Required = $true }
     @{ Name = "OmniRoute Dashboard"; Port = 20128; Host = "127.0.0.1"; Required = $true }
     @{ Name = "Open-WebUI Portal"; Port = 8090; Host = "127.0.0.1"; Required = $false }
 )

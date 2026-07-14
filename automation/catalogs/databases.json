@@ -1,8 +1,8 @@
 [
   {
-    "databaseId": "openclaw-agent-metadata",
+    "databaseId": "aegisos-agent-metadata",
     "engine": "SQLite",
-    "path": "databases/sqlite/openclaw-agent.sqlite",
+    "path": "databases/sqlite/aegisos-agent.sqlite",
     "purpose": "Maintains session states, model routing context, and agent execution parameters."
   },
   {

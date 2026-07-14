@@ -9,7 +9,7 @@ The system manages runtime components as Windows Services using NSSM wrappers.
 ### Checking Service Status
 To quickly check service configurations, query their SCM registration:
 ```powershell
-Get-Service -Name "Ollama", "LiteLLMService", "OpenClawService", "OmniRouteService"
+Get-Service -Name "Ollama", "LiteLLMService", "AegisOSService", "OmniRouteService"
 ```
 
 ### Scripted Health Check Monitoring
@@ -29,13 +29,13 @@ Logs are consolidated under `$PlatformRoot\logs\` and rotated to prevent disk sp
 |---|---|---|
 | **Ollama** | Checked via Windows Event Log / AppData | Managed natively by Ollama |
 | **LiteLLM** | `$PlatformRoot\logs\litellm\LiteLLMService.log` | Rotated by NSSM parameters |
-| **OpenClaw** | `$PlatformRoot\logs\openclaw\OpenClawService.log` | Rotated by NSSM parameters |
+| **AegisOS** | `$PlatformRoot\logs\aegisos\AegisOSService.log` | Rotated by NSSM parameters |
 | **OmniRoute** | `$PlatformRoot\logs\OmniRouteService.log` | Rotated by NSSM parameters |
 | **Health Check** | `$PlatformRoot\logs\health\monitor.log` | Cleared weekly by scheduled tasks |
 
 To inspect system diagnostics and errors:
 ```powershell
-Get-Content -Path "D:\AIPlatform\logs\openclaw\OpenClawService_error.log" -Tail 50
+Get-Content -Path "D:\AIPlatform\logs\aegisos\AegisOSService_error.log" -Tail 50
 ```
 
 ---

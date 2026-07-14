@@ -13,7 +13,7 @@ import { Alert } from "@/components/ui/Alert";
 const settingsSchema = z.object({
   ollamaUrl: z.string().url("Ollama address must be a valid URL"),
   litellmUrl: z.string().url("LiteLLM address must be a valid URL"),
-  openclawUrl: z.string().url("OpenClaw address must be a valid URL"),
+  aegisosUrl: z.string().url("AegisOS address must be a valid URL"),
   refreshInterval: z.number().min(1, "Minimum interval is 1 second"),
 });
 
@@ -27,7 +27,7 @@ export default function SettingsPage() {
     defaultValues: {
       ollamaUrl: "http://127.0.0.1:11434",
       litellmUrl: "http://127.0.0.1:4000",
-      openclawUrl: "http://127.0.0.1:18789",
+      aegisosUrl: "http://127.0.0.1:18789",
       refreshInterval: 5,
     },
   });
@@ -75,8 +75,8 @@ export default function SettingsPage() {
                   />
 
                   <FormInput
-                    name="openclawUrl"
-                    label="OpenClaw Gateway Endpoint"
+                    name="aegisosUrl"
+                    label="AegisOS Gateway Endpoint"
                     helperText="MCP host routing cluster proxy."
                   />
 

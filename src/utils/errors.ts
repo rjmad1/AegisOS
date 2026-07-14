@@ -1,5 +1,5 @@
 // src/utils/errors.ts
-// Centralized Exception Hierarchy for the OpenClaw Platform
+// Centralized Exception Hierarchy for the AegisOS Platform
 
 export class PlatformError extends Error {
   public readonly code: string;

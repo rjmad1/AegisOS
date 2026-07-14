@@ -44,9 +44,9 @@ export class SelfHealingFramework {
       } else if (issue.includes("LiteLLM")) {
         component = "LiteLLM Router Proxy";
         serviceId = "litellm";
-      } else if (issue.includes("OpenClaw")) {
-        component = "OpenClaw Gateway";
-        serviceId = "openclaw";
+      } else if (issue.includes("AegisOS")) {
+        component = "AegisOS Gateway";
+        serviceId = "aegisos";
       }
 
       if (serviceId) {

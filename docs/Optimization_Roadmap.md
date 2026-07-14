@@ -9,7 +9,7 @@ This roadmap outlines structured recommendations for enhancing the performance, 
 * **Benefit**: Real-time observability of inference performance and model routing distribution.
 
 ### B. OpenTelemetry Tracing via Arize Phoenix
-* **Action**: Integrate Phoenix (port 6006) as an OpenTelemetry tracing sink for OpenClaw.
+* **Action**: Integrate Phoenix (port 6006) as an OpenTelemetry tracing sink for AegisOS.
 * **Benefit**: Visual debugging of prompt flows, similarity search scores, and MCP latency timelines.
 
 ---

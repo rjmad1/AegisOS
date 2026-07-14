@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: openclaw-configs
-  namespace: openclaw-ops
+  name: aegisos-configs
+  namespace: aegisos-ops
 data:
   nginx.conf: |
     user nginx;

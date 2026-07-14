@@ -17,7 +17,7 @@ This document registers and prioritizes technical debt items discovered within t
 ## 2. Action Plan and Resolutions
 
 ### A. Run Services as Scoped Accounts
-To resolve the critical security debt, a dedicated restricted user account `AI_Service_User` should be created. The SCM logon parameter for the services (`Ollama`, `LiteLLMService`, `OpenClawService`, `OmniRouteService`) must be set to this account, and NTFS permissions on the platform directory restricted accordingly.
+To resolve the critical security debt, a dedicated restricted user account `AI_Service_User` should be created. The SCM logon parameter for the services (`Ollama`, `LiteLLMService`, `AegisOSService`, `OmniRouteService`) must be set to this account, and NTFS permissions on the platform directory restricted accordingly.
 
 ### B. Harden Firewall Rules
 Update firewall rules to bind the Ollama port `11434` exclusively to the loopback interface (`127.0.0.1`) and the Tailscale overlay IP (`100.90.78.53`).

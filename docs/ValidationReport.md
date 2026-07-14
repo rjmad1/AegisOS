@@ -15,7 +15,7 @@ System: DESKTOP-1EP019K (Microsoft Windows NT 10.0.26200.0)
 | Ollama | âœ… Running | Deployed as Windows Service |
 | LiteLLMService | âœ… Running | Deployed as Windows Service |
 | OmniRouteService | âœ… Running | Deployed as Windows Service |
-| OpenClawService | âœ… Running | Deployed as Windows Service |
+| AegisOSService | âœ… Running | Deployed as Windows Service |
 
 
 ## 3. Port Allocations & Network Boundaries
@@ -24,7 +24,7 @@ System: DESKTOP-1EP019K (Microsoft Windows NT 10.0.26200.0)
 |---|---|---|---|
 | Ollama API | 11434 | âœ… Active (Listening) | True |
 | LiteLLM Proxy | 4000 | âœ… Active (Listening) | True |
-| OpenClaw Gateway | 18789 | âœ… Active (Listening) | True |
+| AegisOS Gateway | 18789 | âœ… Active (Listening) | True |
 | OmniRoute Dashboard | 20128 | âœ… Active (Listening) | True |
 | Open-WebUI Portal | 8090 | âœ… Active (Listening) | False |
 
@@ -35,7 +35,7 @@ System: DESKTOP-1EP019K (Microsoft Windows NT 10.0.26200.0)
 
 ## 5. MCP & RAG Knowledge Repository Context
 
-âš ï¸ RAG Knowledge Repository folder not found or empty at d:\1_Projects\OpenClawOllamaLiteLLM_Transparency\knowledge.
+âš ï¸ RAG Knowledge Repository folder not found or empty at d:\1_Projects\AegisOS\knowledge.
 
 
 

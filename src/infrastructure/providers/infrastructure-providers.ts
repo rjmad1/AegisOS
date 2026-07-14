@@ -372,12 +372,12 @@ export class NetworkProvider extends BaseInfraProvider implements INetworkProvid
 
     // Default connections (including our services)
     return [
-      { protocol: "tcp", localAddress: "127.0.0.1", localPort: 18789, foreignAddress: "0.0.0.0", foreignPort: 0, state: "LISTENING", processId: 8840, processName: "openclaw.exe" },
+      { protocol: "tcp", localAddress: "127.0.0.1", localPort: 18789, foreignAddress: "0.0.0.0", foreignPort: 0, state: "LISTENING", processId: 8840, processName: "aegisos.exe" },
       { protocol: "tcp", localAddress: "127.0.0.1", localPort: 11434, foreignAddress: "0.0.0.0", foreignPort: 0, state: "LISTENING", processId: 9210, processName: "ollama.exe" },
       { protocol: "tcp", localAddress: "127.0.0.1", localPort: 4000, foreignAddress: "0.0.0.0", foreignPort: 0, state: "LISTENING", processId: 10402, processName: "python.exe" }, // LiteLLM proxy
       { protocol: "tcp", localAddress: "127.0.0.1", localPort: 5432, foreignAddress: "0.0.0.0", foreignPort: 0, state: "LISTENING", processId: 1822, processName: "postgres.exe" },
       { protocol: "tcp", localAddress: "127.0.0.1", localPort: 6379, foreignAddress: "0.0.0.0", foreignPort: 0, state: "LISTENING", processId: 2314, processName: "redis-server.exe" },
-      { protocol: "tcp", localAddress: "192.168.1.150", localPort: 52140, foreignAddress: "104.244.42.1", foreignPort: 443, state: "ESTABLISHED", processId: 8840, processName: "openclaw.exe" }
+      { protocol: "tcp", localAddress: "192.168.1.150", localPort: 52140, foreignAddress: "104.244.42.1", foreignPort: 443, state: "ESTABLISHED", processId: 8840, processName: "aegisos.exe" }
     ];
   }
 }
@@ -437,7 +437,7 @@ export class ProcessProvider extends BaseInfraProvider implements IProcessProvid
       const processNames = [
         "chrome.exe", "node.exe", "ollama.exe", "python.exe", "postgres.exe", "redis-server.exe",
         "Code.exe", "explorer.exe", "Taskmgr.exe", "svchost.exe", "system", "git.exe", "powershell.exe",
-        "msedge.exe", "Discord.exe", "Slack.exe", "cmd.exe", "openclaw.exe", "docker-desktop.exe", "vlc.exe"
+        "msedge.exe", "Discord.exe", "Slack.exe", "cmd.exe", "aegisos.exe", "docker-desktop.exe", "vlc.exe"
       ];
 
       for (let i = 0; i < 1200; i++) {
@@ -453,7 +453,7 @@ export class ProcessProvider extends BaseInfraProvider implements IProcessProvid
         } else if (name === "python.exe") {
           cpuUsage = Math.round(Math.random() * 25);
           memoryBytes = 512 * 1024 * 1024 + Math.round(Math.random() * 256 * 1024 * 1024);
-        } else if (name === "node.exe" || name === "openclaw.exe") {
+        } else if (name === "node.exe" || name === "aegisos.exe") {
           cpuUsage = Math.round(Math.random() * 10);
           memoryBytes = 128 * 1024 * 1024 + Math.random() * 128 * 1024 * 1024;
         } else {
@@ -474,7 +474,7 @@ export class ProcessProvider extends BaseInfraProvider implements IProcessProvid
           handles: 50 + Math.round(Math.random() * 1000),
           childProcesses: [],
           parentProcessId: null,
-          openPorts: name === "ollama.exe" ? [11434] : name === "openclaw.exe" ? [18789] : name === "python.exe" ? [4000] : [],
+          openPorts: name === "ollama.exe" ? [11434] : name === "aegisos.exe" ? [18789] : name === "python.exe" ? [4000] : [],
           associatedServices: name === "ollama.exe" ? ["Ollama"] : name === "postgres.exe" ? ["PostgreSQL"] : [],
           executablePath: `C:\\Program Files\\${name.split(".")[0]}\\${name}`
         });
@@ -644,11 +644,11 @@ export class ContainerProvider extends BaseInfraProvider implements IContainerPr
     return [
       {
         id: "d1e34b7f8002",
-        name: "openclaw-redis",
+        name: "aegisos-redis",
         status: "running",
         image: "redis:7-alpine",
         volumes: ["redis-data:/data"],
-        networks: ["openclaw-net"],
+        networks: ["aegisos-net"],
         resourceConsumption: { cpu: 0.1, memory: 12 * 1024 * 1024 },
         logsMetadata: { lastLogTime: new Date().toISOString(), logLinesCount: 154 }
       },
@@ -658,7 +658,7 @@ export class ContainerProvider extends BaseInfraProvider implements IContainerPr
         status: "running",
         image: "qdrant/qdrant:latest",
         volumes: ["qdrant-data:/qdrant/storage"],
-        networks: ["openclaw-net"],
+        networks: ["aegisos-net"],
         resourceConsumption: { cpu: 1.2, memory: 140 * 1024 * 1024 },
         logsMetadata: { lastLogTime: new Date().toISOString(), logLinesCount: 201 }
       },
@@ -668,7 +668,7 @@ export class ContainerProvider extends BaseInfraProvider implements IContainerPr
         status: "running",
         image: "chromadb/chroma:latest",
         volumes: ["chroma-data:/chroma/data"],
-        networks: ["openclaw-net"],
+        networks: ["aegisos-net"],
         resourceConsumption: { cpu: 0.4, memory: 92 * 1024 * 1024 },
         logsMetadata: { lastLogTime: new Date().toISOString(), logLinesCount: 88 }
       }
@@ -686,8 +686,8 @@ export class DatabaseProvider extends BaseInfraProvider implements IDatabaseProv
     const list: Database[] = [];
 
     // SQLite
-    const stateDir = process.env.OPENCLAW_STATE_DIR || "D:/OpenClaw";
-    const sqlitePath = path.join(stateDir, "Metadata/state/openclaw.sqlite");
+    const stateDir = process.env.AEGISOS_STATE_DIR || "D:/AegisOS";
+    const sqlitePath = path.join(stateDir, "Metadata/state/aegisos.sqlite");
     const isSqliteExist = fs.existsSync(sqlitePath);
     const sizeBytes = isSqliteExist ? fs.statSync(sqlitePath).size : 25 * 1024 * 1024;
 
@@ -779,7 +779,7 @@ export class ServiceProvider extends BaseInfraProvider implements IServiceProvid
     return [
       { name: "Ollama", displayName: "Ollama Local Model Server", status: "running", startType: "automatic", processId: 9210, description: "Serves local LLM weights on port 11434" },
       { name: "LiteLLMProxy", displayName: "LiteLLM Router Proxy Chain", status: "running", startType: "automatic", processId: 10402, description: "API gateway mapping LLM targets to OpenAI specifications" },
-      { name: "OpenClawCore", displayName: "OpenClaw AI Orchestrator Core", status: "running", startType: "automatic", processId: 8840, description: "Multi-agent coordinator and events message bus router" },
+      { name: "AegisOSCore", displayName: "AegisOS AI Orchestrator Core", status: "running", startType: "automatic", processId: 8840, description: "Multi-agent coordinator and events message bus router" },
       { name: "PostgreSQL", displayName: "PostgreSQL Database Engine", status: "running", startType: "automatic", processId: 1822, description: "Relational database server" },
       { name: "Redis", displayName: "Redis Cache Key-Value Store", status: "running", startType: "automatic", processId: 2314, description: "Cache store" },
       { name: "Docker", displayName: "Docker Desktop Engine Daemon", status: "running", startType: "automatic", description: "Hyper-V / WSL2 container sandbox manager" }

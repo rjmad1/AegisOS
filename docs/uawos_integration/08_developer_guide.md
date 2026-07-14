@@ -12,7 +12,7 @@ The diagram below details the sequence of interactions when a Developer Agent in
 sequenceDiagram
     autonumber
     actor Dev as Developer
-    participant OC as OpenClaw Gateway
+    participant OC as AegisOS Gateway
     participant CG as CodeGraph MCP
     participant PT as Ponytail Context Filter
     participant HR as Headroom Proxy
@@ -73,7 +73,7 @@ Configurations are managed centrally in `console_config.json`. We add parameters
 ## 3. Developer Integration Guide
 
 ### A. Registering CodeGraph as an MCP Server
-To expose code intelligence to agents, add the CodeGraph configuration to `configs/openclaw/openclaw.json`:
+To expose code intelligence to agents, add the CodeGraph configuration to `configs/aegisos/aegisos.json`:
 
 ```json
 {

@@ -57,7 +57,7 @@ Below is a diagnostic assessment of the exact gaps between the target state and 
 ### B. Duplicated or Redundant Capabilities (Avoided Redundancies)
 - **Metadata Governance vs. Local Markdown**: The **Google Knowledge Catalog (OKF)** provides metadata search and lineage, which duplicates the lightweight file registry (`artifact-registry.ts`) and custom markdown notes. Because UAWOS is a local-first single-user workstation, OKF's database structure is redundant.
 - **CodeGraph vs. Git/Filesystem**: CodeGraph has tools for viewing git files. This duplicates the active `filesystem` and `git` MCP context servers. **Recommendation**: We restrict CodeGraph strictly to AST dependency queries, disabling Git/Filesystem overrides.
-- **Spec Kit vs. Prompt Registry**: Spec Kit contains prompt templates that duplicate the central prompt configurations in OpenClaw. **Recommendation**: Expose Spec Kit strictly as a background service via CLI wrappers, and manage prompts centrally.
+- **Spec Kit vs. Prompt Registry**: Spec Kit contains prompt templates that duplicate the central prompt configurations in AegisOS. **Recommendation**: Expose Spec Kit strictly as a background service via CLI wrappers, and manage prompts centrally.
 - **SkillOpt vs. Model Execution**: SkillOpt contains logic for invoking model inference. This duplicates LiteLLM. **Recommendation**: Interface SkillOpt to execute its validation calls strictly through the LiteLLM router proxy endpoint (`:4000`).
 
 ---
@@ -68,13 +68,13 @@ To transition UAWOS from a set of disjointed CLI utilities into a cohesive AI Op
 
 | Proposed Service | Primary Architectural Responsibility | Deployment Strategy |
 |---|---|---|
-| **Workflow Engine** | Coordinates multi-agent DAG execution and handles state persistence, retries, and step-backwards recovery. | Orchestrated through a lightweight Node/TypeScript engine within OpenClaw. |
+| **Workflow Engine** | Coordinates multi-agent DAG execution and handles state persistence, retries, and step-backwards recovery. | Orchestrated through a lightweight Node/TypeScript engine within AegisOS. |
 | **Event Bus** | Decouples services using an asynchronous publish/subscribe model (e.g., triggering search indexing on file updates). | Implemented using a local Redis Pub/Sub instance or a custom TypeScript EventListener loop. |
 | **Model Registry** | Centralizes model definitions, quantization paths, VRAM size demands, and hardware profiles. | Extends the static `ModelManifest.json` into a queryable REST endpoint. |
-| **Prompt Versioning** | Tracks system prompt modifications, rollbacks, and variant performance history using git-backed storage. | Integrated into the local OpenClaw gateway configuration system. |
+| **Prompt Versioning** | Tracks system prompt modifications, rollbacks, and variant performance history using git-backed storage. | Integrated into the local AegisOS gateway configuration system. |
 | **Agent Versioning** | Tracks changes in agent code, system instructions, and tool schemas. | Tied to semantic tags in the workspace repository. |
 | **Evaluation Pipeline** | Runs regression tests, accuracy benchmarks, and safety checks on models and prompts. | Initiated on-demand via automation scripts or pre-commit hooks. |
 | **Experiment Tracking** | Records hyperparameter variations, prompt modifications, and target performance metrics. | Local log-based storage synced to the RAG knowledge folder. |
-| **Policy Engine** | Restricts model actions, monitors dangerous shell scripts, and enforces privacy standards. | Implemented as a middleware proxy layer in LiteLLM and OpenClaw. |
+| **Policy Engine** | Restricts model actions, monitors dangerous shell scripts, and enforces privacy standards. | Implemented as a middleware proxy layer in LiteLLM and AegisOS. |
 | **Deployment Manager** | Orchestrates service starting, stopping, configuration generation, and service account sandboxing. | Built as an elevated PowerShell core manager wrapping NSSM and Docker commands. |
 | **Feature Flags / Canary** | Safely updates model alias pointers (e.g., shifting `gemma` alias from 9B to 31B) to test output shifts. | Managed dynamically through the LiteLLM config routing tables. |

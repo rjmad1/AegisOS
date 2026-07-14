@@ -12,11 +12,11 @@
 
 ## 1. Enterprise Capability Map (TOGAF-Style)
 
-The OpenClaw platform features are mapped to business and technical capabilities:
+The AegisOS platform features are mapped to business and technical capabilities:
 
 ```
 +-----------------------------------------------------------------------------+
-|                          OpenClaw Platform Capabilities                      |
+|                          AegisOS Platform Capabilities                      |
 +-----------------------------------------------------------------------------+
 |  1. Developer Experience       |  2. Platform Kernel & DI |  3. Governance  |
 |  - Visual Workflow Designer    |  - Module Lifecycle      |  - RBAC Checks  |
@@ -83,7 +83,7 @@ The application depends on the following core frameworks and registries:
 
 ```mermaid
 graph LR
-    App[OpenClaw Console] --> Next[Next.js v16]
+    App[AegisOS Console] --> Next[Next.js v16]
     App --> Prisma[Prisma Client v6]
     App --> React[React 19]
     App --> Tailwind[Tailwind CSS v4]

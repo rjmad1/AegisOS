@@ -1,0 +1,8 @@
+# .gitleaksignore
+# Baseline of known false positives for Gitleaks.
+# Only add entries here after confirming they are NOT real secrets.
+#
+# Format: commit-hash:filepath:rule-id:line-number
+#
+# The entries below are for test-only values and build-time placeholders
+# that are intentionally present in tracked files.

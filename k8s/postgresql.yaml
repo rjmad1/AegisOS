@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgres
-  namespace: openclaw-ops
+  namespace: aegisos-ops
 spec:
   serviceName: postgres-service
   replicas: 1
@@ -19,13 +19,13 @@ spec:
           image: postgres:16-alpine
           env:
             - name: POSTGRES_DB
-              value: openclaw
+              value: aegisos
             - name: POSTGRES_USER
               value: console_admin
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: openclaw-secrets
+                  name: aegisos-secrets
                   key: OPS_ADMIN_PASSWORD
           ports:
             - containerPort: 5432
@@ -47,7 +47,7 @@ spec:
                 - -U
                 - console_admin
                 - -d
-                - openclaw
+                - aegisos
             initialDelaySeconds: 15
             periodSeconds: 10
       volumes:
@@ -59,7 +59,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres-service
-  namespace: openclaw-ops
+  namespace: aegisos-ops
 spec:
   ports:
     - port: 5432

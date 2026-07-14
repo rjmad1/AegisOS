@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * OpenClaw Unified Platform CLI
+ * AegisOS Unified Platform CLI
  * Scaffolding, project creation, diagnostics, doctor checks, benchmarks
  */
 
@@ -46,7 +46,7 @@ const command = args[0];
 
 if (!command || command === 'help' || command === '--help') {
   console.log(`
-OpenClaw Platform CLI — Command Center
+AegisOS Platform CLI — Command Center
 
 Usage:
   node scripts/platform-cli.js <command> [options]

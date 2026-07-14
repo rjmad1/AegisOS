@@ -34,7 +34,7 @@ export async function GET() {
     infrastructure: {
       ollamaStatus: 'online',
       liteLLMStatus: 'online',
-      openClawStatus: 'online',
+      aegisOSStatus: 'online',
       reverseProxyStatus: 'online'
     },
     network: {

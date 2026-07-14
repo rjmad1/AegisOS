@@ -1,4 +1,4 @@
-# Operational Acceptance Test Report — OpenClaw V1.0
+# Operational Acceptance Test Report — AegisOS V1.0
 
 | Field | Value |
 |---|---|

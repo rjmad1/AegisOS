@@ -14,7 +14,7 @@ function Log($msg, $color = "Cyan") {
     }
 }
 
-Log "Starting OpenClaw Console Windows Installer..." "Yellow"
+Log "Starting AegisOS Console Windows Installer..." "Yellow"
 
 # 1. Check administrative privileges
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -100,5 +100,5 @@ Log "Orchestrating DB Schema push..."
 $env:DATABASE_URL="file:./databases/dev.db"
 & npx prisma db push | Out-Null
 
-Log "OpenClaw Platform Installation Complete." "Green"
+Log "AegisOS Platform Installation Complete." "Green"
 Exit 0

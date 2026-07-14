@@ -1,4 +1,4 @@
-# Recommended Version 2.0 Vision — OpenClaw
+# Recommended Version 2.0 Vision — AegisOS
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-This document presents the strategic and architectural vision for OpenClaw V2.0. While V1.0 successfully establishes a robust, local-first AI Workstation, scaling the platform to support massive enterprise workspaces requires transitioning from a single-machine local context to a **decentralized, hybrid-cloud collaborative ecosystem**.
+This document presents the strategic and architectural vision for AegisOS V2.0. While V1.0 successfully establishes a robust, local-first AI Workstation, scaling the platform to support massive enterprise workspaces requires transitioning from a single-machine local context to a **decentralized, hybrid-cloud collaborative ecosystem**.
 
 ---
 

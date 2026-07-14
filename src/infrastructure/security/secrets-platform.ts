@@ -25,7 +25,10 @@ export interface ISecretsProvider {
 
 // Derive a secure encryption key from the environment secret
 function getEncryptionKey(): Buffer {
-  const seed = process.env.OPS_JWT_SECRET || "super-secret-random-hash-key-for-console-jwt-signing-2026";
+  const seed = process.env.OPS_JWT_SECRET;
+  if (!seed) {
+    throw new Error("FATAL: OPS_JWT_SECRET environment variable is required for secrets encryption.");
+  }
   return crypto.scryptSync(seed, "platform-secrets-salt-2026", 32);
 }
 
@@ -111,11 +114,16 @@ class VaultSecretsProvider implements ISecretsProvider {
   constructor() {
     const nodeVault = _optionalRequire('node-vault');
     if (nodeVault) {
-      this.client = nodeVault({
-        apiVersion: 'v1',
-        endpoint: process.env.VAULT_ADDR || 'http://127.0.0.1:8200',
-        token: process.env.VAULT_TOKEN || 'root'
-      });
+      const vaultToken = process.env.VAULT_TOKEN;
+      if (!vaultToken) {
+        console.warn('[VaultSecretsProvider] VAULT_TOKEN not set. Vault provider disabled.');
+      } else {
+        this.client = nodeVault({
+          apiVersion: 'v1',
+          endpoint: process.env.VAULT_ADDR || 'http://127.0.0.1:8200',
+          token: vaultToken
+        });
+      }
       this.mountPath = process.env.VAULT_MOUNT_PATH || 'secret';
     } else {
       console.warn('[VaultSecretsProvider] node-vault SDK not installed.');
@@ -227,7 +235,7 @@ class GcpSecretsProvider implements ISecretsProvider {
     const gcpSdk = _optionalRequire('@google-cloud/secret-manager');
     if (gcpSdk) {
       this.client = new gcpSdk.SecretManagerServiceClient();
-      this.project = process.env.GCP_PROJECT_ID || 'openclaw-ops';
+      this.project = process.env.GCP_PROJECT_ID || 'aegisos-ops';
     } else {
       console.warn('[GcpSecretsProvider] @google-cloud/secret-manager not installed.');
     }
@@ -291,7 +299,7 @@ class AzureSecretsProvider implements ISecretsProvider {
     const azureKv = _optionalRequire('@azure/keyvault-secrets');
     const azureId = _optionalRequire('@azure/identity');
     if (azureKv && azureId) {
-      const vaultUrl = process.env.AZURE_KEYVAULT_URL || 'https://openclawvault.vault.azure.net';
+      const vaultUrl = process.env.AZURE_KEYVAULT_URL || 'https://aegisosvault.vault.azure.net';
       const credential = new azureId.DefaultAzureCredential();
       this.client = new azureKv.SecretClient(vaultUrl, credential);
     } else {
@@ -338,6 +346,9 @@ class SecretsPlatform implements ISecretsProvider {
   private localProvider: LocalDatabaseSecretsProvider;
 
   constructor() {
+    // Ensure critical encryption key is configured
+    getEncryptionKey();
+
     this.localProvider = new LocalDatabaseSecretsProvider();
     this.activeProvider = this.localProvider;
 

@@ -16,7 +16,7 @@ export async function GET() {
     const defaultProviderIds = [
       "ollama-provider",
       "litellm-provider",
-      "openclaw-runtime-provider",
+      "aegisos-runtime-provider",
       "docker-provider",
       "windows-provider"
     ];

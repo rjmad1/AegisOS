@@ -4,7 +4,7 @@
 import { describe, it, expect } from 'vitest';
 import { multiTenantValidationSuite } from './MultiTenantValidationSuite';
 
-describe('OpenClaw Enterprise SaaS Multi-Tenant Validation Suite', () => {
+describe('AegisOS Enterprise SaaS Multi-Tenant Validation Suite', () => {
   it('should run all validation tests and pass 100%', async () => {
     const report = await multiTenantValidationSuite.runAll();
     

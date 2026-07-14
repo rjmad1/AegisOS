@@ -19,8 +19,8 @@ export default function LogsPage() {
 [2026-07-09 14:10:55] [inference] Ollama version 0.31.1 detected. Loaded model index.
 [2026-07-09 14:10:56] [router] LiteLLM initializing on port 4000...
 [2026-07-09 14:10:58] [router] LiteLLM routing strategy set to 'least-busy' with 3 fallbacks.
-[2026-07-09 14:11:00] [gateway] OpenClaw service binding on port 18789...
-[2026-07-09 14:11:02] [gateway] OpenClaw SQL database storage.sqlite loaded.
+[2026-07-09 14:11:00] [gateway] AegisOS service binding on port 18789...
+[2026-07-09 14:11:02] [gateway] AegisOS SQL database storage.sqlite loaded.
 [2026-07-09 14:12:00] [operations] User 'admin' session created. Token initialized.
 [2026-07-09 14:15:30] [operations] Fetching model metrics. gemma4 selected. VRAM OK.`;
 

@@ -1,23 +1,25 @@
 # installers/docker-compose.prod.yml
-# Production deployment composition for OpenClaw Console.
-
-version: '3.8'
+# Production deployment composition for AegisOS Console.
+#
+# IMPORTANT: All secrets must be provided via environment variables or a .env file.
+# See .env.example at the repository root for required variables.
+# Do NOT hardcode credentials in this file.
 
 services:
   console:
     build:
       context: ..
       dockerfile: installers/Dockerfile.prod
-    container_name: openclaw-console-prod
+    container_name: aegisos-console-prod
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=file:./databases/prod.db
-      - AUTH_SECRET=console_jwt_session_auth_secret_production_secure_778103
-      - OPS_JWT_SECRET=secrets_encryption_key_production_secure_889210
-      - AUTH_PROVIDER=google
-      - SEED_MODELS_ON_BOOT=true
+      - DATABASE_URL=${DATABASE_URL:?Set DATABASE_URL in .env}
+      - AUTH_SECRET=${AUTH_SECRET:?Set AUTH_SECRET in .env}
+      - OPS_JWT_SECRET=${OPS_JWT_SECRET:?Set OPS_JWT_SECRET in .env}
+      - AUTH_PROVIDER=${AUTH_PROVIDER:-google}
+      - SEED_MODELS_ON_BOOT=${SEED_MODELS_ON_BOOT:-false}
     volumes:
       - console-databases:/app/databases
       - console-artifacts:/app/artifacts_storage

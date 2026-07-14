@@ -49,7 +49,7 @@ describe('DeveloperPlatform Registry & Analytics', () => {
   it('should enforce entitlements and meter usage charges', () => {
     platform.registerEntitlement({
       tenantId: 'tenant-test',
-      licenseKey: 'LIC-OPENCLAW-DEV-TEST',
+      licenseKey: 'LIC-AEGISOS-DEV-TEST',
       tier: 'developer',
       status: 'active',
       expiresAt: '2030-01-01T00:00:00Z',

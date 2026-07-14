@@ -38,7 +38,7 @@ try {
 
     # 2. Stop running services to release file locks
     Log-PlatformAction "Suspending running services..."
-    $services = @("caddy", "AI_Console_Service", "OmniRouteService", "OpenClawService", "LiteLLMService", "Ollama")
+    $services = @("caddy", "AI_Console_Service", "OmniRouteService", "AegisOSService", "LiteLLMService", "Ollama")
     foreach ($s in $services) {
         $svc = Get-Service -Name $s -ErrorAction SilentlyContinue
         if ($svc -and $svc.Status -eq "Running") {
@@ -100,7 +100,7 @@ try {
     # 8. Start Services
     Log-PlatformAction "Restarting services..."
     # Startup order
-    $startOrder = @("Ollama", "LiteLLMService", "OpenClawService", "OmniRouteService", "AI_Console_Service", "caddy")
+    $startOrder = @("Ollama", "LiteLLMService", "AegisOSService", "OmniRouteService", "AI_Console_Service", "caddy")
     foreach ($s in $startOrder) {
         $svc = Get-Service -Name $s -ErrorAction SilentlyContinue
         if ($svc) {

@@ -38,7 +38,7 @@ if (-not (Test-PlatformElevation)) {
 $ports = @(
     @{ Name = "Ollama Inference Engine"; Port = 11434; Service = "Ollama" }
     @{ Name = "LiteLLM Router Proxy"; Port = 4000; Service = "LiteLLMService" }
-    @{ Name = "OpenClaw Gateway"; Port = 18789; Service = "OpenClawService" }
+    @{ Name = "AegisOS Gateway"; Port = 18789; Service = "AegisOSService" }
     @{ Name = "OmniRoute Dashboard"; Port = 20128; Service = "OmniRouteService" }
     @{ Name = "Operations Console"; Port = 3000; Service = "AI_Console_Service" }
     @{ Name = "Caddy Reverse Proxy (HTTPS)"; Port = 8443; Service = "caddy" }

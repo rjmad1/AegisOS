@@ -566,7 +566,7 @@ export class WorkflowService {
             workflowId: workflow.id,
             workflowName: workflow.name,
             type: node.config.approvalType || "single",
-            approvers: node.config.approvers || ["admin@openclaw.io"],
+            approvers: node.config.approvers || ["admin@aegisos.io"],
             quorumPercentage: node.config.quorumPercentage,
             timeoutSeconds: node.config.timeoutSeconds,
             escalationUser: node.config.escalationUser,

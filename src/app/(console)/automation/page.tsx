@@ -78,7 +78,7 @@ export default function AutomationCenterPage() {
         body: JSON.stringify({
           action: "decide",
           approvalId,
-          approverId: "admin@openclaw.io",
+          approverId: "admin@aegisos.io",
           decision
         })
       });
@@ -99,7 +99,7 @@ export default function AutomationCenterPage() {
         body: JSON.stringify({
           action: "delegate",
           approvalId: selectedApproval.id,
-          approverId: "admin@openclaw.io",
+          approverId: "admin@aegisos.io",
           delegateTo: delegateEmail
         })
       });
@@ -434,7 +434,7 @@ export default function AutomationCenterPage() {
           <Input
             value={delegateEmail}
             onChange={(e) => setDelegateEmail(e.target.value)}
-            placeholder="colleague@openclaw.io"
+            placeholder="colleague@aegisos.io"
           />
         </div>
       </Dialog>

@@ -13,8 +13,8 @@ The weekly backup script `automation/Backup.ps1` extracts all user databases, co
 
 ### Backup Inventory
 Each backup archive contains:
-- `Config/`: LiteLLM config.yaml, openclaw.json, version definitions.
-- `Database/`: `openclaw-agent.sqlite` and a compressed backup of the Open-WebUI database volume (`open_webui_data.zip`).
+- `Config/`: LiteLLM config.yaml, aegisos.json, version definitions.
+- `Database/`: `aegisos-agent.sqlite` and a compressed backup of the Open-WebUI database volume (`open_webui_data.zip`).
 - `secrets/`: Encrypted credentials (stored if machine-recovery is matching).
 - `*.reg`: Services NSSM parameter keys exported from the registry.
 
@@ -36,8 +36,8 @@ In the event of hardware failure, database corruption, or system migration, a re
 4. **ForceRecovery**: Resets the entire installation, cleans active DB folders, unpacks backups, and runs full validations.
 
 ### DPAPI Secrets Recovery on Host Mismatch
-Because secrets are encrypted with the host machine's DPAPI keys, copying the backup `secrets/` to a *new* physical machine will prevent LiteLLM and OpenClaw from reading GITHUB or TELEGRAM tokens.
+Because secrets are encrypted with the host machine's DPAPI keys, copying the backup `secrets/` to a *new* physical machine will prevent LiteLLM and AegisOS from reading GITHUB or TELEGRAM tokens.
 If a host mismatch is detected:
 1. `Restore.ps1` reports a DPAPI verification warning.
 2. The user is prompted interactively to enter their `GITHUB_TOKEN` and `TELEGRAM_BOT_TOKEN`.
-3. The new inputs are encrypted on the *current* machine scope and saved to `$PlatformRoot\secrets\OpenClaw_secrets.enc` securely.
+3. The new inputs are encrypted on the *current* machine scope and saved to `$PlatformRoot\secrets\AegisOS_secrets.enc` securely.

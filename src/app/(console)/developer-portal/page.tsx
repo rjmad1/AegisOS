@@ -24,8 +24,8 @@ export default function DeveloperPortalPage() {
     version: '1.0.0',
     type: 'plugin',
     signature: 'a'.repeat(64),
-    dependencies: '{"openclaw": ">=1.0.0"}',
-    codeMock: '// Import standard events\nimport { platformSdk } from "@openclaw/sdk";'
+    dependencies: '{"aegisos": ">=1.0.0"}',
+    codeMock: '// Import standard events\nimport { platformSdk } from "@aegisos/sdk";'
   });
   const [scanResult, setScanResult] = React.useState<any>(null);
   const [scanning, setScanning] = React.useState(false);
@@ -79,7 +79,7 @@ export default function DeveloperPortalPage() {
       try {
         deps = JSON.parse(scanManifest.dependencies);
       } catch {
-        deps = { openclaw: scanManifest.dependencies };
+        deps = { aegisos: scanManifest.dependencies };
       }
 
       const res = await fetch('/api/v1/developer/certification', {
@@ -113,7 +113,7 @@ export default function DeveloperPortalPage() {
           checks: [
             "Environment: DATABASE_URL variable is resolved.",
             "Prisma: Schema file successfully verified.",
-            "Package: OpenClaw workspace compiles with zero warnings.",
+            "Package: AegisOS workspace compiles with zero warnings.",
             "Ports: Connectivity to loopback on 18789 is active.",
             "Memory: Cache clusters responsive.",
             "Security: API Gateway token verification online."
@@ -143,7 +143,7 @@ export default function DeveloperPortalPage() {
               Developer Portal
             </h1>
             <p className="text-slate-400 max-w-2xl text-sm">
-              Extend OpenClaw with custom agents, workflows, and plugins. Publish versioned modules securely utilizing the platform SDK and Certification Suite.
+              Extend AegisOS with custom agents, workflows, and plugins. Publish versioned modules securely utilizing the platform SDK and Certification Suite.
             </p>
           </div>
 
@@ -232,7 +232,7 @@ export default function DeveloperPortalPage() {
               <CardHeader>
                 <CardTitle className="text-lg font-bold">API Execution Response</CardTitle>
                 <CardDescription className="text-xs text-slate-400">
-                  Live JSON response payloads returned from OpenClaw Developer Endpoint.
+                  Live JSON response payloads returned from AegisOS Developer Endpoint.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -265,11 +265,11 @@ export default function DeveloperPortalPage() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
-                  { name: 'TypeScript / JS', file: 'openclaw-sdk.ts', lang: 'TypeScript', desc: 'Typed clients with Promise support and events listeners.' },
-                  { name: 'Python Sdk', file: 'openclaw_sdk.py', lang: 'Python', desc: 'Sync/async requests client with retry decorators.' },
-                  { name: 'Go Sdk', file: 'openclaw-sdk.go', lang: 'Go', desc: 'High performance struct-mapped HTTP clients.' },
-                  { name: 'C# / .NET', file: 'OpenClawSdk.cs', lang: 'C#', desc: 'HttpClient wrapper with System.Text.Json bindings.' },
-                  { name: 'Java Sdk', file: 'OpenClawClient.java', lang: 'Java', desc: 'Net.http client compatible with Java 11+.' }
+                  { name: 'TypeScript / JS', file: 'aegisos-sdk.ts', lang: 'TypeScript', desc: 'Typed clients with Promise support and events listeners.' },
+                  { name: 'Python Sdk', file: 'aegisos_sdk.py', lang: 'Python', desc: 'Sync/async requests client with retry decorators.' },
+                  { name: 'Go Sdk', file: 'aegisos-sdk.go', lang: 'Go', desc: 'High performance struct-mapped HTTP clients.' },
+                  { name: 'C# / .NET', file: 'AegisOSSdk.cs', lang: 'C#', desc: 'HttpClient wrapper with System.Text.Json bindings.' },
+                  { name: 'Java Sdk', file: 'AegisOSClient.java', lang: 'Java', desc: 'Net.http client compatible with Java 11+.' }
                 ].map((sdk) => (
                   <div key={sdk.file} className="border border-slate-800 bg-slate-950/50 p-5 rounded-xl flex flex-col justify-between hover:border-slate-700/80 transition-all duration-300">
                     <div>

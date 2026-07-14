@@ -1,5 +1,5 @@
 // scripts/system-doctor.js
-// Automated support bundle generator and health check utility for OpenClaw Console.
+// Automated support bundle generator and health check utility for AegisOS Console.
 
 const fs = require('fs');
 const path = require('path');

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: litellm
-  namespace: openclaw-ops
+  namespace: aegisos-ops
   labels:
     app: litellm
 spec:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: litellm
-          image: openclaw-litellm:latest
+          image: aegisos-litellm:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 4000
@@ -48,13 +48,13 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: openclaw-configs
+            name: aegisos-configs
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: litellm-service
-  namespace: openclaw-ops
+  namespace: aegisos-ops
 spec:
   ports:
     - port: 4000

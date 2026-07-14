@@ -26,12 +26,12 @@ export class OpenTelemetryPlatform {
         this.sdk = new NodeSDK({
           traceExporter,
           spanProcessor: new SimpleSpanProcessor(traceExporter),
-          serviceName: 'openclaw-ops-console'
+          serviceName: 'aegisos-ops-console'
         });
 
         // Start SDK
         this.sdk.start();
-        this.tracer = opentelemetry.trace.getTracer('openclaw-core');
+        this.tracer = opentelemetry.trace.getTracer('aegisos-core');
         this.active = true;
         console.log(`[OTelPlatform] Initialized OpenTelemetry SDK pointing to ${otelEndpoint}`);
       } catch (err: any) {

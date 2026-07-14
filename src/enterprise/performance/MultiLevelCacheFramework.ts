@@ -30,14 +30,14 @@ export class MultiLevelCacheFramework {
   private l2Dir: string;
 
   private constructor() {
-    this.l2Dir = path.join(process.cwd(), '.next', 'cache', 'openclaw_l2');
+    this.l2Dir = path.join(process.cwd(), '.next', 'cache', 'aegisos_l2');
     try {
       if (!fs.existsSync(this.l2Dir)) {
         fs.mkdirSync(this.l2Dir, { recursive: true });
       }
     } catch (e) {
       // Fallback if writing is not permitted
-      this.l2Dir = path.join(process.env.TEMP || '/tmp', 'openclaw_l2');
+      this.l2Dir = path.join(process.env.TEMP || '/tmp', 'aegisos_l2');
       try {
         if (!fs.existsSync(this.l2Dir)) fs.mkdirSync(this.l2Dir, { recursive: true });
       } catch (err) {}

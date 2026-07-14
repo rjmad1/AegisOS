@@ -1,4 +1,4 @@
-# Compliance Mapping Report — OpenClaw V1.0
+# Compliance Mapping Report — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary & Disclaimer
 
-This report provides a high-level mapping of OpenClaw V1.0's features and architecture against leading enterprise security frameworks. This mapping demonstrates the platform's alignment with cybersecurity best practices.
+This report provides a high-level mapping of AegisOS V1.0's features and architecture against leading enterprise security frameworks. This mapping demonstrates the platform's alignment with cybersecurity best practices.
 
 > [!WARNING]
 > **DISCLAIMER**: This document is an internal compliance mapping for validation purposes only. It does not constitute formal certification or accreditation by any audit body, registrar, or regulatory authority.
@@ -61,7 +61,7 @@ The platform's local-first architecture aligns with data privacy and sovereignty
 
 ### 2.4 CIS Controls (v8) — High-Level Mapping
 
-* **Control 3: Data Protection**: OpenClaw aligns by keeping inference weights, prompts, and artifacts local, preventing data exposure to external SaaS providers.
+* **Control 3: Data Protection**: AegisOS aligns by keeping inference weights, prompts, and artifacts local, preventing data exposure to external SaaS providers.
 * **Control 5: Account Management**: Implements unique session credentials. Gaps: no automated inactive account removal.
 * **Control 8: Audit Log Management**: Maintains consistent logs with timestamps, actions, and user SIDs.
 * **Control 11: Data Recovery**: Supports automated zipping of all directories and restoring databases using CLI scripts.

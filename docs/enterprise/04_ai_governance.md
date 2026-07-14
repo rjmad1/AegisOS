@@ -1,4 +1,4 @@
-# AI Governance Framework — OpenClaw Platform
+# AI Governance Framework — AegisOS Platform
 
 | Field | Value |
 |---|---|
@@ -12,7 +12,7 @@
 
 ## 1. Responsible AI Principles & Policy
 
-OpenClaw is designed to govern and manage local artificial intelligence. We enforce five core principles of Responsible AI:
+AegisOS is designed to govern and manage local artificial intelligence. We enforce five core principles of Responsible AI:
 
 1. **Absolute Sovereignty**: AI models and training/prompt data must remain inside the enterprise physical perimeter or private cloud enclaves.
 2. **Auditability and Transparency**: Every model output, tool execution, and prompt variation must be traceable back to its inputs, weights version, and user request.

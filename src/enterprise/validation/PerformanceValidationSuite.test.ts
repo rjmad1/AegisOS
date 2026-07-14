@@ -15,7 +15,7 @@ import { performanceReadinessReport } from '../operations/PerformanceReadinessRe
 import { scalabilityReport } from '../operations/ScalabilityReport';
 import { costOptimizationReport } from '../operations/CostOptimizationReport';
 
-describe('OpenClaw Enterprise SaaS Performance Validation Suite', () => {
+describe('AegisOS Enterprise SaaS Performance Validation Suite', () => {
   
   it('should run all validation checks successfully and meet SLA targets', () => {
     const report = performanceValidationSuite.runAllChecks(100);
@@ -117,9 +117,9 @@ describe('OpenClaw Enterprise SaaS Performance Validation Suite', () => {
     const scaleReport = scalabilityReport.generateReport();
     const costReport = costOptimizationReport.generateReport();
 
-    expect(readReport).toContain('# OpenClaw Enterprise Performance Readiness Report');
-    expect(scaleReport).toContain('# OpenClaw Scalability Validation & Audit Report');
-    expect(costReport).toContain('# OpenClaw FinOps & Cost Optimization Report');
+    expect(readReport).toContain('# AegisOS Enterprise Performance Readiness Report');
+    expect(scaleReport).toContain('# AegisOS Scalability Validation & Audit Report');
+    expect(costReport).toContain('# AegisOS FinOps & Cost Optimization Report');
 
     console.log('\n=== PREVIEW: PERFORMANCE READINESS REPORT ===\n');
     console.log(readReport.substring(0, 500) + '...\n');

@@ -46,7 +46,7 @@ export class RAGPlatform {
       {
         id: "chunk-03",
         docId: "doc-architecture-guidelines",
-        text: "OpenClaw Platform uses Next.js app routing with React Server Components. Node authentication utilizes JSON Web Tokens (JWT) signed with RS256 keys. Secrets are stored inside memory utilizing IV salt encryption.",
+        text: "AegisOS Platform uses Next.js app routing with React Server Components. Node authentication utilizes JSON Web Tokens (JWT) signed with RS256 keys. Secrets are stored inside memory utilizing IV salt encryption.",
         index: 0,
         metadata: { page: 1, author: "arch-leads@enterprise.org" }
       }

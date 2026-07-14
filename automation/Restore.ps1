@@ -93,9 +93,9 @@ try {
 
     # 6. Phase: Restore Secrets (DPAPI Prompt on Machine mismatch)
     Log-PlatformAction "[Phase 4/9] Validating API Secrets & Security Context..."
-    $secretsBackupFile = Join-Path $BackupPath "secrets\OpenClaw_secrets.enc"
+    $secretsBackupFile = Join-Path $BackupPath "secrets\AegisOS_secrets.enc"
     $targetSecretsDir = Join-Path $PlatformRoot "secrets"
-    $targetSecretsFile = Join-Path $targetSecretsDir "OpenClaw_secrets.enc"
+    $targetSecretsFile = Join-Path $targetSecretsDir "AegisOS_secrets.enc"
 
     if (-not (Test-Path $targetSecretsDir) -and -not $DryRun) {
         New-Item -ItemType Directory -Path $targetSecretsDir -Force | Out-Null

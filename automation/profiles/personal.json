@@ -1,11 +1,11 @@
 {
   "profileName": "personal",
-  "platformRoot": "D:\\OpenClaw",
+  "platformRoot": "D:\\AegisOS",
   "networkMode": "loopback",
   "ports": {
     "ollama": 11434,
     "litellm": 4000,
-    "openclaw": 18789,
+    "aegisos": 18789,
     "omniroute": 20128,
     "openwebui": 8090
   },

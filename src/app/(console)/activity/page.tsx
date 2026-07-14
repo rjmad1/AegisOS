@@ -100,7 +100,7 @@ export default function ActivityPage() {
           break;
         case "ConfigurationChanged":
           action = "Config Updated";
-          target = payload?.path || "openclaw.json";
+          target = payload?.path || "aegisos.json";
           type = "system";
           break;
         case "ProviderDisconnected":

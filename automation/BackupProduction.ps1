@@ -49,7 +49,7 @@ try {
     $regDest = Join-Path $stagingDir "Registry"
     New-Item -ItemType Directory -Path $regDest -Force | Out-Null
     
-    $services = @("AI_Console_Service", "LiteLLMService", "OpenClawService", "OmniRouteService")
+    $services = @("AI_Console_Service", "LiteLLMService", "AegisOSService", "OmniRouteService")
     foreach ($s in $services) {
         $regPath = "HKLM\SYSTEM\CurrentControlSet\Services\$s\Parameters"
         reg export $regPath (Join-Path $regDest "$($s)_Parameters.reg") /y 2>$null | Out-Null

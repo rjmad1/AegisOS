@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 export default function FilesPage() {
   const folders = [
     {
-      path: "/projects/OpenClawOllamaLiteLLM_Transparency",
+      path: "/projects/AegisOS",
       size: "24.5 MB",
       files: [
         { name: "package.json", size: "534 Bytes", type: "JSON Config" },

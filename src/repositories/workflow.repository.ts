@@ -586,7 +586,7 @@ export class WorkflowRepository {
             id: "node-provider-1",
             name: "Audit Local Workspace Files",
             type: "provider_call",
-            config: { providerId: "filesystem-provider", method: "listDirectory", path: "D:/OpenClaw/Workspace/audit-agent" },
+            config: { providerId: "filesystem-provider", method: "listDirectory", path: "D:/AegisOS/Workspace/audit-agent" },
             next: "node-condition-1",
           },
           {
@@ -617,7 +617,7 @@ export class WorkflowRepository {
           { targetId: "reviewer", type: "provider", description: "Performs audit code validation checks" },
           { targetId: "filesystem-provider", type: "provider", description: "Runs directory check operations" },
         ],
-        metadata: { folder: "D:/OpenClaw/Workspace/audit-agent" },
+        metadata: { folder: "D:/AegisOS/Workspace/audit-agent" },
         createdAt: baseTime,
         updatedAt: baseTime,
       },
@@ -639,7 +639,7 @@ export class WorkflowRepository {
             id: "node-approval-1",
             name: "Request Dev Lead Approval",
             type: "approval",
-            config: { approvalType: "single", approvers: ["lead-dev@openclaw.io"], timeoutSeconds: 3600 },
+            config: { approvalType: "single", approvers: ["lead-dev@aegisos.io"], timeoutSeconds: 3600 },
             next: "node-provider-2",
           },
           {
@@ -661,7 +661,7 @@ export class WorkflowRepository {
         relationships: [
           { targetId: "developer", type: "user", description: "Responsible for modifying source files" },
         ],
-        metadata: { folder: "D:/OpenClaw/Workspace/developer" },
+        metadata: { folder: "D:/AegisOS/Workspace/developer" },
         createdAt: baseTime,
         updatedAt: baseTime,
       },
@@ -713,7 +713,7 @@ export class WorkflowRepository {
         relationships: [
           { targetId: "reviewer", type: "user", description: "Runs static reviews and leaks check audits" },
         ],
-        metadata: { folder: "D:/OpenClaw/Workspace/reviewer" },
+        metadata: { folder: "D:/AegisOS/Workspace/reviewer" },
         createdAt: baseTime,
         updatedAt: baseTime,
       },
@@ -775,7 +775,7 @@ export class WorkflowRepository {
             id: "approval-gate",
             name: "Approval Gate",
             type: "approval",
-            config: { approvalType: "single", approvers: ["admin@openclaw.io"] },
+            config: { approvalType: "single", approvers: ["admin@aegisos.io"] },
             next: "success-notification",
           },
           {

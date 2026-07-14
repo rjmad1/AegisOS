@@ -1,0 +1,58 @@
+name: aegis_mobile
+description: AegisOS Mobile secure companion application.
+version: 1.0.0+1
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # Navigation & Routing
+  go_router: ^10.0.0
+
+  # State Management
+  flutter_riverpod: ^2.3.6
+  riverpod_annotation: ^2.1.1
+
+  # Local DB & Storage
+  drift: ^2.9.0
+  sqlite3_flutter_libs: ^0.5.15
+  flutter_secure_storage: ^8.0.0
+
+  # Network & Protocols
+  dio: ^5.2.1
+  web_socket_channel: ^2.4.0
+  flutter_client_sse: ^1.1.2
+
+  # Security & Biometrics
+  local_auth: ^2.1.6
+  cryptography: ^2.0.5
+
+  # Design & Utilities
+  google_fonts: ^5.1.0
+  uuid: ^3.0.7
+  fl_chart: ^0.63.0
+  logger: ^2.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Code Generation
+  build_runner: ^2.4.6
+  drift_dev: ^2.9.0
+  riverpod_generator: ^2.2.3
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/fonts/
+    - assets/icons/
+    - assets/images/
+    - assets/animations/

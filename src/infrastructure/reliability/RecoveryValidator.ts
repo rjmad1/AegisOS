@@ -45,12 +45,12 @@ export class RecoveryValidator {
         message: portActive ? "LiteLLM socket is accepting traffic." : "Port 4000 refused connection."
       });
       if (!portActive) overallPassed = false;
-    } else if (componentId === "openclaw" || componentId === "OpenClaw Gateway") {
+    } else if (componentId === "aegisos" || componentId === "AegisOS Gateway") {
       const portActive = await deploymentManager.checkPort(18789);
       checks.push({
         name: "Socket listener verification on Port 18789",
         passed: portActive,
-        message: portActive ? "OpenClaw socket is accepting traffic." : "Port 18789 refused connection."
+        message: portActive ? "AegisOS socket is accepting traffic." : "Port 18789 refused connection."
       });
       if (!portActive) overallPassed = false;
     } else {

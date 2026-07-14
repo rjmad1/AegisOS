@@ -35,7 +35,7 @@ log_error() {
     echo -e "\e[31m[Installer] ERROR: $1\e[0m" >&2
 }
 
-log "Starting OpenClaw Console Linux Installer..."
+log "Starting AegisOS Console Linux Installer..."
 
 # Enforce root or sudo check
 if [ "$EUID" -ne 0 ]; then
@@ -100,5 +100,5 @@ DATABASE_URL="file:./databases/dev.db" npx prisma db push
 chown -R aiuser:aiuser "$INSTALL_DIR"
 chmod -R 750 "$INSTALL_DIR"
 
-log "OpenClaw Platform Installation Complete."
+log "AegisOS Platform Installation Complete."
 exit 0

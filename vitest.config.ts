@@ -7,14 +7,16 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     },
     env: {
-      DATABASE_URL: 'file:./databases/dev.db',
+      // These are TEST-ONLY values used exclusively for vitest execution.
+      // They are intentionally fake and must NEVER match any real deployment credentials.
+      DATABASE_URL: 'file:./databases/test.db',
       NODE_ENV: 'test',
-      AUTH_SECRET: 'console_jwt_session_auth_secret_dev_secure_120938',
-      OPS_JWT_SECRET: 'secrets_encryption_key_dev_secure_901283',
-      OPS_ADMIN_USERNAME: 'console_admin_dev',
-      OPS_ADMIN_PASSWORD: 'DevConsolePassword9023!',
-      GOOGLE_CLIENT_ID: 'google_oauth_client_id_dev_secure_890123',
-      GOOGLE_CLIENT_SECRET: 'google_oauth_client_secret_dev_secure_890123'
+      AUTH_SECRET: 'test-only-auth-secret-not-for-production-use-aaaa-bbbb-cccc-dddd-1234567890',
+      OPS_JWT_SECRET: 'test-only-jwt-secret-not-for-production-use-eeee-ffff-0000-1111-0987654321',
+      OPS_ADMIN_USERNAME: 'test-admin',
+      OPS_ADMIN_PASSWORD: 'TestOnlyPassword!NotForProduction',
+      GOOGLE_CLIENT_ID: 'test-only-google-client-id.example.com',
+      GOOGLE_CLIENT_SECRET: 'test-only-google-client-secret'
     }
   }
 });

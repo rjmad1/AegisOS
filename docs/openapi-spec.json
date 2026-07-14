@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "OpenClaw AI Workstation Admin Console API",
+    "title": "AegisOS AI Workstation Admin Console API",
     "description": "Enterprise Governance and Management API specifications for the local-first, privacy-preserving AI Workstation Console.",
     "version": "1.0.0"
   },

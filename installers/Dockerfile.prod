@@ -1,5 +1,5 @@
 # installers/Dockerfile.prod
-# Production hardened, multi-stage build container for OpenClaw Console.
+# Production hardened, multi-stage build container for AegisOS Console.
 
 # Stage 1: Build dependencies
 FROM node:20-alpine AS builder

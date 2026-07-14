@@ -25,7 +25,7 @@ interface NotificationState {
 const loadInitialNotifications = (): PlatformNotification[] => {
   if (typeof window === 'undefined') return [];
   try {
-    const raw = localStorage.getItem('openclaw_notifications');
+    const raw = localStorage.getItem('aegisos_notifications');
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
@@ -35,7 +35,7 @@ const loadInitialNotifications = (): PlatformNotification[] => {
 const saveNotificationsToStorage = (notifications: PlatformNotification[]) => {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem('openclaw_notifications', JSON.stringify(notifications.slice(0, 100)));
+    localStorage.setItem('aegisos_notifications', JSON.stringify(notifications.slice(0, 100)));
   } catch {}
 };
 

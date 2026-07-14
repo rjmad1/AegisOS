@@ -33,7 +33,7 @@ export class StructuredLogger {
   private host: string;
   private version: string;
 
-  constructor(serviceName: string = "openclaw-console") {
+  constructor(serviceName: string = "aegisos-console") {
     this.serviceName = serviceName;
     this.environment = process.env.NODE_ENV || "development";
     this.host = typeof process !== "undefined" ? process.env.COMPUTERNAME || process.env.HOSTNAME || "localhost" : "localhost";

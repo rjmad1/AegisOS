@@ -30,7 +30,7 @@ if (-not (Test-PlatformElevation)) { Exit 1 }
 $PlatformRoot = Get-PlatformRoot $PlatformRoot
 
 # 2. Stop and delete SCM services
-$services = @("OpenClawService", "OmniRouteService", "LiteLLMService", "Ollama")
+$services = @("AegisOSService", "OmniRouteService", "LiteLLMService", "Ollama")
 Log-PlatformAction "Suspending and removing registered services..."
 
 foreach ($s in $services) {
@@ -47,7 +47,7 @@ foreach ($s in $services) {
 }
 
 # 3. Delete directory junctions
-$srcJunction = Join-Path $env:USERPROFILE ".openclaw"
+$srcJunction = Join-Path $env:USERPROFILE ".aegisos"
 Log-PlatformAction "Evaluating directory junctions..."
 if (Test-Path $srcJunction) {
     $item = Get-Item $srcJunction
@@ -56,7 +56,7 @@ if (Test-Path $srcJunction) {
             Log-PlatformAction "[DRY-RUN] Would delete directory junction: $srcJunction"
         } else {
             cmd.exe /c rmdir "$srcJunction" | Out-Null
-            Log-PlatformSuccess "Junction link C:\Users\<user>\.openclaw deleted."
+            Log-PlatformSuccess "Junction link C:\Users\<user>\.aegisos deleted."
         }
     }
 }
@@ -64,14 +64,14 @@ if (Test-Path $srcJunction) {
 # 4. Remove Environment Variables
 Log-PlatformAction "Cleaning environment parameters..."
 if ($DryRun) {
-    Log-PlatformAction "[DRY-RUN] Would remove machine/user env variables for OPENCLAW_CONFIG_PATH and OPENCLAW_STATE_DIR"
+    Log-PlatformAction "[DRY-RUN] Would remove machine/user env variables for AEGISOS_CONFIG_PATH and AEGISOS_STATE_DIR"
 } else {
-    [System.Environment]::SetEnvironmentVariable("OPENCLAW_CONFIG_PATH", $null, "Machine")
-    [System.Environment]::SetEnvironmentVariable("OPENCLAW_STATE_DIR", $null, "Machine")
+    [System.Environment]::SetEnvironmentVariable("AEGISOS_CONFIG_PATH", $null, "Machine")
+    [System.Environment]::SetEnvironmentVariable("AEGISOS_STATE_DIR", $null, "Machine")
     [System.Environment]::SetEnvironmentVariable("OLLAMA_MODELS", $null, "Machine")
     
-    [System.Environment]::SetEnvironmentVariable("OPENCLAW_CONFIG_PATH", $null, "User")
-    [System.Environment]::SetEnvironmentVariable("OPENCLAW_STATE_DIR", $null, "User")
+    [System.Environment]::SetEnvironmentVariable("AEGISOS_CONFIG_PATH", $null, "User")
+    [System.Environment]::SetEnvironmentVariable("AEGISOS_STATE_DIR", $null, "User")
     
     Log-PlatformSuccess "Environment variables cleared."
 }

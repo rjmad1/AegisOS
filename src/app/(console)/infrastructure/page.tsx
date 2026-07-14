@@ -162,7 +162,7 @@ export default function InfrastructurePage() {
     const activeProcesses = [
       { pid: "proc-9210", name: "ollama.exe", desc: "Local Models Runner" },
       { pid: "proc-10402", name: "python.exe (LiteLLM)", desc: "LiteLLM Router Chain" },
-      { pid: "proc-8840", name: "openclaw.exe", desc: "Orchestrator Kernel" }
+      { pid: "proc-8840", name: "aegisos.exe", desc: "Orchestrator Kernel" }
     ];
     activeProcesses.forEach(p => {
       nodes.push({ id: p.pid, label: `${p.name} (${p.pid.replace("proc-", "")})`, type: "process", status: "healthy", description: p.desc });
@@ -173,7 +173,7 @@ export default function InfrastructurePage() {
     const activeServices = [
       { id: "svc-ollama", name: "Ollama", pid: "proc-9210" },
       { id: "svc-litellm", name: "LiteLLMProxy", pid: "proc-10402" },
-      { id: "svc-openclaw", name: "OpenClawCore", pid: "proc-8840" }
+      { id: "svc-aegisos", name: "AegisOSCore", pid: "proc-8840" }
     ];
     activeServices.forEach(s => {
       nodes.push({ id: s.id, label: s.name, type: "service", status: "healthy", description: "Background Service Daemon" });
@@ -184,19 +184,19 @@ export default function InfrastructurePage() {
     databases.forEach(db => {
       const dbId = `db-${db.type}`;
       nodes.push({ id: dbId, label: db.type.toUpperCase(), type: "database", status: db.health, description: `Ver: ${db.version} | ${db.location}` });
-      edges.push({ source: "svc-openclaw", target: dbId });
+      edges.push({ source: "svc-aegisos", target: dbId });
     });
 
     // Layer 6: Containers
     containers.forEach(c => {
       const cId = `cont-${c.id}`;
       nodes.push({ id: cId, label: c.name, type: "container", status: "healthy", description: `Img: ${c.image}` });
-      edges.push({ source: "svc-openclaw", target: cId });
+      edges.push({ source: "svc-aegisos", target: cId });
     });
 
     // Layer 7: AI Runtime
-    nodes.push({ id: "ai-runtime", label: "OpenClaw Runtime Fabric", type: "ai_runtime", status: "healthy", description: "V1.0.0-core" });
-    edges.push({ source: "svc-openclaw", target: "ai-runtime" });
+    nodes.push({ id: "ai-runtime", label: "AegisOS Runtime Fabric", type: "ai_runtime", status: "healthy", description: "V1.0.0-core" });
+    edges.push({ source: "svc-aegisos", target: "ai-runtime" });
     edges.push({ source: "svc-litellm", target: "ai-runtime" });
 
     // Layer 8: AI Models

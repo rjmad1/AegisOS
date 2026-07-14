@@ -643,7 +643,7 @@ export default function WorkflowsPage() {
                                 <span className="text-[10px] text-muted-foreground uppercase font-bold block mb-1">Approver Emails (CSV)</span>
                                 <Input
                                   value={node.config.approvers?.join(", ") || ""}
-                                  placeholder="admin@openclaw.io"
+                                  placeholder="admin@aegisos.io"
                                   onChange={(e) => handleUpdateNode(node.id, { config: { approvers: e.target.value.split(",").map(s => s.trim()) } })}
                                 />
                               </div>

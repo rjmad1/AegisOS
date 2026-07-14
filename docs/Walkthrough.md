@@ -9,9 +9,9 @@ We verify the system components using runtime evidence and active validation tes
 | Check Target | Method | Verification Evidence | Status |
 |---|---|---|---|
 | **GPU Compute Check** | `nvidia-smi` query | NVIDIA GeForce RTX 5080 (16 GB GDDR7) resolved in logs | ✅ Passed |
-| **SCM Services Status** | `Get-Service` checks | Ollama, LiteLLMService, OpenClawService, OmniRouteService | ✅ Passed |
+| **SCM Services Status** | `Get-Service` checks | Ollama, LiteLLMService, AegisOSService, OmniRouteService | ✅ Passed |
 | **Network Socket Ports** | TCP Client connects | Ports 11434, 4000, 18789, 20128 verified as active | ✅ Passed |
-| **Junction Directory Link** | Reparse point expansion | `%USERPROFILE%\.openclaw` link points to active `$PlatformRoot` | ✅ Passed |
+| **Junction Directory Link** | Reparse point expansion | `%USERPROFILE%\.aegisos` link points to active `$PlatformRoot` | ✅ Passed |
 | **Inference generation loop** | REST POST generation | `smollm:135m` query French translation test returns PASS | ✅ Passed |
 | **Clean Compilation** | `npm run build` | Next.js Console frontend builds with zero syntax errors | ✅ Passed |
 
@@ -36,28 +36,28 @@ A comparison of system issues resolved during productization:
 
 ---
 
-## 3. Phase 4 Walkthrough: OpenClaw Runtime Integration (Read-Only)
+## 3. Phase 4 Walkthrough: AegisOS Runtime Integration (Read-Only)
 
-### OpenClaw Adapter Architecture
-The console acts as a strict, read-only observer to the OpenClaw runtime using a decoupled adapter architecture:
+### AegisOS Adapter Architecture
+The console acts as a strict, read-only observer to the AegisOS runtime using a decoupled adapter architecture:
 ```
   [UI Console Pages] <--> [REST API endpoints /api/v1/*] <--> [RuntimeService (Adapter)] <--> [SQLite Database / config JSON]
 ```
 No direct mutations (mutations are blocked in the provider layer). All system models are mapped to Canonical Models inside `src/types/runtime.ts`.
 
 ### Canonical Model Mapping
-We map raw database records from `openclaw.sqlite` to canonical structures:
+We map raw database records from `aegisos.sqlite` to canonical structures:
 - **Runtime**: Holds status, capabilities, active port bindings, and health check validation.
 - **Conversation**: Grouped Telegram message exchanges (derived from `plugin_state_entries`) and CLI task runs.
 - **Message**: Standard role-based chats (`user`, `assistant`, `system`, `tool`) with duration metadata and text.
 - **Execution**: Mapped from `task_runs` table, containing statuses (`succeeded`, `failed`, `running`, `queued`) and error strings.
-- **Workflow**: Mapped from the OpenClaw active workspace folders.
+- **Workflow**: Mapped from the AegisOS active workspace folders.
 - **Agent**: Grouped stats, model bindings, and allowed tool lists from workspace configurations.
 - **Tool**: Active built-in capabilities and connected MCP server schemas.
 
 ### Runtime Discovery & Connectivity
-- Discovery relies on normal environment resolution of `OPENCLAW_STATE_DIR` (e.g. `D:\OpenClaw`) and `OPENCLAW_CONFIG_PATH` (e.g. `D:\OpenClaw\Config\openclaw.json`).
-- Connectivity is verified by opening a loopback socket to port `18789` (default OpenClaw service).
+- Discovery relies on normal environment resolution of `AEGISOS_STATE_DIR` (e.g. `D:\AegisOS`) and `AEGISOS_CONFIG_PATH` (e.g. `D:\AegisOS\Config\aegisos.json`).
+- Connectivity is verified by opening a loopback socket to port `18789` (default AegisOS service).
 
 ### Registry Architectures
 1. **Conversation Registry**: Resolves message timeline from Telegram and CLI tasks, supporting offset/limit pagination, query search, and agent filtering.
@@ -173,7 +173,7 @@ Exposes a tab in `/runtime` displaying:
 - **Connection Latency**: Loopback response times.
 - **Event Throughput**: Events processed per minute.
 - **Watchers**: Active filesystem path watchers.
-- **Provider Grid**: Live availability, latency, sync times, and recovery states for Ollama, LiteLLM, and OpenClaw.
+- **Provider Grid**: Live availability, latency, sync times, and recovery states for Ollama, LiteLLM, and AegisOS.
 
 ### Event Inspector
 A debugging console tab in `/runtime` supporting:

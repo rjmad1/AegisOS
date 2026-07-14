@@ -20,9 +20,9 @@ export async function GET(request: NextRequest) {
         { time: "14:00", calls: 22100, errors: 20, latencyMs: 12.8 }
       ],
       packagePopularity: [
-        { id: "com.openclaw.agent.coder", name: "Distinguished Coder Agent", downloads: 1420 },
-        { id: "com.openclaw.workflow.compliance-gate", name: "CI/CD Compliance Gate Workflow", downloads: 940 },
-        { id: "com.openclaw.plugin.gcs-storage", name: "Google Cloud Storage Plugin", downloads: 310 }
+        { id: "com.aegisos.agent.coder", name: "Distinguished Coder Agent", downloads: 1420 },
+        { id: "com.aegisos.workflow.compliance-gate", name: "CI/CD Compliance Gate Workflow", downloads: 940 },
+        { id: "com.aegisos.plugin.gcs-storage", name: "Google Cloud Storage Plugin", downloads: 310 }
       ]
     });
   } catch (err: any) {

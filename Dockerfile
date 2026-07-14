@@ -12,23 +12,34 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Set default env variables for building
+# Build-time configuration — these are NOT secrets, just defaults for compilation.
+# Real values are injected at runtime via environment variables.
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV DATABASE_PROVIDER=sqlite
-ENV DATABASE_URL="file:./databases/production.db"
-ENV GOOGLE_CLIENT_ID="production_google_client_id"
-ENV GOOGLE_CLIENT_SECRET="production_google_client_secret"
-ENV AUTH_SECRET="super-secret-random-hash-key-for-console-jwt-signing-2026"
-ENV OPS_ADMIN_USERNAME="admin"
-ENV OPS_ADMIN_PASSWORD="AdminPassword123!"
-ENV OPS_JWT_SECRET="super-secret-random-hash-key-for-console-jwt-signing-2026"
+ENV DATABASE_URL="file:./databases/build.db"
+
+# Build args for compilation only — use empty/dummy values that clearly cannot work.
+# These satisfy Next.js build-time env checks but are overridden at runtime.
+ARG BUILD_GOOGLE_CLIENT_ID="build-time-placeholder"
+ARG BUILD_GOOGLE_CLIENT_SECRET="build-time-placeholder"
+ARG BUILD_AUTH_SECRET="build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation"
+ARG BUILD_OPS_ADMIN_USERNAME="build-placeholder"
+ARG BUILD_OPS_ADMIN_PASSWORD="build-placeholder"
+ARG BUILD_OPS_JWT_SECRET="build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation"
+
+ENV GOOGLE_CLIENT_ID=${BUILD_GOOGLE_CLIENT_ID}
+ENV GOOGLE_CLIENT_SECRET=${BUILD_GOOGLE_CLIENT_SECRET}
+ENV AUTH_SECRET=${BUILD_AUTH_SECRET}
+ENV OPS_ADMIN_USERNAME=${BUILD_OPS_ADMIN_USERNAME}
+ENV OPS_ADMIN_PASSWORD=${BUILD_OPS_ADMIN_PASSWORD}
+ENV OPS_JWT_SECRET=${BUILD_OPS_JWT_SECRET}
 
 # Configure Prisma provider and run schema compilation
 RUN node scripts/configure-db.js
 RUN npm run build
 
-# Stage 3: Runner
+# Stage 3: Runner — clean image with no build-time secrets
 FROM node:20-alpine AS runner
 WORKDIR /app
 

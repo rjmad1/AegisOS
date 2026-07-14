@@ -5,7 +5,7 @@
 SILENT=false
 REPAIR=false
 UPGRADE=false
-INSTALL_DIR="$HOME/Library/Application Support/OpenClaw"
+INSTALL_DIR="$HOME/Library/Application Support/AegisOS"
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -24,7 +24,7 @@ log() {
     fi
 }
 
-log "Starting OpenClaw Console macOS Installer..."
+log "Starting AegisOS Console macOS Installer..."
 
 if [ "$REPAIR" = true ]; then
     log "Running macOS local directory repair..."

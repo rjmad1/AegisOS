@@ -12,14 +12,14 @@ This document records the design decisions and trade-offs made during the UAWOS 
 * **Decision**: We adopt CodeGraph strictly via **Interface Only** and register it as a local MCP server.
 * **Consequences**:
   - CodeGraph's AST scanner indexes files locally.
-  - The Developer Agent queries CodeGraph via OpenClaw.
+  - The Developer Agent queries CodeGraph via AegisOS.
   - Avoids integrating tree-sitter code into the Next.js runtime.
 * **Alternatives**: Absorb CodeGraph's database generation directly into Next.js console APIs (rejected due to excessive complexity).
 
 ### ADR-02: Expose Spec Kit as an On-Demand Planning Service
 * **Status**: Approved
 * **Context**: The platform lacks a structured planning and task decomposition framework, leading to ad-hoc, error-prone code generation.
-* **Decision**: Adopt Spec Kit via **Interface Only** by exposing it as a command-line service wrapped by OpenClaw's Planning Agent.
+* **Decision**: Adopt Spec Kit via **Interface Only** by exposing it as a command-line service wrapped by AegisOS's Planning Agent.
 * **Consequences**:
   - The Planning Agent executes spec checks before task initiation.
   - All PRDs and ADRs are formatted according to Spec Kit standards.
@@ -88,7 +88,7 @@ This document records the design decisions and trade-offs made during the UAWOS 
 
 ### ADR-09: Deploy Event Bus using local EventListener Loop
 * **Status**: Approved
-* **Decision**: Implement a local Event Bus in the OpenClaw service to support decoupled, async operations (e.g., auto-indexing files on creation).
+* **Decision**: Implement a local Event Bus in the AegisOS service to support decoupled, async operations (e.g., auto-indexing files on creation).
 * **Consequences**: Uses standard Node.js EventListeners to prevent circular dependencies.
 
 ### ADR-10: Establish Model Registry with static JSON Extensions

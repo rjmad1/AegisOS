@@ -14,7 +14,7 @@
     ],
     "component": {
       "type": "application",
-      "name": "openclaw-ops-console",
+      "name": "aegisos-ops-console",
       "version": "0.1.0"
     }
   },

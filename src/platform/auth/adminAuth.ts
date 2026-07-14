@@ -1,8 +1,16 @@
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 
+// Blocklist of known-insecure default secrets that must never be used in production
+const INSECURE_SECRETS = new Set([
+  "super-secret-random-hash-key-for-console-jwt-signing-2026",
+  "fallback_secret_must_change_in_production_extremely_long",
+  "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
+  "",
+]);
+
 const authSecret = process.env.AUTH_SECRET;
-if (!authSecret || authSecret === 'super-secret-random-hash-key-for-console-jwt-signing-2026' || authSecret === 'fallback_secret_must_change_in_production_extremely_long') {
+if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
   throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
 }
 const key = new TextEncoder().encode(authSecret);

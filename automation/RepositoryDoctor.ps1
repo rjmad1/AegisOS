@@ -13,7 +13,7 @@ if (Test-Path $HelperModule) {
 }
 
 Log-PlatformInfo "==================================================="
-Log-PlatformInfo "         OpenClaw Workstation Console Doctor       "
+Log-PlatformInfo "         AegisOS Workstation Console Doctor       "
 Log-PlatformInfo "==================================================="
 
 $allPassed = $true

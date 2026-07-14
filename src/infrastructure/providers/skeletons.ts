@@ -136,10 +136,10 @@ export class LiteLLMProvider extends BaseProviderSkeleton implements IModelProvi
   }
 }
 
-// 3. OpenClaw Workflow Provider
-export class OpenClawProvider extends BaseProviderSkeleton implements IWorkflowProviderAdapter {
-  id = "openclaw-provider";
-  name = "OpenClaw AI Orchestrator Provider";
+// 3. AegisOS Workflow Provider
+export class AegisOSProvider extends BaseProviderSkeleton implements IWorkflowProviderAdapter {
+  id = "aegisos-provider";
+  name = "AegisOS AI Orchestrator Provider";
   type = "workflow-provider" as const;
 
   async listWorkflows(): Promise<any[]> {

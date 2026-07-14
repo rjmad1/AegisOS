@@ -48,7 +48,7 @@ export class CliEngine {
     const pkgJsonPath = path.resolve(process.cwd(), 'package.json');
     if (fs.existsSync(pkgJsonPath)) {
       const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
-      checks.push(`Package: OpenClaw workspace is registered as "${pkg.name}" v${pkg.version}`);
+      checks.push(`Package: AegisOS workspace is registered as "${pkg.name}" v${pkg.version}`);
       if (pkg.dependencies && pkg.dependencies.next) {
         checks.push(`NextJS: Version ${pkg.dependencies.next} resolved.`);
       }
@@ -58,7 +58,7 @@ export class CliEngine {
     }
 
     // 4. Ports connectivity mock checks
-    checks.push("Ports: Connected successfully to loopback on 18789 (OpenClaw Service).");
+    checks.push("Ports: Connected successfully to loopback on 18789 (AegisOS Service).");
 
     return {
       success: healthy,
@@ -81,12 +81,12 @@ export class CliEngine {
     }
 
     const manifest = {
-      id: `com.openclaw.${type}.${name.toLowerCase()}`,
+      id: `com.aegisos.${type}.${name.toLowerCase()}`,
       name: name,
       version: "1.0.0",
       manifestVersion: "1.0",
       capabilities: [type],
-      dependencies: { "openclaw": ">=1.0.0" },
+      dependencies: { "aegisos": ">=1.0.0" },
       configSchema: {
         type: "object",
         properties: {

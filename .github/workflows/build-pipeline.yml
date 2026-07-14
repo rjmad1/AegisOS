@@ -1,4 +1,4 @@
-name: AI Operations Console CI/CD Pipeline
+name: AegisOS CI/CD Pipeline
 
 on:
   push:
@@ -10,9 +10,13 @@ on:
       - main
       - master
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
-  build-and-package:
-    name: Build, Lint, and Package Console
+  build-and-validate:
+    name: Build, Lint, Test, and Validate
     runs-on: ubuntu-latest
 
     steps:
@@ -39,22 +43,41 @@ jobs:
       - name: Static Type Compilation Verification
         run: npx tsc --noEmit
 
-      # 6. Run Next.js production build
+      # 6. Run unit tests
+      - name: Unit Test Suite
+        run: npx vitest run --reporter=verbose
+        env:
+          NODE_ENV: test
+          DATABASE_URL: 'file:./databases/test.db'
+          AUTH_SECRET: 'ci-test-only-auth-secret-not-for-production-aaaa-bbbb-cccc-dddd-1234567890'
+          OPS_JWT_SECRET: 'ci-test-only-jwt-secret-not-for-production-eeee-ffff-0000-1111-0987654321'
+          OPS_ADMIN_USERNAME: 'ci-test-admin'
+          OPS_ADMIN_PASSWORD: 'CiTestOnlyPassword!NotForProduction'
+          GOOGLE_CLIENT_ID: 'ci-test-google-client-id.example.com'
+          GOOGLE_CLIENT_SECRET: 'ci-test-google-client-secret'
+
+      # 7. Dependency vulnerability scan
+      - name: Dependency Vulnerability Audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      # 8. Run Next.js production build
       - name: Production Build Execution
         run: npm run build
         env:
           NODE_ENV: production
-          # Inject dummy environment vars for compilation validation
-          OPS_JWT_SECRET: dummy-compile-secret-key-do-not-use-in-production-1234-extremely-long-string
-          AUTH_SECRET: dummy-compile-auth-secret-do-not-use-in-production-1234-extremely-long-string
-          OPS_ADMIN_USERNAME: compile-dummy-admin-username
-          OPS_ADMIN_PASSWORD: compile-dummy-admin-password
-          GOOGLE_CLIENT_ID: compile-dummy-google-client-id.apps.googleusercontent.com
-          GOOGLE_CLIENT_SECRET: compile-dummy-google-client-secret
+          # Build-time placeholders — these satisfy Next.js env checks during compilation.
+          # They are clearly non-functional and overridden at runtime.
+          OPS_JWT_SECRET: build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation
+          AUTH_SECRET: build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation
+          OPS_ADMIN_USERNAME: build-placeholder
+          OPS_ADMIN_PASSWORD: build-placeholder
+          GOOGLE_CLIENT_ID: build-placeholder.apps.googleusercontent.com
+          GOOGLE_CLIENT_SECRET: build-placeholder
           OLLAMA_BASE_URL: http://127.0.0.1:11434
           LITELLM_BASE_URL: http://127.0.0.1:4000
 
-      # 7. Package build artifacts (ZIP)
+      # 9. Package build artifacts (ZIP)
       - name: Archive and Package Production Bundle
         run: |
           zip -r production_release.zip \
@@ -71,7 +94,7 @@ jobs:
             health.bat \
             -x "*.git*" "node_modules/*" "databases/*" "backups/*" "logs/*"
 
-      # 8. Upload Build Artifact
+      # 10. Upload Build Artifact
       - name: Upload Build Artifact Bundle
         uses: actions/upload-artifact@v4
         with:

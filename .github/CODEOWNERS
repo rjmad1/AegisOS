@@ -1,0 +1,18 @@
+# AegisOS Code Owners
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+* @rjmad1
+
+# Security-sensitive files require explicit review
+SECURITY.md @rjmad1
+.github/workflows/ @rjmad1
+src/infrastructure/security/ @rjmad1
+src/platform/auth/ @rjmad1
+src/proxy.ts @rjmad1
+k8s/ @rjmad1
+helm/ @rjmad1
+Dockerfile* @rjmad1
+docker-compose*.yml @rjmad1
+.env.example @rjmad1
+prisma/schema.prisma @rjmad1

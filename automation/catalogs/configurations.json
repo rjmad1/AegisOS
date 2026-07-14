@@ -7,9 +7,9 @@
     "purpose": "Configures model alias targets, weights, fallbacks, and port bindings."
   },
   {
-    "configId": "openclaw-gateway-profile",
-    "name": "OpenClaw configuration profile",
-    "filePattern": "configs/openclaw/openclaw.json",
+    "configId": "aegisos-gateway-profile",
+    "name": "AegisOS configuration profile",
+    "filePattern": "configs/aegisos/aegisos.json",
     "format": "JSON",
     "purpose": "Configures active MCP endpoints, token limits, and agent profiles."
   },

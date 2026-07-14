@@ -6,7 +6,7 @@
 // ============================================================================
 
 export type EnterpriseRole =
-  | 'platform-admin'        // OpenClaw platform operators
+  | 'platform-admin'        // AegisOS platform operators
   | 'organization-owner'    // Organization creator/billing owner
   | 'organization-admin'    // Organization-level administrator
   | 'tenant-admin'          // Tenant-level administrator

@@ -140,8 +140,8 @@ export class EnterpriseAPI {
     console.log(`[EnterpriseAPI] Organization onboarded: ${params.displayName}`);
     return {
       organization, admin, tenant, subscription,
-      loginUrl: `https://${params.slug}.openclaw.io`,
-      dashboardUrl: `https://${params.slug}.openclaw.io/admin`,
+      loginUrl: `https://${params.slug}.aegisos.io`,
+      dashboardUrl: `https://${params.slug}.aegisos.io/admin`,
     };
   }
 

@@ -1,4 +1,4 @@
-# Version 1.0 General Availability Release Notes — OpenClaw
+# Version 1.0 General Availability Release Notes — AegisOS
 
 **Release Date**: July 13, 2026  
 **Target Audience**: Systems Administrators, DevOps Teams, Platform Engineers, Enterprise Security Officers  
@@ -8,7 +8,7 @@
 
 ## 1. Release Overview
 
-We are pleased to announce the General Availability (GA) of the OpenClaw AI Workstation V1.0. This release establishes a secure, local-first, privacy-preserving AI Gateway control plane and workstation administration console. The platform is optimized for organizations requiring strict data sovereignty, loopback-only processing, and localized multi-agent workflows.
+We are pleased to announce the General Availability (GA) of the AegisOS AI Workstation V1.0. This release establishes a secure, local-first, privacy-preserving AI Gateway control plane and workstation administration console. The platform is optimized for organizations requiring strict data sovereignty, loopback-only processing, and localized multi-agent workflows.
 
 ---
 

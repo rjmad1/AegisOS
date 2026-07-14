@@ -1,5 +1,5 @@
 {
-  "id": "com.openclaw.plugin.logexporter",
+  "id": "com.aegisos.plugin.logexporter",
   "name": "LogExporter",
   "version": "1.0.0",
   "manifestVersion": "1.0",
@@ -7,7 +7,7 @@
     "plugin"
   ],
   "dependencies": {
-    "openclaw": ">=1.0.0"
+    "aegisos": ">=1.0.0"
   },
   "configSchema": {
     "type": "object",

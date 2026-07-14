@@ -6,7 +6,15 @@ import { metricsPlatform } from "@/infrastructure/observability/metrics-platform
 
 const authSecret = process.env.AUTH_SECRET;
 
-if (!authSecret || authSecret === "super-secret-random-hash-key-for-console-jwt-signing-2026" || authSecret === "fallback_secret_must_change_in_production_extremely_long") {
+// Blocklist of known-insecure default secrets that must never be used
+const INSECURE_SECRETS = new Set([
+  "super-secret-random-hash-key-for-console-jwt-signing-2026",
+  "fallback_secret_must_change_in_production_extremely_long",
+  "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
+  "",
+]);
+
+if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
   throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
 }
 

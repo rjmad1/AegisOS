@@ -36,7 +36,7 @@ export default function AgentsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Agent Fleet</h1>
           <p className="text-sm text-muted-foreground">
-            Monitor and explore registered OpenClaw agent nodes and capability mappings.
+            Monitor and explore registered AegisOS agent nodes and capability mappings.
           </p>
         </div>
         <div>
@@ -57,7 +57,7 @@ export default function AgentsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Active Agents</CardTitle>
-              <CardDescription>Available agent personas registered in the OpenClaw workspace.</CardDescription>
+              <CardDescription>Available agent personas registered in the AegisOS workspace.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {loading && agents.length === 0 ? (

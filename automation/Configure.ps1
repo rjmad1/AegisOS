@@ -55,23 +55,23 @@ function Backup-RegistryKey($keyPath, $filename) {
 }
 
 Backup-RegistryKey "HKLM:\System\CurrentControlSet\Services\LiteLLMService\Parameters" "LiteLLMService_Parameters.reg"
-Backup-RegistryKey "HKLM:\System\CurrentControlSet\Services\OpenClawService\Parameters" "OpenClawService_Parameters.reg"
+Backup-RegistryKey "HKLM:\System\CurrentControlSet\Services\AegisOSService\Parameters" "AegisOSService_Parameters.reg"
 Backup-RegistryKey "HKLM:\System\CurrentControlSet\Services\OmniRouteService\Parameters" "OmniRouteService_Parameters.reg"
 
 # 3. Parameterize Environment Variables
 Log-PlatformAction "Setting platform environment variables..."
 if ($DryRun) {
     Log-PlatformAction "[DRY-RUN] Would register system environment variables:"
-    Log-PlatformAction "  - OPENCLAW_CONFIG_PATH = $(Join-Path $configDir 'openclaw\openclaw.json')"
-    Log-PlatformAction "  - OPENCLAW_STATE_DIR = $PlatformRoot"
+    Log-PlatformAction "  - AEGISOS_CONFIG_PATH = $(Join-Path $configDir 'aegisos\aegisos.json')"
+    Log-PlatformAction "  - AEGISOS_STATE_DIR = $PlatformRoot"
     Log-PlatformAction "  - OLLAMA_MODELS = $(Join-Path $PlatformRoot 'models')"
 } else {
-    [System.Environment]::SetEnvironmentVariable("OPENCLAW_CONFIG_PATH", (Join-Path $configDir "openclaw\openclaw.json"), "Machine")
-    [System.Environment]::SetEnvironmentVariable("OPENCLAW_STATE_DIR", $PlatformRoot, "Machine")
+    [System.Environment]::SetEnvironmentVariable("AEGISOS_CONFIG_PATH", (Join-Path $configDir "aegisos\aegisos.json"), "Machine")
+    [System.Environment]::SetEnvironmentVariable("AEGISOS_STATE_DIR", $PlatformRoot, "Machine")
     [System.Environment]::SetEnvironmentVariable("OLLAMA_MODELS", (Join-Path $PlatformRoot "models"), "Machine")
     
-    [System.Environment]::SetEnvironmentVariable("OPENCLAW_CONFIG_PATH", (Join-Path $configDir "openclaw\openclaw.json"), "User")
-    [System.Environment]::SetEnvironmentVariable("OPENCLAW_STATE_DIR", $PlatformRoot, "User")
+    [System.Environment]::SetEnvironmentVariable("AEGISOS_CONFIG_PATH", (Join-Path $configDir "aegisos\aegisos.json"), "User")
+    [System.Environment]::SetEnvironmentVariable("AEGISOS_STATE_DIR", $PlatformRoot, "User")
     
     Log-PlatformSuccess "System and User environment variables updated."
 }
@@ -91,10 +91,10 @@ function Patch-NSSMProperty($service, $name, $value) {
     }
 }
 
-# OpenClaw
-Patch-NSSMProperty "OpenClawService" "AppDirectory" $PlatformRoot
-Patch-NSSMProperty "OpenClawService" "AppStdout" (Join-Path $logsDir "openclaw\OpenClawService.log")
-Patch-NSSMProperty "OpenClawService" "AppStderr" (Join-Path $logsDir "openclaw\OpenClawService_error.log")
+# AegisOS
+Patch-NSSMProperty "AegisOSService" "AppDirectory" $PlatformRoot
+Patch-NSSMProperty "AegisOSService" "AppStdout" (Join-Path $logsDir "aegisos\AegisOSService.log")
+Patch-NSSMProperty "AegisOSService" "AppStderr" (Join-Path $logsDir "aegisos\AegisOSService_error.log")
 
 # LiteLLM
 Patch-NSSMProperty "LiteLLMService" "AppDirectory" (Join-Path $configDir "litellm")
@@ -107,7 +107,7 @@ Patch-NSSMProperty "OmniRouteService" "AppStdout" (Join-Path $logsDir "OmniRoute
 Patch-NSSMProperty "OmniRouteService" "AppStderr" (Join-Path $logsDir "OmniRouteService_error.log")
 
 # 5. Establish directory junctions
-$srcJunction = Join-Path $env:USERPROFILE ".openclaw"
+$srcJunction = Join-Path $env:USERPROFILE ".aegisos"
 Log-PlatformAction "Checking local user directory junction ($srcJunction)..."
 if (Test-Path $srcJunction) {
     $item = Get-Item $srcJunction
@@ -122,7 +122,7 @@ if (Test-Path $srcJunction) {
             } else {
                 cmd.exe /c rmdir "$srcJunction" | Out-Null
                 cmd.exe /c mklink /j "$srcJunction" "$PlatformRoot" | Out-Null
-                Log-PlatformSuccess "Junction link C:\Users\<user>\.openclaw -> $PlatformRoot recreated successfully."
+                Log-PlatformSuccess "Junction link C:\Users\<user>\.aegisos -> $PlatformRoot recreated successfully."
             }
         }
     } else {

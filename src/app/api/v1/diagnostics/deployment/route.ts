@@ -25,7 +25,7 @@ export async function GET() {
     const providers = [
       { id: "ollama-provider", name: "Ollama Inference Engine" },
       { id: "litellm-provider", name: "LiteLLM Routing Proxy" },
-      { id: "openclaw-runtime-provider", name: "OpenClaw Runtime" }
+      { id: "aegisos-runtime-provider", name: "AegisOS Runtime" }
     ];
 
     const providerStates = [];

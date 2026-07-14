@@ -39,9 +39,13 @@ export class ComplianceEngine {
 
     // --- Control 1: Secure Credentials Validation (SOC2 CC6.1 / ISO27001 A.9.4.3) ---
     const authSecret = process.env.AUTH_SECRET;
-    const isSecretSecure = authSecret && 
-      authSecret !== "super-secret-random-hash-key-for-console-jwt-signing-2026" &&
-      authSecret !== "fallback_secret_must_change_in_production_extremely_long";
+    const INSECURE_SECRETS = new Set([
+      "super-secret-random-hash-key-for-console-jwt-signing-2026",
+      "fallback_secret_must_change_in_production_extremely_long",
+      "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
+      "",
+    ]);
+    const isSecretSecure = !!authSecret && !INSECURE_SECRETS.has(authSecret);
 
     controls.push({
       id: "SEC-CREDS-01",

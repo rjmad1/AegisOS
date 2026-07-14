@@ -16,7 +16,7 @@ The bootstrap wizard will:
 1. Load your chosen environment profile (development, personal, enterprise, offline).
 2. Query physical logical partitions to establish `$PlatformRoot` (defaults to `D:\AIPlatform` or `C:\AIPlatform`).
 3. Encrypt GITHUB/TELEGRAM API keys securely at rest using machine-scope DPAPI.
-4. Set up directory structures, configure NSSM services registry values, and establish reparse point directory junctions (`%USERPROFILE%\.openclaw` -> `$PlatformRoot`).
+4. Set up directory structures, configure NSSM services registry values, and establish reparse point directory junctions (`%USERPROFILE%\.aegisos` -> `$PlatformRoot`).
 5. Execute the validation suite.
 
 ---
@@ -25,13 +25,13 @@ The bootstrap wizard will:
 
 The codebase is structured around clean architectural domains:
 
-- **[adr/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/)**: Architectural Decision Records (ADR-001 through ADR-008) capturing system boundaries and security contexts.
-- **[docs/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/)**: Canonical deployment guides, operations guides, disaster recovery runbooks, and handbooks.
-  - **[Master Documentation Index](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/README.md)**
-- **[automation/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/)**: Re-engineered automation suite (installation, configuration, backups, restore, and package generation).
+- **[adr/](file:///d:/1_Projects/AegisOS/adr/)**: Architectural Decision Records (ADR-001 through ADR-008) capturing system boundaries and security contexts.
+- **[docs/](file:///d:/1_Projects/AegisOS/docs/)**: Canonical deployment guides, operations guides, disaster recovery runbooks, and handbooks.
+  - **[Master Documentation Index](file:///d:/1_Projects/AegisOS/docs/README.md)**
+- **[automation/](file:///d:/1_Projects/AegisOS/automation/)**: Re-engineered automation suite (installation, configuration, backups, restore, and package generation).
   - Includes a shared helper library `libs/PlatformHelper.psm1`.
   - Deployment profiles (`profiles/`) and machine-readable catalogs (`catalogs/`).
-- **[src/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/)**: Next.js 16 Console frontend dashboard.
+- **[src/](file:///d:/1_Projects/AegisOS/src/)**: Next.js 16 Console frontend dashboard.
 
 ---
 

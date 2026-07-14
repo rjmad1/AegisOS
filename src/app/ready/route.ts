@@ -23,9 +23,9 @@ export async function GET() {
   // 2. Verify downstream dependencies (ports check)
   const isOllamaRunning = await deploymentManager.checkPort(11434);
   const isLiteLLMRunning = await deploymentManager.checkPort(4000);
-  const isOpenClawRunning = await deploymentManager.checkPort(18789);
+  const isAegisOSRunning = await deploymentManager.checkPort(18789);
 
-  const ready = fsWritable && isOllamaRunning && isLiteLLMRunning && isOpenClawRunning;
+  const ready = fsWritable && isOllamaRunning && isLiteLLMRunning && isAegisOSRunning;
 
   const payload = {
     ready,
@@ -33,7 +33,7 @@ export async function GET() {
       databasesDirectoryWritable: fsWritable,
       ollamaService: isOllamaRunning,
       liteLLMService: isLiteLLMRunning,
-      openClawService: isOpenClawRunning
+      aegisOSService: isAegisOSRunning
     },
     timestamp: new Date().toISOString()
   };

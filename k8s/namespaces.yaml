@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: openclaw-ops
+  name: aegisos-ops
   labels:
-    name: openclaw-ops
+    name: aegisos-ops
     pod-security.kubernetes.io/enforce: baseline

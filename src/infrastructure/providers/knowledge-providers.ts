@@ -377,7 +377,7 @@ export class LogProvider extends BaseKnowledgeProvider implements ILogProvider {
 
     // Operational log snapshots
     const logs = [
-      { id: "log-openclaw-start", name: "openclaw-daemon-stdout.log", text: "2026-07-11T02:00:00Z [INFO] OpenClaw core bootstrap initialized..." },
+      { id: "log-aegisos-start", name: "aegisos-daemon-stdout.log", text: "2026-07-11T02:00:00Z [INFO] AegisOS core bootstrap initialized..." },
       { id: "log-litellm-start", name: "litellm-proxy-stdout.log", text: "2026-07-11T02:00:05Z [INFO] Serving LiteLLM endpoint on 127.0.0.1:4000..." }
     ];
 

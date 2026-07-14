@@ -1,4 +1,4 @@
-# Remaining Risk Register — OpenClaw V1.0
+# Remaining Risk Register — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -24,7 +24,7 @@ This register lists the remaining risks, security gaps, and operational limitati
 
 | Risk ID | Risk Description | Severity | Likelihood | Impact | Proposed Mitigation Strategy |
 |---|---|---|---|---|---|
-| **RISK-01** | **Elevated Service Privilege Execution**<br>Windows NSSM services run under the LocalSystem account. A compromise of Next.js or Python gateways exposes administrative privileges on the host. | **High** | Low | High | **Configure Scoped User Service Logon**: Create a dedicated restricted Windows user account (`AI_Service_User`) and update the SCM logon parameter for the OpenClaw, LiteLLM, and Ollama services. |
+| **RISK-01** | **Elevated Service Privilege Execution**<br>Windows NSSM services run under the LocalSystem account. A compromise of Next.js or Python gateways exposes administrative privileges on the host. | **High** | Low | High | **Configure Scoped User Service Logon**: Create a dedicated restricted Windows user account (`AI_Service_User`) and update the SCM logon parameter for the AegisOS, LiteLLM, and Ollama services. |
 | **RISK-02** | **Vulnerable Transitive Dependencies**<br>npm audit identifies vulnerabilities in `dompurify` (v3.4.10 and below) used by `monaco-editor`. | **Medium** | Low | Medium | **Override package.json paths**: Explicitly declare resolved version overrides in package.json or configure build-time sanitizers to strip active scripts. |
 | **RISK-03** | **SQLite Database Concurrent Locking**<br>Parallel execution writes during highly concurrent workflow execution runs can trigger database write blocks (`SQLITE_BUSY`). | **Medium** | Medium | Medium | **Migrate to external PostgreSQL**: For production environments with multi-user concurrency, set the `DATABASE_URL` to an external PostgreSQL instance. |
 | **RISK-04** | **Unauthenticated Downstream Ollama Binding**<br>The Ollama inference engine does not support native endpoint authentication. If port 11434 is mapped to external network adapters, anyone on the LAN can access model weights. | **High** | Medium | High | **Loopback Interface Binding**: Ensure Ollama is explicitly bound only to localhost loopback `127.0.0.1`. Apply Windows Firewall rules restricting access to the port. |

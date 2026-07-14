@@ -10,7 +10,7 @@ Every capability integrated must be reversible without duplicating services, fil
 
 ### A. Phase Rollback Execution Plan
 If a component (e.g., Headroom Proxy) fails or degrades response times:
-1. **Disable Proxy Hook**: Modify the OpenClaw configuration (`configs/openclaw/openclaw.json`) to route traffic directly to LiteLLM (`:4000`) instead of the Headroom compression proxy (`:4050`).
+1. **Disable Proxy Hook**: Modify the AegisOS configuration (`configs/aegisos/aegisos.json`) to route traffic directly to LiteLLM (`:4000`) instead of the Headroom compression proxy (`:4050`).
 2. **Revert SCM Services**: Reset the SCM configuration to bypass the failed service.
 3. **Registry Clean**: Remove the service entry from `ModelManifest.json` and registry caches.
 
@@ -32,19 +32,19 @@ graph TD
 
 ## 2. Operational Runbook
 
-Managing the execution state of Ollama, LiteLLM, OpenClaw, and the Headroom proxy.
+Managing the execution state of Ollama, LiteLLM, AegisOS, and the Headroom proxy.
 
 ### A. Service Management Commands (Elevated Powershell)
 
 #### 1. Check Service Status
 ```powershell
-Get-Service -Name "Ollama", "LiteLLMService", "OpenClawService", "HeadroomProxyService" | Format-Table -AutoSize
+Get-Service -Name "Ollama", "LiteLLMService", "AegisOSService", "HeadroomProxyService" | Format-Table -AutoSize
 ```
 
 #### 2. Restart inference stack
 ```powershell
 # Stop services
-Stop-Service -Name "OpenClawService" -Force
+Stop-Service -Name "AegisOSService" -Force
 Stop-Service -Name "HeadroomProxyService" -Force
 Stop-Service -Name "LiteLLMService" -Force
 Stop-Service -Name "Ollama" -Force
@@ -53,7 +53,7 @@ Stop-Service -Name "Ollama" -Force
 Start-Service -Name "Ollama"
 Start-Service -Name "LiteLLMService"
 Start-Service -Name "HeadroomProxyService"
-Start-Service -Name "OpenClawService"
+Start-Service -Name "AegisOSService"
 ```
 
 ### B. Port Allocation Verification
@@ -70,7 +70,7 @@ All logs are written to `$PlatformRoot\logs\`:
 - **Ollama Logs**: `$PlatformRoot\logs\ollama.log`
 - **LiteLLM Routing Logs**: `$PlatformRoot\logs\litellm_proxy.log`
 - **Headroom Proxy Logs**: `$PlatformRoot\logs\headroom.log`
-- **OpenClaw Gateway Logs**: `$PlatformRoot\logs\openclaw.log`
+- **AegisOS Gateway Logs**: `$PlatformRoot\logs\aegisos.log`
 
 Use the following command to tail logs in real-time:
 ```powershell

@@ -37,7 +37,7 @@ if (-not (Test-Path $healthLogDir)) {
 
 function Run-UptimeCheck {
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    $services = @("Ollama", "LiteLLMService", "OpenClawService", "OmniRouteService")
+    $services = @("Ollama", "LiteLLMService", "AegisOSService", "OmniRouteService")
     $unhealthyCount = 0
     $logMsg = "[$timestamp] Sweeping services: "
 

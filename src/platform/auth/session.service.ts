@@ -8,7 +8,15 @@ import prisma from "../../infrastructure/db/prisma";
 const SESSION_COOKIE_NAME = "auth_session";
 const authSecret = process.env.AUTH_SECRET;
 
-if (!authSecret || authSecret === "fallback_secret_must_change_in_production_extremely_long" || authSecret === "super-secret-random-hash-key-for-console-jwt-signing-2026") {
+// Blocklist of known-insecure default secrets that must never be used
+const INSECURE_SECRETS = new Set([
+  "super-secret-random-hash-key-for-console-jwt-signing-2026",
+  "fallback_secret_must_change_in_production_extremely_long",
+  "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
+  "",
+]);
+
+if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
   throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
 }
 
@@ -123,15 +131,22 @@ export class SessionService {
     }
   }
 
+  /**
+   * OIDC Token Rotation — NOT YET IMPLEMENTED
+   *
+   * This is a no-op stub that always returns true. In production with an OIDC
+   * provider, this should call oauth2.authorizationCodeGrantRequest or
+   * a similar refresh_token flow to obtain a new access token.
+   *
+   * Tracked in: ROADMAP.md → v1.2.0 (Authentication & Identity)
+   * See also: docs/SECURITY_ARCHITECTURE.md → Known Limitations
+   *
+   * @todo Implement real OIDC token rotation when auth provider is configured
+   */
   private async rotateOidcTokens(userId: string): Promise<boolean> {
-    try {
-      // Simulate OAuth token exchange using refresh tokens.
-      // In production, this calls oauth2.authorizationCodeGrantRequest or similar refresh flow.
-      console.log(`[SessionService] Successfully rotated OIDC access token for user: ${userId}`);
-      return true;
-    } catch {
-      return false;
-    }
+    // TODO(auth): Implement real OIDC refresh token exchange — see ROADMAP.md v1.2.0
+    console.log(`[SessionService] OIDC token rotation not implemented. Skipping for user: ${userId}`);
+    return true;
   }
 
   public async invalidateSession(sessionId: string): Promise<void> {

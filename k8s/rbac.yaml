@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: openclaw-sa
-  namespace: openclaw-ops
+  name: aegisos-sa
+  namespace: aegisos-ops
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: openclaw-pod-reader
-  namespace: openclaw-ops
+  name: aegisos-pod-reader
+  namespace: aegisos-ops
 rules:
   - apiGroups: [""]
     resources: ["pods", "services", "endpoints"]
@@ -17,22 +17,22 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: openclaw-rb
-  namespace: openclaw-ops
+  name: aegisos-rb
+  namespace: aegisos-ops
 subjects:
   - kind: ServiceAccount
-    name: openclaw-sa
-    namespace: openclaw-ops
+    name: aegisos-sa
+    namespace: aegisos-ops
 roleRef:
   kind: Role
-  name: openclaw-pod-reader
+  name: aegisos-pod-reader
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: console-pdb
-  namespace: openclaw-ops
+  namespace: aegisos-ops
 spec:
   minAvailable: 1
   selector:

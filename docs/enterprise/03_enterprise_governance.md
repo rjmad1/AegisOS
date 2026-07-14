@@ -18,14 +18,14 @@ Architectural decisions are managed using structured ADRs. The registry tracks t
 
 | ADR ID | Title | Status | Date | Core Decision |
 |---|---|---|---|---|
-| **[ADR-001](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md)** | Contract-First Versioned API | Approved | 2026-07-10 | Force all external client interfaces through explicit, versioned, contract-first API routes (`/api/v1/`). |
-| **[ADR-002](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-002-Server-Side-Decoupled-Authentication.md)** | Server-Side Decoupled Auth | Approved | 2026-07-10 | Isolate token signing, validation, and session tracking on the server backend using secure HttpOnly cookies. |
-| **[ADR-003](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-003-Unified-Event-Driven-Registry.md)** | Unified Event-Driven Registry | Approved | 2026-07-11 | Standardize browser component updates on a decoupled, client-side EventBus aligned with backend event flows. |
-| **[ADR-004](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-004-Pipeline-Worker-Processing-Architecture.md)** | Pipeline Worker Processing | Approved | 2026-07-11 | Process long-running executions using background jobs serialized via Saga database checkpoints. |
-| **[ADR-005](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-005-Repository-Information-Architecture-Rationalization.md)** | Information Architecture | Approved | 2026-07-11 | Restructure documentation folders to maintain strict separation of guides, standards, and reports. |
-| **[ADR-006](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-006-Script-Engineering-Standards.md)** | Script Engineering Standards | Approved | 2026-07-12 | Mandate strict typing, error trapping, and verbose outputs for all platform PowerShell automation scripts. |
-| **[ADR-007](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-007-Portable-Configuration-Architecture.md)** | Portable Configuration | Approved | 2026-07-12 | Store system variables in database-backed Config models with automated schema version history tracks. |
-| **[ADR-008](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-008-Platform-Asset-Catalog-Design.md)** | Platform Asset Catalog | Approved | 2026-07-12 | Consolidate and model workstation providers, models, actions, workflows, and tools into static schemas. |
+| **[ADR-001](file:///d:/1_Projects/AegisOS/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md)** | Contract-First Versioned API | Approved | 2026-07-10 | Force all external client interfaces through explicit, versioned, contract-first API routes (`/api/v1/`). |
+| **[ADR-002](file:///d:/1_Projects/AegisOS/adr/ADR-002-Server-Side-Decoupled-Authentication.md)** | Server-Side Decoupled Auth | Approved | 2026-07-10 | Isolate token signing, validation, and session tracking on the server backend using secure HttpOnly cookies. |
+| **[ADR-003](file:///d:/1_Projects/AegisOS/adr/ADR-003-Unified-Event-Driven-Registry.md)** | Unified Event-Driven Registry | Approved | 2026-07-11 | Standardize browser component updates on a decoupled, client-side EventBus aligned with backend event flows. |
+| **[ADR-004](file:///d:/1_Projects/AegisOS/adr/ADR-004-Pipeline-Worker-Processing-Architecture.md)** | Pipeline Worker Processing | Approved | 2026-07-11 | Process long-running executions using background jobs serialized via Saga database checkpoints. |
+| **[ADR-005](file:///d:/1_Projects/AegisOS/adr/ADR-005-Repository-Information-Architecture-Rationalization.md)** | Information Architecture | Approved | 2026-07-11 | Restructure documentation folders to maintain strict separation of guides, standards, and reports. |
+| **[ADR-006](file:///d:/1_Projects/AegisOS/adr/ADR-006-Script-Engineering-Standards.md)** | Script Engineering Standards | Approved | 2026-07-12 | Mandate strict typing, error trapping, and verbose outputs for all platform PowerShell automation scripts. |
+| **[ADR-007](file:///d:/1_Projects/AegisOS/adr/ADR-007-Portable-Configuration-Architecture.md)** | Portable Configuration | Approved | 2026-07-12 | Store system variables in database-backed Config models with automated schema version history tracks. |
+| **[ADR-008](file:///d:/1_Projects/AegisOS/adr/ADR-008-Platform-Asset-Catalog-Design.md)** | Platform Asset Catalog | Approved | 2026-07-12 | Consolidate and model workstation providers, models, actions, workflows, and tools into static schemas. |
 
 ### 1.2 ADR Lifecycle
 Decisions follow a strict state transition:
@@ -104,7 +104,7 @@ Every Markdown document must begin with a standardized metadata block:
 ```
 
 ### 4.2 Cross-Linking and Self-Containment
-* Use relative file URLs for cross-references: `[link text](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/...)`.
+* Use relative file URLs for cross-references: `[link text](file:///d:/1_Projects/AegisOS/docs/...)`.
 * Do not rely on external web links for core system definitions.
 
 ---

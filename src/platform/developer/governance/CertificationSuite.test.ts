@@ -13,7 +13,7 @@ describe('CertificationSuite Governance Checks', () => {
       version: '1.0.0',
       type: 'agent',
       signature: 'a'.repeat(64),
-      dependencies: { 'openclaw': '>=1.0.0' },
+      dependencies: { 'aegisos': '>=1.0.0' },
       codeMock: '// Using platform-approved interfaces\nplatformSdk.events.publish("Started");'
     });
 
@@ -46,7 +46,7 @@ describe('CertificationSuite Governance Checks', () => {
       version: '0.8.0',
       type: 'tool',
       signature: 'short-sig', // Too short
-      dependencies: { 'openclaw': '<1.0.0' }
+      dependencies: { 'aegisos': '<1.0.0' }
     });
 
     expect(res.passed).toBe(false);

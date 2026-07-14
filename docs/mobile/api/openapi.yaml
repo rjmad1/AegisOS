@@ -1,0 +1,465 @@
+openapi: 3.1.0
+info:
+  title: AegisOS Mobile Companion API Gateway
+  description: Secure, mobile-optimized API surface for local-first workstation sync, telemetry, agent control, and human-in-the-loop approvals.
+  version: 2.0.0
+servers:
+  - url: https://{host}/api/v2/mobile
+    variables:
+      host:
+        default: localhost:3000
+        description: Workstation host IP or Tailscale address
+paths:
+  /auth/pair:
+    post:
+      summary: Establish client trust using QR pairing token
+      description: Exchanges pairing token and generates a client certificate signed by the Host Certificate Authority.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pairingToken
+                - deviceId
+                - devicePublicKey
+                - deviceName
+              properties:
+                pairingToken:
+                  type: string
+                  description: One-time token scanned from QR code
+                deviceId:
+                  type: string
+                  format: uuid
+                devicePublicKey:
+                  type: string
+                  description: PEM-encoded ECDSA public key generated in Secure Enclave
+                deviceName:
+                  type: string
+                  example: "iPhone 15 Pro"
+      responses:
+        '200':
+          description: Trust established successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - clientCertificate
+                  - caCertificate
+                properties:
+                  clientCertificate:
+                    type: string
+                    description: PEM-encoded client TLS certificate
+                  caCertificate:
+                    type: string
+                    description: PEM-encoded Host CA certificate to trust
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+
+  /auth/session:
+    post:
+      summary: Establish authenticated session using mTLS + challenge signature
+      description: Validates biometric challenge signature using registered device public key. Returns short-lived JWT.
+      security:
+        - MutualTLS: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - deviceId
+                - challenge
+                - signature
+              properties:
+                deviceId:
+                  type: string
+                  format: uuid
+                challenge:
+                  type: string
+                  description: Hex challenge issued during handshake
+                signature:
+                  type: string
+                  description: Hex-encoded ECDSA signature of challenge
+      responses:
+        '200':
+          description: Session established
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - accessToken
+                  - refreshToken
+                  - expiresAt
+                properties:
+                  accessToken:
+                    type: string
+                    description: Short-lived JWT (1 hour)
+                  refreshToken:
+                    type: string
+                    description: Secure rotation refresh token (7 days)
+                  expiresAt:
+                    type: integer
+                    description: Epoch timestamp of JWT expiry
+        '401':
+          description: Unauthorized challenge signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+  /auth/refresh:
+    post:
+      summary: Rotate expired JWT using refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token rotated
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - accessToken
+                  - refreshToken
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+        '401':
+          description: Invalid or rotated refresh token (triggers lockout)
+
+  /sync:
+    get:
+      summary: Fetch delta sync changes since anchor
+      security:
+        - BearerAuth: []
+        - MutualTLS: []
+      parameters:
+        - name: anchor
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Unix epoch timestamp of last successful sync. Omit for full sync.
+      responses:
+        '200':
+          description: Delta sync payload
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - nextAnchor
+                  - changes
+                properties:
+                  nextAnchor:
+                    type: integer
+                    description: Unix epoch to use as anchor in next call
+                  changes:
+                    type: object
+                    properties:
+                      conversations:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ConversationDelta'
+                      approvals:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ApprovalDelta'
+                      notifications:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/NotificationDelta'
+
+  /sync/push:
+    post:
+      summary: Push pending actions executed while offline
+      security:
+        - BearerAuth: []
+        - MutualTLS: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - actions
+              properties:
+                actions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/OfflineAction'
+      responses:
+        '200':
+          description: Offline actions applied
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - actionId
+                        - status
+                      properties:
+                        actionId:
+                          type: string
+                          format: uuid
+                        status:
+                          type: string
+                          enum: [Success, Conflict, Failure]
+                        error:
+                          type: string
+
+  /telemetry:
+    get:
+      summary: Get current host telemetry snapshot (REST Fallback)
+      security:
+        - BearerAuth: []
+        - MutualTLS: []
+      responses:
+        '200':
+          description: Current CPU, GPU, VRAM, and daemon statuses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelemetrySnapshot'
+
+  /approvals:
+    get:
+      summary: Get pending human-in-the-loop actions
+      security:
+        - BearerAuth: []
+        - MutualTLS: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovalDelta'
+
+  /approvals/{id}/resolve:
+    post:
+      summary: Action a pending approval with cryptographic proof
+      security:
+        - BearerAuth: []
+        - MutualTLS: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - decision
+                - deviceSignature
+              properties:
+                decision:
+                  type: string
+                  enum: [Approved, Rejected]
+                deviceSignature:
+                  type: string
+                  description: ECDSA signature of the approval request hash generated by the Secure Enclave
+      responses:
+        '200':
+          description: Approval action dispatched to agent executor
+
+components:
+  securitySchemes:
+    MutualTLS:
+      type: mutualTLS
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    400BadRequest:
+      description: Invalid payload or validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorModel'
+    403Forbidden:
+      description: Access denied or untrusted certificate
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorModel'
+
+  schemas:
+    ErrorModel:
+      type: object
+      required:
+        - code
+        - message
+        - timestamp
+      properties:
+        code:
+          type: string
+          example: "ERR_AUTH_EXPIRED"
+        message:
+          type: string
+          example: "The session token has expired."
+        timestamp:
+          type: string
+          format: date-time
+        details:
+          type: array
+          items:
+            type: string
+
+    ConversationDelta:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+          enum: [Active, Archived, Deleted]
+        updatedAt:
+          type: integer
+
+    ApprovalDelta:
+      type: object
+      required:
+        - id
+        - executionId
+        - nodeId
+        - workflowName
+        - command
+        - status
+        - riskLevel
+        - createdAt
+      properties:
+        id:
+          type: string
+        executionId:
+          type: string
+        nodeId:
+          type: string
+        workflowName:
+          type: string
+        command:
+          type: string
+        status:
+          type: string
+          enum: [Pending, Approved, Rejected, TimedOut]
+        riskLevel:
+          type: string
+          enum: [Low, Medium, High, Critical]
+        createdAt:
+          type: string
+
+    NotificationDelta:
+      type: object
+      required:
+        - id
+        - category
+        - title
+        - body
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        category:
+          type: string
+          enum: [Alert, Approval, System, Agent]
+        title:
+          type: string
+        body:
+          type: string
+        status:
+          type: string
+          enum: [Unread, Read, Dismissed]
+        createdAt:
+          type: string
+
+    OfflineAction:
+      type: object
+      required:
+        - actionId
+        - type
+        - payload
+        - timestamp
+      properties:
+        actionId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [CHAT_SEND, APPROVAL_RESOLVE, NOTIFICATION_READ]
+        payload:
+          type: object
+        timestamp:
+          type: integer
+
+    TelemetrySnapshot:
+      type: object
+      required:
+        - cpuUsage
+        - memoryUsage
+        - gpuUsage
+        - vramUsage
+        - hostStatus
+        - timestamp
+      properties:
+        cpuUsage:
+          type: number
+          example: 22.5
+        memoryUsage:
+          type: number
+          example: 64.2
+        gpuUsage:
+          type: number
+          example: 45.0
+        vramUsage:
+          type: number
+          example: 78.1
+        hostStatus:
+          type: string
+          enum: [Online, Offline, Maintenance]
+        timestamp:
+          type: integer

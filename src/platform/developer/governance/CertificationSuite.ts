@@ -59,7 +59,7 @@ export class CertificationSuite {
 
     // 3. API Version Compatibility Check
     const deps = packageManifest.dependencies || {};
-    const platformVersionReq = deps['openclaw'] || deps['platform'] || '';
+    const platformVersionReq = deps['aegisos'] || deps['platform'] || '';
     if (platformVersionReq) {
       // Validate compatibility with platform version v1.x
       if (platformVersionReq.startsWith('0.') || platformVersionReq.includes('^0.') || platformVersionReq.includes('<1.')) {
@@ -70,7 +70,7 @@ export class CertificationSuite {
 
     // 4. Dependency Resolution Check
     for (const [depName, versionRange] of Object.entries(deps)) {
-      if (depName !== 'openclaw' && depName !== 'platform') {
+      if (depName !== 'aegisos' && depName !== 'platform') {
         // Mock check for missing third-party dependencies in registry
         if (versionRange === 'invalid') {
           issues.push(`Dependency Resolution: Package dependency "${depName}" is unavailable in registries.`);

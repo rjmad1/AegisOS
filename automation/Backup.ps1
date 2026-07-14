@@ -70,7 +70,7 @@ try {
     New-Item -ItemType Directory -Path $regDest -Force | Out-Null
     
     reg export "HKLM\SYSTEM\CurrentControlSet\Services\LiteLLMService\Parameters" (Join-Path $regDest "LiteLLMService_Parameters.reg") /y | Out-Null
-    reg export "HKLM\SYSTEM\CurrentControlSet\Services\OpenClawService\Parameters" (Join-Path $regDest "OpenClawService_Parameters.reg") /y | Out-Null
+    reg export "HKLM\SYSTEM\CurrentControlSet\Services\AegisOSService\Parameters" (Join-Path $regDest "AegisOSService_Parameters.reg") /y | Out-Null
     reg export "HKLM\SYSTEM\CurrentControlSet\Services\OmniRouteService\Parameters" (Join-Path $regDest "OmniRouteService_Parameters.reg") /y | Out-Null
 
     # 4. Copy SQLite Databases

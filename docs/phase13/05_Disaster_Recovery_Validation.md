@@ -1,4 +1,4 @@
-# Disaster Recovery Validation Report — OpenClaw V1.0
+# Disaster Recovery Validation Report — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-This report validates the disaster recovery mechanisms, backup pipelines, and recovery workflows of the OpenClaw AI Workstation platform. Operations were tested against the consolidated PowerShell modules `automation/Backup.ps1` and `automation/Restore.ps1` under host-match and host-mismatch (DPAPI migration) scenarios.
+This report validates the disaster recovery mechanisms, backup pipelines, and recovery workflows of the AegisOS AI Workstation platform. Operations were tested against the consolidated PowerShell modules `automation/Backup.ps1` and `automation/Restore.ps1` under host-match and host-mismatch (DPAPI migration) scenarios.
 
 **Overall Verdict: PASS**
 * **Data Recovery RPO (Recovery Point Objective)**: < 7 days (defined by weekly backup schedules). Can be run manually for near-zero RPO.
@@ -26,7 +26,7 @@ This report validates the disaster recovery mechanisms, backup pipelines, and re
 * **Method**: Run `.\automation\Backup.ps1 -PlatformRoot "D:\AI-Operations" -VerboseLog`
 * **Validation**:
   * Generated compressed archive `Backup_yyyyMMdd_HHmmss.zip` under the backups folder.
-  * Verified config files: `litellm/config.yaml`, `openclaw.json` successfully bundled.
+  * Verified config files: `litellm/config.yaml`, `aegisos.json` successfully bundled.
   * Verified database: Active SQLite database `production.db` copied cleanly.
   * Verified service configurations: NSSM registry keys exported as `.reg` files.
   * Verified secrets: Encrypted credential payloads extracted.
@@ -35,7 +35,7 @@ This report validates the disaster recovery mechanisms, backup pipelines, and re
 ### Scenario 2: Database Recovery & SafeRestore
 * **Method**: Simulated database corruption by writing random bytes to `production.db`, then executed `.\automation\Restore.ps1 -BackupPath "D:\AI-Operations\backups\Backup_20260713_154000.zip" -Mode "SafeRestore"`
 * **Validation**:
-  * Script correctly halted active Next.js, LiteLLM, and OpenClaw processes to release file handles.
+  * Script correctly halted active Next.js, LiteLLM, and AegisOS processes to release file handles.
   * Extracted the clean database snapshot to the destination directory.
   * Re-booted services.
   * Verified all tables, schemas, and historical records (audit logs, executions) were intact.
@@ -54,7 +54,7 @@ Because credential secrets are encrypted using Windows DPAPI, they are tied to t
 * **Validation**:
   * `Restore.ps1` correctly detected the DPAPI decryption failure (host mismatch).
   * Threw a warning block and prompted the operator interactively for new keys: `GITHUB_TOKEN` and `TELEGRAM_BOT_TOKEN`.
-  * Encrypted the user inputs under the new machine's DPAPI context and successfully wrote the updated `OpenClaw_secrets.enc` file.
+  * Encrypted the user inputs under the new machine's DPAPI context and successfully wrote the updated `AegisOS_secrets.enc` file.
   * Verified that the services booted correctly and could authenticate with GitHub using the newly encrypted tokens.
 * **Verdict: PASS**
 

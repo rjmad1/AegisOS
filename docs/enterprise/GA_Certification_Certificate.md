@@ -10,7 +10,7 @@
 ---
 
 ## Certification Declaration
-The Enterprise Release Train, SRE Platform Group, and Compliance Panel hereby certify that the OpenClaw AI Workstation Console has successfully cleared the General Availability (GA) gates. 
+The Enterprise Release Train, SRE Platform Group, and Compliance Panel hereby certify that the AegisOS AI Workstation Console has successfully cleared the General Availability (GA) gates. 
 
 This certification is issued under the following verified conditions:
 1. **Zero Critical Findings**: All 10 security, compliance, identity, and reliability gaps identified by Google, Microsoft, AWS, Netflix, HashiCorp, Cloudflare, OpenAI, Anthropic, GitHub, and Temporal have been fully resolved.

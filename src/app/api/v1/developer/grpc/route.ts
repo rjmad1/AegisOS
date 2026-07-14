@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     endpoint: "localhost:50051",
     services: [
       {
-        serviceName: "openclaw.v1.DeveloperService",
+        serviceName: "aegisos.v1.DeveloperService",
         methods: [
           { name: "ListMarketplace", requestType: "MarketplaceRequest", responseType: "MarketplaceResponse", streaming: false },
           { name: "InstallPackage", requestType: "InstallRequest", responseType: "InstallResponse", streaming: false },
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
         ]
       },
       {
-        serviceName: "openclaw.v1.AgentOrchestrationService",
+        serviceName: "aegisos.v1.AgentOrchestrationService",
         methods: [
           { name: "SpawnAgentStream", requestType: "AgentSpawnRequest", responseType: "AgentConsoleChunk", streaming: true }
         ]
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     ],
     protobufSchema: `
 syntax = "proto3";
-package openclaw.v1;
+package aegisos.v1;
 
 message MarketplaceRequest {
   string filter_type = 1;

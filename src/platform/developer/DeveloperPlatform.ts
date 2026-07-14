@@ -47,13 +47,13 @@ export class DeveloperPlatform {
     this.declareExtensionPoint({
       id: 'preview-provider',
       name: 'Preview Providers',
-      description: 'Aesthetic file renderers for the OpenClaw console',
+      description: 'Aesthetic file renderers for the AegisOS console',
       version: '1.0.0'
     });
 
     // Seed default marketplace items
     this.publishToMarketplace({
-      id: 'com.openclaw.agent.coder',
+      id: 'com.aegisos.agent.coder',
       name: 'Distinguished Coder Agent',
       version: '2.1.0',
       type: 'agent',
@@ -64,9 +64,9 @@ export class DeveloperPlatform {
       ratingsCount: 24,
       ratingsAverage: 4.8,
       reviews: [
-        { id: 'rev-1', userId: 'usr-12', userEmail: 'reviewer1@openclaw.dev', rating: 5, comment: 'Incredible performance, resolved AST parsing issues instantly!', timestamp: new Date().toISOString() }
+        { id: 'rev-1', userId: 'usr-12', userEmail: 'reviewer1@aegisos.dev', rating: 5, comment: 'Incredible performance, resolved AST parsing issues instantly!', timestamp: new Date().toISOString() }
       ],
-      dependencies: { 'openclaw': '>=1.0.0' },
+      dependencies: { 'aegisos': '>=1.0.0' },
       signature: 'a'.repeat(64),
       isVerified: true,
       downloadCount: 1420,
@@ -74,7 +74,7 @@ export class DeveloperPlatform {
     });
 
     this.publishToMarketplace({
-      id: 'com.openclaw.plugin.gcs-storage',
+      id: 'com.aegisos.plugin.gcs-storage',
       name: 'Google Cloud Storage Plugin',
       version: '1.0.4',
       type: 'plugin',
@@ -86,15 +86,15 @@ export class DeveloperPlatform {
       ratingsCount: 8,
       ratingsAverage: 4.5,
       reviews: [],
-      dependencies: { 'openclaw': '>=1.0.0' },
+      dependencies: { 'aegisos': '>=1.0.0' },
       signature: 'b'.repeat(64),
       isVerified: true,
       downloadCount: 310,
-      metadata: { bucketPrefix: 'openclaw-artifacts-' }
+      metadata: { bucketPrefix: 'aegisos-artifacts-' }
     });
 
     this.publishToMarketplace({
-      id: 'com.openclaw.workflow.compliance-gate',
+      id: 'com.aegisos.workflow.compliance-gate',
       name: 'CI/CD Compliance Gate Workflow',
       version: '1.5.0',
       type: 'workflow',
@@ -106,7 +106,7 @@ export class DeveloperPlatform {
       ratingsCount: 15,
       ratingsAverage: 4.9,
       reviews: [],
-      dependencies: { 'openclaw': '>=1.1.0' },
+      dependencies: { 'aegisos': '>=1.1.0' },
       signature: 'c'.repeat(64),
       isVerified: true,
       downloadCount: 940,
@@ -116,7 +116,7 @@ export class DeveloperPlatform {
     // Seed default entitlements
     this.registerEntitlement({
       tenantId: 'tenant-default',
-      licenseKey: 'LIC-OPENCLAW-DEV-902318-SECURE',
+      licenseKey: 'LIC-AEGISOS-DEV-902318-SECURE',
       tier: 'enterprise',
       status: 'active',
       expiresAt: '2028-12-31T23:59:59Z',

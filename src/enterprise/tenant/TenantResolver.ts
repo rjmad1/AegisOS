@@ -149,7 +149,7 @@ export class TenantResolver {
       if (result) return result;
     }
 
-    // Strategy 4: Subdomain (e.g., acme.openclaw.io)
+    // Strategy 4: Subdomain (e.g., acme.aegisos.io)
     if (request.hostname) {
       const result = this.resolveBySubdomain(request.hostname);
       if (result) return result;
@@ -189,7 +189,7 @@ export class TenantResolver {
   }
 
   private resolveBySubdomain(hostname: string): TenantDiscoveryResult | null {
-    // Extract subdomain: "acme.openclaw.io" -> "acme"
+    // Extract subdomain: "acme.aegisos.io" -> "acme"
     const parts = hostname.split('.');
     if (parts.length < 3) return null;
 

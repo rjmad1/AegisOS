@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         extensionPoints: developerPlatform.getExtensionPoints()
       };
     } else if (cleanQuery.includes('mutation InstallItem') || cleanQuery.includes('installItem')) {
-      const id = variables?.id || 'com.openclaw.agent.coder';
+      const id = variables?.id || 'com.aegisos.agent.coder';
       const installed = developerPlatform.installMarketplaceItem(id, 'tenant-default');
       data = {
         installItem: {

@@ -10,7 +10,7 @@ export class RealtimeSyncManager {
   private static instance: RealtimeSyncManager | null = null;
   private transport: RealtimeTransport | null = null;
   private activeType: TransportType = 'sse';
-  private checkpointKey = 'openclaw_sync_checkpoint';
+  private checkpointKey = 'aegisos_sync_checkpoint';
   private lastCheckpoint: number = 0;
   
   // Backoff options

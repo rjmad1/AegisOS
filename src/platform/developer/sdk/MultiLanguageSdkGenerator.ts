@@ -27,7 +27,7 @@ export class MultiLanguageSdkGenerator {
   }
 
   private generateTypeScript() {
-    const code = `// OpenClaw SDK for TypeScript / JavaScript
+    const code = `// AegisOS SDK for TypeScript / JavaScript
 // Auto-generated Version 1.0.0
 
 export interface SDKConfig {
@@ -37,7 +37,7 @@ export interface SDKConfig {
   timeoutMs?: number;
 }
 
-export class OpenClawClient {
+export class AegisOSClient {
   private config: SDKConfig;
 
   constructor(config: SDKConfig) {
@@ -68,23 +68,23 @@ export class OpenClawClient {
       body: body ? JSON.stringify(body) : undefined
     });
     if (!response.ok) {
-      throw new Error(\`OpenClaw SDK Error (\${response.status}): \${await response.text()}\`);
+      throw new Error(\`AegisOS SDK Error (\${response.status}): \${await response.text()}\`);
     }
     return response.json();
   }
 }
 `;
-    fs.writeFileSync(path.join(this.outputDir, 'openclaw-sdk.ts'), code, 'utf-8');
+    fs.writeFileSync(path.join(this.outputDir, 'aegisos-sdk.ts'), code, 'utf-8');
   }
 
   private generatePython() {
-    const code = `# OpenClaw SDK for Python
+    const code = `# AegisOS SDK for Python
 # Auto-generated Version 1.0.0
 
 import requests
 import time
 
-class OpenClawClient:
+class AegisOSClient:
     def __init__(self, endpoint: str, token: str = None, max_retries: int = 3):
         self.endpoint = endpoint
         self.token = token
@@ -116,13 +116,13 @@ class OpenClawClient:
                     raise e
                 time.sleep(0.5 * (2 ** attempt))
 `;
-    fs.writeFileSync(path.join(this.outputDir, 'openclaw_sdk.py'), code, 'utf-8');
+    fs.writeFileSync(path.join(this.outputDir, 'aegisos_sdk.py'), code, 'utf-8');
   }
 
   private generateGo() {
-    const code = `// Package openclaw provides a Go SDK client
+    const code = `// Package aegisos provides a Go SDK client
 // Auto-generated Version 1.0.0
-package openclaw
+package aegisos
 
 import (
 	"bytes"
@@ -182,7 +182,7 @@ func (c *Client) request(path, method string, body interface{}, out interface{})
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		return fmt.Errorf("openclaw sdk error status: %d", resp.StatusCode)
+		return fmt.Errorf("aegisos sdk error status: %d", resp.StatusCode)
 	}
 
 	if out != nil {
@@ -191,11 +191,11 @@ func (c *Client) request(path, method string, body interface{}, out interface{})
 	return nil
 }
 `;
-    fs.writeFileSync(path.join(this.outputDir, 'openclaw-sdk.go'), code, 'utf-8');
+    fs.writeFileSync(path.join(this.outputDir, 'aegisos-sdk.go'), code, 'utf-8');
   }
 
   private generateDotNet() {
-    const code = `// OpenClaw SDK for .NET (C#)
+    const code = `// AegisOS SDK for .NET (C#)
 // Auto-generated Version 1.0.0
 
 using System;
@@ -205,14 +205,14 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace OpenClaw.Sdk
+namespace AegisOS.Sdk
 {
-    public class OpenClawClient
+    public class AegisOSClient
     {
         private readonly HttpClient _client;
         private readonly string _token;
 
-        public OpenClawClient(string endpoint, string token = null)
+        public AegisOSClient(string endpoint, string token = null)
         {
             _client = new HttpClient { BaseAddress = new Uri(endpoint) };
             _token = token;
@@ -239,14 +239,14 @@ namespace OpenClaw.Sdk
     }
 }
 `;
-    fs.writeFileSync(path.join(this.outputDir, 'OpenClawSdk.cs'), code, 'utf-8');
+    fs.writeFileSync(path.join(this.outputDir, 'AegisOSSdk.cs'), code, 'utf-8');
   }
 
   private generateJava() {
-    const code = `// OpenClaw SDK for Java
+    const code = `// AegisOS SDK for Java
 // Auto-generated Version 1.0.0
 
-package com.openclaw.sdk;
+package com.aegisos.sdk;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -254,12 +254,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-public class OpenClawClient {
+public class AegisOSClient {
     private final HttpClient client;
     private final String endpoint;
     private final String token;
 
-    public OpenClawClient(String endpoint, String token) {
+    public AegisOSClient(String endpoint, String token) {
         this.endpoint = endpoint;
         this.token = token;
         this.client = HttpClient.newBuilder()
@@ -278,12 +278,12 @@ public class OpenClawClient {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() >= 400) {
-            throw new RuntimeException("OpenClaw SDK Error: " + response.statusCode());
+            throw new RuntimeException("AegisOS SDK Error: " + response.statusCode());
         }
     }
 }
 `;
-    fs.writeFileSync(path.join(this.outputDir, 'OpenClawClient.java'), code, 'utf-8');
+    fs.writeFileSync(path.join(this.outputDir, 'AegisOSClient.java'), code, 'utf-8');
   }
 }
 

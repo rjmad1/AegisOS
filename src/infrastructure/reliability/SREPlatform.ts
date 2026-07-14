@@ -72,8 +72,8 @@ export class SREPlatform {
         errorBudget: { totalAllowedErrors: 14, remainingErrors: 14, burnRate: 0.0 }
       },
       {
-        id: "openclaw",
-        name: "OpenClaw Gateway",
+        id: "aegisos",
+        name: "AegisOS Gateway",
         owner: "Agent Platform Team",
         tier: "Tier-1",
         sli: { availability: 99.78, latencyP95: 120 },

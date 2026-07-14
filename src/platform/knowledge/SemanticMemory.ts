@@ -95,9 +95,9 @@ export class SemanticMemoryPlatform {
   private bootstrapDefaultMemories() {
     const memories: SemanticMemoryCell[] = [
       {
-        id: "mem:project:openclaw",
+        id: "mem:project:aegisos",
         type: "project",
-        name: "OpenClaw Platform Workspace",
+        name: "AegisOS Platform Workspace",
         content: "Core Next.js workspace integrating LiteLLM orchestration agents, workflow runners, and zero-trust modules.",
         ownerId: "usr-admin-01",
         createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
@@ -118,7 +118,7 @@ export class SemanticMemoryPlatform {
         confidence: 0.95,
         trustScore: 0.95,
         sourceUri: "docs/architecture.md",
-        linkedMemoryIds: ["mem:project:openclaw", "mem:code:platform-kernel"]
+        linkedMemoryIds: ["mem:project:aegisos", "mem:code:platform-kernel"]
       },
       {
         id: "mem:adr:sqlite-backend",
@@ -131,7 +131,7 @@ export class SemanticMemoryPlatform {
         confidence: 1.0,
         trustScore: 0.99,
         sourceUri: "adr/0004-sqlite-storage.md",
-        linkedMemoryIds: ["mem:project:openclaw", "mem:req:transaction-isolation"]
+        linkedMemoryIds: ["mem:project:aegisos", "mem:req:transaction-isolation"]
       },
       {
         id: "mem:req:transaction-isolation",

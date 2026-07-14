@@ -63,7 +63,7 @@ if ($DryRun) {
 
 # 4. Stop and Restart Services to clear runtime cache
 Log-PlatformAction "Restarting services to apply parameters..."
-$services = @("OpenClawService", "OmniRouteService", "LiteLLMService", "Ollama")
+$services = @("AegisOSService", "OmniRouteService", "LiteLLMService", "Ollama")
 foreach ($s in $services) {
     if (Get-Service -Name $s -ErrorAction SilentlyContinue) {
         if (-not $DryRun) {

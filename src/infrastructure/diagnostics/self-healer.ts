@@ -39,7 +39,7 @@ export class SelfHealer {
     const ports = [
       { port: 11434, name: "Ollama API" },
       { port: 4000, name: "LiteLLM Router Proxy" },
-      { port: 18789, name: "OpenClaw Gateway" }
+      { port: 18789, name: "AegisOS Gateway" }
     ];
 
     for (const p of ports) {

@@ -2,18 +2,17 @@
 // Secure login route utilizing persistent DB Lockout management and strict credential verification
 
 import { NextResponse } from "next/server";
-import crypto from "crypto";
+import { SignJWT } from "jose";
 import LockoutManager from "@/infrastructure/security/lockout-manager";
 
-function signToken(payload: any, secret: string): string {
-  const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
-  const data = Buffer.from(JSON.stringify(payload)).toString("base64url");
-  const signature = crypto
-    .createHmac("sha256", secret)
-    .update(`${header}.${data}`)
-    .digest("base64url");
-  return `${header}.${data}.${signature}`;
-}
+// Blocklist of known-insecure default values that must never be accepted
+const INSECURE_USERNAMES = new Set(["admin", "administrator", "root", ""]);
+const INSECURE_PASSWORDS = new Set(["AdminPassword123!", "password", "admin", ""]);
+const INSECURE_SECRETS = new Set([
+  "super-secret-random-hash-key-for-console-jwt-signing-2026",
+  "fallback_secret_must_change_in_production_extremely_long",
+  "",
+]);
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0] || request.headers.get("x-real-ip") || "127.0.0.1";
@@ -26,17 +25,18 @@ export async function POST(request: Request) {
     const jwtSecret = process.env.AUTH_SECRET || process.env.OPS_JWT_SECRET;
 
     // Fail startup/runtime if admin configurations are default or insecure
-    if (!expectedUsername || expectedUsername === "admin") {
+    if (!expectedUsername || INSECURE_USERNAMES.has(expectedUsername)) {
       throw new Error("FATAL: OPS_ADMIN_USERNAME is missing or insecure! Customize credentials in .env.");
     }
-    if (!expectedPassword || expectedPassword === "AdminPassword123!") {
+    if (!expectedPassword || INSECURE_PASSWORDS.has(expectedPassword)) {
       throw new Error("FATAL: OPS_ADMIN_PASSWORD is missing or insecure! Customize credentials in .env.");
     }
-    if (!jwtSecret || jwtSecret === "super-secret-random-hash-key-for-console-jwt-signing-2026" || jwtSecret === "fallback_secret_must_change_in_production_extremely_long") {
+    if (!jwtSecret || INSECURE_SECRETS.has(jwtSecret)) {
       throw new Error("FATAL: AUTH_SECRET / OPS_JWT_SECRET is missing or matches default fallback!");
     }
 
     const sessionMinutes = parseInt(process.env.OPS_SESSION_TIMEOUT_MINUTES || "480", 10);
+    const key = new TextEncoder().encode(jwtSecret);
 
     // 1. Verify brute-force lockout status from SQLite
     const now = Date.now();
@@ -57,11 +57,14 @@ export async function POST(request: Request) {
         id: "usr-admin-01",
         username: expectedUsername,
         email: "admin@ai-ops.local",
-        role: "admin",
+        role: "Administrator",
       };
 
-      const expires = Date.now() + sessionMinutes * 60 * 1000;
-      const token = signToken({ username, role: "admin", expires }, jwtSecret);
+      const token = await new SignJWT({ username, role: "Administrator" })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime(`${sessionMinutes}m`)
+        .sign(key);
 
       const response = NextResponse.json({
         user: mockUser,

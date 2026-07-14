@@ -27,6 +27,6 @@ export interface TriggerWorkflowRequestDto {
 export interface UpdateSettingsDto {
   ollamaUrl?: string;
   litellmUrl?: string;
-  openclawUrl?: string;
+  aegisosUrl?: string;
   telemetryInterval?: number;
 }

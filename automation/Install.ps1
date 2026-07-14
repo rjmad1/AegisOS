@@ -122,9 +122,9 @@ if (Test-Path $uvPath) {
 # 4. Standardize Directory Layout Structure
 Log-PlatformAction "Establishing standardized directory structure at $PlatformRoot..."
 $folders = @(
-    "apps", "configs", "configs\litellm", "configs\openclaw", "configs\postgresql",
+    "apps", "configs", "configs\litellm", "configs\aegisos", "configs\postgresql",
     "data", "databases", "databases\pgsql", "databases\mongodb", "databases\sqlite",
-    "docker", "docker\open-webui", "logs", "logs\litellm", "logs\openclaw", "logs\health",
+    "docker", "docker\open-webui", "logs", "logs\litellm", "logs\aegisos", "logs\health",
     "models", "workspace", "projects", "scripts", "backups", "cache", "runtime", 
     "runtime\python", "runtime\node", "secrets", "knowledge", "manifests", "installers", "docs"
 )
@@ -143,7 +143,7 @@ foreach ($folder in $folders) {
 
 # 5. Check and configure SCM and NSSM Services
 Log-PlatformAction "Registering Windows SCM Services..."
-$services = @("Ollama", "LiteLLMService", "OpenClawService", "OmniRouteService")
+$services = @("Ollama", "LiteLLMService", "AegisOSService", "OmniRouteService")
 foreach ($s in $services) {
     $existing = Get-Service -Name $s -ErrorAction SilentlyContinue
     if ($existing) {

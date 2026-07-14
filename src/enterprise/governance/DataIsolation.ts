@@ -37,7 +37,7 @@ export interface DataExportManifest {
 export interface DataImportJob {
   id: string;
   tenantId: string;
-  sourceFormat: 'json' | 'csv' | 'parquet' | 'openclaw-export';
+  sourceFormat: 'json' | 'csv' | 'parquet' | 'aegisos-export';
   status: 'pending' | 'validating' | 'importing' | 'completed' | 'failed';
   recordsTotal: number;
   recordsImported: number;
@@ -202,7 +202,7 @@ export class DataIsolation {
     // Simulate export completion
     manifest.status = 'completed';
     manifest.sizeBytes = Math.floor(Math.random() * 100_000_000);
-    manifest.downloadUrl = `https://exports.openclaw.io/${manifest.id}/download`;
+    manifest.downloadUrl = `https://exports.aegisos.io/${manifest.id}/download`;
     manifest.completedAt = new Date().toISOString();
 
     this.exports.set(manifest.id, manifest);

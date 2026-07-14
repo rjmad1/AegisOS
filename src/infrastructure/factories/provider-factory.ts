@@ -4,14 +4,14 @@ import { IInfrastructureProvider } from "../contracts/provider";
 import {
   OllamaProvider,
   LiteLLMProvider,
-  OpenClawProvider,
+  AegisOSProvider,
   FilesystemProvider,
   WindowsProvider,
   DockerProvider,
   MockProvider,
 } from "../providers/skeletons";
 import { ObjectStoragePlatformProvider } from "../providers/object-storage";
-import { OpenClawRuntimeProvider } from "../providers/openclaw-runtime";
+import { AegisOSRuntimeProvider } from "../providers/aegisos-runtime";
 import { OllamaAIRuntimeProvider } from "../providers/ollama-ai-runtime";
 import { LiteLLMAIRuntimeProvider } from "../providers/litellm-ai-runtime";
 import { centralConfig } from "../configuration/central-config";
@@ -67,11 +67,11 @@ export class ProviderFactory {
       case "litellm-provider":
         provider = new LiteLLMProvider();
         break;
-      case "openclaw-provider":
-        provider = new OpenClawProvider();
+      case "aegisos-provider":
+        provider = new AegisOSProvider();
         break;
-      case "openclaw-runtime-provider":
-        provider = new OpenClawRuntimeProvider();
+      case "aegisos-runtime-provider":
+        provider = new AegisOSRuntimeProvider();
         break;
       case "filesystem-provider":
         provider = new FilesystemProvider();
@@ -181,8 +181,8 @@ export class ProviderFactory {
     const defaultIds = [
       "ollama-provider",
       "litellm-provider",
-      "openclaw-provider",
-      "openclaw-runtime-provider",
+      "aegisos-provider",
+      "aegisos-runtime-provider",
       "filesystem-provider",
       "local-artifact-storage-provider",
       "windows-provider",

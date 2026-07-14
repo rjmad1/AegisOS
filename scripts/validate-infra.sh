@@ -81,7 +81,7 @@ check_gpu() {
 # Run validation loop
 main() {
   echo "==================================================="
-  echo "   OpenClaw Enterprise Infrastructure Diagnostics   "
+  echo "   AegisOS Enterprise Infrastructure Diagnostics   "
   echo "==================================================="
   
   local failed=0

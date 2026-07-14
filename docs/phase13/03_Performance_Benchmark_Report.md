@@ -1,4 +1,4 @@
-# Performance Benchmark Report — OpenClaw V1.0
+# Performance Benchmark Report — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-This report establishes the performance benchmarks for OpenClaw V1.0. Testing was simulated under realistic operational scenarios modeling local-first and enterprise workloads. The workstation is evaluated on a reference platform: Intel Core i9 (14th Gen), 64GB DDR5 RAM, NVIDIA GeForce RTX 4090 (24GB VRAM), and PCIe Gen4 NVMe SSD.
+This report establishes the performance benchmarks for AegisOS V1.0. Testing was simulated under realistic operational scenarios modeling local-first and enterprise workloads. The workstation is evaluated on a reference platform: Intel Core i9 (14th Gen), 64GB DDR5 RAM, NVIDIA GeForce RTX 4090 (24GB VRAM), and PCIe Gen4 NVMe SSD.
 
 **Key Findings:**
 * **Startup Latency**: Server-side boot completes in under 2 seconds. Cold starts are model-loading bound.

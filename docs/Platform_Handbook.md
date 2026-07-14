@@ -10,7 +10,7 @@ The core infrastructure operates using five interconnected services managed via 
 |---|---|---|---|
 | **Ollama** | `C:\Program Files\Ollama\ollama.exe serve` | 11434 | Local model host |
 | **LiteLLMService** | `C:\ProgramData\AI\bin\litellm.exe` | 4000 | Model routing proxy |
-| **OpenClawService** | `openclaw/dist/index.js` | 18789 | Agent gateway / MCP host |
+| **AegisOSService** | `aegisos/dist/index.js` | 18789 | Agent gateway / MCP host |
 | **OmniRouteService** | `omniroute/server/index.js` | 20128 | Performance dashboard |
 | **Open-WebUI Container** | `docker-compose.yml` (Image: ghcr.io/open-webui/open-webui:main) | 8090 | General chat UI |
 
@@ -36,7 +36,7 @@ The platform is pre-configured to utilize the following GGUF, VRAM-optimized mod
 
 Seven Model Context Protocol (MCP) servers are active on the gateway, allowing models to interact with the workstation:
 
-1. **filesystem**: Reads/writes files in `D:\OpenClaw\Source`.
+1. **filesystem**: Reads/writes files in `D:\AegisOS\Source`.
 2. **git**: Examines local git repositories.
 3. **github**: Integrates with remote Github repositories using `GITHUB_TOKEN`.
 4. **sqlite**: Queries and modifies the agent database.
@@ -52,5 +52,5 @@ Configuration settings are externalized to allow machine-independent deployments
 
 * **Ollama env variables**: Sets CUDA thresholds and model folder redirections.
 * **LiteLLM routing rules**: `configs/litellm/config.yaml` describes fallback chains.
-* **OpenClaw endpoints**: `configs/openclaw/openclaw.json` maps MCP parameters.
+* **AegisOS endpoints**: `configs/aegisos/aegisos.json` maps MCP parameters.
 * **Next.js Console settings**: `console_config.json` sets relative paths for storage.

@@ -1,4 +1,4 @@
-# Recommended Version 1.1 Backlog — OpenClaw
+# Recommended Version 1.1 Backlog — AegisOS
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Backlog Overview
 
-This document presents the prioritized backlog of engineering tasks proposed for the OpenClaw V1.1 minor release. These items address the security, performance, resilience, and operational gaps identified during the V1.0 Enterprise Validation program.
+This document presents the prioritized backlog of engineering tasks proposed for the AegisOS V1.1 minor release. These items address the security, performance, resilience, and operational gaps identified during the V1.0 Enterprise Validation program.
 
 ---
 

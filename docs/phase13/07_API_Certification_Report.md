@@ -1,4 +1,4 @@
-# API Certification Report — OpenClaw V1.0
+# API Certification Report — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-This report certifies that the OpenClaw V1.0 API satisfies target contract standards, payload consistency, security constraints, and versioning rules. All production endpoints conform to the OpenAPI 3.0 specification documented in `docs/openapi-spec.json`.
+This report certifies that the AegisOS V1.0 API satisfies target contract standards, payload consistency, security constraints, and versioning rules. All production endpoints conform to the OpenAPI 3.0 specification documented in `docs/openapi-spec.json`.
 
 **Overall Verdict: PASS**
 * **Versioning**: All public interfaces are correctly grouped under the namespace `/api/v1/`.
@@ -56,7 +56,7 @@ The platform enforces RFC 7807 compliant ProblemDetails error structures.
 * **Format**:
   ```json
   {
-    "type": "https://errors.openclaw.ai/not-found",
+    "type": "https://errors.aegisos.ai/not-found",
     "title": "Resource Not Found",
     "status": 404,
     "detail": "Workflow with ID 'wf-invalid-01' was not found in the registry.",

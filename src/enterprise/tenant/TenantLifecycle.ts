@@ -418,7 +418,7 @@ export class TenantLifecycle {
       type,
       status: 'in-progress',
       sizeBytes: 0,
-      storageLocation: `s3://openclaw-backups/${tenant.organizationId}/${tenantId}/${new Date().toISOString()}`,
+      storageLocation: `s3://aegisos-backups/${tenant.organizationId}/${tenantId}/${new Date().toISOString()}`,
       region: tenant.region,
       encryptionKeyId: tenant.settings.customEncryptionKey,
       retentionDays: 90,

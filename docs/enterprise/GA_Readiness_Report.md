@@ -11,7 +11,7 @@
 ---
 
 ## 1. Executive Sign-Off Overview
-Following independent security, reliability, quality, and performance audits, the OpenClaw AI Operations Console is certified **General Availability (GA)** ready for production deployment across Windows, Linux, and macOS environments.
+Following independent security, reliability, quality, and performance audits, the AegisOS AI Operations Console is certified **General Availability (GA)** ready for production deployment across Windows, Linux, and macOS environments.
 
 All 10 critical and high findings from the technology panel have been fully remediated and validated under automated controls.
 

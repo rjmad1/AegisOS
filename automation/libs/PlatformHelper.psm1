@@ -43,8 +43,8 @@ function Get-PlatformRoot([string]$paramRoot) {
     if ($paramRoot) {
         return $paramRoot
     }
-    if ($env:OPENCLAW_STATE_DIR) {
-        return $env:OPENCLAW_STATE_DIR
+    if ($env:AEGISOS_STATE_DIR) {
+        return $env:AEGISOS_STATE_DIR
     }
     return "D:\AIPlatform"
 }

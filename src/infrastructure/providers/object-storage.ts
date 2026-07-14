@@ -107,7 +107,7 @@ class S3ArtifactProvider implements IArtifactProviderAdapter {
   async initialize(config: Record<string, any>): Promise<void> {
     const { S3Client } = require('@aws-sdk/client-s3');
     
-    this.bucket = process.env.AWS_S3_BUCKET || config.bucket || 'openclaw-artifacts';
+    this.bucket = process.env.AWS_S3_BUCKET || config.bucket || 'aegisos-artifacts';
     const region = process.env.AWS_REGION || config.region || 'us-east-1';
 
     const clientConfig: any = {
@@ -233,7 +233,7 @@ class GcsArtifactProvider implements IArtifactProviderAdapter {
 
   async initialize(config: Record<string, any>): Promise<void> {
     const { Storage } = require('@google-cloud/storage');
-    this.bucketName = process.env.GCS_BUCKET || config.bucket || 'openclaw-gcs';
+    this.bucketName = process.env.GCS_BUCKET || config.bucket || 'aegisos-gcs';
     this.storage = new Storage();
   }
 
@@ -308,7 +308,7 @@ class AzureArtifactProvider implements IArtifactProviderAdapter {
   async initialize(config: Record<string, any>): Promise<void> {
     const { BlobServiceClient } = require('@azure/storage-blob');
     const connStr = process.env.AZURE_STORAGE_CONNECTION_STRING || '';
-    const containerName = process.env.AZURE_CONTAINER || config.container || 'openclaw-azure';
+    const containerName = process.env.AZURE_CONTAINER || config.container || 'aegisos-azure';
     const blobServiceClient = BlobServiceClient.fromConnectionString(connStr);
     this.containerClient = blobServiceClient.getContainerClient(containerName);
   }

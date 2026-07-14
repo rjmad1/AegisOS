@@ -1,4 +1,4 @@
-# Product Management Excellence — OpenClaw Enterprise Strategy
+# Product Management Excellence — AegisOS Enterprise Strategy
 
 | Field | Value |
 |---|---|
@@ -40,7 +40,7 @@ We measure success by the volume of automated agent steps executed and verified 
 
 ```mermaid
 graph TD
-    A[Business Need: AI sovereign compliance] --> B[Product Charter: OpenClaw Console]
+    A[Business Need: AI sovereign compliance] --> B[Product Charter: AegisOS Console]
     B --> C[Value Stream: Developer Productivity]
     B --> D[Value Stream: Compliance Auditability]
     B --> E[Value Stream: Infrastructure Optimization]
@@ -59,7 +59,7 @@ graph TD
 * **Revenue Streams**: Enterprise node licenses, premium clusters management plane, and developer support SLAs.
 
 ### 2.2 Market Positioning & SWOT Analysis
-OpenClaw is positioned between raw model providers (Ollama) and enterprise cloud agent platforms (LangChain, CoPilot). It targets the **Sovereign Local Execution** quadrant.
+AegisOS is positioned between raw model providers (Ollama) and enterprise cloud agent platforms (LangChain, CoPilot). It targets the **Sovereign Local Execution** quadrant.
 
 #### SWOT Analysis
 * **Strengths**: Low latency, absolute privacy, robust event bus, built-in self-healing, SQLite replication.
@@ -111,7 +111,7 @@ journey
 
 ---
 
-## 4. Product Requirements Document (PRD) — OpenClaw Enterprise
+## 4. Product Requirements Document (PRD) — AegisOS Enterprise
 
 ### 4.1 Goals
 * Allow operators to schedule, track, and monitor local agent executions with milliseconds precision.
@@ -119,8 +119,8 @@ journey
 * Ensure local model performance metrics are visible to administrators.
 
 ### 4.2 Non-Goals
-* We do not host models on OpenClaw infrastructure (handled by Ollama, LiteLLM).
-* We do not replace developer IDEs (OpenClaw is an orchestration and operations console).
+* We do not host models on AegisOS infrastructure (handled by Ollama, LiteLLM).
+* We do not replace developer IDEs (AegisOS is an orchestration and operations console).
 
 ### 4.3 Functional Requirements
 

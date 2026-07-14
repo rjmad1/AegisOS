@@ -51,7 +51,7 @@ if (-not (Test-Path $targetParent) -and -not $DryRun) {
 
 # 3. Stop running services
 Log-PlatformAction "Stopping running services to unlock files..."
-$services = @("OpenClawService", "OmniRouteService", "LiteLLMService", "Ollama")
+$services = @("AegisOSService", "OmniRouteService", "LiteLLMService", "Ollama")
 foreach ($s in $services) {
     if (Get-Service -Name $s -ErrorAction SilentlyContinue) {
         if (-not $DryRun) {

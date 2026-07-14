@@ -1,4 +1,4 @@
-# Known Limitations — OpenClaw V1.0
+# Known Limitations — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Scope of Limitations
 
-This document lists the known boundaries, thresholds, and constraints of OpenClaw V1.0. These limitations are structural properties of the local-first workstation architecture.
+This document lists the known boundaries, thresholds, and constraints of AegisOS V1.0. These limitations are structural properties of the local-first workstation architecture.
 
 ---
 
@@ -23,7 +23,7 @@ This document lists the known boundaries, thresholds, and constraints of OpenCla
 * **Resolution**: Systems requiring multi-user write concurrency must set the `DATABASE_URL` environment variable to a PostgreSQL database server.
 
 ### 2.2 Secrets Portability (Windows DPAPI Host Lock)
-* **Limit**: Security credentials and API keys stored in `OpenClaw_secrets.enc` are encrypted using Windows Data Protection API (DPAPI). DPAPI bindings utilize the machine's local security identifier (SID) and cryptoproviders.
+* **Limit**: Security credentials and API keys stored in `AegisOS_secrets.enc` are encrypted using Windows Data Protection API (DPAPI). DPAPI bindings utilize the machine's local security identifier (SID) and cryptoproviders.
 * **Operational Boundary**: Restoring a backup archive on a different physical server will cause secret decryption to fail.
 * **Resolution**: The recovery orchestrator (`Restore.ps1`) detects this and prompts the user to enter replacement secrets interactively.
 

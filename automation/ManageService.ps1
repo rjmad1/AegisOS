@@ -30,7 +30,7 @@ $serviceCatalog = @{
     "proxy"      = "caddy"
     "ollama"     = "Ollama"
     "litellm"    = "LiteLLMService"
-    "openclaw"   = "OpenClawService"
+    "aegisos"   = "AegisOSService"
     "omniroute"  = "OmniRouteService"
 }
 
@@ -39,10 +39,10 @@ if ($Service -eq "all") {
     # Process all in startup dependency order or shutdown order
     if ($Action -eq "stop") {
         # Shutdown order (Reverse dependency order)
-        $servicesToProcess = @("proxy", "console", "omniroute", "openclaw", "litellm", "ollama")
+        $servicesToProcess = @("proxy", "console", "omniroute", "aegisos", "litellm", "ollama")
     } else {
         # Startup order
-        $servicesToProcess = @("ollama", "litellm", "openclaw", "omniroute", "console", "proxy")
+        $servicesToProcess = @("ollama", "litellm", "aegisos", "omniroute", "console", "proxy")
     }
 } else {
     if ($serviceCatalog.ContainsKey($Service.ToLower())) {
@@ -56,7 +56,7 @@ if ($Service -eq "all") {
         if ($match) {
             $servicesToProcess = @($match)
         } else {
-            Log-PlatformError "Unknown service specified: $Service. Available: console, proxy, ollama, litellm, openclaw, omniroute, all"
+            Log-PlatformError "Unknown service specified: $Service. Available: console, proxy, ollama, litellm, aegisos, omniroute, all"
             Exit 1
         }
     }

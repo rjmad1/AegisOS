@@ -105,7 +105,7 @@ export class SyncScheduler {
 
   private async tick() {
     // 1. Sync Configuration File Change
-    const configPath = process.env.OPENCLAW_CONFIG_PATH || 'D:/OpenClaw/Config/openclaw.json';
+    const configPath = process.env.AEGISOS_CONFIG_PATH || 'D:/AegisOS/Config/aegisos.json';
     try {
       if (fs.existsSync(configPath)) {
         const stat = fs.statSync(configPath);
@@ -155,7 +155,7 @@ export class SyncScheduler {
             priority: 'critical',
             securityClassification: 'public',
             retentionPolicy: 'archive',
-            payload: { providerId: 'openclaw-runtime-provider', providerName: 'OpenClaw Runtime Provider' },
+            payload: { providerId: 'aegisos-runtime-provider', providerName: 'AegisOS Runtime Provider' },
           });
         } else if (oldHealth === 'offline' && status !== 'offline') {
           eventBus.publish({
@@ -165,7 +165,7 @@ export class SyncScheduler {
             priority: 'high',
             securityClassification: 'public',
             retentionPolicy: 'archive',
-            payload: { providerId: 'openclaw-runtime-provider', providerName: 'OpenClaw Runtime Provider' },
+            payload: { providerId: 'aegisos-runtime-provider', providerName: 'AegisOS Runtime Provider' },
           });
         }
       }

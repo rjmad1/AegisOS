@@ -6,7 +6,7 @@ import {
 } from "@/types/runtime";
 import { providerFactory } from "@/infrastructure/factories/provider-factory";
 import { ProviderRegistry } from "@/infrastructure/providers/registry";
-import { OpenClawRuntimeProvider } from "@/infrastructure/providers/openclaw-runtime";
+import { AegisOSRuntimeProvider } from "@/infrastructure/providers/aegisos-runtime";
 
 export class RuntimeService {
   private static instance: RuntimeService | null = null;
@@ -15,8 +15,8 @@ export class RuntimeService {
   private configPath: string = "";
 
   private constructor() {
-    this.stateDir = process.env.OPENCLAW_STATE_DIR || "D:/OpenClaw";
-    this.configPath = process.env.OPENCLAW_CONFIG_PATH || "D:/OpenClaw/Config/openclaw.json";
+    this.stateDir = process.env.AEGISOS_STATE_DIR || "D:/AegisOS";
+    this.configPath = process.env.AEGISOS_CONFIG_PATH || "D:/AegisOS/Config/aegisos.json";
     this.dbPath = this.resolveDatabasePath();
   }
 
@@ -29,10 +29,10 @@ export class RuntimeService {
 
   private resolveDatabasePath(): string {
     const pathsToCheck = [
-      path.join(this.stateDir, "Metadata/state/openclaw.sqlite"),
-      path.join(this.stateDir, "state/openclaw.sqlite"),
-      path.resolve(process.env.USERPROFILE || "", ".openclaw/Metadata/state/openclaw.sqlite"),
-      path.resolve(process.env.USERPROFILE || "", ".openclaw/state/openclaw.sqlite")
+      path.join(this.stateDir, "Metadata/state/aegisos.sqlite"),
+      path.join(this.stateDir, "state/aegisos.sqlite"),
+      path.resolve(process.env.USERPROFILE || "", ".aegisos/Metadata/state/aegisos.sqlite"),
+      path.resolve(process.env.USERPROFILE || "", ".aegisos/state/aegisos.sqlite")
     ];
 
     for (const p of pathsToCheck) {
@@ -41,7 +41,7 @@ export class RuntimeService {
       }
     }
     // Fallback if none found
-    return path.join(this.stateDir, "Metadata/state/openclaw.sqlite");
+    return path.join(this.stateDir, "Metadata/state/aegisos.sqlite");
   }
 
   private getDbConnection() {
@@ -61,10 +61,10 @@ export class RuntimeService {
 
   public async getRuntime(): Promise<Runtime> {
     const registry = ProviderRegistry.getInstance();
-    let provider = registry.getProvider<OpenClawRuntimeProvider>("openclaw-runtime-provider");
+    let provider = registry.getProvider<AegisOSRuntimeProvider>("aegisos-runtime-provider");
     if (!provider) {
       // Create and register if not present
-      provider = providerFactory.createAndRegisterProvider("openclaw-runtime-provider") as OpenClawRuntimeProvider;
+      provider = providerFactory.createAndRegisterProvider("aegisos-runtime-provider") as AegisOSRuntimeProvider;
     }
 
     const health = await provider.checkHealth();
@@ -113,8 +113,8 @@ export class RuntimeService {
     };
 
     return {
-      id: "openclaw-runtime",
-      name: "OpenClaw AI Orchestrator",
+      id: "aegisos-runtime",
+      name: "AegisOS AI Orchestrator",
       status: health.status === "healthy" ? "online" : health.status === "degraded" ? "degraded" : "offline",
       version: caps.version,
       capabilities: caps.capabilities.map(c => ({ name: c.name, description: c.description })),
@@ -160,7 +160,7 @@ export class RuntimeService {
             updatedAt,
             status: "active",
             messageCount: messagesCount,
-            summary: "Telegram messaging gateway dialogue with OpenClaw Agent",
+            summary: "Telegram messaging gateway dialogue with AegisOS Agent",
             agentId: "main",
             metadata: { type: "telegram", chatId }
           });
@@ -252,7 +252,7 @@ export class RuntimeService {
 
           const isBot = msg.from?.is_bot;
           const senderRole = isBot ? "assistant" as const : "user" as const;
-          const senderName = msg.from?.first_name || (isBot ? "OpenClaw" : "User");
+          const senderName = msg.from?.first_name || (isBot ? "AegisOS" : "User");
 
           messages.push({
             id: `msg-${msg.message_id}`,
@@ -281,7 +281,7 @@ export class RuntimeService {
           updatedAt,
           status: "active",
           messageCount: messages.length,
-          summary: "Telegram messaging gateway dialogue with OpenClaw Agent",
+          summary: "Telegram messaging gateway dialogue with AegisOS Agent",
           agentId: "main",
           metadata: { type: "telegram", chatId },
           messages
@@ -541,7 +541,7 @@ export class RuntimeService {
         name: "Queued",
         status: "completed",
         timestamp: createTime,
-        message: "Task successfully enqueued in OpenClaw gateway."
+        message: "Task successfully enqueued in AegisOS gateway."
       });
 
       if (r.started_at) {

@@ -60,7 +60,7 @@ export async function PUT(
       changeType: "update_definition" as const,
       version: updated.version,
       userId: "admin",
-      userEmail: userEmail || "admin@openclaw.io",
+      userEmail: userEmail || "admin@aegisos.io",
       details: `Updated workflow definition details and nodes configuration.`,
       timestamp: new Date().toISOString()
     };

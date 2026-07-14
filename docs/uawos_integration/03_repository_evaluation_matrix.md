@@ -27,14 +27,14 @@ We evaluate each repository independently to determine its architectural fit, co
 - **Dependencies**: Node.js, tree-sitter, SQLite.
 - **Capabilities Introduced**: Pre-indexed semantic code intelligence, code graph structure queries, cross-file impact analysis.
 - **Capabilities Duplicated**: Basic text search (ripgrep) and directory walks (filesystem provider).
-- **Existing Implementation**: basic filesystem and git providers exist in OpenClaw. No AST parsing or dependency indexing.
+- **Existing Implementation**: basic filesystem and git providers exist in AegisOS. No AST parsing or dependency indexing.
 - **Integration Complexity**: Low (exposes an out-of-the-box MCP server).
 - **Maintenance Burden**: Low (runs locally, fully self-contained).
 - **Expected ROI**: High (reduces agent code discovery loops, saving up to 80% search token consumption).
 - **Decision**: **Interface Only**
 - **Justification**:
   - *Business*: Increases developer agent output accuracy and speeds up code exploration.
-  - *Technical*: Integrates as a pre-built MCP server in OpenClaw (`configs/openclaw/openclaw.json`).
+  - *Technical*: Integrates as a pre-built MCP server in AegisOS (`configs/aegisos/aegisos.json`).
   - *Architectural*: Avoids bringing CodeGraph source code into the UAWOS repository. Keeps the agent runtime loosely coupled via standard MCP interfaces.
 
 ### 2. Spec Kit
@@ -42,7 +42,7 @@ We evaluate each repository independently to determine its architectural fit, co
 - **Architectural Layer**: Planning Layer / Spec Generation.
 - **Dependencies**: Node.js / CLI.
 - **Capabilities Introduced**: Standardized task decomposition, ADR template structures, project spec generation.
-- **Capabilities Duplicated**: Prompt-based planning templates (duped in OpenClaw prompt structures).
+- **Capabilities Duplicated**: Prompt-based planning templates (duped in AegisOS prompt structures).
 - **Existing Implementation**: Manual writing of specs and implementation plans.
 - **Integration Complexity**: Low (CLI interface or static template mapping).
 - **Maintenance Burden**: Low (stable standard templates, no runtime service dependencies).
@@ -50,7 +50,7 @@ We evaluate each repository independently to determine its architectural fit, co
 - **Decision**: **Interface Only**
 - **Justification**:
   - *Business*: Reduces architectural drift and project implementation errors.
-  - *Technical*: Expose as a planning tool wrapped by OpenClaw's Planner Agent.
+  - *Technical*: Expose as a planning tool wrapped by AegisOS's Planner Agent.
   - *Architectural*: Decouples template structures from runtime agent code. Prevents prompt registry duplication.
 
 ### 3. Headroom
@@ -66,7 +66,7 @@ We evaluate each repository independently to determine its architectural fit, co
 - **Decision**: **Adopt** (Integrated inline)
 - **Justification**:
   - *Business*: Reduces VRAM usage and speeds up model time-to-first-token (TTFT).
-  - *Technical*: Placed directly before the LiteLLM routing proxy. Runs as a local Python script/library called via OpenClaw.
+  - *Technical*: Placed directly before the LiteLLM routing proxy. Runs as a local Python script/library called via AegisOS.
   - *Architectural*: Standardizes prompt optimization at the gateway boundary, protecting models from massive raw contexts.
 
 ### 4. Ponytail
@@ -105,7 +105,7 @@ We evaluate each repository independently to determine its architectural fit, co
 - **Architectural Layer**: Background Agent Layer / Knowledge Ingestion.
 - **Dependencies**: Python, PyTorch (optional), headless browsers, shell execution.
 - **Capabilities Introduced**: Autonomous documentation generation, local code experimentation, architectural radars.
-- **Capabilities Duplicated**: Local execution code running (duped by OpenClaw shell execution capabilities).
+- **Capabilities Duplicated**: Local execution code running (duped by AegisOS shell execution capabilities).
 - **Existing Implementation**: None.
 - **Integration Complexity**: High (requires isolated sandbox environments to safely run iterations).
 - **Maintenance Burden**: High (running arbitrary code loops locally can hang or exhaust disk).
@@ -121,7 +121,7 @@ We evaluate each repository independently to determine its architectural fit, co
 - **Architectural Layer**: Optimization Layer / Prompts.
 - **Dependencies**: Python, test benchmark sets.
 - **Capabilities Introduced**: Prompt optimization loops, system instructions tuning, prompt regressions testing.
-- **Capabilities Duplicated**: Prompt registries (duped by OpenClaw configs).
+- **Capabilities Duplicated**: Prompt registries (duped by AegisOS configs).
 - **Existing Implementation**: Static YAML/JSON prompt definitions.
 - **Integration Complexity**: Medium (requires a dataset of test cases to optimize against).
 - **Maintenance Burden**: Medium (requires active supervision and execution configurations).

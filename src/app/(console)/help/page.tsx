@@ -58,7 +58,7 @@ export default function HelpPage() {
             {[
               { label: "Ollama Served API Spec", desc: "Local Ollama host server bindings doc." },
               { label: "LiteLLM Router Config Spec", desc: "Routing policies and alias definitions." },
-              { label: "OpenClaw SDK reference", desc: "MCP Host setup and workflow specs." },
+              { label: "AegisOS SDK reference", desc: "MCP Host setup and workflow specs." },
             ].map((link, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 rounded-lg border border-border/40 bg-accent/5 text-left">
                 <div className="flex flex-col space-y-0.5">

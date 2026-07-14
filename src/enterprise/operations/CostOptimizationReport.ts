@@ -21,7 +21,7 @@ export class CostOptimizationReport {
     const efficiency = costOptimizationPlatform.getFinOpsEfficiency(tenantId);
 
     const sections: string[] = [];
-    sections.push(`# OpenClaw FinOps & Cost Optimization Report`);
+    sections.push(`# AegisOS FinOps & Cost Optimization Report`);
     sections.push(`Generated: ${new Date().toISOString()}`);
     sections.push(`Target Tenant: ${tenantId}`);
     sections.push(`---`);

@@ -44,14 +44,14 @@ flowchart TD
     B -->|development / personal| C[Store clear-text environment variable]
     B -->|enterprise| D[Call Protect-PlatformSecret cmdlet]
     D --> E[Windows DPAPI encrypts with Machine-Scope key]
-    E --> F[Write encrypted payload to OpenClaw_secrets.enc]
+    E --> F[Write encrypted payload to AegisOS_secrets.enc]
     F --> G[Secrets stored securely at rest]
 end
 ```
 
 ### Decryption and Recovery
 - **Local Decryption:** Processes run by local system accounts query DPAPI to decrypt variables dynamically at startup.
-- **Host Migration:** Since DPAPI uses the host's physical key, migrating `OpenClaw_secrets.enc` to another machine will break decryption. In this case, the `Restore.ps1` script will detect the failure, prompt for re-entry, and encrypt the keys using the new host's physical key.
+- **Host Migration:** Since DPAPI uses the host's physical key, migrating `AegisOS_secrets.enc` to another machine will break decryption. In this case, the `Restore.ps1` script will detect the failure, prompt for re-entry, and encrypt the keys using the new host's physical key.
 
 ---
 
@@ -63,12 +63,12 @@ All server gateways are registered as background Windows Services using the Non-
 graph TD
     SCM[Windows Service Control Manager] -->|Start| S1[Ollama Service :11434]
     SCM -->|Start| S2[LiteLLM Service :4000]
-    SCM -->|Start| S3[OpenClaw Service :18789]
+    SCM -->|Start| S3[AegisOS Service :18789]
     SCM -->|Start| S4[OmniRoute Service :18780]
     
     subgraph NSSM Service Wrapper
         S2 -->|executes| LiteLLMCmd[nssm.exe start LiteLLM]
-        S3 -->|executes| OpenClawCmd[nssm.exe start OpenClaw]
+        S3 -->|executes| AegisOSCmd[nssm.exe start AegisOS]
         S4 -->|executes| OmniRouteCmd[nssm.exe start OmniRoute]
     end
 ```
@@ -84,9 +84,9 @@ Services are registered with the following parameters under SCM:
 *   **LiteLLM Service**:
     *   **Exec Path**: `$PlatformRoot\apps\litellm\litellm.exe`
     *   **Parameters**: `--config $PlatformRoot\configs\litellm_config.yaml --port 4000`
-*   **OpenClaw Service**:
+*   **AegisOS Service**:
     *   **Exec Path**: `node.exe`
-    *   **Parameters**: `$PlatformRoot\apps\openclaw\dist\index.js --port 18789`
+    *   **Parameters**: `$PlatformRoot\apps\aegisos\dist\index.js --port 18789`
 *   **OmniRoute Service**:
     *   **Exec Path**: `node.exe`
     *   **Parameters**: `$PlatformRoot\apps\omniroute\dist\index.js --port 18780`

@@ -1,4 +1,4 @@
-# Chaos Engineering Report — OpenClaw V1.0
+# Chaos Engineering Report — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-This report evaluates the resilience and self-healing behavior of OpenClaw V1.0 under simulated infrastructure failures, resource exhaustion, and abrupt disruptions. The goal is to verify that the workstation recovers gracefully without data loss or corruption, maintaining operational state boundaries.
+This report evaluates the resilience and self-healing behavior of AegisOS V1.0 under simulated infrastructure failures, resource exhaustion, and abrupt disruptions. The goal is to verify that the workstation recovers gracefully without data loss or corruption, maintaining operational state boundaries.
 
 **Overall Verdict: PASS**
 * The platform demonstrates robust recovery under service failures, power failures, and cache corruption.
@@ -23,7 +23,7 @@ This report evaluates the resilience and self-healing behavior of OpenClaw V1.0 
 
 | Fault Scenario | Trigger / Simulation | System Behavior | Recovery Validation | Status |
 |---|---|---|---|---|
-| **Ollama Unavailable** | Terminated Ollama service during active inference. | LiteLLM routing proxy throws HTTP 503; OpenClaw handles exception, marking execution step as failed. | Automatic. Workflow retry policy handles backoff, and execution resumes once Ollama restarts. | **PASS** |
+| **Ollama Unavailable** | Terminated Ollama service during active inference. | LiteLLM routing proxy throws HTTP 503; AegisOS handles exception, marking execution step as failed. | Automatic. Workflow retry policy handles backoff, and execution resumes once Ollama restarts. | **PASS** |
 | **LiteLLM Unavailable** | Stopped `LiteLLMService` via NSSM/SCM. | Admin console reports AI Gateway status as `degraded` or `unhealthy`. Direct API requests to port 4000 fail. | Automatic. Self-healer triggers a mock restart call for the registered service port. | **PASS** |
 | **Database Unavailable** | Renamed `production.db` file to simulate file system lock/loss. | Next.js server crashes or returns 500 error codes on database-backed routes. | Manual. Administrator restores database from the latest backup (`Restore.ps1`). | **PASS** |
 | **Filesystem Workspace Access Blocked** | Changed NTFS permissions on workspace to deny access. | Artifact Explorer displays read errors; workspace watcher logs access violations. | Immediate. Restoring permissions instantly resumes normal file operations. | **PASS** |

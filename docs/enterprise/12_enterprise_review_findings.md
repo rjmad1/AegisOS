@@ -12,7 +12,7 @@
 
 ## 1. Executive Summary
 
-This document presents a simulated independent review of the OpenClaw platform, compiled from the expert perspectives of ten leading technology organizations. For every finding, we evaluate the severity, evidence, operational risk, recommended remediation, priority, owner, and estimated engineering effort.
+This document presents a simulated independent review of the AegisOS platform, compiled from the expert perspectives of ten leading technology organizations. For every finding, we evaluate the severity, evidence, operational risk, recommended remediation, priority, owner, and estimated engineering effort.
 
 ---
 

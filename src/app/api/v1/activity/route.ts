@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
           break;
         case 'ConfigurationChanged':
           action = 'Config Updated';
-          target = evt.payload?.path || 'openclaw.json';
+          target = evt.payload?.path || 'aegisos.json';
           type = 'system';
           break;
         case 'ProviderDisconnected':

@@ -43,11 +43,11 @@ The workstation runs a fully local, privacy-first AI inference and agent orchest
 |---|---|
 | **Hardware** | AMD Ryzen 9 9950X3D (16C/32T), NVIDIA GeForce RTX 5080 (16 GB VRAM), 64 GB DDR5-4800 CORSAIR RAM, Samsung 9100 PRO 2TB NVMe + WD_BLACK SN850X 1TB NVMe |
 | **AI Inference** | Ollama v0.31.1 serving 12 local GGUF models with LiteLLM proxy (least-busy routing), Ponytail context pruning, and Headroom prompt token compression proxy |
-| **AI Gateway** | OpenClaw AI Gateway with multi-agent orchestration (main, developer, reviewer) and CodeGraph MCP server |
+| **AI Gateway** | AegisOS AI Gateway with multi-agent orchestration (main, developer, reviewer) and CodeGraph MCP server |
 | **AI Dashboard** | OmniRoute AI Gateway with ELO arena scoring and call logging |
 | **Chat UI** | Open-WebUI (Docker, port 8090) |
 | **Context Layer** | 8 Local MCP Context Servers (filesystem, git, github, sqlite, fetch, puppeteer, raja-knowledge-repository, codegraph) |
-| **Databases** | PostgreSQL (v13, v14, v16), MongoDB, Redis, SQLite (openclaw, omniroute, open-webui, and codegraph) |
+| **Databases** | PostgreSQL (v13, v14, v16), MongoDB, Redis, SQLite (aegisos, omniroute, open-webui, and codegraph) |
 | **Networking** | Tailscale mesh VPN, Realtek 5GbE wired, Qualcomm Wi-Fi 7 |
 | **Security** | DPAPI machine-scope encryption, Norton Firewall, loopback-secured services |
 | **Automation & Orchestration** | Elevated `Bootstrap.ps1` installer, modular scripts under `automation/` (Install, Configure, Validate, Backup, Restore, Migrate, HealthCheck, Upgrade, Remove, Package), PlatformHelper library, parameterized profiles (default, development, personal, offline, enterprise), JSON catalogs, and ADR-001 through ADR-008 design standards |
@@ -79,7 +79,7 @@ This document contains **40 enterprise-grade diagram prompts** covering the full
 The infrastructure follows a **local-first, privacy-preserving** architecture where:
 
 1. All AI inference runs on local hardware (GPU + CPU offload)
-2. Core routing services (OpenClaw, LiteLLM) bind exclusively to `127.0.0.1`
+2. Core routing services (AegisOS, LiteLLM) bind exclusively to `127.0.0.1`
 3. Secrets are encrypted at rest using Windows DPAPI (machine scope)
 4. Only Ollama (port 11434) is LAN-exposed for device offloading
 5. External connectivity is provided via Tailscale mesh VPN (100.90.78.53)
@@ -109,11 +109,11 @@ The infrastructure follows a **local-first, privacy-preserving** architecture wh
 | File system traversal | Config files, docs, directories | ✅ Complete |
 | `Get-NetFirewallRule` | Firewall policies | ✅ Ollama inbound rules |
 | `Get-ScheduledTask` | Scheduled automation | ✅ 3 AI-related tasks |
-| Environment variable query | System env vars | ✅ OLLAMA_*, OPENCLAW_* |
+| Environment variable query | System env vars | ✅ OLLAMA_*, AEGISOS_* |
 
 ### Existing Documentation Discovered
 
-**Consolidated structured guides** found in `D:\1_Projects\OpenClawOllamaLiteLLM_Transparency\docs\` and **Architectural Decision Records** under `adr/` — see [Section 11](#11-existing-documentation-audit) for full audit.
+**Consolidated structured guides** found in `D:\1_Projects\AegisOS\docs\` and **Architectural Decision Records** under `adr/` — see [Section 11](#11-existing-documentation-audit) for full audit.
 
 ---
 
@@ -216,7 +216,7 @@ The hardware is specifically optimized for local AI inference:
 | **LiteLLM** | Latest (uv-managed) | Model routing proxy with fallback chains | 4000 | ✅ Running (Windows Service) |
 | **Headroom** | Latest (Python) | Inline prompt token compression proxy | 4050 | ✅ Running (Windows Service) |
 | **CodeGraph** | Latest (Node.js) | Code intelligence parser & MCP server | 18790 / stdio | ✅ Running (Windows Service / MCP) |
-| **OpenClaw** | Latest (npm global) | AI gateway, agent framework, MCP host | 18789 | ✅ Running (Windows Service) |
+| **AegisOS** | Latest (npm global) | AI gateway, agent framework, MCP host | 18789 | ✅ Running (Windows Service) |
 | **OmniRoute** | Latest (Node.js) | AI routing dashboard with arena ELO | 20128 | ✅ Running (Windows Service) |
 | **Open-WebUI** | main (Docker) | Chat interface UI | 8090 | ✅ Running (Docker Container) |
 
@@ -225,7 +225,7 @@ The hardware is specifically optimized for local AI inference:
 | Runtime | Version | Purpose |
 |---|---|---|
 | **Python** | 3.12.4 | LiteLLM execution, MCP servers, custom scripts |
-| **Node.js** | 24.16.0 | OpenClaw, OmniRoute, MCP servers (npx) |
+| **Node.js** | 24.16.0 | AegisOS, OmniRoute, MCP servers (npx) |
 | **npm** | 11.13.0 | Package management for Node.js components |
 | **Git** | 2.55.0 | Version control, MCP server integration |
 | **Docker** | 29.6.1 | Container runtime for Open-WebUI |
@@ -240,7 +240,7 @@ The hardware is specifically optimized for local AI inference:
 | **pgBouncer** | - | 6432 | PostgreSQL connection pooler |
 | **MongoDB** | - | 27017 | Document store |
 | **Redis** | - | 6379 | In-memory cache / message broker |
-| **SQLite** (OpenClaw) | - | embedded | Agent memory, session state (openclaw.sqlite) |
+| **SQLite** (AegisOS) | - | embedded | Agent memory, session state (aegisos.sqlite) |
 | **SQLite** (OmniRoute) | - | embedded | Routing logs, ELO scores (storage.sqlite) |
 | **SQLite** (Open-WebUI) | - | embedded | Chat history, user data |
 | **SQLite** (CodeGraph) | - | embedded | Code AST dependencies index (codegraph.sqlite) |
@@ -249,7 +249,7 @@ The hardware is specifically optimized for local AI inference:
 
 | Tool | Purpose |
 |---|---|
-| **NSSM** (Non-Sucking Service Manager) | Wraps AI binaries as Windows SCM services (Ollama, LiteLLM, Headroom, CodeGraph, OpenClaw, OmniRoute) |
+| **NSSM** (Non-Sucking Service Manager) | Wraps AI binaries as Windows SCM services (Ollama, LiteLLM, Headroom, CodeGraph, AegisOS, OmniRoute) |
 | **Windows SCM** | System-level service lifecycle management |
 | **Docker Desktop** | WSL2-backed container runtime |
 | **PlatformHelper** | Shared PowerShell module (`PlatformHelper.psm1`) managing automated credentials, service tasks, elevation |
@@ -327,7 +327,7 @@ The hardware is specifically optimized for local AI inference:
 | ✅ Healthy Models | 9 |
 | ❌ Unhealthy Models | 5 (timeouts, embedding model not supporting generate) |
 
-### OpenClaw Agent Architecture
+### AegisOS Agent Architecture
 
 | Agent | Role | Target Model | MCP Access |
 |---|---|---|---|
@@ -352,8 +352,8 @@ The hardware is specifically optimized for local AI inference:
 
 | System | Type | Location | Purpose |
 |---|---|---|---|
-| **Agent SQLite** | Embedded DB | `~/.openclaw/state/openclaw.sqlite` | Session state, completions |
-| **Agent Memory SQLite** | Embedded DB | `~/.openclaw/agents/main/agent/openclaw-agent.sqlite` | Chat history, agent memory |
+| **Agent SQLite** | Embedded DB | `~/.aegisos/state/aegisos.sqlite` | Session state, completions |
+| **Agent Memory SQLite** | Embedded DB | `~/.aegisos/agents/main/agent/aegisos-agent.sqlite` | Chat history, agent memory |
 | **OmniRoute SQLite** | Embedded DB | `~/.omniroute/storage.sqlite` | Arena ELO, call routing logs |
 | **CodeGraph SQLite** | Embedded DB | `D:\AIPlatform\databases\codegraph.sqlite` | Code AST dependencies index, symbols |
 | **Knowledge Repository** | Markdown files | `D:\Raja Jeevan Kumar Maduri_MarkDown_Personality\` | Identity, playbooks, frameworks |
@@ -370,7 +370,7 @@ The hardware is specifically optimized for local AI inference:
 | **11434** | Ollama | `0.0.0.0` | HTTP REST | LAN Exposed |
 | **4050** | Headroom Proxy | `127.0.0.1` | HTTP REST | Loopback Only |
 | **4000** | LiteLLM | `127.0.0.1` | OpenAI-compatible REST | Loopback Only |
-| **18789** | OpenClaw Gateway | `127.0.0.1` | HTTP REST | Loopback Only |
+| **18789** | AegisOS Gateway | `127.0.0.1` | HTTP REST | Loopback Only |
 | **18790** | CodeGraph MCP | `127.0.0.1` | HTTP / JSON | Loopback Only |
 | **20128** | OmniRoute | `0.0.0.0` | HTTP/WebSocket | Loopback (firewall blocked) |
 | **8090** | Open-WebUI (Docker) | `0.0.0.0` | HTTP | Container (Docker NAT) |
@@ -395,7 +395,7 @@ The hardware is specifically optimized for local AI inference:
 ### Request Flow Path
 
 ```
-User/Client → OpenClaw (127.0.0.1:18789) → Ponytail Context Pruner → Headroom Compression (127.0.0.1:4050) → LiteLLM (127.0.0.1:4000) → Ollama (0.0.0.0:11434) → RTX 5080 GPU
+User/Client → AegisOS (127.0.0.1:18789) → Ponytail Context Pruner → Headroom Compression (127.0.0.1:4050) → LiteLLM (127.0.0.1:4000) → Ollama (0.0.0.0:11434) → RTX 5080 GPU
                   ↓
            MCP Servers (stdio/local)
            ├── filesystem (npx)
@@ -417,12 +417,12 @@ User/Client → OpenClaw (127.0.0.1:18789) → Ponytail Context Pruner → Headr
 | Category | Path | Size | Purpose |
 |---|---|---|---|
 | **Model Weights** | `C:\ProgramData\Models\Ollama` | ~130 GB | Ollama GGUF model files |
-| **OpenClaw Runtime** | `C:\ProgramData\AI\openclaw\` (junction target: `D:\OpenClaw`) | ~200 MB | Config, workspace, agents, state |
+| **AegisOS Runtime** | `C:\ProgramData\AI\aegisos\` (junction target: `D:\AegisOS`) | ~200 MB | Config, workspace, agents, state |
 | **OmniRoute Data** | `C:\ProgramData\AI\omniroute-data\` | ~30 MB | SQLite store, db_backups |
 | **OmniRoute Runtime** | `~/.omniroute/` | ~8 MB | Server, call_logs, storage.sqlite |
 | **Encrypted Secrets** | `$PlatformRoot\secrets\` (e.g. `D:\AIPlatform\secrets\`) | ~10 KB | DPAPI-encrypted credential blobs |
 | **Service Scripts & Wrappers** | `$PlatformRoot\apps\` (e.g. `D:\AIPlatform\apps\`) | ~50 KB | Service binaries and wrapping parameters |
-| **PowerShell Automation Engine** | `D:\1_Projects\OpenClawOllamaLiteLLM_Transparency\automation\` | ~100 KB | Modular scripts (`Bootstrap.ps1`, `Install.ps1`, `Configure.ps1`, `Validate.ps1`, `Backup.ps1`, `Restore.ps1`, `Migrate.ps1`, `HealthCheck.ps1`, `Upgrade.ps1`, `Remove.ps1`, `Package.ps1`) |
+| **PowerShell Automation Engine** | `D:\1_Projects\AegisOS\automation\` | ~100 KB | Modular scripts (`Bootstrap.ps1`, `Install.ps1`, `Configure.ps1`, `Validate.ps1`, `Backup.ps1`, `Restore.ps1`, `Migrate.ps1`, `HealthCheck.ps1`, `Upgrade.ps1`, `Remove.ps1`, `Package.ps1`) |
 | **Platform Helper Library** | `automation\libs\PlatformHelper.psm1` | ~5 KB | Shared PowerShell module for loggers, elevation checks, DPAPI decryption |
 | **Platform Catalogs** | `automation\catalogs\` | ~10 KB | JSON metadata catalog databases for agents, apis, components, databases, configurations, scripts, services |
 | **Deployment Profiles** | `automation\profiles\` | ~2 KB | Parameterized JSON profiles (`default`, `development`, `personal`, `offline`, `enterprise`) |
@@ -441,7 +441,7 @@ User/Client → OpenClaw (127.0.0.1:18789) → Ponytail Context Pruner → Headr
 
 | Link Path | Target | Purpose |
 |---|---|---|
-| `%USERPROFILE%\.openclaw` | `$PlatformRoot` (e.g., `D:\AIPlatform` or `C:\ProgramData\AI\openclaw`) | Links user profile configuration to custom platform folder |
+| `%USERPROFILE%\.aegisos` | `$PlatformRoot` (e.g., `D:\AIPlatform` or `C:\ProgramData\AI\aegisos`) | Links user profile configuration to custom platform folder |
 | `%USERPROFILE%\.ollama\models` | `C:\ProgramData\Models\Ollama` | Redirects Ollama cache weights to SSD partition |
 
 ---
@@ -452,7 +452,7 @@ User/Client → OpenClaw (127.0.0.1:18789) → Ponytail Context Pruner → Headr
 
 | System | Method | Details |
 |---|---|---|
-| **OpenClaw** | Token-based auth | Tokens stored in DPAPI-encrypted `OpenClaw_secrets.enc` |
+| **AegisOS** | Token-based auth | Tokens stored in DPAPI-encrypted `AegisOS_secrets.enc` |
 | **OmniRoute** | JWT + API Key | JWT_SECRET, API_KEY_SECRET, STORAGE_ENCRYPTION_KEY in DPAPI `OmniRoute_secrets.enc` |
 | **GitHub MCP** | Environment token | `GITHUB_TOKEN` injected at runtime |
 | **Open-WebUI** | Username/password | Local authentication |
@@ -463,7 +463,7 @@ User/Client → OpenClaw (127.0.0.1:18789) → Ponytail Context Pruner → Headr
 
 - **Method:** Windows DPAPI (Machine Scope)
 - **Location:** `$PlatformRoot\secrets\` (e.g., `D:\AIPlatform\secrets\`)
-- **Files:** `OpenClaw_secrets.enc`, `OmniRoute_secrets.enc`
+- **Files:** `AegisOS_secrets.enc`, `OmniRoute_secrets.enc`
 - **Management Tool:** `PlatformHelper.psm1` / `Bootstrap.ps1` / `Restore.ps1` (handles interactive re-prompting on host machine mismatch)
 - **Caveat:** Machine-scope DPAPI ciphertexts are bound to local machine SID — cannot be decrypted on a different machine without interactive re-entry.
 
@@ -473,13 +473,13 @@ User/Client → OpenClaw (127.0.0.1:18789) → Ponytail Context Pruner → Headr
 |---|---|---|---|
 | ollama.exe (4 rules) | Inbound | Allow | Various (program-based) |
 | AI-Workstation Ollama API | Inbound | Allow | LAN subnet |
-| OpenClaw, LiteLLM, OmniRoute | N/A | Blocked by loopback binding | 127.0.0.1 only |
+| AegisOS, LiteLLM, OmniRoute | N/A | Blocked by loopback binding | 127.0.0.1 only |
 
 ### Service Execution Context
 
 | Service | Run As | Risk |
 |---|---|---|
-| All AI Services (Ollama, LiteLLM, OpenClaw, OmniRoute) | `LocalSystem` | High-privilege — recommended migration to scoped virtual service accounts |
+| All AI Services (Ollama, LiteLLM, AegisOS, OmniRoute) | `LocalSystem` | High-privilege — recommended migration to scoped virtual service accounts |
 
 ---
 
@@ -490,7 +490,7 @@ User/Client → OpenClaw (127.0.0.1:18789) → Ponytail Context Pruner → Headr
 ```
 Phase 1: Ollama → Loads model registries
 Phase 2: LiteLLM + Headroom + CodeGraph → Start routing, compression proxy, and AST parser (depend on Ollama)
-Phase 3: OpenClaw + OmniRoute → Start gateways and dashboard (depend on LiteLLM + Headroom + CodeGraph)
+Phase 3: AegisOS + OmniRoute → Start gateways and dashboard (depend on LiteLLM + Headroom + CodeGraph)
 Phase 4: Docker/Open-WebUI → Independent UI container lifecycle
 ```
 
@@ -527,7 +527,7 @@ Phase 4: Docker/Open-WebUI → Independent UI container lifecycle
 
 | Component | Log Location | Type |
 |---|---|---|
-| OpenClaw Service | `$PlatformRoot\logs\openclaw\OpenClawService.log` | NSSM stdout / stderr capture |
+| AegisOS Service | `$PlatformRoot\logs\aegisos\AegisOSService.log` | NSSM stdout / stderr capture |
 | LiteLLM Service | `$PlatformRoot\logs\litellm\LiteLLMService.log` | NSSM stdout / stderr capture |
 | OmniRoute Service | `$PlatformRoot\logs\OmniRouteService.log` | NSSM stdout / stderr capture |
 | Health Monitor | `$PlatformRoot\logs\health\monitor.log` | Weekly rotated socket check log |
@@ -541,29 +541,29 @@ Phase 4: Docker/Open-WebUI → Independent UI container lifecycle
 
 | Document | Path | Status | Purpose / Description |
 |---|---|---|---|
-| [Architecture_Handbook.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Architecture_Handbook.md) | `docs/` | ✅ Active | Authoritative blueprint mapping system topology, boundaries, and storage partitioning |
-| [Platform_Handbook.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Platform_Handbook.md) | `docs/` | ✅ Active | Index of system dependencies, models inventory, and active MCP servers |
-| [Operations_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md) | `docs/` | ✅ Active | Administrative operations guide for service logging, maintenance, and health checks |
-| [Deployment_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Deployment_Guide.md) | `docs/` | ✅ Active | Standardized bootstrapping steps, prerequisite installations, and migration procedures |
-| [Developer_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Developer_Guide.md) | `docs/` | ✅ Active | Development guidelines for Console App layouts and versioned API contracts |
-| [Disaster_Recovery_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Disaster_Recovery_Guide.md) | `docs/` | ✅ Active | Recovery guides details backup payloads, recovery modes, and DPAPI re-keys |
-| [Administrator_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Administrator_Guide.md) | `docs/` | ✅ Active | Administrative settings, service wrapping parameters, and user guides |
-| [Optimization_Roadmap.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Optimization_Roadmap.md) | `docs/` | ✅ Active | VRAM limits, memory offloads, and software acceleration settings |
-| [CHANGELOG.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/CHANGELOG.md) | `docs/` | ✅ Active | Platform change tracking history |
-| [ValidationReport.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ValidationReport.md) | `docs/` | ✅ Active | Automated validation checks and system compliance matrix |
-| [Walkthrough.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Walkthrough.md) | `docs/` | ✅ Active | Step-by-step developer verification log |
-| [ADR-001-Contract-First-Versioned-API-Boundaries.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md) | `adr/` | ✅ Approved | Contract-first REST specifications |
-| [ADR-002-Server-Side-Decoupled-Authentication.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-002-Server-Side-Decoupled-Authentication.md) | `adr/` | ✅ Approved | Decoupling auth logic from nextjs pages |
-| [ADR-003-Unified-Event-Driven-Registry.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-003-Unified-Event-Driven-Registry.md) | `adr/` | ✅ Approved | Loose decoupling of services via event bus |
-| [ADR-004-Pipeline-Worker-Processing-Architecture.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-004-Pipeline-Worker-Processing-Architecture.md) | `adr/` | ✅ Approved | Asynchronous jobs queue orchestration |
-| [ADR-005-Repository-Information-Architecture-Rationalization.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-005-Repository-Information-Architecture-Rationalization.md) | `adr/` | ✅ Approved | Cleaning loose markdown files and consolidating into structured directories |
-| [ADR-006-Script-Engineering-Standards.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-006-Script-Engineering-Standards.md) | `adr/` | ✅ Approved | Standards for PowerShell scripts (PlatformHelper logging, elevation, strict types) |
-| [ADR-007-Portable-Configuration-Architecture.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-007-Portable-Configuration-Architecture.md) | `adr/` | ✅ Approved | Portable central profiles and config configurations |
-| [ADR-008-Platform-Asset-Catalog-Design.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-008-Platform-Asset-Catalog-Design.md) | `adr/` | ✅ Approved | JSON catalog databases structure for platform assets mapping |
-| [AGENTS.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/AGENTS.md) | Workspace Root | ✅ Active | Workspace-level rules for agent pairs |
-| [CLAUDE.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/CLAUDE.md) | Workspace Root | ✅ Active | Cheat sheet listing build and development tasks |
-| [Bootstrap.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/Bootstrap.ps1) | Workspace Root | ✅ Active | Administrative setup script starting bootstrap routine |
-| [PlatformHelper.psm1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/libs/PlatformHelper.psm1) | `automation/libs/` | ✅ Active | Shared automation helper library |
+| [Architecture_Handbook.md](file:///d:/1_Projects/AegisOS/docs/Architecture_Handbook.md) | `docs/` | ✅ Active | Authoritative blueprint mapping system topology, boundaries, and storage partitioning |
+| [Platform_Handbook.md](file:///d:/1_Projects/AegisOS/docs/Platform_Handbook.md) | `docs/` | ✅ Active | Index of system dependencies, models inventory, and active MCP servers |
+| [Operations_Guide.md](file:///d:/1_Projects/AegisOS/docs/Operations_Guide.md) | `docs/` | ✅ Active | Administrative operations guide for service logging, maintenance, and health checks |
+| [Deployment_Guide.md](file:///d:/1_Projects/AegisOS/docs/Deployment_Guide.md) | `docs/` | ✅ Active | Standardized bootstrapping steps, prerequisite installations, and migration procedures |
+| [Developer_Guide.md](file:///d:/1_Projects/AegisOS/docs/Developer_Guide.md) | `docs/` | ✅ Active | Development guidelines for Console App layouts and versioned API contracts |
+| [Disaster_Recovery_Guide.md](file:///d:/1_Projects/AegisOS/docs/Disaster_Recovery_Guide.md) | `docs/` | ✅ Active | Recovery guides details backup payloads, recovery modes, and DPAPI re-keys |
+| [Administrator_Guide.md](file:///d:/1_Projects/AegisOS/docs/Administrator_Guide.md) | `docs/` | ✅ Active | Administrative settings, service wrapping parameters, and user guides |
+| [Optimization_Roadmap.md](file:///d:/1_Projects/AegisOS/docs/Optimization_Roadmap.md) | `docs/` | ✅ Active | VRAM limits, memory offloads, and software acceleration settings |
+| [CHANGELOG.md](file:///d:/1_Projects/AegisOS/docs/CHANGELOG.md) | `docs/` | ✅ Active | Platform change tracking history |
+| [ValidationReport.md](file:///d:/1_Projects/AegisOS/docs/ValidationReport.md) | `docs/` | ✅ Active | Automated validation checks and system compliance matrix |
+| [Walkthrough.md](file:///d:/1_Projects/AegisOS/docs/Walkthrough.md) | `docs/` | ✅ Active | Step-by-step developer verification log |
+| [ADR-001-Contract-First-Versioned-API-Boundaries.md](file:///d:/1_Projects/AegisOS/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md) | `adr/` | ✅ Approved | Contract-first REST specifications |
+| [ADR-002-Server-Side-Decoupled-Authentication.md](file:///d:/1_Projects/AegisOS/adr/ADR-002-Server-Side-Decoupled-Authentication.md) | `adr/` | ✅ Approved | Decoupling auth logic from nextjs pages |
+| [ADR-003-Unified-Event-Driven-Registry.md](file:///d:/1_Projects/AegisOS/adr/ADR-003-Unified-Event-Driven-Registry.md) | `adr/` | ✅ Approved | Loose decoupling of services via event bus |
+| [ADR-004-Pipeline-Worker-Processing-Architecture.md](file:///d:/1_Projects/AegisOS/adr/ADR-004-Pipeline-Worker-Processing-Architecture.md) | `adr/` | ✅ Approved | Asynchronous jobs queue orchestration |
+| [ADR-005-Repository-Information-Architecture-Rationalization.md](file:///d:/1_Projects/AegisOS/adr/ADR-005-Repository-Information-Architecture-Rationalization.md) | `adr/` | ✅ Approved | Cleaning loose markdown files and consolidating into structured directories |
+| [ADR-006-Script-Engineering-Standards.md](file:///d:/1_Projects/AegisOS/adr/ADR-006-Script-Engineering-Standards.md) | `adr/` | ✅ Approved | Standards for PowerShell scripts (PlatformHelper logging, elevation, strict types) |
+| [ADR-007-Portable-Configuration-Architecture.md](file:///d:/1_Projects/AegisOS/adr/ADR-007-Portable-Configuration-Architecture.md) | `adr/` | ✅ Approved | Portable central profiles and config configurations |
+| [ADR-008-Platform-Asset-Catalog-Design.md](file:///d:/1_Projects/AegisOS/adr/ADR-008-Platform-Asset-Catalog-Design.md) | `adr/` | ✅ Approved | JSON catalog databases structure for platform assets mapping |
+| [AGENTS.md](file:///d:/1_Projects/AegisOS/AGENTS.md) | Workspace Root | ✅ Active | Workspace-level rules for agent pairs |
+| [CLAUDE.md](file:///d:/1_Projects/AegisOS/CLAUDE.md) | Workspace Root | ✅ Active | Cheat sheet listing build and development tasks |
+| [Bootstrap.ps1](file:///d:/1_Projects/AegisOS/Bootstrap.ps1) | Workspace Root | ✅ Active | Administrative setup script starting bootstrap routine |
+| [PlatformHelper.psm1](file:///d:/1_Projects/AegisOS/automation/libs/PlatformHelper.psm1) | `automation/libs/` | ✅ Active | Shared automation helper library |
 
 ### Duplicate Detection
 
@@ -632,11 +632,11 @@ All 40 diagram prompts below follow these consistent style parameters:
 - Background: Dark gradient
 
 **Diagram Prompt:**
-Create a premium, enterprise-grade layered architecture diagram showing 4 horizontal tiers on a dark navy background. **Top Layer (User Interface):** Show a monitor icon labeled "Antigravity IDE / Client" and a globe icon labeled "Open-WebUI :8090" connected by a horizontal bar. **Second Layer (AI Gateway):** Show three service boxes: "OpenClaw Gateway :18789" (center, coral accent border), "OmniRoute Dashboard :20128" (right), with MCP satellite icons orbiting OpenClaw showing "filesystem", "git", "github", "sqlite", "fetch", "puppeteer", "knowledge-repo". **Third Layer (AI Routing):** Show a "LiteLLM Proxy :4000" box with branching arrows labeled with model aliases (gemma, qwen, deepseek, vision, coder, planner, reasoner) feeding into fallback chains. **Bottom Layer (Inference Engine):** Show the "Ollama Server :11434" box connected to a GPU icon labeled "NVIDIA RTX 5080 — 16 GB VRAM" and CPU icon labeled "AMD Ryzen 9 9950X3D — 32 Threads". Show data stores on the right side: PostgreSQL (3 instances), MongoDB, Redis, SQLite. Add a security shield icon on the left labeled "DPAPI Secrets / Norton Firewall / Loopback Security". Include a legend showing: Running Service (green dot), LAN Exposed (yellow), Loopback Only (blue). Title the diagram "Raja's Local AI Workstation — Enterprise Architecture Overview".
+Create a premium, enterprise-grade layered architecture diagram showing 4 horizontal tiers on a dark navy background. **Top Layer (User Interface):** Show a monitor icon labeled "Antigravity IDE / Client" and a globe icon labeled "Open-WebUI :8090" connected by a horizontal bar. **Second Layer (AI Gateway):** Show three service boxes: "AegisOS Gateway :18789" (center, coral accent border), "OmniRoute Dashboard :20128" (right), with MCP satellite icons orbiting AegisOS showing "filesystem", "git", "github", "sqlite", "fetch", "puppeteer", "knowledge-repo". **Third Layer (AI Routing):** Show a "LiteLLM Proxy :4000" box with branching arrows labeled with model aliases (gemma, qwen, deepseek, vision, coder, planner, reasoner) feeding into fallback chains. **Bottom Layer (Inference Engine):** Show the "Ollama Server :11434" box connected to a GPU icon labeled "NVIDIA RTX 5080 — 16 GB VRAM" and CPU icon labeled "AMD Ryzen 9 9950X3D — 32 Threads". Show data stores on the right side: PostgreSQL (3 instances), MongoDB, Redis, SQLite. Add a security shield icon on the left labeled "DPAPI Secrets / Norton Firewall / Loopback Security". Include a legend showing: Running Service (green dot), LAN Exposed (yellow), Loopback Only (blue). Title the diagram "Raja's Local AI Workstation — Enterprise Architecture Overview".
 
 **Negative Prompt:** No cloud provider icons, no cartoon styling, no fictional components, no generic server racks, no missing labels, no low-resolution output, no consumer graphics.
 
-**Key Labels:** OpenClaw Gateway :18789, LiteLLM Proxy :4000, Ollama :11434, OmniRoute :20128, Open-WebUI :8090, RTX 5080 16GB, Ryzen 9 9950X3D, 64GB DDR5, DPAPI, Norton, Tailscale, MCP Servers, PostgreSQL, MongoDB, Redis
+**Key Labels:** AegisOS Gateway :18789, LiteLLM Proxy :4000, Ollama :11434, OmniRoute :20128, Open-WebUI :8090, RTX 5080 16GB, Ryzen 9 9950X3D, 64GB DDR5, DPAPI, Norton, Tailscale, MCP Servers, PostgreSQL, MongoDB, Redis
 
 **Suggested Resolution:** 3840 × 2160 (4K), 16:9 aspect ratio
 
@@ -686,36 +686,36 @@ Create a technical hardware blueprint diagram on a dark background with subtle g
 - Icon style: Flat tech logos
 
 **Diagram Prompt:**
-Create a vertical layered stack diagram with 6 horizontal tiers on a dark background. **Layer 1 (Bottom — Hardware):** Dark background containing GPU icon "RTX 5080 VRAM 16GB", CPU icon "Ryzen 9 9950X3D", RAM icon "64GB DDR5", NVMe icon "3TB NVMe". **Layer 2 (OS & Drivers):** "Windows 11 Pro Build 26200", "NVIDIA Driver 610.47", "CUDA 13.3", "Hyper-V", "WSL2". **Layer 3 (Runtimes):** "Python 3.12.4", "Node.js 24.16.0", "Docker 29.6.1", "NSSM", "uv/uvx". **Layer 4 (AI Engines):** "Ollama v0.31.1" (large central box) with satellite model icons: gemma4, qwen3, deepseek-r1, gpt-oss, qwen3.6, all-minilm, smollm. **Layer 5 (AI Middleware):** "LiteLLM Proxy :4000" (routing), "OpenClaw Gateway :18789" (orchestration), "OmniRoute :20128" (dashboard). Show MCP server icons orbiting OpenClaw. **Layer 6 (Top — Interfaces):** "Antigravity IDE", "Open-WebUI :8090", "API Clients". Add labeled arrows between layers showing data flow. Title: "AI Software Stack — Full Vertical Architecture".
+Create a vertical layered stack diagram with 6 horizontal tiers on a dark background. **Layer 1 (Bottom — Hardware):** Dark background containing GPU icon "RTX 5080 VRAM 16GB", CPU icon "Ryzen 9 9950X3D", RAM icon "64GB DDR5", NVMe icon "3TB NVMe". **Layer 2 (OS & Drivers):** "Windows 11 Pro Build 26200", "NVIDIA Driver 610.47", "CUDA 13.3", "Hyper-V", "WSL2". **Layer 3 (Runtimes):** "Python 3.12.4", "Node.js 24.16.0", "Docker 29.6.1", "NSSM", "uv/uvx". **Layer 4 (AI Engines):** "Ollama v0.31.1" (large central box) with satellite model icons: gemma4, qwen3, deepseek-r1, gpt-oss, qwen3.6, all-minilm, smollm. **Layer 5 (AI Middleware):** "LiteLLM Proxy :4000" (routing), "AegisOS Gateway :18789" (orchestration), "OmniRoute :20128" (dashboard). Show MCP server icons orbiting AegisOS. **Layer 6 (Top — Interfaces):** "Antigravity IDE", "Open-WebUI :8090", "API Clients". Add labeled arrows between layers showing data flow. Title: "AI Software Stack — Full Vertical Architecture".
 
 **Negative Prompt:** No horizontal layout, no missing layers, no unlabeled components, no cloud icons.
 
-**Key Labels:** Windows 11 Pro, NVIDIA CUDA 13.3, Python 3.12.4, Node.js 24.16.0, Docker 29.6.1, Ollama v0.31.1, LiteLLM :4000, OpenClaw :18789, OmniRoute :20128, Open-WebUI :8090, NSSM, 12 Models
+**Key Labels:** Windows 11 Pro, NVIDIA CUDA 13.3, Python 3.12.4, Node.js 24.16.0, Docker 29.6.1, Ollama v0.31.1, LiteLLM :4000, AegisOS :18789, OmniRoute :20128, Open-WebUI :8090, NSSM, 12 Models
 
 **Suggested Resolution:** 2160 × 3840 (4K Portrait), 9:16
 
 ---
 
-### Diagram 4: OpenClaw Internal Architecture
+### Diagram 4: AegisOS Internal Architecture
 
-**Title:** OpenClaw AI Gateway — Internal Architecture & Agent Orchestration
+**Title:** AegisOS AI Gateway — Internal Architecture & Agent Orchestration
 
-**Purpose:** Reveal the internal structure of the OpenClaw gateway, including agent system, MCP server mounting, plugin layer, memory management, and request handling pipeline.
+**Purpose:** Reveal the internal structure of the AegisOS gateway, including agent system, MCP server mounting, plugin layer, memory management, and request handling pipeline.
 
 **Target Audience:** Engineers, Architects, Developers
 
 **Diagram Type:** Component Architecture (Modern Technical)
 
 **Visual Style:**
-- Color palette: Dark theme, coral accent for OpenClaw components
+- Color palette: Dark theme, coral accent for AegisOS components
 - Level of detail: Very high — show internal subsystems
 
 **Diagram Prompt:**
-Create a detailed component architecture diagram centered on the OpenClaw Gateway (port 18789). Show it as a large rounded rectangle with internal subsystems. **Request Handler** (top): receives incoming requests from clients. **Agent Orchestrator** (center): contains three agent boxes — "main" (coral), "developer" (cyan), "reviewer" (gold) — with delegation arrows between them. Show the agent delegation flow: main → developer (task delegation), developer → reviewer (code submission), reviewer → main (approval/rejection). **MCP Layer** (left side): 8 local MCP server icons with labels (filesystem, git, github, sqlite, fetch, puppeteer, raja-knowledge-repository, and codegraph) connected to the agent orchestrator via stdio/local transport lines. **Context Optimization Layer** (right side): show Ponytail context filter (context pruning) and Headroom prompt compression proxy wrapper. **Memory Layer** (bottom-left): "SQLite Agent Memory" (openclaw-agent.sqlite), "State Database" (openclaw.sqlite). **LLM Connection** (bottom-right): arrow pointing through Headroom token compressor to "LiteLLM Proxy :4000" with model alias mapping. **Config Layer** (bottom): "openclaw.json", "DPAPI Secrets", "AGENTS.md", "CLAUDE.md", "console_config.json". Show the request flow with numbered steps: 1→Request, 2→CodeGraph Dependency Query, 3→Context Enrichment (MCP), 4→Ponytail Pruning, 5→Headroom Prompt Compression, 6→LLM Routing. Title: "OpenClaw Gateway — Internal Architecture".
+Create a detailed component architecture diagram centered on the AegisOS Gateway (port 18789). Show it as a large rounded rectangle with internal subsystems. **Request Handler** (top): receives incoming requests from clients. **Agent Orchestrator** (center): contains three agent boxes — "main" (coral), "developer" (cyan), "reviewer" (gold) — with delegation arrows between them. Show the agent delegation flow: main → developer (task delegation), developer → reviewer (code submission), reviewer → main (approval/rejection). **MCP Layer** (left side): 8 local MCP server icons with labels (filesystem, git, github, sqlite, fetch, puppeteer, raja-knowledge-repository, and codegraph) connected to the agent orchestrator via stdio/local transport lines. **Context Optimization Layer** (right side): show Ponytail context filter (context pruning) and Headroom prompt compression proxy wrapper. **Memory Layer** (bottom-left): "SQLite Agent Memory" (aegisos-agent.sqlite), "State Database" (aegisos.sqlite). **LLM Connection** (bottom-right): arrow pointing through Headroom token compressor to "LiteLLM Proxy :4000" with model alias mapping. **Config Layer** (bottom): "aegisos.json", "DPAPI Secrets", "AGENTS.md", "CLAUDE.md", "console_config.json". Show the request flow with numbered steps: 1→Request, 2→CodeGraph Dependency Query, 3→Context Enrichment (MCP), 4→Ponytail Pruning, 5→Headroom Prompt Compression, 6→LLM Routing. Title: "AegisOS Gateway — Internal Architecture".
 
 **Negative Prompt:** No oversimplification, no missing MCP servers, no incorrect agent names, no generic icons.
 
-**Key Labels:** OpenClaw Gateway :18789, main agent, developer agent, reviewer agent, MCP Servers (8), Ponytail Pruner, Headroom Compressor, openclaw-agent.sqlite, DPAPI Secrets, AGENTS.md, console_config.json, Token Auth
+**Key Labels:** AegisOS Gateway :18789, main agent, developer agent, reviewer agent, MCP Servers (8), Ponytail Pruner, Headroom Compressor, aegisos-agent.sqlite, DPAPI Secrets, AGENTS.md, console_config.json, Token Auth
 
 **Suggested Resolution:** 3840 × 2160 (4K), 16:9
 
@@ -836,11 +836,11 @@ Create a horizontal lifecycle state machine diagram showing a model's journey th
 - Color palette: Dark theme, cyan flow arrows
 
 **Diagram Prompt:**
-Create a horizontal data flow diagram showing the complete lifecycle of a user prompt. Number each stage. **Stage 1: Input** — User types prompt in Antigravity IDE or Open-WebUI. **Stage 2: Gateway Receive** — OpenClaw Gateway (:18789) receives the request via HTTP. **Stage 3: Context Enrichment** — OpenClaw executes MCP server calls in parallel: queries raja-knowledge-repository for domain context, queries sqlite for session memory, queries filesystem for code context. Show these as parallel branches merging back. **Stage 4: Agent Selection** — OpenClaw selects the appropriate agent (main/developer/reviewer) based on task type. **Stage 5: Prompt Assembly** — System prompt (SOUL.md + AGENTS.md) + enriched context + user message assembled into completion request. **Stage 6: LLM Routing** — Request sent to LiteLLM (:4000), which applies least-busy routing to select target model. **Stage 7: Model Selection** — LiteLLM resolves alias to Ollama model (e.g., "gemma" → "gemma4:latest"). If unhealthy, fallback chain activates. **Stage 8: Inference** — Ollama processes tokens on RTX 5080 GPU (or GPU+CPU split for large models). **Stage 9: Streaming Response** — Tokens stream back through Ollama → LiteLLM → OpenClaw → Client. Show latency annotations at each stage: MCP calls ~25ms, routing ~5ms, TTFT ~120-250ms. Title: "Prompt Lifecycle — End-to-End Processing Pipeline".
+Create a horizontal data flow diagram showing the complete lifecycle of a user prompt. Number each stage. **Stage 1: Input** — User types prompt in Antigravity IDE or Open-WebUI. **Stage 2: Gateway Receive** — AegisOS Gateway (:18789) receives the request via HTTP. **Stage 3: Context Enrichment** — AegisOS executes MCP server calls in parallel: queries raja-knowledge-repository for domain context, queries sqlite for session memory, queries filesystem for code context. Show these as parallel branches merging back. **Stage 4: Agent Selection** — AegisOS selects the appropriate agent (main/developer/reviewer) based on task type. **Stage 5: Prompt Assembly** — System prompt (SOUL.md + AGENTS.md) + enriched context + user message assembled into completion request. **Stage 6: LLM Routing** — Request sent to LiteLLM (:4000), which applies least-busy routing to select target model. **Stage 7: Model Selection** — LiteLLM resolves alias to Ollama model (e.g., "gemma" → "gemma4:latest"). If unhealthy, fallback chain activates. **Stage 8: Inference** — Ollama processes tokens on RTX 5080 GPU (or GPU+CPU split for large models). **Stage 9: Streaming Response** — Tokens stream back through Ollama → LiteLLM → AegisOS → Client. Show latency annotations at each stage: MCP calls ~25ms, routing ~5ms, TTFT ~120-250ms. Title: "Prompt Lifecycle — End-to-End Processing Pipeline".
 
 **Negative Prompt:** No missing stages, no incorrect port numbers, no simplified flow.
 
-**Key Labels:** 9 stages, OpenClaw :18789, LiteLLM :4000, Ollama :11434, MCP enrichment, least-busy routing, fallback chains, streaming response, TTFT 120-250ms
+**Key Labels:** 9 stages, AegisOS :18789, LiteLLM :4000, Ollama :11434, MCP enrichment, least-busy routing, fallback chains, streaming response, TTFT 120-250ms
 
 **Suggested Resolution:** 3840 × 2160 (4K), 16:9
 
@@ -884,7 +884,7 @@ Create a three-lane horizontal swimlane diagram with dark background. **Top Lane
 **Visual Style:** Dark theme, numbered pipeline stages with latency annotations
 
 **Diagram Prompt:**
-Create a horizontal pipeline diagram showing 7 processing stages from left to right on a dark background. Each stage is a rounded rectangle connected by arrows with latency annotations. **Stage 1: HTTP Receive** (OpenClaw :18789) — "Token validation, request parsing" — ~5ms. **Stage 2: MCP Context** — "Parallel MCP calls: SQLite (25ms), Knowledge Repo (65ms), Filesystem (25ms)" — show parallel branches. **Stage 3: Prompt Assembly** — "System prompt + context + user message" — ~2ms. **Stage 4: Router** (LiteLLM :4000) — "least-busy selection, health check, alias resolution" — ~5ms. **Stage 5: Model Queue** — "Request queued if model busy, retry up to 3 times" — variable. **Stage 6: Inference** (Ollama :11434) — "GPU tensor computation on RTX 5080" — TTFT: 120-250ms. **Stage 7: Stream** — "SSE token streaming back to client" — continuous. Show a total latency bar at bottom: "Total P50: ~300ms to first token". Add error handling path showing fallback chain activation on timeout (>120s). Title: "Request Processing Pipeline".
+Create a horizontal pipeline diagram showing 7 processing stages from left to right on a dark background. Each stage is a rounded rectangle connected by arrows with latency annotations. **Stage 1: HTTP Receive** (AegisOS :18789) — "Token validation, request parsing" — ~5ms. **Stage 2: MCP Context** — "Parallel MCP calls: SQLite (25ms), Knowledge Repo (65ms), Filesystem (25ms)" — show parallel branches. **Stage 3: Prompt Assembly** — "System prompt + context + user message" — ~2ms. **Stage 4: Router** (LiteLLM :4000) — "least-busy selection, health check, alias resolution" — ~5ms. **Stage 5: Model Queue** — "Request queued if model busy, retry up to 3 times" — variable. **Stage 6: Inference** (Ollama :11434) — "GPU tensor computation on RTX 5080" — TTFT: 120-250ms. **Stage 7: Stream** — "SSE token streaming back to client" — continuous. Show a total latency bar at bottom: "Total P50: ~300ms to first token". Add error handling path showing fallback chain activation on timeout (>120s). Title: "Request Processing Pipeline".
 
 **Negative Prompt:** No missing stages, no incorrect latencies, no oversimplification.
 
@@ -907,7 +907,7 @@ Create a horizontal pipeline diagram showing 7 processing stages from left to ri
 **Visual Style:** Dark theme, colored data flow arrows distinguishing data types
 
 **Diagram Prompt:**
-Create a data flow diagram on a dark background using colored arrows to distinguish data types: cyan for user data, gold for knowledge data, green for model data, coral for response data. Show data stores as cylinders: "SQLite Agent Memory", "Knowledge Repository (Markdown)", "Ollama Model Registry", "OmniRoute Call Logs". Show processing nodes as rounded rectangles: "OpenClaw Gateway", "LiteLLM Router", "Ollama Inference". **User data flow (cyan):** User → OpenClaw (prompt text) → LiteLLM (enriched prompt) → Ollama (tokenized input). **Knowledge data flow (gold):** Knowledge Repository → raja-knowledge-repo MCP → OpenClaw (context chunks with cosine similarity scores). **Model data flow (green):** Ollama Model Registry → Ollama (GGUF weights loaded to VRAM). **Response data flow (coral):** Ollama (generated tokens) → LiteLLM (streamed response) → OpenClaw (assembled response) → User. **Logging data flow (gray):** All components → Log files and OmniRoute call logs. Title: "End-to-End Data Flow".
+Create a data flow diagram on a dark background using colored arrows to distinguish data types: cyan for user data, gold for knowledge data, green for model data, coral for response data. Show data stores as cylinders: "SQLite Agent Memory", "Knowledge Repository (Markdown)", "Ollama Model Registry", "OmniRoute Call Logs". Show processing nodes as rounded rectangles: "AegisOS Gateway", "LiteLLM Router", "Ollama Inference". **User data flow (cyan):** User → AegisOS (prompt text) → LiteLLM (enriched prompt) → Ollama (tokenized input). **Knowledge data flow (gold):** Knowledge Repository → raja-knowledge-repo MCP → AegisOS (context chunks with cosine similarity scores). **Model data flow (green):** Ollama Model Registry → Ollama (GGUF weights loaded to VRAM). **Response data flow (coral):** Ollama (generated tokens) → LiteLLM (streamed response) → AegisOS (assembled response) → User. **Logging data flow (gray):** All components → Log files and OmniRoute call logs. Title: "End-to-End Data Flow".
 
 **Negative Prompt:** No data flows not present in the system, no incorrect data store names.
 
@@ -930,7 +930,7 @@ Create a data flow diagram on a dark background using colored arrows to distingu
 **Visual Style:** Dark theme, zone-based layout with security boundary indicators
 
 **Diagram Prompt:**
-Create a network topology diagram on a dark background with three security zones separated by dashed boundary lines. **Zone 1: Loopback Only (127.0.0.1)** — highest security (blue zone): OpenClaw :18789, Headroom Proxy :4050, LiteLLM :4000, CodeGraph MCP :18790, MongoDB :27017, pgBouncer :6432. **Zone 2: LAN Accessible (192.168.29.41)** — medium security (amber zone): Ollama :11434, PostgreSQL :5432/5433/5434, Redis :6379, SSH :22, RDP :3389, Open-WebUI :8090. **Zone 3: VPN Overlay (100.90.78.53)** — Tailscale mesh (green zone): remote device access. Show the physical network interface "Realtek 5GbE" connecting to "Router 192.168.29.1" (DHCP). Show Docker NAT "172.27.32.1" bridging to Open-WebUI container. Show firewall icons at zone boundaries. Annotate Ollama with "⚠ LAN exposed — unauthenticated". Show Norton Firewall as a shield icon encompassing Zone 2. Title: "Network Architecture — Security Zones & Port Map".
+Create a network topology diagram on a dark background with three security zones separated by dashed boundary lines. **Zone 1: Loopback Only (127.0.0.1)** — highest security (blue zone): AegisOS :18789, Headroom Proxy :4050, LiteLLM :4000, CodeGraph MCP :18790, MongoDB :27017, pgBouncer :6432. **Zone 2: LAN Accessible (192.168.29.41)** — medium security (amber zone): Ollama :11434, PostgreSQL :5432/5433/5434, Redis :6379, SSH :22, RDP :3389, Open-WebUI :8090. **Zone 3: VPN Overlay (100.90.78.53)** — Tailscale mesh (green zone): remote device access. Show the physical network interface "Realtek 5GbE" connecting to "Router 192.168.29.1" (DHCP). Show Docker NAT "172.27.32.1" bridging to Open-WebUI container. Show firewall icons at zone boundaries. Annotate Ollama with "⚠ LAN exposed — unauthenticated". Show Norton Firewall as a shield icon encompassing Zone 2. Title: "Network Architecture — Security Zones & Port Map".
 
 **Negative Prompt:** No incorrect IP addresses, no missing ports, no cloud networking.
 
@@ -953,11 +953,11 @@ Create a network topology diagram on a dark background with three security zones
 **Visual Style:** Dark theme, monospace font, indented tree with color-coded directory types
 
 **Diagram Prompt:**
-Create a filesystem tree diagram on a dark background using monospace typography. Show the complete directory hierarchy with color coding: cyan for junction/symlink paths, gold for configuration files, green for data directories, coral for security-sensitive paths. Root nodes: **C:\ProgramData\AI\** (system) — show: Config/, Logs/, Models/Ollama (~130GB), omniroute/, omniroute-data/, openclaw/ (junction target). **C:\Users\rjkum\.openclaw** → **D:\AIPlatform** (junction target — show with cyan arrow): apps/ (service binaries and wraps), configs/ (litellm/, openclaw/), databases/ (codegraph.sqlite, openclaw.sqlite), secrets/ (DPAPI encrypted — coral), logs/ (rotated service and monitor logs), models/ (GGUF links). **D:\1_Projects\OpenClawOllamaLiteLLM_Transparency\** (workspace root) — show: Bootstrap.ps1, console_config.json, ModelManifest.json, adr/ (ADR-001 through ADR-008 markdown files), docs/ (11 structured guides), automation/ (modular automation scripts: Install.ps1, Configure.ps1, Validate.ps1, Backup.ps1, Restore.ps1, Migrate.ps1, HealthCheck.ps1, Package.ps1), automation/libs/PlatformHelper.psm1, automation/catalogs/ (JSON catalog definitions), automation/profiles/ (deployment profiles). **D:\Raja Jeevan Kumar Maduri_MarkDown_Personality\** — RAG notes. Show junction/symlink indicators. Title: "Filesystem Layout — AI Infrastructure".
+Create a filesystem tree diagram on a dark background using monospace typography. Show the complete directory hierarchy with color coding: cyan for junction/symlink paths, gold for configuration files, green for data directories, coral for security-sensitive paths. Root nodes: **C:\ProgramData\AI\** (system) — show: Config/, Logs/, Models/Ollama (~130GB), omniroute/, omniroute-data/, aegisos/ (junction target). **C:\Users\rjkum\.aegisos** → **D:\AIPlatform** (junction target — show with cyan arrow): apps/ (service binaries and wraps), configs/ (litellm/, aegisos/), databases/ (codegraph.sqlite, aegisos.sqlite), secrets/ (DPAPI encrypted — coral), logs/ (rotated service and monitor logs), models/ (GGUF links). **D:\1_Projects\AegisOS\** (workspace root) — show: Bootstrap.ps1, console_config.json, ModelManifest.json, adr/ (ADR-001 through ADR-008 markdown files), docs/ (11 structured guides), automation/ (modular automation scripts: Install.ps1, Configure.ps1, Validate.ps1, Backup.ps1, Restore.ps1, Migrate.ps1, HealthCheck.ps1, Package.ps1), automation/libs/PlatformHelper.psm1, automation/catalogs/ (JSON catalog definitions), automation/profiles/ (deployment profiles). **D:\Raja Jeevan Kumar Maduri_MarkDown_Personality\** — RAG notes. Show junction/symlink indicators. Title: "Filesystem Layout — AI Infrastructure".
 
 **Negative Prompt:** No missing directories, no incorrect junction targets, no placeholder text, no legacy DisasterRecovery folder.
 
-**Key Labels:** C:\ProgramData\AI, D:\AIPlatform, ~/.openclaw (junction), workspace root, automation/, catalogs/, profiles/, adr/, docs/, secrets/ (DPAPI)
+**Key Labels:** C:\ProgramData\AI, D:\AIPlatform, ~/.aegisos (junction), workspace root, automation/, catalogs/, profiles/, adr/, docs/, secrets/ (DPAPI)
 
 **Suggested Resolution:** 2160 × 3840 (4K Portrait), 9:16
 
@@ -965,15 +965,15 @@ Create a filesystem tree diagram on a dark background using monospace typography
 
 ### Diagram 15: Folder Hierarchy
 
-**Title:** OpenClaw Workspace Folder Hierarchy — Operational Documentation Suite
+**Title:** AegisOS Workspace Folder Hierarchy — Operational Documentation Suite
 
-**Purpose:** Detail the internal structure of the OpenClaw workspace, showing all operational documentation, agents, skills, and configuration files.
+**Purpose:** Detail the internal structure of the AegisOS workspace, showing all operational documentation, agents, skills, and configuration files.
 
 **Target Audience:** Engineers, Technical Writers
 
 **Diagram Type:** Hierarchy / Mind Map
 
-**Visual Style:** Dark theme, radial hierarchy centered on .openclaw
+**Visual Style:** Dark theme, radial hierarchy centered on .aegisos
 
 **Diagram Prompt:**
 Create a radial hierarchy diagram centered on the workspace root directory on a dark background. Show concentric rings of subdirectories expanding outward. **Inner Ring (Core):** Bootstrap.ps1, console_config.json, ModelManifest.json, package.json. **Second Ring (Automation Engine):** automation/ → libs/ (PlatformHelper.psm1), catalogs/ (12 JSON catalog files), profiles/ (5 deployment profiles), and scripts: Install.ps1, Configure.ps1, Validate.ps1, Backup.ps1, Restore.ps1, Migrate.ps1, HealthCheck.ps1. **Third Ring (Architectural Records):** adr/ → ADR-001 through ADR-008. **Fourth Ring (Platform Guides):** docs/ → show all 11 consolidated guides: Architecture_Handbook.md, Platform_Handbook.md, Operations_Guide.md, Deployment_Guide.md, Developer_Guide.md, Disaster_Recovery_Guide.md, Administrator_Guide.md, Optimization_Roadmap.md, CHANGELOG.md, ValidationReport.md, Walkthrough.md. **Outer Ring (Infrastructure Targets):** $PlatformRoot/ → apps/, configs/, databases/ (sqlite files), secrets/ (enc files), logs/ (monitor logs). Use file count badges on each directory. Title: "Platform Workspace — Rationalized Folder Hierarchy".
@@ -1022,7 +1022,7 @@ Create a container architecture diagram on a dark background. Show the host Wind
 **Visual Style:** Dark theme, directional arrows with protocol labels
 
 **Diagram Prompt:**
-Create a relationship map diagram on a dark background showing all service nodes and their interconnections. Nodes: **Ollama** (star shape — central hub), **LiteLLM**, **OpenClaw**, **OmniRoute**, **Open-WebUI** (Docker container badge), **PostgreSQL** (3 instances), **MongoDB**, **Redis**, **MCP Servers** (group). Connections with protocol labels: Open-WebUI →(HTTP/OLLAMA_BASE_URL)→ Ollama. LiteLLM →(HTTP/Ollama API)→ Ollama. OpenClaw →(HTTP/OpenAI Completions)→ LiteLLM. OmniRoute →(HTTP/Internal Routing)→ LiteLLM. OmniRoute →(HTTP/Direct Fallback)→ Ollama. OpenClaw →(stdio/local)→ MCP Servers. OpenClaw →(SQLite)→ Agent Memory DB. OmniRoute →(SQLite)→ OmniRoute Storage DB. Show which connections are loopback-only (blue) vs LAN-accessible (amber). Title: "Container & Service Relationships".
+Create a relationship map diagram on a dark background showing all service nodes and their interconnections. Nodes: **Ollama** (star shape — central hub), **LiteLLM**, **AegisOS**, **OmniRoute**, **Open-WebUI** (Docker container badge), **PostgreSQL** (3 instances), **MongoDB**, **Redis**, **MCP Servers** (group). Connections with protocol labels: Open-WebUI →(HTTP/OLLAMA_BASE_URL)→ Ollama. LiteLLM →(HTTP/Ollama API)→ Ollama. AegisOS →(HTTP/OpenAI Completions)→ LiteLLM. OmniRoute →(HTTP/Internal Routing)→ LiteLLM. OmniRoute →(HTTP/Direct Fallback)→ Ollama. AegisOS →(stdio/local)→ MCP Servers. AegisOS →(SQLite)→ Agent Memory DB. OmniRoute →(SQLite)→ OmniRoute Storage DB. Show which connections are loopback-only (blue) vs LAN-accessible (amber). Title: "Container & Service Relationships".
 
 **Negative Prompt:** No fictional connections, no incorrect protocols.
 
@@ -1045,7 +1045,7 @@ Create a relationship map diagram on a dark background showing all service nodes
 **Visual Style:** Dark theme, grouped by service
 
 **Diagram Prompt:**
-Create an API interaction diagram on a dark background. Show 5 service columns, each containing their API endpoints. **Ollama (port 11434):** /api/generate (POST), /api/chat (POST), /api/tags (GET), /api/embeddings (POST), /v1/models (GET — OpenAI compat). Badge: "No Auth". **LiteLLM (port 4000):** /v1/models (GET), /v1/chat/completions (POST), /health (GET), /health/services (GET). Badge: "No Auth (loopback)". **OpenClaw (port 18789):** /v1/chat/completions (POST — proxied), internal agent API. Badge: "Token Auth". **OmniRoute (port 20128):** Dashboard UI, WebSocket proxy (:20129), Arena ELO API. Badge: "JWT Auth". **Open-WebUI (port 8090):** /health (GET), Web UI, Chat API. Badge: "User Auth". Show arrows between APIs indicating proxied calls. Add request/response format annotations: JSON, SSE streaming, OpenAI-compatible format. Title: "API Interaction Map".
+Create an API interaction diagram on a dark background. Show 5 service columns, each containing their API endpoints. **Ollama (port 11434):** /api/generate (POST), /api/chat (POST), /api/tags (GET), /api/embeddings (POST), /v1/models (GET — OpenAI compat). Badge: "No Auth". **LiteLLM (port 4000):** /v1/models (GET), /v1/chat/completions (POST), /health (GET), /health/services (GET). Badge: "No Auth (loopback)". **AegisOS (port 18789):** /v1/chat/completions (POST — proxied), internal agent API. Badge: "Token Auth". **OmniRoute (port 20128):** Dashboard UI, WebSocket proxy (:20129), Arena ELO API. Badge: "JWT Auth". **Open-WebUI (port 8090):** /health (GET), Web UI, Chat API. Badge: "User Auth". Show arrows between APIs indicating proxied calls. Add request/response format annotations: JSON, SSE streaming, OpenAI-compatible format. Title: "API Interaction Map".
 
 **Negative Prompt:** No fictional endpoints, no incorrect authentication methods.
 
@@ -1065,10 +1065,10 @@ Create an API interaction diagram on a dark background. Show 5 service columns, 
 
 **Diagram Type:** Component Architecture
 
-**Visual Style:** Dark theme, hub-and-spoke layout centered on OpenClaw
+**Visual Style:** Dark theme, hub-and-spoke layout centered on AegisOS
 
 **Diagram Prompt:**
-Create a hub-and-spoke architecture diagram on a dark background with OpenClaw Gateway as the central hub (coral). Seven spokes radiate outward to MCP servers, each in a distinct rounded container. **filesystem** (npx, Node.js): Tools — read_file, write_file, list_directory. Bound dirs: Source, Documents, .openclaw. **git** (uvx, Python): Tools — git_status, git_log, git_diff, git_commit. **github** (npx, Node.js): Tools — search_repos, create_issue, create_PR. Auth: GITHUB_TOKEN. **sqlite** (uvx, Python): Tools — query, list_tables, describe_table. DB: openclaw-agent.sqlite. **fetch** (npx, Node.js): Tools — fetch_url. Purpose: web content retrieval. **puppeteer** (npx, Node.js): Tools — navigate, screenshot, click, type. Purpose: browser automation. **raja-knowledge-repository** (Python direct): Tools — search_knowledge, memory_search. Source: D:\Raja Jeevan Kumar Maduri_MarkDown_Personality. Show transport type badges: "stdio" for all servers. Show data flow arrows indicating what data each server provides to the agent context. Title: "MCP Server Architecture — 7 Context Protocol Servers".
+Create a hub-and-spoke architecture diagram on a dark background with AegisOS Gateway as the central hub (coral). Seven spokes radiate outward to MCP servers, each in a distinct rounded container. **filesystem** (npx, Node.js): Tools — read_file, write_file, list_directory. Bound dirs: Source, Documents, .aegisos. **git** (uvx, Python): Tools — git_status, git_log, git_diff, git_commit. **github** (npx, Node.js): Tools — search_repos, create_issue, create_PR. Auth: GITHUB_TOKEN. **sqlite** (uvx, Python): Tools — query, list_tables, describe_table. DB: aegisos-agent.sqlite. **fetch** (npx, Node.js): Tools — fetch_url. Purpose: web content retrieval. **puppeteer** (npx, Node.js): Tools — navigate, screenshot, click, type. Purpose: browser automation. **raja-knowledge-repository** (Python direct): Tools — search_knowledge, memory_search. Source: D:\Raja Jeevan Kumar Maduri_MarkDown_Personality. Show transport type badges: "stdio" for all servers. Show data flow arrows indicating what data each server provides to the agent context. Title: "MCP Server Architecture — 7 Context Protocol Servers".
 
 **Negative Prompt:** No missing servers, no incorrect tool names, no generic MCP icons.
 
@@ -1091,7 +1091,7 @@ Create a hub-and-spoke architecture diagram on a dark background with OpenClaw G
 **Visual Style:** Dark theme, layered memory tiers
 
 **Diagram Prompt:**
-Create a layered memory hierarchy diagram on a dark background with 4 tiers. **Tier 1 (Hot — GPU VRAM):** "Active Model Weights" — gemma4:latest + all-minilm loaded in 16GB VRAM. "KV Cache" — active conversation context (q8_0 quantized). **Tier 2 (Warm — System RAM):** "Agent Working Memory" — current session context window. "CPU-offloaded Layers" — overflow model weights in 64GB DDR5. **Tier 3 (Persistent — Disk):** "SQLite Agent Memory" (openclaw-agent.sqlite) — chat completions, session state. "OpenClaw State DB" (openclaw.sqlite) — agent config, workspace state. "OmniRoute Storage" (storage.sqlite) — ELO scores, routing logs. "Daily Memory Journals" — MEMORY.md, YYYY-MM-DD.md files. **Tier 4 (Long-term Knowledge — Disk):** "Knowledge Repository" (D:\Raja Jeevan Kumar Maduri_MarkDown_Personality) — identity, playbooks, frameworks, research. "Semantic Search" — all-minilm embedding → cosine similarity matching (~65ms). Show retrieval arrows from each tier upward through the agent context assembly pipeline. Title: "Memory Architecture — 4-Tier Hierarchy".
+Create a layered memory hierarchy diagram on a dark background with 4 tiers. **Tier 1 (Hot — GPU VRAM):** "Active Model Weights" — gemma4:latest + all-minilm loaded in 16GB VRAM. "KV Cache" — active conversation context (q8_0 quantized). **Tier 2 (Warm — System RAM):** "Agent Working Memory" — current session context window. "CPU-offloaded Layers" — overflow model weights in 64GB DDR5. **Tier 3 (Persistent — Disk):** "SQLite Agent Memory" (aegisos-agent.sqlite) — chat completions, session state. "AegisOS State DB" (aegisos.sqlite) — agent config, workspace state. "OmniRoute Storage" (storage.sqlite) — ELO scores, routing logs. "Daily Memory Journals" — MEMORY.md, YYYY-MM-DD.md files. **Tier 4 (Long-term Knowledge — Disk):** "Knowledge Repository" (D:\Raja Jeevan Kumar Maduri_MarkDown_Personality) — identity, playbooks, frameworks, research. "Semantic Search" — all-minilm embedding → cosine similarity matching (~65ms). Show retrieval arrows from each tier upward through the agent context assembly pipeline. Title: "Memory Architecture — 4-Tier Hierarchy".
 
 **Negative Prompt:** No cloud storage tiers, no fictional memory systems.
 
@@ -1160,11 +1160,11 @@ Create a technical workflow diagram on a dark background. Show the embedding pip
 **Visual Style:** Dark theme, data-centric layout
 
 **Diagram Prompt:**
-Create a storage architecture diagram on a dark background showing the vector/embedding data flow. **Embedding Generator:** all-minilm:latest on Ollama. **Storage Backends:** Show three storage locations: (1) "OpenClaw Agent Memory" (SQLite: openclaw-agent.sqlite) — stores agent session vectors and chat memory, (2) "Knowledge Repository Index" (raja-knowledge-repository MCP) — runtime semantic index over Markdown files in D:\Raja Jeevan Kumar Maduri_MarkDown_Personality, (3) "OpenClaw Memory Search" — Ollama-provided memory search (enabled in openclaw.json). Show query flow: User query → all-minilm embedding → parallel search across all three backends → results merged by similarity score → context window assembly. Add annotations: "No external vector DB (Pinecone/Weaviate) — all local", "SQLite + in-memory indexing". Title: "Vector Storage Architecture — Local-First Embedding Infrastructure".
+Create a storage architecture diagram on a dark background showing the vector/embedding data flow. **Embedding Generator:** all-minilm:latest on Ollama. **Storage Backends:** Show three storage locations: (1) "AegisOS Agent Memory" (SQLite: aegisos-agent.sqlite) — stores agent session vectors and chat memory, (2) "Knowledge Repository Index" (raja-knowledge-repository MCP) — runtime semantic index over Markdown files in D:\Raja Jeevan Kumar Maduri_MarkDown_Personality, (3) "AegisOS Memory Search" — Ollama-provided memory search (enabled in aegisos.json). Show query flow: User query → all-minilm embedding → parallel search across all three backends → results merged by similarity score → context window assembly. Add annotations: "No external vector DB (Pinecone/Weaviate) — all local", "SQLite + in-memory indexing". Title: "Vector Storage Architecture — Local-First Embedding Infrastructure".
 
 **Negative Prompt:** No Pinecone, no Weaviate, no Chroma, no external vector databases (none are installed).
 
-**Key Labels:** all-minilm, SQLite, in-memory index, local-first, no external vector DB, openclaw-agent.sqlite, raja-knowledge-repository, memory_search
+**Key Labels:** all-minilm, SQLite, in-memory index, local-first, no external vector DB, aegisos-agent.sqlite, raja-knowledge-repository, memory_search
 
 **Suggested Resolution:** 3840 × 2160 (4K), 16:9
 
@@ -1206,7 +1206,7 @@ Create a combined taxonomy and flow diagram on a dark background. Show the Knowl
 **Visual Style:** Dark theme, concentric security zones
 
 **Diagram Prompt:**
-Create a concentric security zone diagram on a dark background with 5 security layers from outermost to innermost. **Layer 1 (Perimeter):** "Norton Firewall" + "Windows Advanced Firewall" — blocks inbound connections to core services. **Layer 2 (Network Isolation):** "Loopback Binding" — OpenClaw, Headroom, LiteLLM, CodeGraph, MongoDB bound to 127.0.0.1. "LAN Exposure" — only Ollama :11434 (⚠ unauthenticated), PostgreSQL, Redis. **Layer 3 (Authentication):** "OpenClaw: Token-based auth", "OmniRoute: JWT + API Key", "Open-WebUI: Username/password", "GitHub MCP: GITHUB_TOKEN", "Ollama: ⚠ No authentication." **Layer 4 (Encryption at Rest):** "DPAPI Machine-Scope Encryption" — secrets/*.enc files under platform root. "Machine SID-bound" — cannot decrypt on different hardware. **Layer 5 (Process Isolation):** "NSSM Services: LocalSystem account" (⚠ high privilege). "Docker: WSL2 container isolation". "MCP: Sandboxed directory access via filesystem server." Show the Tailscale VPN overlay providing zero-trust remote access. Add risk callouts: "⚠ Ollama LAN-exposed without auth", "⚠ Services run as SYSTEM", "⚠ DPAPI not portable across machines." Title: "Security Architecture — Defense-in-Depth".
+Create a concentric security zone diagram on a dark background with 5 security layers from outermost to innermost. **Layer 1 (Perimeter):** "Norton Firewall" + "Windows Advanced Firewall" — blocks inbound connections to core services. **Layer 2 (Network Isolation):** "Loopback Binding" — AegisOS, Headroom, LiteLLM, CodeGraph, MongoDB bound to 127.0.0.1. "LAN Exposure" — only Ollama :11434 (⚠ unauthenticated), PostgreSQL, Redis. **Layer 3 (Authentication):** "AegisOS: Token-based auth", "OmniRoute: JWT + API Key", "Open-WebUI: Username/password", "GitHub MCP: GITHUB_TOKEN", "Ollama: ⚠ No authentication." **Layer 4 (Encryption at Rest):** "DPAPI Machine-Scope Encryption" — secrets/*.enc files under platform root. "Machine SID-bound" — cannot decrypt on different hardware. **Layer 5 (Process Isolation):** "NSSM Services: LocalSystem account" (⚠ high privilege). "Docker: WSL2 container isolation". "MCP: Sandboxed directory access via filesystem server." Show the Tailscale VPN overlay providing zero-trust remote access. Add risk callouts: "⚠ Ollama LAN-exposed without auth", "⚠ Services run as SYSTEM", "⚠ DPAPI not portable across machines." Title: "Security Architecture — Defense-in-Depth".
 
 **Negative Prompt:** No cloud security services, no fictional security tools, no understated risks.
 
@@ -1229,11 +1229,11 @@ Create a concentric security zone diagram on a dark background with 5 security l
 **Visual Style:** Dark theme, vertical sequence flow
 
 **Diagram Prompt:**
-Create a vertical sequence diagram on a dark background with 4 participants: Client, OpenClaw Gateway, DPAPI Secrets Store, LiteLLM. **Sequence:** (1) Client sends request with auth token to OpenClaw :18789. (2) OpenClaw validates token against stored credentials. (3) On service startup, OpenClaw's Node.js server loads environment variables decrypted via `PlatformHelper.psm1` from `$PlatformRoot\secrets\` using machine-scope DPAPI. (4) Decrypted secrets (Telegram Bot Token, API keys) are loaded into process environment. (5) Validated request is forwarded to LiteLLM :4000 (no auth — loopback only). (6) LiteLLM forwards to Ollama :11434 (no auth). Show a separate flow for OmniRoute: OmniRoute startup decrypts OmniRoute_secrets.enc → loads JWT_SECRET, API_KEY_SECRET, STORAGE_ENCRYPTION_KEY, MACHINE_ID_SALT. Show the `Bootstrap.ps1` and `Restore.ps1` secret entry flow mapping to DPAPI encryption helper routines. Add a warning box: "DPAPI secrets are machine-SID bound — cross-machine restore requires re-entry." Title: "Authentication Flow — DPAPI Secrets & Token Validation".
+Create a vertical sequence diagram on a dark background with 4 participants: Client, AegisOS Gateway, DPAPI Secrets Store, LiteLLM. **Sequence:** (1) Client sends request with auth token to AegisOS :18789. (2) AegisOS validates token against stored credentials. (3) On service startup, AegisOS's Node.js server loads environment variables decrypted via `PlatformHelper.psm1` from `$PlatformRoot\secrets\` using machine-scope DPAPI. (4) Decrypted secrets (Telegram Bot Token, API keys) are loaded into process environment. (5) Validated request is forwarded to LiteLLM :4000 (no auth — loopback only). (6) LiteLLM forwards to Ollama :11434 (no auth). Show a separate flow for OmniRoute: OmniRoute startup decrypts OmniRoute_secrets.enc → loads JWT_SECRET, API_KEY_SECRET, STORAGE_ENCRYPTION_KEY, MACHINE_ID_SALT. Show the `Bootstrap.ps1` and `Restore.ps1` secret entry flow mapping to DPAPI encryption helper routines. Add a warning box: "DPAPI secrets are machine-SID bound — cross-machine restore requires re-entry." Title: "Authentication Flow — DPAPI Secrets & Token Validation".
 
 **Negative Prompt:** No actual secret values, no cloud key management, no incorrect flow order.
 
-**Key Labels:** Token Auth, DPAPI Machine-Scope, OpenClaw_secrets.enc, OmniRoute_secrets.enc, PlatformHelper.psm1, machine SID-bound, loopback bypass
+**Key Labels:** Token Auth, DPAPI Machine-Scope, AegisOS_secrets.enc, OmniRoute_secrets.enc, PlatformHelper.psm1, machine SID-bound, loopback bypass
 
 **Suggested Resolution:** 2160 × 3840 (4K Portrait), 9:16
 
@@ -1252,7 +1252,7 @@ Create a vertical sequence diagram on a dark background with 4 participants: Cli
 **Visual Style:** Dark theme, current state (solid) vs planned state (dashed)
 
 **Diagram Prompt:**
-Create a monitoring architecture diagram on a dark background using solid lines for currently deployed components and dashed lines for planned/recommended components. **Current (Solid):** OpenClaw Gateway Logs (rotated 10MB files at ~/.openclaw/Logs/), LiteLLM Service Logs (NSSM stdout), OmniRoute Call Logs (per-day JSON in ~/.omniroute/call_logs/), Config Audit Trail (config-audit.jsonl), LiteLLM Health Endpoint (/health — 9 healthy, 5 unhealthy), nvidia-smi (GPU monitoring), Background Health Checks (every 300s). **Planned (Dashed):** Arize Phoenix (port 6006) — LLM trace visualization, RAG retrieval analysis. Prometheus (port 9090) — time-series metrics from LiteLLM /metrics endpoint and nvidia GPU exporter (:9454). Grafana (port 3000) — dashboards: VRAM Capacity Monitor, Agent Latency Heatmap, Model Fallback Frequency. Alert Policies: High Latency (>5s), VRAM Exhaustion (>15GB), Service Failure. Show data flow from services to monitoring stack. Title: "Monitoring Stack — Current & Planned Observability".
+Create a monitoring architecture diagram on a dark background using solid lines for currently deployed components and dashed lines for planned/recommended components. **Current (Solid):** AegisOS Gateway Logs (rotated 10MB files at ~/.aegisos/Logs/), LiteLLM Service Logs (NSSM stdout), OmniRoute Call Logs (per-day JSON in ~/.omniroute/call_logs/), Config Audit Trail (config-audit.jsonl), LiteLLM Health Endpoint (/health — 9 healthy, 5 unhealthy), nvidia-smi (GPU monitoring), Background Health Checks (every 300s). **Planned (Dashed):** Arize Phoenix (port 6006) — LLM trace visualization, RAG retrieval analysis. Prometheus (port 9090) — time-series metrics from LiteLLM /metrics endpoint and nvidia GPU exporter (:9454). Grafana (port 3000) — dashboards: VRAM Capacity Monitor, Agent Latency Heatmap, Model Fallback Frequency. Alert Policies: High Latency (>5s), VRAM Exhaustion (>15GB), Service Failure. Show data flow from services to monitoring stack. Title: "Monitoring Stack — Current & Planned Observability".
 
 **Negative Prompt:** No deployed components shown as planned, no planned components shown as deployed.
 
@@ -1275,7 +1275,7 @@ Create a monitoring architecture diagram on a dark background using solid lines 
 **Visual Style:** Dark theme, log source to storage flow
 
 **Diagram Prompt:**
-Create a flow diagram on a dark background showing all log sources flowing into their storage destinations. **Log Sources:** OpenClaw Gateway (debug level) → openclaw-gateway.log (10MB rotated, currently 19MB total). LiteLLM Service (NSSM stdout/stderr) → LiteLLMService.log + LiteLLMService_error.log. OmniRoute Service (NSSM stdout/stderr) → OmniRouteService.log + OmniRouteService_error.log. OpenClaw Service (NSSM stdout/stderr) → OpenClawService.log + OpenClawService_error.log. OmniRoute Call Logs → call_logs/YYYY-MM-DD/ (per-day directories since 2026-07-05). Config Changes → config-audit.jsonl (structured JSON lines). Deployment Log → deploy.log. **Log Storage:** All logs in ~/.openclaw/Logs/ (~20MB total) and ~/.omniroute/call_logs/. **Audit Trail:** Show config-audit.jsonl as a special structured log capturing configuration changes with timestamps. Show backup inclusion: logs included in backup scope. Title: "Logging Architecture — Sources, Rotation & Audit".
+Create a flow diagram on a dark background showing all log sources flowing into their storage destinations. **Log Sources:** AegisOS Gateway (debug level) → aegisos-gateway.log (10MB rotated, currently 19MB total). LiteLLM Service (NSSM stdout/stderr) → LiteLLMService.log + LiteLLMService_error.log. OmniRoute Service (NSSM stdout/stderr) → OmniRouteService.log + OmniRouteService_error.log. AegisOS Service (NSSM stdout/stderr) → AegisOSService.log + AegisOSService_error.log. OmniRoute Call Logs → call_logs/YYYY-MM-DD/ (per-day directories since 2026-07-05). Config Changes → config-audit.jsonl (structured JSON lines). Deployment Log → deploy.log. **Log Storage:** All logs in ~/.aegisos/Logs/ (~20MB total) and ~/.omniroute/call_logs/. **Audit Trail:** Show config-audit.jsonl as a special structured log capturing configuration changes with timestamps. Show backup inclusion: logs included in backup scope. Title: "Logging Architecture — Sources, Rotation & Audit".
 
 **Negative Prompt:** No centralized log management (not deployed), no ELK stack.
 
@@ -1298,7 +1298,7 @@ Create a flow diagram on a dark background showing all log sources flowing into 
 **Visual Style:** Dark theme, green (backed up), red (excluded), gold (recovery path)
 
 **Diagram Prompt:**
-Create a backup architecture diagram on a dark background. **Left Side (Backup Sources):** Show components with green checkmarks (included) or red X marks (excluded). ✅ Included: configs/ (litellm, openclaw), databases/ (openclaw.sqlite, storage.sqlite, codegraph.sqlite), secrets/*.enc (DPAPI), platform catalogs (.json files), deployment profiles (.json files), SCM service registry parameters (.reg files), environment variable configs. ❌ Excluded: Model weights (~130GB in C:\ProgramData\Models\Ollama) — "Manifest-based re-pull via `ollama pull`". **Center (Backup Process):** Show `automation/Backup.ps1` script → creates timestamped ZIP archives. Schedule: "Weekly automated scheduled task + manual end-of-session/pre-upgrade." **Right Side (Storage):** Primary: `$PlatformRoot/backups/`. Secondary: Google Drive (G: — FAT32, 334GB free). **Bottom (Recovery):** Show recovery pipeline: `Restore.ps1` -> inputs backup archive, validates machine SID environment, and restores files. Show recovery modes: SafeRestore (default), FullRecovery (overwrites all, pulls models), Repair (re-links junctions, registers services), ForceRecovery (sweeps DBs and resets). DPAPI recovery: prompts user interactively on host mismatch. Retention: Last 10 backups. Title: "Backup Architecture — Scope, Strategy & Recovery".
+Create a backup architecture diagram on a dark background. **Left Side (Backup Sources):** Show components with green checkmarks (included) or red X marks (excluded). ✅ Included: configs/ (litellm, aegisos), databases/ (aegisos.sqlite, storage.sqlite, codegraph.sqlite), secrets/*.enc (DPAPI), platform catalogs (.json files), deployment profiles (.json files), SCM service registry parameters (.reg files), environment variable configs. ❌ Excluded: Model weights (~130GB in C:\ProgramData\Models\Ollama) — "Manifest-based re-pull via `ollama pull`". **Center (Backup Process):** Show `automation/Backup.ps1` script → creates timestamped ZIP archives. Schedule: "Weekly automated scheduled task + manual end-of-session/pre-upgrade." **Right Side (Storage):** Primary: `$PlatformRoot/backups/`. Secondary: Google Drive (G: — FAT32, 334GB free). **Bottom (Recovery):** Show recovery pipeline: `Restore.ps1` -> inputs backup archive, validates machine SID environment, and restores files. Show recovery modes: SafeRestore (default), FullRecovery (overwrites all, pulls models), Repair (re-links junctions, registers services), ForceRecovery (sweeps DBs and resets). DPAPI recovery: prompts user interactively on host mismatch. Retention: Last 10 backups. Title: "Backup Architecture — Scope, Strategy & Recovery".
 
 **Negative Prompt:** No cloud backup services not verified, no incorrect script names.
 
@@ -1344,11 +1344,11 @@ Create a decision flow diagram on a dark background showing the disaster recover
 **Visual Style:** Dark theme, horizontal timeline with dependency arrows
 
 **Diagram Prompt:**
-Create a horizontal timeline diagram on a dark background showing the service startup sequence. **Phase 0: System Boot** — Windows SCM initializes NSSM wrappers. **Phase 1: Ollama Initialization** — Ollama service starts, loads GGUF weights, binds to Port 11434. **Phase 2: Intermediate Core Boot** — LiteLLM (Port 4000), Headroom Token Compression Proxy (Port 4050), and CodeGraph MCP Server (Port 18790) start. LiteLLM and Headroom verify Ollama socket. CodeGraph indexes repository AST changes. **Phase 3: Gateway Boot** — OpenClaw (Port 18789) and OmniRoute (Port 20128) start. OpenClaw registers local MCP servers (including CodeGraph), decrypts DPAPI credential secrets, and establishes runtime workspace junctions. **Phase 4: Client & UI Layer** — Docker Desktop loads, Open-WebUI container starts (Port 8090). **Phase 5: Health Validation** — `automation/HealthCheck.ps1` runs socket tests. Background warming cron loads models into VRAM. Show dependency arrows. Show "Ready" status when all 6 service ports are listening. Title: "Startup Sequence — Boot to Ready".
+Create a horizontal timeline diagram on a dark background showing the service startup sequence. **Phase 0: System Boot** — Windows SCM initializes NSSM wrappers. **Phase 1: Ollama Initialization** — Ollama service starts, loads GGUF weights, binds to Port 11434. **Phase 2: Intermediate Core Boot** — LiteLLM (Port 4000), Headroom Token Compression Proxy (Port 4050), and CodeGraph MCP Server (Port 18790) start. LiteLLM and Headroom verify Ollama socket. CodeGraph indexes repository AST changes. **Phase 3: Gateway Boot** — AegisOS (Port 18789) and OmniRoute (Port 20128) start. AegisOS registers local MCP servers (including CodeGraph), decrypts DPAPI credential secrets, and establishes runtime workspace junctions. **Phase 4: Client & UI Layer** — Docker Desktop loads, Open-WebUI container starts (Port 8090). **Phase 5: Health Validation** — `automation/HealthCheck.ps1` runs socket tests. Background warming cron loads models into VRAM. Show dependency arrows. Show "Ready" status when all 6 service ports are listening. Title: "Startup Sequence — Boot to Ready".
 
 **Negative Prompt:** No incorrect dependency order, no missing phases, no oversimplification.
 
-**Key Labels:** 6 service ports, Ollama→LiteLLM+Headroom+CodeGraph→OpenClaw+OmniRoute, SCM wrappers, DPAPI decrypt, health validation
+**Key Labels:** 6 service ports, Ollama→LiteLLM+Headroom+CodeGraph→AegisOS+OmniRoute, SCM wrappers, DPAPI decrypt, health validation
 
 **Suggested Resolution:** 3840 × 1080 (Ultra-wide), 32:9
 
@@ -1367,9 +1367,9 @@ Create a horizontal timeline diagram on a dark background showing the service st
 **Visual Style:** Dark theme, service blocks with config file connections
 
 **Diagram Prompt:**
-Create a deployment architecture diagram on a dark background showing 6 service blocks wrapped by NSSM. Each block contains: Service Name, Binary/Command Path, Arguments, Working Directory, Dependencies. **Ollama:** Binary=ollama.exe serve, RunAs=LocalSystem. **LiteLLMService:** Binary=litellm.exe, Args=--config config.yaml --port 4000, WorkDir=$PlatformRoot\configs\litellm\, Depends=Ollama. **HeadroomService:** Command=python headroom_proxy.py, Args=--port 4050, WorkDir=$PlatformRoot\apps\headroom\, Depends=Ollama. **CodeGraphService:** Command=node index.js, Args=--port 18790, WorkDir=$PlatformRoot\apps\codegraph\, Depends=Ollama. **OpenClawService:** Command=node dist/index.js, WorkDir=$PlatformRoot\apps\openclaw\, Depends=LiteLLM+Headroom+CodeGraph. **OmniRouteService:** Command=node server/index.js, WorkDir=$PlatformRoot\apps\omniroute\, Depends=LiteLLM+Ollama. Show configuration file links: console_config.json, config.yaml, openclaw.json, profiles/default.json. Show registry key parameters path: HKLM\SYSTEM\CurrentControlSet\Services\{ServiceName}\Parameters. Title: "Deployment Architecture — SCM Service Configuration".
+Create a deployment architecture diagram on a dark background showing 6 service blocks wrapped by NSSM. Each block contains: Service Name, Binary/Command Path, Arguments, Working Directory, Dependencies. **Ollama:** Binary=ollama.exe serve, RunAs=LocalSystem. **LiteLLMService:** Binary=litellm.exe, Args=--config config.yaml --port 4000, WorkDir=$PlatformRoot\configs\litellm\, Depends=Ollama. **HeadroomService:** Command=python headroom_proxy.py, Args=--port 4050, WorkDir=$PlatformRoot\apps\headroom\, Depends=Ollama. **CodeGraphService:** Command=node index.js, Args=--port 18790, WorkDir=$PlatformRoot\apps\codegraph\, Depends=Ollama. **AegisOSService:** Command=node dist/index.js, WorkDir=$PlatformRoot\apps\aegisos\, Depends=LiteLLM+Headroom+CodeGraph. **OmniRouteService:** Command=node server/index.js, WorkDir=$PlatformRoot\apps\omniroute\, Depends=LiteLLM+Ollama. Show configuration file links: console_config.json, config.yaml, aegisos.json, profiles/default.json. Show registry key parameters path: HKLM\SYSTEM\CurrentControlSet\Services\{ServiceName}\Parameters. Title: "Deployment Architecture — SCM Service Configuration".
 
-**Negative Prompt:** No incorrect paths, no missing dependencies, no legacy Start-OpenClawService.ps1 script wrapper.
+**Negative Prompt:** No incorrect paths, no missing dependencies, no legacy Start-AegisOSService.ps1 script wrapper.
 
 **Key Labels:** NSSM service wrapping, SCM, 6 AI services, LocalSystem, HKLM registry parameters, configs/, console_config.json
 
@@ -1390,7 +1390,7 @@ Create a deployment architecture diagram on a dark background showing 6 service 
 **Visual Style:** Dark theme glassmorphism dashboard
 
 **Diagram Prompt:**
-Create a dark-themed glassmorphism dashboard mockup showing real-time operational metrics for the AI workstation. **Top Row (Status Cards):** 6 service status cards with green/red indicators: Ollama (Running), Headroom (Running), LiteLLM (Running, 9/14 healthy), CodeGraph (Running), OpenClaw (Running), OmniRoute (Running), Open-WebUI (Healthy). **Second Row:** GPU VRAM gauge (620 MiB / 16,303 MiB used), CPU Temperature (54°C), System RAM (32/64 GB available), NVMe Free Space (351 GB / 862 GB on C:). **Third Row:** Model Performance Chart — bar chart showing token throughput: smollm (250 t/s), qwen3:14b (75 t/s), gemma4:latest (72 t/s), deepseek-r1:32b (10 t/s). **Fourth Row:** Token Savings & Compressions — Headroom active prompt token compression ratio (averaging 75% savings), Ponytail context pruning frequency. **Bottom Row:** Recent logs feed (Health monitor log, openclaw errors) and Backup status: "Last backup: Weekly auto-sync status". Title: "AI Workstation — Operational Dashboard".
+Create a dark-themed glassmorphism dashboard mockup showing real-time operational metrics for the AI workstation. **Top Row (Status Cards):** 6 service status cards with green/red indicators: Ollama (Running), Headroom (Running), LiteLLM (Running, 9/14 healthy), CodeGraph (Running), AegisOS (Running), OmniRoute (Running), Open-WebUI (Healthy). **Second Row:** GPU VRAM gauge (620 MiB / 16,303 MiB used), CPU Temperature (54°C), System RAM (32/64 GB available), NVMe Free Space (351 GB / 862 GB on C:). **Third Row:** Model Performance Chart — bar chart showing token throughput: smollm (250 t/s), qwen3:14b (75 t/s), gemma4:latest (72 t/s), deepseek-r1:32b (10 t/s). **Fourth Row:** Token Savings & Compressions — Headroom active prompt token compression ratio (averaging 75% savings), Ponytail context pruning frequency. **Bottom Row:** Recent logs feed (Health monitor log, aegisos errors) and Backup status: "Last backup: Weekly auto-sync status". Title: "AI Workstation — Operational Dashboard".
 
 **Negative Prompt:** No light theme, no wireframe quality, no placeholder data.
 
@@ -1413,11 +1413,11 @@ Create a dark-themed glassmorphism dashboard mockup showing real-time operationa
 **Visual Style:** Dark theme, nodes with dependency arrows, critical path highlighted
 
 **Diagram Prompt:**
-Create a directed acyclic graph on a dark background showing all infrastructure dependencies. Nodes grouped by layer: **Foundation:** Windows 11, GPU Drivers (NVIDIA 610.47), WSL2, Hyper-V. **Runtimes:** Node.js 24.16.0, Python 3.12.4, Docker 29.6.1, NSSM, uv/uvx. **Core Services:** Ollama (depends on GPU Driver), LiteLLM (depends on Ollama, Python), OpenClaw (depends on LiteLLM, Ollama, Node.js), OmniRoute (depends on LiteLLM, Ollama, Node.js). **Data Services:** PostgreSQL (independent), MongoDB (independent), Redis (independent). **Context Services:** 7 MCP servers (depend on Node.js/Python + OpenClaw). **Interfaces:** Open-WebUI (depends on Docker, Ollama), Antigravity IDE (depends on OpenClaw). **Storage:** NVMe (models depend on this), DPAPI secrets (OpenClaw + OmniRoute depend on this). Highlight the **critical path** in coral: GPU Driver → Ollama → LiteLLM → OpenClaw → User. Mark **single points of failure** with warning badges: Ollama (single inference engine), RTX 5080 (single GPU). Title: "Infrastructure Dependency Graph".
+Create a directed acyclic graph on a dark background showing all infrastructure dependencies. Nodes grouped by layer: **Foundation:** Windows 11, GPU Drivers (NVIDIA 610.47), WSL2, Hyper-V. **Runtimes:** Node.js 24.16.0, Python 3.12.4, Docker 29.6.1, NSSM, uv/uvx. **Core Services:** Ollama (depends on GPU Driver), LiteLLM (depends on Ollama, Python), AegisOS (depends on LiteLLM, Ollama, Node.js), OmniRoute (depends on LiteLLM, Ollama, Node.js). **Data Services:** PostgreSQL (independent), MongoDB (independent), Redis (independent). **Context Services:** 7 MCP servers (depend on Node.js/Python + AegisOS). **Interfaces:** Open-WebUI (depends on Docker, Ollama), Antigravity IDE (depends on AegisOS). **Storage:** NVMe (models depend on this), DPAPI secrets (AegisOS + OmniRoute depend on this). Highlight the **critical path** in coral: GPU Driver → Ollama → LiteLLM → AegisOS → User. Mark **single points of failure** with warning badges: Ollama (single inference engine), RTX 5080 (single GPU). Title: "Infrastructure Dependency Graph".
 
 **Negative Prompt:** No circular dependencies, no missing nodes, no incorrect dependency directions.
 
-**Key Labels:** Critical Path: GPU→Ollama→LiteLLM→OpenClaw, Single Points of Failure: Ollama, RTX 5080, 4 layers, 15+ components
+**Key Labels:** Critical Path: GPU→Ollama→LiteLLM→AegisOS, Single Points of Failure: Ollama, RTX 5080, 4 layers, 15+ components
 
 **Suggested Resolution:** 3840 × 2160 (4K), 16:9
 
@@ -1436,7 +1436,7 @@ Create a directed acyclic graph on a dark background showing all infrastructure 
 **Visual Style:** Dark theme, illustrated journey with touchpoints
 
 **Diagram Prompt:**
-Create an end-to-end journey map on a dark background showing a user's interaction. **Journey Stages:** (1) "User opens Antigravity IDE and types a question about product management frameworks." (2) "Request hits OpenClaw Gateway :18789 with auth token." (3) "OpenClaw selects 'main' agent (Executive/Knowledge role)." (4) "SOUL.md grounding directive activates: 'Query knowledge repository FIRST.'" (5) "raja-knowledge-repository MCP searches D:\Raja Jeevan Kumar Maduri_MarkDown_Personality." (6) "all-minilm embeds the query (384-dim vector, 15ms) and performs cosine similarity search." (7) "Relevant chunks from /playbooks/ (RPLS, AIPOM) and /frameworks/product_management/ retrieved (65ms)." (8) "Context assembled: system prompt + knowledge chunks + user query." (9) "LiteLLM routes to gemma4:latest via least-busy strategy." (10) "Ollama processes tokens on RTX 5080 GPU (72 t/s, 120ms TTFT)." (11) "SSE stream delivers tokens back through LiteLLM → OpenClaw → IDE." (12) "User receives a knowledge-grounded, contextually accurate answer." Show total latency: "~300ms to first token, streaming thereafter." Title: "End-to-End User Journey — Knowledge-Enriched AI Response".
+Create an end-to-end journey map on a dark background showing a user's interaction. **Journey Stages:** (1) "User opens Antigravity IDE and types a question about product management frameworks." (2) "Request hits AegisOS Gateway :18789 with auth token." (3) "AegisOS selects 'main' agent (Executive/Knowledge role)." (4) "SOUL.md grounding directive activates: 'Query knowledge repository FIRST.'" (5) "raja-knowledge-repository MCP searches D:\Raja Jeevan Kumar Maduri_MarkDown_Personality." (6) "all-minilm embeds the query (384-dim vector, 15ms) and performs cosine similarity search." (7) "Relevant chunks from /playbooks/ (RPLS, AIPOM) and /frameworks/product_management/ retrieved (65ms)." (8) "Context assembled: system prompt + knowledge chunks + user query." (9) "LiteLLM routes to gemma4:latest via least-busy strategy." (10) "Ollama processes tokens on RTX 5080 GPU (72 t/s, 120ms TTFT)." (11) "SSE stream delivers tokens back through LiteLLM → AegisOS → IDE." (12) "User receives a knowledge-grounded, contextually accurate answer." Show total latency: "~300ms to first token, streaming thereafter." Title: "End-to-End User Journey — Knowledge-Enriched AI Response".
 
 **Negative Prompt:** No fictional touchpoints, no missing stages, no cloud processing steps.
 
@@ -1482,7 +1482,7 @@ Create a horizontal waterfall timing diagram on a dark background showing the re
 **Visual Style:** Dark theme, force-directed graph layout
 
 **Diagram Prompt:**
-Create a force-directed topology graph on a dark background showing all system components as nodes and all relationships as edges. **Node Types:** Services (rounded rectangles): Ollama, LiteLLM, OpenClaw, OmniRoute, Open-WebUI. Databases (cylinders): PostgreSQL ×3, MongoDB, Redis, SQLite ×3. MCP Servers (hexagons): filesystem, git, github, sqlite, fetch, puppeteer, raja-knowledge-repo. Agents (circles): main, developer, reviewer. Hardware (squares): RTX 5080, Ryzen 9 9950X3D, 64GB DDR5, NVMe ×2. Network (diamonds): Tailscale, Ethernet, Docker NAT. Security (shields): DPAPI, Norton, Token Auth, JWT. **Edge Types:** HTTP (solid blue), stdio (dashed green), file I/O (dotted gold), service dependency (thick red). Size nodes by importance (Ollama largest — central hub). Color-code by layer. Title: "Complete Component Relationship Map".
+Create a force-directed topology graph on a dark background showing all system components as nodes and all relationships as edges. **Node Types:** Services (rounded rectangles): Ollama, LiteLLM, AegisOS, OmniRoute, Open-WebUI. Databases (cylinders): PostgreSQL ×3, MongoDB, Redis, SQLite ×3. MCP Servers (hexagons): filesystem, git, github, sqlite, fetch, puppeteer, raja-knowledge-repo. Agents (circles): main, developer, reviewer. Hardware (squares): RTX 5080, Ryzen 9 9950X3D, 64GB DDR5, NVMe ×2. Network (diamonds): Tailscale, Ethernet, Docker NAT. Security (shields): DPAPI, Norton, Token Auth, JWT. **Edge Types:** HTTP (solid blue), stdio (dashed green), file I/O (dotted gold), service dependency (thick red). Size nodes by importance (Ollama largest — central hub). Color-code by layer. Title: "Complete Component Relationship Map".
 
 **Negative Prompt:** No missing components, no fictional relationships, no tangled/unreadable layout.
 
@@ -1505,7 +1505,7 @@ Create a force-directed topology graph on a dark background showing all system c
 **Visual Style:** Dark theme, split view — left (current), right (recommended)
 
 **Diagram Prompt:**
-Create a split-view architecture diagram on a dark background. **Left Side — Current State:** "Single Workstation Architecture." Show single Ollama instance (SPOF badge), single LiteLLM instance, single OpenClaw instance, single RTX 5080 GPU. Mark single points of failure with red ⚠ badges. Show LiteLLM fallback chains as the only resilience mechanism (model-level, not service-level). Show backup strategy as the recovery mechanism. Availability estimate: "~95% (dependent on single hardware)." **Right Side — Recommended HA:** "Enhanced Resilience Architecture." Show: (1) Secondary inference node via Tailscale mesh — offload to a remote Ollama instance. (2) Automated watchdog service monitoring all 5 services with auto-restart. (3) Scheduled model pre-warming to prevent cold-start availability gaps. (4) Automated daily backups with verification. (5) OmniRoute dashboard as live health status display. (6) UPS power protection for graceful shutdown. Availability target: "~99.5%." Show the LiteLLM fallback chain as the current HA mechanism that already works well. Title: "High Availability — Current State vs Recommended".
+Create a split-view architecture diagram on a dark background. **Left Side — Current State:** "Single Workstation Architecture." Show single Ollama instance (SPOF badge), single LiteLLM instance, single AegisOS instance, single RTX 5080 GPU. Mark single points of failure with red ⚠ badges. Show LiteLLM fallback chains as the only resilience mechanism (model-level, not service-level). Show backup strategy as the recovery mechanism. Availability estimate: "~95% (dependent on single hardware)." **Right Side — Recommended HA:** "Enhanced Resilience Architecture." Show: (1) Secondary inference node via Tailscale mesh — offload to a remote Ollama instance. (2) Automated watchdog service monitoring all 5 services with auto-restart. (3) Scheduled model pre-warming to prevent cold-start availability gaps. (4) Automated daily backups with verification. (5) OmniRoute dashboard as live health status display. (6) UPS power protection for graceful shutdown. Availability target: "~99.5%." Show the LiteLLM fallback chain as the current HA mechanism that already works well. Title: "High Availability — Current State vs Recommended".
 
 **Negative Prompt:** No cloud HA solutions (not applicable), no enterprise clustering, no Kubernetes.
 
@@ -1528,7 +1528,7 @@ Create a split-view architecture diagram on a dark background. **Left Side — C
 **Visual Style:** Dark theme, before/after layout with improvement annotations
 
 **Diagram Prompt:**
-Create a comparison diagram on a dark background with two columns. **Left Column — Current Architecture (Validated):** Show the complete current stack: Ollama (v0.31.1), LiteLLM (least-busy routing), OpenClaw (3 agents), OmniRoute (ELO arena), Open-WebUI (Docker). Security: DPAPI, Norton, Loopback. Monitoring: Log files, health endpoints. Services: NSSM, LocalSystem account. Mark items working well with green checkmarks. **Right Column — Recommended Improvements:** (1) "Service Account Migration" — move from LocalSystem to scoped virtual service accounts. (2) "Ollama Authentication" — add basic auth proxy in front of :11434. (3) "WSL2 Resource Limits" — configure .wslconfig to cap WSL2 memory. (4) "Observability Stack" — deploy Prometheus, Grafana, Arize Phoenix (planned in Observability_Architecture.md). (5) "Automated Backup Schedule" — Windows Scheduled Task for weekly backup + rclone to Google Drive. (6) "Backup Checksums" — SHA256 manifest per backup set. (7) "Version Manifest" — record exact versions of all components in each backup. (8) "Off-site Encryption" — 7-Zip AES-256 before cloud upload. Show arrows connecting current items to their recommended improvements. Priority labels: High, Medium, Low. Title: "Architecture Evolution Roadmap".
+Create a comparison diagram on a dark background with two columns. **Left Column — Current Architecture (Validated):** Show the complete current stack: Ollama (v0.31.1), LiteLLM (least-busy routing), AegisOS (3 agents), OmniRoute (ELO arena), Open-WebUI (Docker). Security: DPAPI, Norton, Loopback. Monitoring: Log files, health endpoints. Services: NSSM, LocalSystem account. Mark items working well with green checkmarks. **Right Column — Recommended Improvements:** (1) "Service Account Migration" — move from LocalSystem to scoped virtual service accounts. (2) "Ollama Authentication" — add basic auth proxy in front of :11434. (3) "WSL2 Resource Limits" — configure .wslconfig to cap WSL2 memory. (4) "Observability Stack" — deploy Prometheus, Grafana, Arize Phoenix (planned in Observability_Architecture.md). (5) "Automated Backup Schedule" — Windows Scheduled Task for weekly backup + rclone to Google Drive. (6) "Backup Checksums" — SHA256 manifest per backup set. (7) "Version Manifest" — record exact versions of all components in each backup. (8) "Off-site Encryption" — 7-Zip AES-256 before cloud upload. Show arrows connecting current items to their recommended improvements. Priority labels: High, Medium, Low. Title: "Architecture Evolution Roadmap".
 
 **Negative Prompt:** No fictional recommendations, no cloud migration suggestions, no items not in existing documentation.
 
@@ -1556,11 +1556,11 @@ Create a comparison diagram on a dark background with two columns. **Left Column
 - Typography: Inter, clean hierarchy
 
 **Diagram Prompt:**
-Create a premium, publication-quality enterprise ecosystem poster on a dark gradient background with subtle hexagonal grid pattern. **Center Hub:** "Raja's Local AI Workstation" title with the Gigabyte X870E AORUS MASTER motherboard as the anchor. Show RTX 5080 GPU and Ryzen 9 9950X3D CPU as the computational foundation. **Top-Left Quadrant (AI Inference Engine):** Ollama v0.31.1 server connected to 12 model icons arranged in a constellation: gemma4 family (latest, 26b, 31b), qwen family (2.5:14b, 3:14b, 3:30b, 3.6:27b), deepseek-r1:32b, gpt-oss:20b, gemma2:9b, all-minilm, smollm. Show VRAM gauge: 16GB with split indicators. Show throughput badges: 10-250 t/s. **Top-Right Quadrant (AI Gateway & Routing):** OpenClaw Gateway :18789 at center with 3 agent circles orbiting (main=coral, developer=cyan, reviewer=gold). LiteLLM :4000 router with least-busy badge and fallback chain visualization. OmniRoute :20128 dashboard. 7 MCP server hexagons connected to OpenClaw. **Bottom-Left Quadrant (Data & Knowledge):** Knowledge Repository taxonomy (6 tiers), SQLite databases (3), PostgreSQL (3 versions), MongoDB, Redis, all-minilm embedding engine, RAG pipeline flow. OmniRoute call logs and ELO arena. **Bottom-Right Quadrant (Security & Operations):** DPAPI encryption shield, Norton Firewall, Tailscale VPN mesh, loopback security zone, backup architecture (6 sets), DR runbook (9 scripts), service startup chain, monitoring stack (current + planned), scheduled tasks. **Connecting Lines:** Show data flows between all quadrants using the color-coded arrow system (cyan=user data, gold=knowledge, green=model, coral=response, gray=logging). **Legend:** Bottom bar with all component types, color codes, and abbreviations. **Footer:** "Document Version 1.0 | Generated 2026-07-09 | Discovery: Antigravity IDE | Owner: Raja Jeevan Kumar Maduri". Title: "Raja's Local AI Workstation — Complete Enterprise Ecosystem".
+Create a premium, publication-quality enterprise ecosystem poster on a dark gradient background with subtle hexagonal grid pattern. **Center Hub:** "Raja's Local AI Workstation" title with the Gigabyte X870E AORUS MASTER motherboard as the anchor. Show RTX 5080 GPU and Ryzen 9 9950X3D CPU as the computational foundation. **Top-Left Quadrant (AI Inference Engine):** Ollama v0.31.1 server connected to 12 model icons arranged in a constellation: gemma4 family (latest, 26b, 31b), qwen family (2.5:14b, 3:14b, 3:30b, 3.6:27b), deepseek-r1:32b, gpt-oss:20b, gemma2:9b, all-minilm, smollm. Show VRAM gauge: 16GB with split indicators. Show throughput badges: 10-250 t/s. **Top-Right Quadrant (AI Gateway & Routing):** AegisOS Gateway :18789 at center with 3 agent circles orbiting (main=coral, developer=cyan, reviewer=gold). LiteLLM :4000 router with least-busy badge and fallback chain visualization. OmniRoute :20128 dashboard. 7 MCP server hexagons connected to AegisOS. **Bottom-Left Quadrant (Data & Knowledge):** Knowledge Repository taxonomy (6 tiers), SQLite databases (3), PostgreSQL (3 versions), MongoDB, Redis, all-minilm embedding engine, RAG pipeline flow. OmniRoute call logs and ELO arena. **Bottom-Right Quadrant (Security & Operations):** DPAPI encryption shield, Norton Firewall, Tailscale VPN mesh, loopback security zone, backup architecture (6 sets), DR runbook (9 scripts), service startup chain, monitoring stack (current + planned), scheduled tasks. **Connecting Lines:** Show data flows between all quadrants using the color-coded arrow system (cyan=user data, gold=knowledge, green=model, coral=response, gray=logging). **Legend:** Bottom bar with all component types, color codes, and abbreviations. **Footer:** "Document Version 1.0 | Generated 2026-07-09 | Discovery: Antigravity IDE | Owner: Raja Jeevan Kumar Maduri". Title: "Raja's Local AI Workstation — Complete Enterprise Ecosystem".
 
 **Negative Prompt:** No missing components, no simplified views, no cloud services not present, no placeholder graphics, no low-resolution output, no consumer/casual styling, no cartoon elements, no decorative clutter unrelated to the architecture, no incorrect model names or port numbers, no fictional hardware specifications.
 
-**Key Labels:** Every component label from the full discovery: RTX 5080, Ryzen 9 9950X3D, 64GB DDR5, Samsung 9100 PRO, WD_BLACK SN850X, Ollama v0.31.1, 12 models, LiteLLM :4000, OpenClaw :18789, OmniRoute :20128, Open-WebUI :8090, 7 MCP servers, 3 agents, PostgreSQL ×3, MongoDB, Redis, SQLite ×3, DPAPI, Norton, Tailscale, NSSM, Knowledge Repository, all-minilm, 6 backup sets, 9 DR scripts
+**Key Labels:** Every component label from the full discovery: RTX 5080, Ryzen 9 9950X3D, 64GB DDR5, Samsung 9100 PRO, WD_BLACK SN850X, Ollama v0.31.1, 12 models, LiteLLM :4000, AegisOS :18789, OmniRoute :20128, Open-WebUI :8090, 7 MCP servers, 3 agents, PostgreSQL ×3, MongoDB, Redis, SQLite ×3, DPAPI, Norton, Tailscale, NSSM, Knowledge Repository, all-minilm, 6 backup sets, 9 DR scripts
 
 **Suggested Resolution:** 7680 × 4320 (8K), 16:9 — intended for large-format printing or high-DPI display
 
@@ -1570,7 +1570,7 @@ Create a premium, publication-quality enterprise ecosystem poster on a dark grad
 
 | Term | Definition |
 |---|---|
-| **Agent** | An autonomous AI entity within OpenClaw that has its own model assignment, MCP access, and workspace scope |
+| **Agent** | An autonomous AI entity within AegisOS that has its own model assignment, MCP access, and workspace scope |
 | **DPAPI** | Windows Data Protection Application Programming Interface — encrypts secrets bound to machine identity |
 | **ELO Arena** | OmniRoute's model comparison system using ELO scoring to rank model performance |
 | **Fallback Chain** | LiteLLM's cascading model routing — if the primary model fails, requests route to successively simpler models |
@@ -1581,7 +1581,7 @@ Create a premium, publication-quality enterprise ecosystem poster on a dark grad
 | **MCP** | Model Context Protocol — a standardized protocol for connecting AI models to external tools and data sources |
 | **NSSM** | Non-Sucking Service Manager — wraps arbitrary executables as Windows services |
 | **Ollama** | Local LLM inference engine that manages model loading, VRAM allocation, and tensor processing |
-| **OpenClaw** | AI gateway and agent orchestration framework that manages multi-agent workflows and MCP integrations |
+| **AegisOS** | AI gateway and agent orchestration framework that manages multi-agent workflows and MCP integrations |
 | **OmniRoute** | AI routing dashboard with ELO arena scoring and call logging |
 | **RAG** | Retrieval-Augmented Generation — enriching LLM prompts with retrieved context from knowledge sources |
 | **SSE** | Server-Sent Events — the streaming protocol used for real-time token delivery |
@@ -1647,7 +1647,7 @@ Create a premium, publication-quality enterprise ecosystem poster on a dark grad
 |---|---|---|
 | 1 | All models listed in `ollama list` are available for inference | Verified via live `ollama list` command |
 | 2 | LiteLLM config.yaml at `$PlatformRoot\configs\litellm\config.yaml` is the active configuration | Verified via running process and health endpoint |
-| 3 | OpenClaw junction `%USERPROFILE%\.openclaw → $PlatformRoot` is active | Environment variables OPENCLAW_CONFIG_PATH and OPENCLAW_STATE_DIR point to the custom platform root |
+| 3 | AegisOS junction `%USERPROFILE%\.aegisos → $PlatformRoot` is active | Environment variables AEGISOS_CONFIG_PATH and AEGISOS_STATE_DIR point to the custom platform root |
 | 4 | Open-WebUI connects to Ollama directly (not via LiteLLM) | Standard Open-WebUI configuration pattern; port mapping confirms direct Ollama access |
 | 5 | Model sizes from `ollama list` reflect on-disk GGUF file sizes, not VRAM footprint | VRAM footprints from optimization guides are higher due to KV cache and activation memory |
 | 6 | All 3 PostgreSQL instances are for development/legacy purposes | No direct AI stack dependency discovered; running as auto-start services |
@@ -1660,7 +1660,7 @@ Create a premium, publication-quality enterprise ecosystem poster on a dark grad
 
 | # | Observation | Verification Method | Status |
 |---|---|---|---|
-| 1 | All 6 AI Windows services are running | `Get-Service`, `Get-Process` | ✅ Confirmed (Ollama, LiteLLM, Headroom, CodeGraph, OpenClaw, OmniRoute) |
+| 1 | All 6 AI Windows services are running | `Get-Service`, `Get-Process` | ✅ Confirmed (Ollama, LiteLLM, Headroom, CodeGraph, AegisOS, OmniRoute) |
 | 2 | Ollama serves 12 models | `ollama list` | ✅ Confirmed |
 | 3 | LiteLLM registers 14 model aliases | `/v1/models` API | ✅ Confirmed |
 | 4 | LiteLLM health shows 9 healthy / 5 unhealthy | `/health` API | ✅ Confirmed (embedding model errors, timeouts) |

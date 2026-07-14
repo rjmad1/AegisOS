@@ -1,7 +1,5 @@
-version: '3.8'
-
 networks:
-  openclaw-net:
+  aegisos-net:
     driver: bridge
 
 volumes:
@@ -15,51 +13,54 @@ volumes:
 services:
   # 1. Database Persistence
   postgres:
-    image: postgres:16-alpine
-    container_name: openclaw-postgres
+    image: postgres:16.4-alpine
+    container_name: aegisos-postgres
     restart: always
     environment:
-      POSTGRES_DB: openclaw
-      POSTGRES_USER: console_admin
-      POSTGRES_PASSWORD: DevConsolePassword9023!
+      POSTGRES_DB: aegisos
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - openclaw-net
+      - aegisos-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U console_admin -d openclaw"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d aegisos"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   # 2. Redis Caching & Queue
   redis:
-    image: redis:7-alpine
-    container_name: openclaw-redis
+    image: redis:7.4-alpine
+    container_name: aegisos-redis
     restart: always
-    command: redis-server --appendonly yes
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - openclaw-net
+      - aegisos-net
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "$${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   # 3. Object Storage
   minio:
-    image: minio/minio:latest
-    container_name: openclaw-minio
+    image: minio/minio:RELEASE.2024-07-04T14-25-45Z
+    container_name: aegisos-minio
     restart: always
     environment:
-      MINIO_ROOT_USER: console_admin
-      MINIO_ROOT_PASSWORD: DevConsolePassword9023!
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in .env}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -67,7 +68,7 @@ services:
     volumes:
       - minio_data:/data
     networks:
-      - openclaw-net
+      - aegisos-net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 10s
@@ -79,21 +80,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.ollama
-    container_name: openclaw-ollama
+    container_name: aegisos-ollama
     restart: always
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
     networks:
-      - openclaw-net
+      - aegisos-net
 
   # 5. AI Router Proxy
   litellm:
     build:
       context: .
       dockerfile: Dockerfile.litellm
-    container_name: openclaw-litellm
+    container_name: aegisos-litellm
     restart: always
     environment:
       - OLLAMA_API_BASE=http://ollama:11434
@@ -102,14 +103,14 @@ services:
     volumes:
       - ./configs/litellm:/app/configs
     networks:
-      - openclaw-net
+      - aegisos-net
     depends_on:
       - ollama
 
   # 6. OpenTelemetry Collector
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:latest
-    container_name: openclaw-otel-collector
+    image: otel/opentelemetry-collector-contrib:0.104.0
+    container_name: aegisos-otel-collector
     restart: always
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
@@ -118,12 +119,12 @@ services:
       - "4317:4317" # gRPC
       - "4318:4318" # HTTP
     networks:
-      - openclaw-net
+      - aegisos-net
 
   # 7. Prometheus Metrics
   prometheus:
-    image: prom/prometheus:latest
-    container_name: openclaw-prometheus
+    image: prom/prometheus:v2.53.1
+    container_name: aegisos-prometheus
     restart: always
     volumes:
       - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -131,40 +132,40 @@ services:
     ports:
       - "9090:9090"
     networks:
-      - openclaw-net
+      - aegisos-net
 
   # 8. Loki Logs
   loki:
-    image: grafana/loki:latest
-    container_name: openclaw-loki
+    image: grafana/loki:3.1.0
+    container_name: aegisos-loki
     restart: always
     ports:
       - "3100:3100"
     networks:
-      - openclaw-net
+      - aegisos-net
 
   # 9. Jaeger Traces
   jaeger:
-    image: jaegertracing/all-in-one:latest
-    container_name: openclaw-jaeger
+    image: jaegertracing/all-in-one:1.58
+    container_name: aegisos-jaeger
     restart: always
     ports:
       - "16686:16686" # UI
       - "4317"        # OTLP gRPC input
     networks:
-      - openclaw-net
+      - aegisos-net
 
   # 10. Grafana Dashboard
   grafana:
-    image: grafana/grafana:latest
-    container_name: openclaw-grafana
+    image: grafana/grafana:11.1.0
+    container_name: aegisos-grafana
     restart: always
     ports:
       - "3001:3000"
     volumes:
       - grafana_data:/var/lib/grafana
     networks:
-      - openclaw-net
+      - aegisos-net
     depends_on:
       - prometheus
       - loki
@@ -175,33 +176,33 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: openclaw-console
+    container_name: aegisos-console
     restart: always
     environment:
       - DATABASE_PROVIDER=postgres
-      - DATABASE_URL=postgresql://console_admin:DevConsolePassword9023!@postgres:5432/openclaw
-      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/aegisos
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
       - OBJECT_STORAGE_PROVIDER=minio
-      - AWS_S3_BUCKET=openclaw-artifacts
-      - AWS_ACCESS_KEY_ID=console_admin
-      - AWS_SECRET_ACCESS_KEY=DevConsolePassword9023!
+      - AWS_S3_BUCKET=aegisos-artifacts
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
       - MINIO_ENDPOINT=http://minio:9000
-      - SECRETS_PROVIDER=vault
-      - VAULT_ADDR=http://vault:8200
-      - VAULT_TOKEN=root
+      - SECRETS_PROVIDER=${SECRETS_PROVIDER:-local}
+      - VAULT_ADDR=${VAULT_ADDR:-}
+      - VAULT_TOKEN=${VAULT_TOKEN:-}
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OLLAMA_BASE_URL=http://ollama:11434
       - LITELLM_BASE_URL=http://litellm:4000
-      - GOOGLE_CLIENT_ID=google_oauth_client_id_dev_secure_890123
-      - GOOGLE_CLIENT_SECRET=google_oauth_client_secret_dev_secure_890123
-      - AUTH_SECRET=console_jwt_session_auth_secret_dev_secure_120938
-      - OPS_ADMIN_USERNAME=console_admin_dev
-      - OPS_ADMIN_PASSWORD=DevConsolePassword9023!
-      - OPS_JWT_SECRET=secrets_encryption_key_dev_secure_901283
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:?Set GOOGLE_CLIENT_ID in .env}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:?Set GOOGLE_CLIENT_SECRET in .env}
+      - AUTH_SECRET=${AUTH_SECRET:?Set AUTH_SECRET in .env}
+      - OPS_ADMIN_USERNAME=${OPS_ADMIN_USERNAME:?Set OPS_ADMIN_USERNAME in .env}
+      - OPS_ADMIN_PASSWORD=${OPS_ADMIN_PASSWORD:?Set OPS_ADMIN_PASSWORD in .env}
+      - OPS_JWT_SECRET=${OPS_JWT_SECRET:?Set OPS_JWT_SECRET in .env}
     ports:
       - "3000:3000"
     networks:
-      - openclaw-net
+      - aegisos-net
     depends_on:
       - postgres
       - redis
@@ -209,8 +210,8 @@ services:
 
   # 12. Reverse Proxy & Gateway
   nginx:
-    image: nginx:alpine
-    container_name: openclaw-nginx
+    image: nginx:1.27-alpine
+    container_name: aegisos-nginx
     restart: always
     ports:
       - "80:80"
@@ -218,6 +219,6 @@ services:
     volumes:
       - ./configs/nginx.conf:/etc/nginx/nginx.conf
     networks:
-      - openclaw-net
+      - aegisos-net
     depends_on:
       - console

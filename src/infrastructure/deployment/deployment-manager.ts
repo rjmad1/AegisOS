@@ -45,10 +45,10 @@ export class DeploymentManager {
       pid: 2488,
       dependencies: ["ollama"]
     });
-    this.services.set("openclaw", {
-      id: "openclaw",
-      name: "OpenClawService",
-      description: "OpenClaw Agent Gateway and MCP Host Server",
+    this.services.set("aegisos", {
+      id: "aegisos",
+      name: "AegisOSService",
+      description: "AegisOS Agent Gateway and MCP Host Server",
       status: "started",
       port: 18789,
       pid: 8840,

@@ -29,17 +29,25 @@ $patterns = @(
     "super-secret-random-hash-key-for-console-jwt-signing-2026",
     "fallback_secret_must_change_in_production_extremely_long",
     "AdminPassword123!",
+    "DevConsolePassword9023!",
     "google_client_id_here",
-    "google_client_secret_here"
+    "google_client_secret_here",
+    "google_oauth_client_id_dev_secure_890123",
+    "google_oauth_client_secret_dev_secure_890123",
+    "console_jwt_session_auth_secret_dev_secure_120938",
+    "secrets_encryption_key_dev_secure_901283"
 )
 
 # Search recursively for these patterns in source code and configurations
+# Exclude files that legitimately reference patterns for validation/detection purposes
 $filesToScan = Get-ChildItem -Path $rootDir -Recurse -File | Where-Object {
     $_.FullName -notmatch "node_modules" -and
     $_.FullName -notmatch "\.git" -and
     $_.FullName -notmatch "\.next" -and
     $_.FullName -notmatch "ScanSecrets\.ps1" -and
-    $_.FullName -notmatch "instrumentation\.ts" -and  # Exclude instrumentation which checks for the fallbacks
+    $_.FullName -notmatch "instrumentation\.ts" -and  # Startup validation checks
+    $_.FullName -notmatch "compliance-engine\.ts" -and  # Compliance audit checks
+    $_.FullName -notmatch "EvaluationPlatform\.ts" -and  # AI output safety checks
     $_.Extension -match "\.(ts|tsx|js|json|yml|yaml|env|bat|ps1)$"
 }
 

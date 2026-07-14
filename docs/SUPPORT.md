@@ -3,7 +3,7 @@
 For assistance with deploying, configuring, or operating the AI Workstation platform:
 
 ## Resources
-- Consult the **[Master Documentation Index](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/README.md)** for detailed manuals.
+- Consult the **[Master Documentation Index](file:///d:/1_Projects/AegisOS/docs/README.md)** for detailed manuals.
 - Verify system errors by tailing the logs folder under `$PlatformRoot\logs\`.
 - Run health checks via the validation suite: `.\automation\Validate.ps1`.
 

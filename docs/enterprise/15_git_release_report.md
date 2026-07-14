@@ -1,4 +1,4 @@
-# OpenClaw Enterprise Release Integration & Push Readiness Report
+# AegisOS Enterprise Release Integration & Push Readiness Report
 
 | Field | Value |
 |---|---|
@@ -12,7 +12,7 @@
 
 ## 1. Repository Cleanup Report
 The repository has been audited for untracked, cache, and temporary files:
-- **Exclusions Configured**: Updated [.gitignore](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/.gitignore) to exclude:
+- **Exclusions Configured**: Updated [.gitignore](file:///d:/1_Projects/AegisOS/.gitignore) to exclude:
   - `/release/` (Release metadata, CycloneDX SBOM, SHA256 checksums)
   - `/support_bundle_*/` (Diagnostics logs and environment states)
   - SQLite journal, shm, and WAL files (`*.db-journal`, `*.db-shm`, `*.db-wal`)
@@ -22,33 +22,33 @@ The repository has been audited for untracked, cache, and temporary files:
 ## 2. File Classification Report
 Staged and committed changes are organized into the following logical boundaries:
 - **Core Platform & Auth**:
-  - [EntraProvider.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/providers/EntraProvider.ts) — Microsoft Entra OIDC login provider.
-  - [LdapProvider.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/providers/LdapProvider.ts) — Credentials validation provider.
-  - [LdapLoginForm.tsx](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/login/LdapLoginForm.tsx) — Credentials inputs form component.
-  - [page.tsx](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/login/page.tsx) — Dynamic login selector.
-  - [route.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/api/auth/login/route.ts) — Auth login API handler.
-  - [session.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/session.service.ts) — Token rotation checking.
+  - [EntraProvider.ts](file:///d:/1_Projects/AegisOS/src/platform/auth/providers/EntraProvider.ts) — Microsoft Entra OIDC login provider.
+  - [LdapProvider.ts](file:///d:/1_Projects/AegisOS/src/platform/auth/providers/LdapProvider.ts) — Credentials validation provider.
+  - [LdapLoginForm.tsx](file:///d:/1_Projects/AegisOS/src/app/login/LdapLoginForm.tsx) — Credentials inputs form component.
+  - [page.tsx](file:///d:/1_Projects/AegisOS/src/app/login/page.tsx) — Dynamic login selector.
+  - [route.ts](file:///d:/1_Projects/AegisOS/src/app/api/auth/login/route.ts) — Auth login API handler.
+  - [session.service.ts](file:///d:/1_Projects/AegisOS/src/platform/auth/session.service.ts) — Token rotation checking.
 - **Infrastructure**:
-  - [object-storage.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/object-storage.ts) — Swappable object storage adapter.
-  - [provider-factory.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/factories/provider-factory.ts) — Factory register.
-  - [event-bus.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/events/event-bus.ts) — mTLS signature checks.
+  - [object-storage.ts](file:///d:/1_Projects/AegisOS/src/infrastructure/providers/object-storage.ts) — Swappable object storage adapter.
+  - [provider-factory.ts](file:///d:/1_Projects/AegisOS/src/infrastructure/factories/provider-factory.ts) — Factory register.
+  - [event-bus.ts](file:///d:/1_Projects/AegisOS/src/infrastructure/events/event-bus.ts) — mTLS signature checks.
 - **AI Runtime & Workflows**:
-  - [AIRuntimeKernel.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/AIRuntimeKernel.ts) — Circuit breaking, grounding, and budgets checking.
-  - [WorkflowRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/WorkflowRuntime.ts) — DB workflow persistence and saga checkpoints.
+  - [AIRuntimeKernel.ts](file:///d:/1_Projects/AegisOS/src/platform/ai-runtime/AIRuntimeKernel.ts) — Circuit breaking, grounding, and budgets checking.
+  - [WorkflowRuntime.ts](file:///d:/1_Projects/AegisOS/src/platform/ai-runtime/WorkflowRuntime.ts) — DB workflow persistence and saga checkpoints.
 - **Release Engineering & Installers**:
-  - [generate-release-assets.js](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/generate-release-assets.js) — Release bundler.
-  - [install-windows.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/install-windows.ps1) — Windows fleet installer.
-  - [install-linux.sh](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/install-linux.sh) — Linux daemon installer.
-  - [install-macos.sh](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/install-macos.sh) — macOS setup script.
-  - [Dockerfile.prod](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/Dockerfile.prod) & [docker-compose.prod.yml](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/docker-compose.prod.yml) — Hardened runner container composition.
-  - [upgrade-rollback.sh](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/upgrade-rollback.sh) — Database backups and migration rollback coordinator.
+  - [generate-release-assets.js](file:///d:/1_Projects/AegisOS/scripts/generate-release-assets.js) — Release bundler.
+  - [install-windows.ps1](file:///d:/1_Projects/AegisOS/installers/install-windows.ps1) — Windows fleet installer.
+  - [install-linux.sh](file:///d:/1_Projects/AegisOS/installers/install-linux.sh) — Linux daemon installer.
+  - [install-macos.sh](file:///d:/1_Projects/AegisOS/installers/install-macos.sh) — macOS setup script.
+  - [Dockerfile.prod](file:///d:/1_Projects/AegisOS/installers/Dockerfile.prod) & [docker-compose.prod.yml](file:///d:/1_Projects/AegisOS/installers/docker-compose.prod.yml) — Hardened runner container composition.
+  - [upgrade-rollback.sh](file:///d:/1_Projects/AegisOS/scripts/upgrade-rollback.sh) — Database backups and migration rollback coordinator.
 - **Diagnostics & Support**:
-  - [system-doctor.js](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/system-doctor.js) — Support bundle collector.
-  - [release-validation-suite.js](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/release-validation-suite.js) — Release certification gate.
+  - [system-doctor.js](file:///d:/1_Projects/AegisOS/scripts/system-doctor.js) — Support bundle collector.
+  - [release-validation-suite.js](file:///d:/1_Projects/AegisOS/scripts/release-validation-suite.js) — Release certification gate.
 - **Documentation**:
-  - [14_release_governance.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/14_release_governance.md) — SemVer and hotfixes policies.
-  - [GA_Readiness_Report.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/GA_Readiness_Report.md) — Remediation matrix.
-  - [GA_Certification_Certificate.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/GA_Certification_Certificate.md) — Official release certificate.
+  - [14_release_governance.md](file:///d:/1_Projects/AegisOS/docs/enterprise/14_release_governance.md) — SemVer and hotfixes policies.
+  - [GA_Readiness_Report.md](file:///d:/1_Projects/AegisOS/docs/enterprise/GA_Readiness_Report.md) — Remediation matrix.
+  - [GA_Certification_Certificate.md](file:///d:/1_Projects/AegisOS/docs/enterprise/GA_Certification_Certificate.md) — Official release certificate.
 
 ## 3. Security Review Report
 - **Secrets check**: Audited files for connection strings, private keys, API secrets, and tokens. None were committed; all values fall back to process environment variables (`process.env`).
@@ -65,9 +65,9 @@ Staged and committed changes are organized into the following logical boundaries
 
 ## 6. Conventional Commit Message
 ```
-feat(platform)!: release OpenClaw Enterprise AI Platform v1.0.0-RC1
+feat(platform)!: release AegisOS Enterprise AI Platform v1.0.0-RC1
 
-This release transitions the OpenClaw AI Console into a production-ready Enterprise GA Release Candidate. It addresses all 10 independent architecture audit findings and hardens the platform's security, reliability, and observability layers.
+This release transitions the AegisOS AI Console into a production-ready Enterprise GA Release Candidate. It addresses all 10 independent architecture audit findings and hardens the platform's security, reliability, and observability layers.
 
 Major capabilities:
 - Enterprise Auth: Microsoft Entra ID OIDC and LDAP credentials providers.

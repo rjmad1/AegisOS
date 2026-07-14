@@ -18,7 +18,7 @@ graph TD
     end
 
     subgraph Service Containers
-        OC_Cont[OpenClaw Gateway]
+        OC_Cont[AegisOS Gateway]
         LL_Cont[LiteLLM Proxy]
         HR_Cont[Headroom Proxy]
         DB_Cont[SQLite Metadata DB]
@@ -71,7 +71,7 @@ Context optimization occurs sequentially. Before prompts reach LiteLLM, they mus
 sequenceDiagram
     autonumber
     participant UI as Open-WebUI Client
-    participant OC as OpenClaw Agent Gateway
+    participant OC as AegisOS Agent Gateway
     participant PT as Ponytail Context Filter
     participant HR as Headroom Token Pruner
     participant LL as LiteLLM Routing Proxy
@@ -109,7 +109,7 @@ graph TB
     end
 
     subgraph UAWOS Core Runtime
-        OC[OpenClaw AI Gateway :18789]
+        OC[AegisOS AI Gateway :18789]
         HR[Headroom Compression Layer :4050]
         LL[LiteLLM Routing Proxy :4000]
         OL[Ollama Inference Engine :11434]
@@ -141,13 +141,13 @@ graph TB
 To maintain high architectural governance, components must communicate strictly through services. Direct integration between individual modules is prohibited:
 
 - **AutoResearch Output Mapping**:
-  `AutoResearch` -> `Knowledge Platform (Markdown Files)` -> `RAG MCP Server` -> `OpenClaw` -> `Developer Agent`.
+  `AutoResearch` -> `Knowledge Platform (Markdown Files)` -> `RAG MCP Server` -> `AegisOS` -> `Developer Agent`.
   *NOT*: `AutoResearch` -> `Developer Agent` (bypassing registries).
 
 - **Spec Kit Planning Mapping**:
-  `Spec Kit` -> `Planning Service (CLI API)` -> `Planner Agent` -> `OpenClaw` -> `Developer Agent`.
+  `Spec Kit` -> `Planning Service (CLI API)` -> `Planner Agent` -> `AegisOS` -> `Developer Agent`.
   *NOT*: `Spec Kit` -> `Developer Agent`.
 
 - **SkillOpt Prompt Mapping**:
-  `SkillOpt` -> `Prompt Registry` -> `OpenClaw Config` -> `Model call`.
+  `SkillOpt` -> `Prompt Registry` -> `AegisOS Config` -> `Model call`.
   *NOT*: `SkillOpt` -> `LiteLLM` (direct template modification).

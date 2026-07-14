@@ -245,8 +245,8 @@ export default function MarketplacePage() {
                       <span>{selectedItem.version}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">OpenClaw Requirement</span>
-                      <span>{selectedItem.dependencies.openclaw || ">=1.0.0"}</span>
+                      <span className="text-slate-500">AegisOS Requirement</span>
+                      <span>{selectedItem.dependencies.aegisos || ">=1.0.0"}</span>
                     </div>
                     <div className="flex flex-col gap-1.5 pt-1.5 border-t border-slate-800">
                       <span className="text-slate-500">Digital Signature (Sigstore/Cosign SHA256)</span>

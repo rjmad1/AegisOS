@@ -16,6 +16,7 @@ export async function register() {
       const fallbacks = [
         "super-secret-random-hash-key-for-console-jwt-signing-2026",
         "fallback_secret_must_change_in_production_extremely_long",
+        "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
         "a_very_long_secure_random_string_for_encrypting_sessions",
         "admin",
         "AdminPassword123!",

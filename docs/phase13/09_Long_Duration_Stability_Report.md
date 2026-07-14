@@ -1,4 +1,4 @@
-# Long Duration Stability Report — OpenClaw V1.0
+# Long Duration Stability Report — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-This report evaluates the long-duration stability and operational endurance of OpenClaw V1.0. We simulated continuous operation over 24-hour, 72-hour, and 7-day burn-in cycles to monitor resource leaks (memory, CPU, disk), database growth, and connection timeouts under realistic workloads.
+This report evaluates the long-duration stability and operational endurance of AegisOS V1.0. We simulated continuous operation over 24-hour, 72-hour, and 7-day burn-in cycles to monitor resource leaks (memory, CPU, disk), database growth, and connection timeouts under realistic workloads.
 
 **Overall Verdict: PASS WITH RECOMMENDATIONS**
 * **Workflow Engine**: Executed 150,000 steps over 7 days with 0 thread crashes.

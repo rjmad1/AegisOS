@@ -25,7 +25,7 @@ export class ServiceMeshLayer {
     const list: ServiceMeshRoute[] = [
       { serviceId: "ollama", canaryWeightPercent: 0, primaryWeightPercent: 100, mtlsStatus: "enabled", sidecarInjected: true },
       { serviceId: "litellm", canaryWeightPercent: 10, primaryWeightPercent: 90, mtlsStatus: "enabled", sidecarInjected: true },
-      { serviceId: "openclaw", canaryWeightPercent: 5, primaryWeightPercent: 95, mtlsStatus: "enabled", sidecarInjected: true },
+      { serviceId: "aegisos", canaryWeightPercent: 5, primaryWeightPercent: 95, mtlsStatus: "enabled", sidecarInjected: true },
       { serviceId: "database", canaryWeightPercent: 0, primaryWeightPercent: 100, mtlsStatus: "enabled", sidecarInjected: false } // direct socket access
     ];
 

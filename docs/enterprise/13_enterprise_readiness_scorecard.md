@@ -12,7 +12,7 @@
 
 ## 1. Enterprise Excellence Scorecard
 
-This scorecard evaluates the OpenClaw platform before and after the execution of the Enterprise Maturity Transformation:
+This scorecard evaluates the AegisOS platform before and after the execution of the Enterprise Maturity Transformation:
 
 | Architectural Domain | Maturity BEFORE | Maturity AFTER | Status | Justification for Maturity Score Elevation |
 |---|---|---|---|---|

@@ -1,4 +1,4 @@
-# Security Validation Report — OpenClaw V1.0
+# Security Validation Report — AegisOS V1.0
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-This report documents the security posture validation of OpenClaw V1.0. The audit includes dependency vulnerability scans, middleware analysis, prompt injection defense reviews, access control tests, and mapping against the OWASP Top 10 (2021) and ASVS (V4.0.3) frameworks.
+This report documents the security posture validation of AegisOS V1.0. The audit includes dependency vulnerability scans, middleware analysis, prompt injection defense reviews, access control tests, and mapping against the OWASP Top 10 (2021) and ASVS (V4.0.3) frameworks.
 
 **Overall Verdict: CONDITIONAL PASS**
 * **Strengths**: Robust session controls (sliding timeouts, HttpOnly secure cookies, DB-backed session invalidation), secure headers enforced at both proxy middleware and Caddy layers, and a dedicated safety firewall for prompt sanitization.

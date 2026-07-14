@@ -77,7 +77,7 @@ graph TD
 ### Phase 1 — Prompt & Context Optimization (VRAM Protection)
 - **Priority**: High
 - **Strategic Value**: Reduces latency and token costs immediately.
-- **Actions**: Bind the `Headroom Proxy` on port `:4050` and link `Ponytail` summarization filters into the OpenClaw execution path.
+- **Actions**: Bind the `Headroom Proxy` on port `:4050` and link `Ponytail` summarization filters into the AegisOS execution path.
 
 ### Phase 2 — Developer Context Expansion
 - **Priority**: High

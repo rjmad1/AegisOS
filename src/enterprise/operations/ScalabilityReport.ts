@@ -20,7 +20,7 @@ export class ScalabilityReport {
     const scaleData = scalabilityValidationPlatform.validateScalability(concurrency);
     const sections: string[] = [];
 
-    sections.push(`# OpenClaw Scalability Validation & Audit Report`);
+    sections.push(`# AegisOS Scalability Validation & Audit Report`);
     sections.push(`Generated: ${new Date().toISOString()}`);
     sections.push(`Validated Concurrency Threshold: **${concurrency} concurrent nodes**`);
     sections.push(`---`);

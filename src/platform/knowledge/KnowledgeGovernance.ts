@@ -60,7 +60,7 @@ export class KnowledgeGovernance {
     // Bootstrap initial records linked to standard nodes
     const records: GovernanceRecord[] = [
       {
-        entityId: "mem:project:openclaw",
+        entityId: "mem:project:aegisos",
         approvalStatus: "certified",
         stewardEmail: "steward-admin@enterprise.org",
         certificationLevel: "gold",

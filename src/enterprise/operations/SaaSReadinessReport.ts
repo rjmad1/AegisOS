@@ -24,7 +24,7 @@ export class SaaSReadinessReport {
 
     const sections: string[] = [];
 
-    sections.push(`# OpenClaw Commercial SaaS Readiness Report`);
+    sections.push(`# AegisOS Commercial SaaS Readiness Report`);
     sections.push(`Generated: ${new Date().toISOString()}`);
     sections.push(`Status: ${overview.systemStatus === 'healthy' ? 'READY FOR PRE-FLIGHT DEPLOYMENT' : 'DEGRADED STATUS'}`);
     sections.push(`---`);
@@ -56,7 +56,7 @@ export class SaaSReadinessReport {
     sections.push(``);
 
     sections.push(`## 4. Executive Summary`);
-    sections.push(`OpenClaw has successfully transitioned from a single-user local workstation into a multi-tenant enterprise-grade SaaS core.`);
+    sections.push(`AegisOS has successfully transitioned from a single-user local workstation into a multi-tenant enterprise-grade SaaS core.`);
     sections.push(`All 15 subsystems are integrated, type-safe, and ready for deployment under a PostgreSQL backed staging environment.`);
 
     return sections.join('\n');

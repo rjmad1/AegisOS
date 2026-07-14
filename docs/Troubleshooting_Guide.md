@@ -6,7 +6,7 @@ This guide provides structured diagnostic procedures and troubleshooting flowcha
 
 ## 1. Service Startup & SCM Diagnostics
 
-When one or more platform services (Ollama, LiteLLM, OpenClaw, OmniRoute) fail to start or halt unexpectedly, follow this diagnostic path:
+When one or more platform services (Ollama, LiteLLM, AegisOS, OmniRoute) fail to start or halt unexpectedly, follow this diagnostic path:
 
 ### Service Startup Failure Diagnostic Flow
 
@@ -27,7 +27,7 @@ flowchart TD
 
 ### Common Service Errors & Resolutions
 - **Port Conflict (Error: EADDRINUSE):**
-  - **Issue:** Another process is listening on the service's configured port (e.g. port `11434` for Ollama, `4000` for LiteLLM, or `18789` for OpenClaw).
+  - **Issue:** Another process is listening on the service's configured port (e.g. port `11434` for Ollama, `4000` for LiteLLM, or `18789` for AegisOS).
   - **Resolution:** Identify the conflicting process and terminate it:
     ```powershell
     # Find process ID using port 11434
@@ -80,7 +80,7 @@ Decryption errors occur when the secure configuration is corrupted or migrated t
 
 ```mermaid
 flowchart TD
-    Start[Service fails to decrypt credentials] --> CheckFile[Verify OpenClaw_secrets.enc exists]
+    Start[Service fails to decrypt credentials] --> CheckFile[Verify AegisOS_secrets.enc exists]
     CheckFile -->|Missing| RunBootstrap[Run: Bootstrap.ps1 to generate new keys]
     CheckFile -->|Present| VerifyHost{Physical machine changed?}
     
@@ -94,7 +94,7 @@ flowchart TD
 ### Steps to Reset Credentials
 If the secrets payload is corrupted:
 1.  Navigate to the secrets directory: `$PlatformRoot\secrets\`
-2.  Delete the file `OpenClaw_secrets.enc`.
+2.  Delete the file `AegisOS_secrets.enc`.
 3.  Open an elevated PowerShell session and execute `.\Bootstrap.ps1` to re-enter and securely encrypt your credentials.
 
 ---

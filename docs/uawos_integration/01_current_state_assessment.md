@@ -6,11 +6,11 @@ The existing AI Operating System (UAWOS) is deployed as a local-first, privacy-p
 
 ```mermaid
 graph TD
-    Client[Open-WebUI Client / Antigravity IDE] -->|HTTP REST / WebSocket| OpenClaw[OpenClaw AI Gateway :18789]
-    OpenClaw -->|Prompt Proxy| LiteLLM[LiteLLM Routing Proxy :4000]
+    Client[Open-WebUI Client / Antigravity IDE] -->|HTTP REST / WebSocket| AegisOS[AegisOS AI Gateway :18789]
+    AegisOS -->|Prompt Proxy| LiteLLM[LiteLLM Routing Proxy :4000]
     LiteLLM -->|Least-Busy Balance| Ollama[Ollama Inference Engine :11434]
     Ollama -->|CUDA Kernels| GPU[NVIDIA RTX 5080 GPU 16GB GDDR7]
-    OpenClaw <───> MCP[7 Local MCP Context Servers]
+    AegisOS <───> MCP[7 Local MCP Context Servers]
     
     subgraph Context Layer [MCP Context Servers]
         MCP --> FS[filesystem]
@@ -24,7 +24,7 @@ graph TD
 ```
 
 ### Network Boundaries and Access Control
-1. **Loopback Binding (`127.0.0.1`)**: OpenClaw, LiteLLM, and OmniRoute gateways bind exclusively to localhost. This prevents unauthorized local LAN ingress and keeps the platform secure by default.
+1. **Loopback Binding (`127.0.0.1`)**: AegisOS, LiteLLM, and OmniRoute gateways bind exclusively to localhost. This prevents unauthorized local LAN ingress and keeps the platform secure by default.
 2. **Local Area Exposure (`0.0.0.0`)**: The Ollama inference engine binds to all interfaces to allow local auxiliary machines to offload/share GPU inference passes.
 3. **Tailscale VPN Integration**: Tailscale Mesh VPN is integrated to enable secure remote logins, multi-node synchronization, and remote administration views.
 
@@ -39,7 +39,7 @@ The workstation operates using several reusable components, adapters, and system
 |---|---|---|---|---|
 | **Ollama** | `C:\Program Files\Ollama\ollama.exe serve` | 11434 | Running (SCM) | Local model execution host. Runs GGUF format weights. |
 | **LiteLLMService** | `C:\ProgramData\AI\bin\litellm.exe` | 4000 | Running (SCM) | Model routing proxy. Handles fallbacks, retries, and API translation. |
-| **OpenClawService** | `openclaw/dist/index.js` | 18789 | Running (SCM) | Agent gateway, orchestrator, and Model Context Protocol (MCP) host. |
+| **AegisOSService** | `aegisos/dist/index.js` | 18789 | Running (SCM) | Agent gateway, orchestrator, and Model Context Protocol (MCP) host. |
 | **OmniRouteService** | `omniroute/server/index.js` | 20128 | Running (SCM) | Performance metrics console dashboard. |
 | **Open-WebUI Container** | `docker-compose.yml` (Image: ghcr.io/open-webui/open-webui:main) | 8090 | Running (Docker) | Primary client-facing web application interface. |
 
@@ -62,7 +62,7 @@ The workstation operates using several reusable components, adapters, and system
 ### C. Context & MCP Platform Integrations
 | MCP Server ID | Target Path / Scope | Purpose & Access Privileges |
 |---|---|---|
-| **filesystem** | `D:\OpenClaw\Source` | Read and write access to local files. |
+| **filesystem** | `D:\AegisOS\Source` | Read and write access to local files. |
 | **git** | System Paths | Inspect local git repositories, commits, and diffs. |
 | **github** | Remote API | GitHub integration using a DPAPI encrypted `GITHUB_TOKEN`. |
 | **sqlite** | Platform Metadata | Queries and modifies internal platform database structures. |
@@ -77,7 +77,7 @@ The workstation operates using several reusable components, adapters, and system
 ### Existing Infrastructure Framework
 - **Central Configuration**: Managed via `central-config.ts` loading from `console_config.json`. Supports environment variable overrides and dynamically creates the artifacts root path (`./artifacts_storage`).
 - **Artifact Registry**: Implemented in `artifact-registry.ts`. Periodically syncs filesystem files, auto-extracts tags, maps extensions to MIME types, supports metadata attachments (favorites, custom relationships), and serves query interfaces.
-- **Provider Adapters**: Exposes canonical interfaces (e.g., `IModelProviderAdapter`, `IArtifactProviderAdapter`, `IWorkflowProviderAdapter`) to decouple application endpoints from vendor engines. Concrete providers include `OllamaProvider`, `LiteLLMProvider`, `OpenClawProvider`, `LocalArtifactStorageProvider`, `DockerProvider`, and `WindowsProvider`.
+- **Provider Adapters**: Exposes canonical interfaces (e.g., `IModelProviderAdapter`, `IArtifactProviderAdapter`, `IWorkflowProviderAdapter`) to decouple application endpoints from vendor engines. Concrete providers include `OllamaProvider`, `LiteLLMProvider`, `AegisOSProvider`, `LocalArtifactStorageProvider`, `DockerProvider`, and `WindowsProvider`.
 
 ---
 
@@ -94,6 +94,6 @@ The workstation operates using several reusable components, adapters, and system
 | **Metadata Governance** | ⚠️ **Basic** | Flat JSON metadata database (`.artifacts_registry.json`) for local files. |
 | **Prompt Optimization** | ❌ **Absent** | No automated optimizer for agent prompts or system prompt iterations. |
 | **Semantic Search** | ⚠️ **Partially Configured** | RAG provider stubs exist; folder paths are currently empty. |
-| **Workflow Engine** | ⚠️ **Mock Only** | The `OpenClawProvider` acts as a skeleton without a workflow engine. |
+| **Workflow Engine** | ⚠️ **Mock Only** | The `AegisOSProvider` acts as a skeleton without a workflow engine. |
 | **Event Bus** | ⚠️ **Mock Only** | Represented in handbook but absent from active TypeScript runtime code. |
 | **Model Registry** | ⚠️ **Configuration Only** | Managed via a static local file `ModelManifest.json`. |

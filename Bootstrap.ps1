@@ -96,7 +96,7 @@ if ($githubToken -or $tgToken) {
     if ($null -ne $encryptedPayload) {
         $secretsDir = Join-Path $platformRoot "secrets"
         if (-not (Test-Path $secretsDir)) { New-Item -ItemType Directory -Path $secretsDir -Force | Out-Null }
-        $encryptedPayload | Out-File (Join-Path $secretsDir "OpenClaw_secrets.enc") -Force
+        $encryptedPayload | Out-File (Join-Path $secretsDir "AegisOS_secrets.enc") -Force
         Log-PlatformSuccess "Credentials secured successfully using machine-scope DPAPI."
     }
 }

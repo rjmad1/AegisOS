@@ -6,9 +6,9 @@
 set -e
 
 ACTION=$1
-BACKUP_DIR=${2:-"/tmp/openclaw-backups"}
+BACKUP_DIR=${2:-"/tmp/aegisos-backups"}
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_ARCHIVE="${BACKUP_DIR}/openclaw_backup_${TIMESTAMP}.tar.gz"
+BACKUP_ARCHIVE="${BACKUP_DIR}/aegisos_backup_${TIMESTAMP}.tar.gz"
 
 # Load environment configs
 DATABASE_PROVIDER=${DATABASE_PROVIDER:-"sqlite"}

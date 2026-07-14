@@ -27,14 +27,14 @@ export class PerformanceReadinessReport {
     const maturityScore = Math.min(100, Math.round(75 + (resolvedCount / debts.length) * 25));
 
     const sections: string[] = [];
-    sections.push(`# OpenClaw Enterprise Performance Readiness Report`);
+    sections.push(`# AegisOS Enterprise Performance Readiness Report`);
     sections.push(`Generated: ${new Date().toISOString()}`);
     sections.push(`Target Tenant: ${tenantId}`);
     sections.push(`Performance Maturity Score: **${maturityScore}/100**`);
     sections.push(`---`);
 
     sections.push(`## 1. Executive Summary`);
-    sections.push(`The OpenClaw platform has undergone rigorous performance audits across all core subsystems, including database query tuning, GPU scheduling optimizations, semantic caching layer deployments, and concurrent workload tests. Latency and throughput benchmarks match standard metrics of cloud providers like Google Cloud and Temporal Cloud.`);
+    sections.push(`The AegisOS platform has undergone rigorous performance audits across all core subsystems, including database query tuning, GPU scheduling optimizations, semantic caching layer deployments, and concurrent workload tests. Latency and throughput benchmarks match standard metrics of cloud providers like Google Cloud and Temporal Cloud.`);
 
     sections.push(`## 2. Latency & Throughput Benchmark Summary`);
     sections.push(`| Category | Metric | Value | Comparison |`);
