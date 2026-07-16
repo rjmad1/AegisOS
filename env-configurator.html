@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AegisOS — Environment Variable Portal</title>
+  <meta name="description" content="Manage environment variables and security settings for the AegisOS console.">
+  <!-- Modern premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset & CSS Custom Properties */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-color: #080c16;
+      --card-bg: rgba(17, 24, 39, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-focus: rgba(59, 130, 246, 0.4);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      --accent: #6366f1;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.2);
+      --error: #ef4444;
+      --error-glow: rgba(239, 68, 68, 0.2);
+      --font-sans: 'Inter', sans-serif;
+      --font-title: 'Outfit', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --header-height: 70px;
+      --sidebar-width: 280px;
+      --transition-speed: 0.2s;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      /* Subtle mesh gradient background */
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Header */
+    header {
+      height: var(--header-height);
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(8, 12, 22, 0.85);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-family: var(--font-title);
+      font-weight: 700;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .logo-title {
+      font-family: var(--font-title);
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #ffffff, #d1d5db);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .server-status {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .server-url-input-group {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .server-url-input-group span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-right: 0.5rem;
+    }
+
+    .server-url-input {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      width: 180px;
+      outline: none;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .status-badge.connected {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: currentColor;
+    }
+
+    /* Container & Layout */
+    .app-container {
+      margin-top: var(--header-height);
+      display: flex;
+      flex: 1;
+      position: relative;
+    }
+
+    /* Sidebar Navigation */
+    aside {
+      width: var(--sidebar-width);
+      border-right: 1px solid var(--card-border);
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      left: 0;
+      background-color: rgba(8, 12, 22, 0.5);
+      backdrop-filter: blur(8px);
+      padding: 1.5rem;
+      overflow-y: auto;
+      z-index: 90;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.6rem 1rem 0.6rem 2.2rem;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      outline: none;
+      transition: all var(--transition-speed);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .nav-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      padding-left: 0.5rem;
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .nav-item button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all var(--transition-speed);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+
+    .nav-item button:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active button {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary);
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    /* Main Content Area */
+    main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 2rem;
+      max-width: 1100px;
+      margin-bottom: 80px; /* Space for sticky save bar */
+    }
+
+    .intro-card {
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, rgba(20, 26, 42, 0.6), rgba(13, 17, 28, 0.6));
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .intro-card h1 {
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .intro-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Config Sections */
+    .config-section {
+      margin-bottom: 2.5rem;
+      scroll-margin-top: calc(var(--header-height) + 20px);
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color var(--transition-speed);
+    }
+
+    .section-card:focus-within {
+      border-color: var(--card-border-focus);
+    }
+
+    .section-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: linear-gradient(to bottom, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    .section-content {
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .section-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      .section-content .full-width {
+        grid-column: span 2;
+      }
+    }
+
+    /* Form Inputs */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      position: relative;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+
+    /* Premium Information Icon and Tooltip */
+    .info-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-icon {
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      font-size: 9px;
+      font-weight: 700;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      font-style: normal;
+      font-family: sans-serif;
+      transition: all var(--transition-speed);
+    }
+
+    .info-icon:hover {
+      color: var(--primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      box-shadow: 0 0 8px var(--primary-glow);
+    }
+
+    /* Elegant CSS Tooltip */
+    .tooltip-content {
+      visibility: hidden;
+      opacity: 0;
+      width: 260px;
+      background-color: #121824;
+      color: var(--text-primary);
+      text-align: left;
+      border: 1px solid var(--card-border-focus);
+      border-radius: 8px;
+      padding: 0.75rem;
+      position: absolute;
+      z-index: 200;
+      bottom: 140%;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      font-size: 0.75rem;
+      line-height: 1.4;
+      font-family: var(--font-sans);
+      font-weight: 400;
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+      pointer-events: none;
+      white-space: normal;
+    }
+
+    /* Tooltip Arrow */
+    .tooltip-content::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #121824 transparent transparent transparent;
+    }
+
+    .info-container:hover .tooltip-content {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Text Inputs */
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-control {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      outline: none;
+      transition: all var(--transition-speed);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 12px var(--primary-glow);
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Monospaced inputs for URLs, secret keys, etc */
+    .form-control.mono {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* Password Input Visibility Toggle */
+    .password-toggle {
+      position: absolute;
+      right: 0.75rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0.2rem;
+      outline: none;
+    }
+
+    .password-toggle:hover {
+      color: var(--text-primary);
+    }
+
+    .form-control.password-field {
+      padding-right: 2.5rem;
+    }
+
+    /* Helper text */
+    .placeholder-badge {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-top: 0.2rem;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Floating Save Bar */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: var(--sidebar-width);
+      right: 0;
+      height: 76px;
+      background-color: rgba(8, 12, 22, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 95;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.4);
+      transition: left var(--transition-speed);
+    }
+
+    .save-info {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .save-info .indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1.5rem;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+      transition: all var(--transition-speed);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Notification Center */
+    .toast-container {
+      position: fixed;
+      top: calc(var(--header-height) + 16px);
+      right: 16px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.85rem 1.25rem;
+      color: var(--text-primary);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateX(120%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 0.85rem;
+      font-weight: 500;
+      min-width: 280px;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .toast.error {
+      border-left: 4px solid var(--error);
+    }
+
+    .toast-icon {
+      font-size: 1.1rem;
+    }
+
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error .toast-icon { color: var(--error); }
+
+    /* Skeleton Loading Placeholder */
+    .loading-placeholder {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .skeleton-block {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
+      background-size: 200% 100%;
+      animation: loading-shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+
+    @keyframes loading-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-header {
+      height: 48px;
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .skeleton-card {
+      height: 250px;
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      aside {
+        display: none; /* Hide sidebar on small screens */
+      }
+      main {
+        margin-left: 0;
+        padding: 1rem;
+      }
+      .save-bar {
+        left: 0;
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <div class="logo-badge">AegisOS</div>
+      <div class="logo-title">Environment Manager</div>
+    </div>
+    
+    <div class="server-status">
+      <!-- Target Backend Endpoint Configurator -->
+      <div class="server-url-input-group">
+        <span>API:</span>
+        <input type="text" id="serverUrl" class="server-url-input" value="" placeholder="Detecting...">
+      </div>
+      
+      <!-- Live Status Badge -->
+      <div id="connectionStatus" class="status-badge">
+        <span class="status-dot"></span>
+        <span class="status-text">Checking API...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- App Body Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search variables...">
+      </div>
+      
+      <div class="nav-title">Categories</div>
+      <nav>
+        <ul class="nav-menu" id="categoryMenu">
+          <li class="nav-item active"><button>Loading...</button></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+      
+      <!-- Portal Overview Info Card -->
+      <div class="intro-card">
+        <h1>Local Environment Console</h1>
+        <p>
+          Configure active environment properties, system endpoints, database connection keys, and API tokens. 
+          Hover over the information icons <strong>( i )</strong> for descriptions. 
+          Saved updates are written directly to your local file and take effect on next application load.
+        </p>
+      </div>
+
+      <!-- Config Form -->
+      <form id="configForm">
+        <div id="sectionsContainer">
+          <div class="loading-placeholder">
+            <div class="skeleton-block skeleton-header"></div>
+            <div class="skeleton-block skeleton-card"></div>
+          </div>
+        </div>
+      </form>
+
+    </main>
+
+  </div>
+
+  <!-- Sticky Floating Save Bar -->
+  <div class="save-bar">
+    <div class="save-info">
+      <span class="indicator"></span>
+      <span id="changeCounter">No modifications detected</span>
+    </div>
+    <button type="button" id="saveBtn" class="btn" disabled>
+      <span class="spinner" id="saveSpinner"></span>
+      <span>Save Configuration</span>
+    </button>
+  </div>
+
+  <!-- Toast Notification Center -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script>
+    // Configuration Variables
+    let activeData = null;
+    let initialValues = {};
+    let activeServerUrl = '';
+
+    // Elements
+    const serverUrlInput = document.getElementById('serverUrl');
+    const connectionStatus = document.getElementById('connectionStatus');
+    const sectionsContainer = document.getElementById('sectionsContainer');
+    const categoryMenu = document.getElementById('categoryMenu');
+    const searchInput = document.getElementById('searchInput');
+    const changeCounter = document.getElementById('changeCounter');
+    const saveBtn = document.getElementById('saveBtn');
+    const saveSpinner = document.getElementById('saveSpinner');
+    const toastContainer = document.getElementById('toastContainer');
+
+    // Auto-detect default server URL
+    function detectServerUrl() {
+      const currentOrigin = window.location.origin;
+      if (currentOrigin && currentOrigin.startsWith('http') && !currentOrigin.includes('file://')) {
+        activeServerUrl = currentOrigin;
+      } else {
+        activeServerUrl = 'http://localhost:3000';
+      }
+      serverUrlInput.value = activeServerUrl;
+    }
+
+    // Show Notification Toast
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      const icon = document.createElement('span');
+      icon.className = 'toast-icon';
+      icon.innerHTML = type === 'success' ? '✓' : '⚠';
+      
+      const text = document.createElement('span');
+      text.innerText = message;
+      
+      toast.appendChild(icon);
+      toast.appendChild(text);
+      toastContainer.appendChild(toast);
+      
+      setTimeout(() => toast.classList.add('show'), 50);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Connect and verify API endpoint health
+    async function checkApiConnection() {
+      const targetUrl = serverUrlInput.value.trim().replace(/\/$/, "");
+      connectionStatus.className = 'status-badge';
+      connectionStatus.querySelector('.status-text').innerText = 'Testing connection...';
+      
+      try {
+        const res = await fetch(`${targetUrl}/api/v1/env-config`, { 
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (res.ok) {
+          connectionStatus.className = 'status-badge connected';
+          connectionStatus.querySelector('.status-text').innerText = 'Connected';
+          activeServerUrl = targetUrl;
+          return true;
+        }
+      } catch (err) {
+        console.error("API test failed:", err);
+      }
+      
+      connectionStatus.className = 'status-badge';
+      connectionStatus.querySelector('.status-text').innerText = 'Offline';
+      return false;
+    }
+
+    // Fetch and Load Configuration Schema
+    async function loadConfig() {
+      const isConnected = await checkApiConnection();
+      if (!isConnected) {
+        sectionsContainer.innerHTML = `
+          <div style="padding: 2.5rem; text-align: center; border: 1px dashed var(--error); border-radius: 12px; background: rgba(239, 68, 68, 0.05);">
+            <h3 style="color: var(--error); font-family: var(--font-title); font-size: 1.25rem; margin-bottom: 0.5rem;">API Server Connection Refused</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">
+              Could not fetch environment schema from <code style="font-family: var(--font-mono); color: var(--text-primary);">${serverUrlInput.value}/api/v1/env-config</code>.
+              Ensure the dev server is active by running <code style="font-family: var(--font-mono); color: var(--text-primary);">npm run dev</code>.
+            </p>
+            <button onclick="loadConfig()" class="btn">Retry Connection</button>
+          </div>
+        `;
+        return;
+      }
+
+      sectionsContainer.innerHTML = `
+        <div class="loading-placeholder">
+          <div class="skeleton-block skeleton-header"></div>
+          <div class="skeleton-block skeleton-card"></div>
+        </div>
+      `;
+
+      try {
+        const res = await fetch(`${activeServerUrl}/api/v1/env-config`);
+        if (!res.ok) throw new Error("Failed to retrieve schema");
+        const data = await res.json();
+        
+        activeData = data;
+        initialValues = {};
+        
+        data.sections.forEach(sec => {
+          sec.variables.forEach(v => {
+            initialValues[v.key] = v.currentValue;
+          });
+        });
+
+        renderInterface(data);
+        trackChanges();
+      } catch (err) {
+        showToast("Error loading environment schema: " + err.message, "error");
+        sectionsContainer.innerHTML = `
+          <div style="padding: 2.5rem; text-align: center; border: 1px dashed var(--error); border-radius: 12px;">
+            <p style="color: var(--error);">Error parsing schema: ${err.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function isSecretField(key) {
+      const lowercaseKey = key.toLowerCase();
+      return (
+        lowercaseKey.includes('secret') || 
+        lowercaseKey.includes('password') || 
+        lowercaseKey.includes('pass') || 
+        lowercaseKey.includes('token') || 
+        lowercaseKey.includes('key')
+      );
+    }
+
+    function renderInterface(data) {
+      sectionsContainer.innerHTML = '';
+      categoryMenu.innerHTML = '';
+      
+      data.sections.forEach((section, secIdx) => {
+        const sectionId = `section_${secIdx}`;
+        
+        const li = document.createElement('li');
+        li.className = `nav-item ${secIdx === 0 ? 'active' : ''}`;
+        
+        const navBtn = document.createElement('button');
+        navBtn.innerText = section.name;
+        navBtn.type = 'button';
+        navBtn.onclick = () => {
+          document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+          li.classList.add('active');
+          document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        };
+        li.appendChild(navBtn);
+        categoryMenu.appendChild(li);
+
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'config-section';
+        sectionDiv.id = sectionId;
+
+        const card = document.createElement('div');
+        card.className = 'section-card';
+
+        const cardHeader = document.createElement('div');
+        cardHeader.className = 'section-header';
+        
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'section-title';
+        titleSpan.innerText = section.name;
+        cardHeader.appendChild(titleSpan);
+        card.appendChild(cardHeader);
+
+        const cardContent = document.createElement('div');
+        cardContent.className = 'section-content';
+
+        section.variables.forEach(variable => {
+          const formGroup = document.createElement('div');
+          formGroup.className = 'form-group';
+          
+          if (variable.key.length > 25 || variable.key === 'DATABASE_URL' || variable.key.includes('CONNECTION_STRING')) {
+            formGroup.className += ' full-width';
+          }
+
+          const labelRow = document.createElement('div');
+          labelRow.className = 'label-row';
+
+          const label = document.createElement('label');
+          label.setAttribute('for', variable.key);
+          label.innerText = variable.key;
+          labelRow.appendChild(label);
+
+          if (variable.description) {
+            const infoContainer = document.createElement('div');
+            infoContainer.className = 'info-container';
+
+            const infoIcon = document.createElement('i');
+            infoIcon.className = 'info-icon';
+            infoIcon.innerText = 'i';
+
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip-content';
+            tooltip.innerText = variable.description;
+
+            infoContainer.appendChild(infoIcon);
+            infoContainer.appendChild(tooltip);
+            labelRow.appendChild(infoContainer);
+          }
+
+          formGroup.appendChild(labelRow);
+
+          const inputWrapper = document.createElement('div');
+          inputWrapper.className = 'input-wrapper';
+
+          const input = document.createElement('input');
+          input.id = variable.key;
+          input.name = variable.key;
+          input.value = variable.currentValue;
+          input.className = 'form-control mono';
+          
+          const isSecret = isSecretField(variable.key);
+          if (isSecret) {
+            input.type = 'password';
+            input.className += ' password-field';
+            
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'password-toggle';
+            toggle.innerText = '👁';
+            toggle.tabIndex = -1;
+            toggle.onclick = () => {
+              if (input.type === 'password') {
+                input.type = 'text';
+                toggle.innerText = '🔒';
+              } else {
+                input.type = 'password';
+                toggle.innerText = '👁';
+              }
+            };
+            inputWrapper.appendChild(input);
+            inputWrapper.appendChild(toggle);
+          } else {
+            input.type = 'text';
+            inputWrapper.appendChild(input);
+          }
+
+          formGroup.appendChild(inputWrapper);
+
+          if (variable.defaultValue && variable.defaultValue !== variable.currentValue) {
+            const badge = document.createElement('span');
+            badge.className = 'placeholder-badge';
+            badge.innerText = `Default: ${variable.defaultValue}`;
+            formGroup.appendChild(badge);
+          }
+
+          cardContent.appendChild(formGroup);
+        });
+
+        card.appendChild(cardContent);
+        sectionDiv.appendChild(card);
+        sectionsContainer.appendChild(sectionDiv);
+      });
+    }
+
+    function filterVariables(query) {
+      const q = query.toLowerCase().trim();
+      const formGroups = document.querySelectorAll('.form-group');
+      const sections = document.querySelectorAll('.config-section');
+      
+      sections.forEach(section => {
+        let hasVisibleFields = false;
+        const fields = section.querySelectorAll('.form-group');
+        
+        fields.forEach(field => {
+          const key = field.querySelector('label').innerText.toLowerCase();
+          const matches = key.includes(q);
+          field.style.display = matches ? 'flex' : 'none';
+          if (matches) hasVisibleFields = true;
+        });
+
+        section.style.display = hasVisibleFields ? 'block' : 'none';
+      });
+
+      const activeSection = Array.from(sections).find(s => s.style.display !== 'none');
+      if (activeSection) {
+        const secIdIdx = activeSection.id.split('_')[1];
+        document.querySelectorAll('.nav-item').forEach((item, idx) => {
+          if (idx == secIdIdx) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+      }
+    }
+
+    function trackChanges() {
+      const inputs = document.querySelectorAll('.form-control');
+      let changeCount = 0;
+      
+      inputs.forEach(input => {
+        const key = input.name;
+        if (initialValues[key] !== undefined && initialValues[key] !== input.value) {
+          changeCount++;
+          input.style.borderColor = 'var(--accent)';
+        } else {
+          input.style.borderColor = '';
+        }
+      });
+
+      if (changeCount > 0) {
+        changeCounter.innerText = `${changeCount} setting${changeCount > 1 ? 's' : ''} modified`;
+        changeCounter.style.color = 'var(--accent)';
+        saveBtn.removeAttribute('disabled');
+      } else {
+        changeCounter.innerText = `No modifications detected`;
+        changeCounter.style.color = '';
+        saveBtn.setAttribute('disabled', 'true');
+      }
+    }
+
+    async function saveConfig() {
+      const inputs = document.querySelectorAll('.form-control');
+      const variables = {};
+      
+      inputs.forEach(input => {
+        variables[input.name] = input.value;
+      });
+
+      saveSpinner.style.display = 'inline-block';
+      saveBtn.setAttribute('disabled', 'true');
+
+      try {
+        const res = await fetch(`${activeServerUrl}/api/v1/env-config`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ variables })
+        });
+
+        const result = await res.json();
+        
+        if (res.ok && result.success) {
+          showToast("Environment updated successfully! Reload console server to apply.", "success");
+          initialValues = { ...variables };
+          trackChanges();
+        } else {
+          throw new Error(result.error || "Save operation failed");
+        }
+      } catch (err) {
+        showToast("Failed to save changes: " + err.message, "error");
+        saveBtn.removeAttribute('disabled');
+      } finally {
+        saveSpinner.style.display = 'none';
+      }
+    }
+
+    serverUrlInput.addEventListener('change', async () => {
+      await loadConfig();
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      filterVariables(e.target.value);
+    });
+
+    sectionsContainer.addEventListener('input', () => {
+      trackChanges();
+    });
+
+    saveBtn.addEventListener('click', saveConfig);
+
+    detectServerUrl();
+    loadConfig();
+  </script>
+</body>
+</html>

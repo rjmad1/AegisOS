@@ -25,6 +25,15 @@ export class FitnessChecker {
 
   // ponytail: static scanner checking import borders using standard regex
   public runChecks(): FitnessReport {
+    // Static filesystem scanning is server-only; return clean report in browser
+    if (typeof window !== 'undefined') {
+      return {
+        timestamp: new Date().toISOString(),
+        violationsFound: 0,
+        results: [],
+      };
+    }
+
     const results: FitnessReport["results"] = [];
     let violations = 0;
 

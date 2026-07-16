@@ -4,6 +4,7 @@ import { CapabilityReport } from "../discovery/types";
 import * as fs from "fs";
 import * as path from "path";
 import * as net from "net";
+import { PortRegistry } from "@/platform/ports/PortRegistry";
 
 export class AegisOSRuntimeProvider implements IRuntimeProviderAdapter {
   id = "aegisos-runtime-provider";
@@ -59,14 +60,15 @@ export class AegisOSRuntimeProvider implements IRuntimeProviderAdapter {
     const lastCheckedAt = new Date().toISOString();
     const start = Date.now();
 
-    const isPortActive = await this.checkPort(18789);
+    const aegisosPort = PortRegistry.getHostPort("aegisos") || 18789;
+    const isPortActive = await this.checkPort(aegisosPort);
     const isConfigExist = fs.existsSync(this.configPath);
     const isStateExist = fs.existsSync(this.stateDir);
     const dbPath = path.join(this.stateDir, "Metadata/state/aegisos.sqlite");
     const isDbExist = fs.existsSync(dbPath);
 
     const checks = [
-      { name: "loopback-listener", status: isPortActive ? ("pass" as const) : ("fail" as const), message: isPortActive ? "Port 18789 active" : "Port 18789 inactive" },
+      { name: "loopback-listener", status: isPortActive ? ("pass" as const) : ("fail" as const), message: isPortActive ? `Port ${aegisosPort} active` : `Port ${aegisosPort} inactive` },
       { name: "config-file", status: isConfigExist ? ("pass" as const) : ("fail" as const), message: isConfigExist ? "Config file found" : "Config file missing" },
       { name: "state-directory", status: isStateExist ? ("pass" as const) : ("fail" as const), message: isStateExist ? "State directory found" : "State directory missing" },
       { name: "sqlite-database", status: isDbExist ? ("pass" as const) : ("fail" as const), message: isDbExist ? "Metadata database found" : "Metadata database missing" }
@@ -129,11 +131,12 @@ export class AegisOSRuntimeProvider implements IRuntimeProviderAdapter {
   }
 
   async getRuntimeStatus(): Promise<any> {
-    const isPortActive = await this.checkPort(18789);
+    const aegisosPort = PortRegistry.getHostPort("aegisos") || 18789;
+    const isPortActive = await this.checkPort(aegisosPort);
     return {
       online: isPortActive,
       pid: isPortActive ? 8840 : undefined, // aegisos service standard PID from deployment manager
-      port: 18789,
+      port: aegisosPort,
       uptimeSeconds: isPortActive ? 362400 : 0
     };
   }

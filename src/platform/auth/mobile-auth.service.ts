@@ -5,11 +5,17 @@ import crypto from "crypto";
 import { SignJWT, jwtVerify } from "jose";
 import prisma from "../../infrastructure/db/prisma";
 
-const authSecret = process.env.AUTH_SECRET;
-if (!authSecret) {
-  throw new Error("FATAL: AUTH_SECRET environment variable is missing!");
+let cachedJwtKey: Uint8Array | null = null;
+
+function getJwtKey(): Uint8Array {
+  if (cachedJwtKey) return cachedJwtKey;
+  const authSecret = process.env.AUTH_SECRET;
+  if (!authSecret) {
+    throw new Error("FATAL: AUTH_SECRET environment variable is missing!");
+  }
+  cachedJwtKey = new TextEncoder().encode(authSecret);
+  return cachedJwtKey;
 }
-const jwtKey = new TextEncoder().encode(authSecret);
 
 export interface MobilePairRequest {
   pairingToken?: string;
@@ -367,7 +373,7 @@ export class MobileAuthService {
       .setIssuedAt()
       .setJti(jti)
       .setExpirationTime(`${jwtExpiresInMinutes}m`)
-      .sign(jwtKey);
+      .sign(getJwtKey());
 
     // Save session to SQLite
     await prisma.mobileSession.create({

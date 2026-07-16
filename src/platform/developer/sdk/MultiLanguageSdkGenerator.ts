@@ -7,11 +7,16 @@ export class MultiLanguageSdkGenerator {
   private outputDir: string;
 
   constructor() {
+    if (typeof window !== 'undefined') {
+      this.outputDir = '';
+      return;
+    }
     this.outputDir = path.resolve(process.cwd(), 'public', 'sdks');
     this.ensureOutputDir();
   }
 
   private ensureOutputDir() {
+    if (typeof window !== 'undefined') return;
     if (!fs.existsSync(this.outputDir)) {
       fs.mkdirSync(this.outputDir, { recursive: true });
     }

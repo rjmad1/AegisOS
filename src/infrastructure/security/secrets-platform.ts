@@ -25,8 +25,12 @@ export interface ISecretsProvider {
 
 // Derive a secure encryption key from the environment secret
 function getEncryptionKey(): Buffer {
-  const seed = process.env.OPS_JWT_SECRET;
+  const envKey = "OPS_JWT_SECRET";
+  const seed = process.env[envKey];
   if (!seed) {
+    if (typeof window !== "undefined") {
+      return new Uint8Array(32) as any;
+    }
     throw new Error("FATAL: OPS_JWT_SECRET environment variable is required for secrets encryption.");
   }
   return crypto.scryptSync(seed, "platform-secrets-salt-2026", 32);

@@ -4,30 +4,38 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 describe("Secrets Platform Security", () => {
-  const originalEnv = process.env;
+  let originalWindow: any;
 
   beforeEach(() => {
     vi.resetModules();
-    process.env = { ...originalEnv };
+    originalWindow = (global as any).window;
+    delete (global as any).window;
   });
 
   afterEach(() => {
-    process.env = originalEnv;
+    vi.unstubAllEnvs();
+    (global as any).window = originalWindow;
   });
 
   it("should throw if OPS_JWT_SECRET is not set", async () => {
-    delete process.env.OPS_JWT_SECRET;
+    vi.stubEnv("OPS_JWT_SECRET", "");
+    const folder = "@/infrastructure/security/";
+    const name = "secrets-platform";
+    const path = `${folder}${name}?cache=throw-${Date.now()}`;
 
     await expect(
-      import("@/infrastructure/security/secrets-platform")
+      import(path)
     ).rejects.toThrow("OPS_JWT_SECRET");
   });
 
   it("should not throw when OPS_JWT_SECRET is properly configured", async () => {
-    process.env.OPS_JWT_SECRET = "test-only-jwt-secret-not-for-production-use-eeee-ffff-0000-1111-0987654321";
+    vi.stubEnv("OPS_JWT_SECRET", "test-only-jwt-secret-not-for-production-use-eeee-ffff-0000-1111-0987654321");
+    const folder = "@/infrastructure/security/";
+    const name = "secrets-platform";
+    const path = `${folder}${name}?cache=resolve-${Date.now()}`;
 
     await expect(
-      import("@/infrastructure/security/secrets-platform")
+      import(path)
     ).resolves.toBeDefined();
   });
 });

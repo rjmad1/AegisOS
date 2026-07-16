@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       // Auto-create a Viewer user for authenticated LDAP users if not in registry
       const newUser: AuthorizedUser = {
         id: profile.id,
-        googleSubjectId: '',
+        googleSubjectId: 'ldap_' + profile.id,
         email: profile.email,
         displayName: profile.name,
         role: Role.Viewer,

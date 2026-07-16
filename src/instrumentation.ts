@@ -5,6 +5,9 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
     console.log("[Instrumentation] Starting server-side Platform Kernel boot sequence...");
     try {
+      // 0. Enforce authoritative port registry validation
+      const { PortValidator } = await import("@/platform/ports/PortValidator");
+      PortValidator.validate();
       // 1. Enforce secure credentials and fail boot on insecure keys or defaults
       const authSecret = process.env.AUTH_SECRET;
       const opsJwtSecret = process.env.OPS_JWT_SECRET;

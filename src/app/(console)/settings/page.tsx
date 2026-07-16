@@ -25,9 +25,9 @@ export default function SettingsPage() {
   const methods = useForm<SettingsSchemaType>({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
-      ollamaUrl: "http://127.0.0.1:11434",
-      litellmUrl: "http://127.0.0.1:4000",
-      aegisosUrl: "http://127.0.0.1:18789",
+      ollamaUrl: process.env.NEXT_PUBLIC_OLLAMA_URL || "http://127.0.0.1:11434",
+      litellmUrl: process.env.NEXT_PUBLIC_LITELLM_URL || "http://127.0.0.1:4000",
+      aegisosUrl: process.env.NEXT_PUBLIC_AEGISOS_URL || "http://127.0.0.1:18789",
       refreshInterval: 5,
     },
   });

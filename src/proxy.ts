@@ -1,25 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { jwtVerify } from "jose";
 import { telemetryTracker } from "@/infrastructure/observability/telemetry";
 import { metricsPlatform } from "@/infrastructure/observability/metrics-platform";
 import redisPlatform from "@/infrastructure/providers/redis-platform";
 
-const authSecret = process.env.AUTH_SECRET;
-
-// Blocklist of known-insecure default secrets that must never be used
-const INSECURE_SECRETS = new Set([
-  "super-secret-random-hash-key-for-console-jwt-signing-2026",
-  "fallback_secret_must_change_in_production_extremely_long",
-  "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
-  "",
-]);
-
-if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
-  throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
-}
-
-const key = new TextEncoder().encode(authSecret);
+// Note: AUTH_SECRET check is handled by downstream services (e.g. adminAuth/session.service) at runtime.
 
 const RATE_LIMIT_MAX = parseInt(process.env.OPS_RATE_LIMIT_MAX || "150", 10);
 const RATE_LIMIT_WINDOW = parseInt(process.env.OPS_RATE_LIMIT_WINDOW_MS || "60000", 10);
@@ -157,6 +142,7 @@ async function executeProxySecurityAndRouting(request: NextRequest): Promise<Nex
   const isAuthRoute =
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/v1/auth") ||
+    pathname.startsWith("/api/v1/events") ||
     pathname === "/live" ||
     pathname === "/ready" ||
     pathname === "/health" ||
@@ -219,7 +205,8 @@ async function executeProxySecurityAndRouting(request: NextRequest): Promise<Nex
 
   // 4. Zero Trust Intrusion & Authorization checks
   if (!isAuthRoute) {
-    const token = request.cookies.get("ops_auth_token")?.value || 
+    const token = request.cookies.get("auth_session")?.value ||
+                  request.cookies.get("ops_auth_token")?.value || 
                   request.headers.get("Authorization")?.split(" ")[1];
     
     if (!token) {
@@ -265,6 +252,7 @@ async function executeProxySecurityAndRouting(request: NextRequest): Promise<Nex
       }
       const response = NextResponse.redirect(new URL("/login", request.url));
       response.cookies.delete("ops_auth_token");
+      response.cookies.delete("auth_session");
       return response;
     }
   }

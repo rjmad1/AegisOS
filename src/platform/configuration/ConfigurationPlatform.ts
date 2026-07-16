@@ -56,6 +56,11 @@ export class ConfigurationPlatform {
     const defaults = ConfigSchema.parse({});
     let fileConfig: Record<string, any> = {};
 
+    if (typeof window !== 'undefined') {
+      this.currentConfig = defaults;
+      return;
+    }
+
     // 1. Load from file if exists
     if (fs.existsSync(this.fileConfigPath)) {
       try {

@@ -14,7 +14,9 @@ import type {
   RoutingPolicy, InferenceStatistics, Capability, ModelStatus,
 } from "@/types/ai-runtime";
 
-const DEFAULT_LITELLM_URL = "http://127.0.0.1:4000";
+import { PortRegistry } from "@/platform/ports/PortRegistry";
+
+const DEFAULT_LITELLM_URL = PortRegistry.getServiceUrl("litellm") || "http://127.0.0.1:4000";
 
 export class LiteLLMAIRuntimeProvider implements IAIRuntimeProviderAdapter {
   id = "litellm-ai-runtime";

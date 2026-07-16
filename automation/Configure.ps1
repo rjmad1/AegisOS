@@ -34,6 +34,19 @@ if (-not (Test-PlatformElevation)) { Exit 1 }
 
 $PlatformRoot = Get-PlatformRoot $PlatformRoot
 
+# Load authoritative port configurations
+$registryPath = Join-Path $PSScriptRoot "..\configs\ports.json"
+if (Test-Path $registryPath) {
+    $portsJson = Get-Content $registryPath -Raw | ConvertFrom-Json
+    $ollamaPort = if ($env:HOST_PORT_OLLAMA) { $env:HOST_PORT_OLLAMA } else { $portsJson.ollama.default_host_port }
+    $litellmPort = if ($env:HOST_PORT_LITELLM) { $env:HOST_PORT_LITELLM } else { $portsJson.litellm.default_host_port }
+    $consolePort = if ($env:HOST_PORT_CONSOLE) { $env:HOST_PORT_CONSOLE } else { $portsJson.console.default_host_port }
+} else {
+    $ollamaPort = 11434
+    $litellmPort = 4000
+    $consolePort = 3000
+}
+
 # Ensure target folders exist
 $configDir = Join-Path $PlatformRoot "configs"
 $scriptsDir = Join-Path $PlatformRoot "scripts"
@@ -86,7 +99,7 @@ if ($DryRun) {
 } else {
     try {
         $ruleNames = @("Block_Ollama_LAN", "Block_LiteLLM_LAN", "Block_Console_LAN")
-        $ports = @("11434", "4000", "3000")
+        $ports = @($ollamaPort, $litellmPort, $consolePort)
         
         for ($i = 0; $i -lt $ruleNames.Length; $i++) {
             $name = $ruleNames[$i]
@@ -157,7 +170,7 @@ Patch-NSSMProperty "AegisOSService" "AppStderr" (Join-Path $logsDir "aegisos\Aeg
 
 # LiteLLM
 Patch-NSSMProperty "LiteLLMService" "AppDirectory" (Join-Path $configDir "litellm")
-Patch-NSSMProperty "LiteLLMService" "AppParameters" "--config $(Join-Path $configDir 'litellm\config.yaml') --port 4000 --host 127.0.0.1"
+Patch-NSSMProperty "LiteLLMService" "AppParameters" "--config $(Join-Path $configDir 'litellm\config.yaml') --port $litellmPort --host 127.0.0.1"
 Patch-NSSMProperty "LiteLLMService" "AppStdout" (Join-Path $logsDir "litellm\LiteLLMService.log")
 Patch-NSSMProperty "LiteLLMService" "AppStderr" (Join-Path $logsDir "litellm\LiteLLMService_error.log")
 

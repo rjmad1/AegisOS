@@ -93,12 +93,32 @@ Append-ReportSection "2. Windows Services (SCM)" $servicesResult
 
 # 3. Ports Bindings Check
 Log-PlatformInfo "Checking active port allocations..."
+$registryPath = Join-Path $PlatformRoot "configs\ports.json"
+if (-not (Test-Path $registryPath)) {
+    $registryPath = Join-Path $PSScriptRoot "..\configs\ports.json"
+}
+
+if (Test-Path $registryPath) {
+    $portsJson = Get-Content $registryPath -Raw | ConvertFrom-Json
+    $ollamaPort = if ($env:HOST_PORT_OLLAMA) { [int]$env:HOST_PORT_OLLAMA } else { [int]$portsJson.ollama.default_host_port }
+    $litellmPort = if ($env:HOST_PORT_LITELLM) { [int]$env:HOST_PORT_LITELLM } else { [int]$portsJson.litellm.default_host_port }
+    $aegisosPort = if ($env:HOST_PORT_AEGISOS) { [int]$env:HOST_PORT_AEGISOS } else { [int]$portsJson.aegisos.default_host_port }
+    $omniroutePort = if ($env:HOST_PORT_OMNIROUTE) { [int]$env:HOST_PORT_OMNIROUTE } else { [int]$portsJson.omniroute.default_host_port }
+    $openwebuiPort = if ($env:HOST_PORT_OPENWEBUI) { [int]$env:HOST_PORT_OPENWEBUI } else { 8090 }
+} else {
+    $ollamaPort = 11434
+    $litellmPort = 4000
+    $aegisosPort = 18789
+    $omniroutePort = 20128
+    $openwebuiPort = 8090
+}
+
 $portsToCheck = @(
-    @{ Name = "Ollama API"; Port = 11434; Host = "127.0.0.1"; Required = $true }
-    @{ Name = "LiteLLM Proxy"; Port = 4000; Host = "127.0.0.1"; Required = $true }
-    @{ Name = "AegisOS Gateway"; Port = 18789; Host = "127.0.0.1"; Required = $true }
-    @{ Name = "OmniRoute Dashboard"; Port = 20128; Host = "127.0.0.1"; Required = $true }
-    @{ Name = "Open-WebUI Portal"; Port = 8090; Host = "127.0.0.1"; Required = $false }
+    @{ Name = "Ollama API"; Port = $ollamaPort; Host = "127.0.0.1"; Required = $true }
+    @{ Name = "LiteLLM Proxy"; Port = $litellmPort; Host = "127.0.0.1"; Required = $true }
+    @{ Name = "AegisOS Gateway"; Port = $aegisosPort; Host = "127.0.0.1"; Required = $true }
+    @{ Name = "OmniRoute Dashboard"; Port = $omniroutePort; Host = "127.0.0.1"; Required = $true }
+    @{ Name = "Open-WebUI Portal"; Port = $openwebuiPort; Host = "127.0.0.1"; Required = $false }
 )
 $portsResult = "| Endpoint | Port | Binding Status | Required |`n|---|---|---|---|`n"
 foreach ($p in $portsToCheck) {

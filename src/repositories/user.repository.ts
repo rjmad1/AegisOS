@@ -70,6 +70,27 @@ export class UserRepository {
     };
   }
 
+  async getUserById(id: string): Promise<AuthorizedUser | undefined> {
+    const record = await prisma.user.findUnique({
+      where: { id },
+    });
+    if (!record || record.deletedAt) return undefined;
+    return {
+      id: record.id,
+      googleSubjectId: record.googleSubjectId,
+      email: record.email,
+      displayName: record.displayName,
+      role: record.role as Role,
+      status: record.status as "Enabled" | "Disabled",
+      createdDate: record.createdDate,
+      lastLogin: record.lastLogin,
+      createdBy: record.createdBy,
+      permissions: JSON.parse(record.permissions),
+      allowedNetworks: JSON.parse(record.allowedNetworks),
+      notes: record.notes,
+    };
+  }
+
   async saveUser(user: AuthorizedUser): Promise<void> {
     await prisma.user.upsert({
       where: { id: user.id },

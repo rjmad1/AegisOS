@@ -14,9 +14,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    const userId = body.id || crypto.randomUUID();
     const user = {
-      id: body.id || crypto.randomUUID(),
-      googleSubjectId: body.googleSubjectId || '',
+      id: userId,
+      googleSubjectId: body.googleSubjectId || `manual_${userId}`,
       email: body.email,
       displayName: body.displayName || body.email.split('@')[0],
       role: body.role as Role,

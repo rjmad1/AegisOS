@@ -33,9 +33,10 @@ export async function POST(request: Request) {
     }
 
     const existing = await userRepository.getUserByEmail(body.email);
+    const userId = body.id || (existing ? existing.id : crypto.randomUUID());
     const user = {
-      id: body.id || (existing ? existing.id : crypto.randomUUID()),
-      googleSubjectId: body.googleSubjectId || (existing ? existing.googleSubjectId : ''),
+      id: userId,
+      googleSubjectId: body.googleSubjectId || (existing ? existing.googleSubjectId : `manual_${userId}`),
       email: body.email,
       displayName: body.displayName || body.email.split('@')[0],
       role: body.role,

@@ -24,6 +24,14 @@ export class SelfHealer {
 
   // running diagnostics and heals
   public async executeDiagnosticsAndHeal(): Promise<DiagnosticsReport> {
+    if (typeof window !== "undefined") {
+      return {
+        timestamp: new Date().toISOString(),
+        healthy: true,
+        issues: [],
+        remediationsApplied: []
+      };
+    }
     const issues: string[] = [];
     const remediationsApplied: string[] = [];
 

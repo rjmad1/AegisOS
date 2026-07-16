@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
@@ -12,6 +12,9 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1086.0",
+    "@azure/storage-blob": "^12.33.0",
+    "@google-cloud/storage": "^7.21.0",
     "@hookform/resolvers": "^5.4.0",
     "@monaco-editor/react": "^4.7.0",
     "@prisma/client": "^6.19.3",

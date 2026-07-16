@@ -21,7 +21,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
-      - "5432:5432"
+      - "${HOST_PORT_POSTGRES:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -42,7 +42,7 @@ services:
       --appendonly yes
       --requirepass ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
     ports:
-      - "6379:6379"
+      - "${HOST_PORT_REDIS:-6379}:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -62,8 +62,8 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in .env}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${HOST_PORT_MINIO:-9000}:9000"
+      - "${HOST_PORT_MINIO_CONSOLE:-9001}:9001"
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
@@ -83,7 +83,7 @@ services:
     container_name: aegisos-ollama
     restart: always
     ports:
-      - "11434:11434"
+      - "${HOST_PORT_OLLAMA:-11434}:11434"
     volumes:
       - ollama_data:/root/.ollama
     networks:
@@ -99,7 +99,7 @@ services:
     environment:
       - OLLAMA_API_BASE=http://ollama:11434
     ports:
-      - "4000:4000"
+      - "${HOST_PORT_LITELLM:-4000}:4000"
     volumes:
       - ./configs/litellm:/app/configs
     networks:
@@ -116,8 +116,8 @@ services:
     volumes:
       - ./configs/otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
-      - "4317:4317" # gRPC
-      - "4318:4318" # HTTP
+      - "${HOST_PORT_OTEL_GRPC:-4317}:4317" # gRPC
+      - "${HOST_PORT_OTEL_HTTP:-4318}:4318" # HTTP
     networks:
       - aegisos-net
 
@@ -130,7 +130,7 @@ services:
       - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     ports:
-      - "9090:9090"
+      - "${HOST_PORT_PROMETHEUS:-9090}:9090"
     networks:
       - aegisos-net
 
@@ -140,7 +140,7 @@ services:
     container_name: aegisos-loki
     restart: always
     ports:
-      - "3100:3100"
+      - "${HOST_PORT_LOKI:-3100}:3100"
     networks:
       - aegisos-net
 
@@ -150,8 +150,8 @@ services:
     container_name: aegisos-jaeger
     restart: always
     ports:
-      - "16686:16686" # UI
-      - "4317"        # OTLP gRPC input
+      - "${HOST_PORT_JAEGER:-16686}:16686" # UI
+      - "${HOST_PORT_OTEL_GRPC:-4317}"        # OTLP gRPC input
     networks:
       - aegisos-net
 
@@ -161,7 +161,7 @@ services:
     container_name: aegisos-grafana
     restart: always
     ports:
-      - "3001:3000"
+      - "${HOST_PORT_GRAFANA:-3002}:3000"
     volumes:
       - grafana_data:/var/lib/grafana
     networks:
@@ -200,7 +200,7 @@ services:
       - OPS_ADMIN_PASSWORD=${OPS_ADMIN_PASSWORD:?Set OPS_ADMIN_PASSWORD in .env}
       - OPS_JWT_SECRET=${OPS_JWT_SECRET:?Set OPS_JWT_SECRET in .env}
     ports:
-      - "3000:3000"
+      - "${HOST_PORT_CONSOLE:-3000}:3000"
     networks:
       - aegisos-net
     depends_on:
@@ -214,8 +214,8 @@ services:
     container_name: aegisos-nginx
     restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - "${HOST_PORT_NGINX_HTTP:-80}:80"
+      - "${HOST_PORT_NGINX_HTTPS:-443}:443"
     volumes:
       - ./configs/nginx.conf:/etc/nginx/nginx.conf
     networks:

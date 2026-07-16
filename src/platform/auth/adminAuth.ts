@@ -9,11 +9,17 @@ const INSECURE_SECRETS = new Set([
   "",
 ]);
 
-const authSecret = process.env.AUTH_SECRET;
-if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
-  throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
+let cachedKey: Uint8Array | null = null;
+
+function getKey(): Uint8Array {
+  if (cachedKey) return cachedKey;
+  const authSecret = process.env.AUTH_SECRET;
+  if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
+    throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
+  }
+  cachedKey = new TextEncoder().encode(authSecret);
+  return cachedKey;
 }
-const key = new TextEncoder().encode(authSecret);
 
 export interface AdminUserPayload {
   username: string;
@@ -26,7 +32,7 @@ export async function getAdminUser(): Promise<AdminUserPayload | null> {
     const token = cookieStore.get('ops_auth_token')?.value;
     if (!token) return null;
 
-    const { payload } = await jwtVerify(token, key, { algorithms: ['HS256'] });
+    const { payload } = await jwtVerify(token, getKey(), { algorithms: ['HS256'] });
     const role = payload.role as string;
     const username = payload.username as string || 'admin';
 

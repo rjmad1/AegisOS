@@ -7,7 +7,7 @@
 }
 
 # HTTPS service endpoint on port 8443 (abstracts transport layer, supports LAN, WAN, Custom Domain)
-localhost:8443 {
+localhost:{$HOST_PORT_CADDY:8443} {
 	# Enforce TLS 1.3 only
 	tls {
 		protocols tls1.3
@@ -20,7 +20,7 @@ localhost:8443 {
 	}
 
 	# Reverse proxy to the local Next.js Operations Console (internal port 3000)
-	reverse_proxy localhost:3000 {
+	reverse_proxy localhost:{$HOST_PORT_CONSOLE:3000} {
 		# Preserve client details and support Server-Sent Events (SSE) & WebSockets
 		header_up Host {host}
 		header_up X-Real-IP {remote_host}

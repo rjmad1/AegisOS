@@ -5,6 +5,7 @@
 import prisma from '../../infrastructure/db/prisma';
 import { deploymentManager } from '../../infrastructure/deployment/deployment-manager';
 import { platformDiagnostics } from '../diagnostics/PlatformDiagnostics';
+import { PortRegistry } from '@/platform/ports/PortRegistry';
 
 export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
 
@@ -49,6 +50,22 @@ export class PlatformHealth {
    */
   public async getHealthReport(): Promise<EnterpriseHealthReport> {
     const timestamp = new Date().toISOString();
+
+    // Health checks require Node.js APIs (Prisma, net); return mock in browser
+    if (typeof window !== 'undefined') {
+      return {
+        status: 'healthy',
+        uptimeSeconds: 0,
+        timestamp,
+        components: {
+          database: { status: 'healthy', latencyMs: 0, message: 'Client-side', timestamp },
+          ollamaApi: { status: 'healthy', latencyMs: 0, message: 'Client-side', timestamp },
+          liteLlmProxy: { status: 'healthy', latencyMs: 0, message: 'Client-side', timestamp },
+          platformKernel: { status: 'healthy', latencyMs: 0, message: 'Client-side', timestamp },
+        },
+        metrics: { memoryUsagePercent: 0, errorRate: 0 },
+      };
+    }
     
     // 1. Check SQLite database health
     const startDb = Date.now();
@@ -62,15 +79,15 @@ export class PlatformHealth {
     }
     const dbLatency = Date.now() - startDb;
 
-    // 2. Check Ollama API (Port 11434)
+    // 2. Check Ollama API
     const startOllama = Date.now();
-    const ollamaActive = await deploymentManager.checkPort(11434);
+    const ollamaActive = await deploymentManager.checkPort(PortRegistry.getHostPort("ollama"));
     const ollamaStatus: HealthStatus = ollamaActive ? 'healthy' : 'degraded';
     const ollamaLatency = Date.now() - startOllama;
 
-    // 3. Check LiteLLM Router Proxy (Port 4000)
+    // 3. Check LiteLLM Router Proxy
     const startLiteLlm = Date.now();
-    const liteLlmActive = await deploymentManager.checkPort(4000);
+    const liteLlmActive = await deploymentManager.checkPort(PortRegistry.getHostPort("litellm"));
     const liteLlmStatus: HealthStatus = liteLlmActive ? 'healthy' : 'degraded';
     const liteLlmLatency = Date.now() - startLiteLlm;
 

@@ -15,7 +15,9 @@ import type {
   QuantizationFormat, ModelStatus,
 } from "@/types/ai-runtime";
 
-const DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434";
+import { PortRegistry } from "@/platform/ports/PortRegistry";
+
+const DEFAULT_OLLAMA_URL = PortRegistry.getServiceUrl("ollama") || "http://127.0.0.1:11434";
 
 export class OllamaAIRuntimeProvider implements IAIRuntimeProviderAdapter {
   id = "ollama-ai-runtime";

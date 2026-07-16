@@ -1,3 +1,5 @@
+import { PortRegistry } from "@/platform/ports/PortRegistry";
+
 export interface ConsoleConfig {
   ollamaBaseUrl: string;
   liteLlmBaseUrl: string;
@@ -8,9 +10,9 @@ export interface ConsoleConfig {
 }
 
 export const DEFAULT_CONFIG: ConsoleConfig = {
-  ollamaBaseUrl: process.env.NEXT_PUBLIC_OLLAMA_URL || "http://127.0.0.1:11434",
-  liteLlmBaseUrl: process.env.NEXT_PUBLIC_LITELLM_URL || "http://127.0.0.1:4000",
-  aegisOSBaseUrl: process.env.NEXT_PUBLIC_AEGISOS_URL || "http://127.0.0.1:18789",
+  ollamaBaseUrl: process.env.NEXT_PUBLIC_OLLAMA_URL || PortRegistry.getServiceUrl("ollama") || "http://127.0.0.1:11434",
+  liteLlmBaseUrl: process.env.NEXT_PUBLIC_LITELLM_URL || PortRegistry.getServiceUrl("litellm") || "http://127.0.0.1:4000",
+  aegisOSBaseUrl: process.env.NEXT_PUBLIC_AEGISOS_URL || PortRegistry.getServiceUrl("aegisos") || "http://127.0.0.1:18789",
   defaultRefreshInterval: 5000, // 5 seconds
   apiTimeout: 30000, // 30 seconds
   enableTelemetry: false, // Strict local environment

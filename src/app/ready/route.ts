@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
 import * as fs from "fs";
 import * as path from "path";
+import { PortRegistry } from "@/platform/ports/PortRegistry";
 
 export async function GET() {
   const dbDir = process.env.OPS_DATABASES_DIR || path.resolve(process.cwd(), "databases");
@@ -21,9 +22,9 @@ export async function GET() {
   }
 
   // 2. Verify downstream dependencies (ports check)
-  const isOllamaRunning = await deploymentManager.checkPort(11434);
-  const isLiteLLMRunning = await deploymentManager.checkPort(4000);
-  const isAegisOSRunning = await deploymentManager.checkPort(18789);
+  const isOllamaRunning = await deploymentManager.checkPort(PortRegistry.getHostPort("ollama"));
+  const isLiteLLMRunning = await deploymentManager.checkPort(PortRegistry.getHostPort("litellm"));
+  const isAegisOSRunning = await deploymentManager.checkPort(PortRegistry.getHostPort("aegisos"));
 
   const ready = fsWritable && isOllamaRunning && isLiteLLMRunning && isAegisOSRunning;
 

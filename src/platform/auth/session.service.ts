@@ -6,21 +6,25 @@ import { cookies } from "next/headers";
 import prisma from "../../infrastructure/db/prisma";
 
 const SESSION_COOKIE_NAME = "auth_session";
-const authSecret = process.env.AUTH_SECRET;
+let cachedKey: Uint8Array | null = null;
 
-// Blocklist of known-insecure default secrets that must never be used
-const INSECURE_SECRETS = new Set([
-  "super-secret-random-hash-key-for-console-jwt-signing-2026",
-  "fallback_secret_must_change_in_production_extremely_long",
-  "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
-  "",
-]);
+function getKey(): Uint8Array {
+  if (cachedKey) return cachedKey;
+  const authSecret = process.env.AUTH_SECRET;
 
-if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
-  throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
+  const INSECURE_SECRETS = new Set([
+    "super-secret-random-hash-key-for-console-jwt-signing-2026",
+    "fallback_secret_must_change_in_production_extremely_long",
+    "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
+    "",
+  ]);
+
+  if (!authSecret || INSECURE_SECRETS.has(authSecret)) {
+    throw new Error("FATAL: AUTH_SECRET environment variable is missing or insecure!");
+  }
+  cachedKey = new TextEncoder().encode(authSecret);
+  return cachedKey;
 }
-
-const key = new TextEncoder().encode(authSecret);
 
 export interface SessionData {
   id: string;
@@ -35,7 +39,7 @@ export interface SessionData {
 export class SessionService {
   public async createSession(userId: string, role: string, organizationId?: string, tenantId?: string): Promise<void> {
     const sessionId = crypto.randomUUID();
-    const now = Date.now();
+    const now = Math.floor(Date.now() / 1000);
 
     // Persist session to SQLite
     await prisma.session.create({
@@ -54,7 +58,7 @@ export class SessionService {
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime("8h")
-      .sign(key);
+      .sign(getKey());
 
     const cookieStore = await cookies();
     cookieStore.set(SESSION_COOKIE_NAME, token, {
@@ -72,7 +76,7 @@ export class SessionService {
     if (!token) return null;
 
     try {
-      const { payload } = await jwtVerify(token, key, { algorithms: ["HS256"] });
+      const { payload } = await jwtVerify(token, getKey(), { algorithms: ["HS256"] });
       const sessionId = payload.sessionId as string;
 
       // Validate session against database record
@@ -82,17 +86,17 @@ export class SessionService {
 
       if (!session) return null;
 
-      const now = Date.now();
+      const now = Math.floor(Date.now() / 1000);
 
       // Check idle timeout (2 hours)
-      const IDLE_TIMEOUT = 2 * 60 * 60 * 1000;
+      const IDLE_TIMEOUT = 2 * 60 * 60; // 2 hours in seconds
       if (now - session.lastActive > IDLE_TIMEOUT) {
         await this.invalidateSession(sessionId);
         return null;
       }
 
       // Check absolute timeout (12 hours)
-      const ABSOLUTE_TIMEOUT = 12 * 60 * 60 * 1000;
+      const ABSOLUTE_TIMEOUT = 12 * 60 * 60; // 12 hours in seconds
       if (now - session.createdAt > ABSOLUTE_TIMEOUT) {
         await this.invalidateSession(sessionId);
         return null;
@@ -100,7 +104,7 @@ export class SessionService {
 
       // Token Rotation checking: if OIDC oauth token exists, verify rotation
       const tokenAge = now - session.lastActive;
-      const ROTATION_THRESHOLD = 55 * 60 * 1000; // 55 minutes
+      const ROTATION_THRESHOLD = 55 * 60; // 55 minutes in seconds
       if (tokenAge > ROTATION_THRESHOLD && process.env.AUTH_PROVIDER !== 'ldap') {
         console.log(`[SessionService] Token age exceeded threshold. Triggering OIDC token rotation check.`);
         const rotated = await this.rotateOidcTokens(session.userId);
@@ -121,8 +125,8 @@ export class SessionService {
         id: session.id,
         userId: session.userId,
         role: session.role,
-        createdAt: session.createdAt,
-        lastActive: now,
+        createdAt: session.createdAt * 1000,
+        lastActive: now * 1000,
         organizationId: session.organizationId || undefined,
         tenantId: session.tenantId || undefined,
       };

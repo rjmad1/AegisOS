@@ -7,6 +7,22 @@ export class CentralConfiguration implements IConfigurationProvider {
   private config: Record<string, any> = {};
 
   constructor() {
+    if (typeof window !== "undefined") {
+      this.configPath = "";
+      this.config = {
+        artifacts: {
+          rootDir: "./artifacts_storage",
+          ignoredFolders: ["node_modules", ".git", ".next", "cache", "tmp", "temp", "dist"],
+          ignoredExtensions: [".exe", ".dll", ".log", ".pyc"],
+          maxPreviewSize: 10485760,
+          maxUploadSize: 52428800,
+          supportedPreviewProviders: [
+            "markdown", "pdf", "image", "json", "yaml", "csv", "html", "text", "mermaid", "svg", "code", "word", "excel", "powerpoint", "zip", "unknown"
+          ]
+        }
+      };
+      return;
+    }
     this.configPath = process.env.OPS_CONFIG_PATH || path.resolve(process.cwd(), "console_config.json");
     this.load();
   }
@@ -75,6 +91,7 @@ export class CentralConfiguration implements IConfigurationProvider {
   }
 
   public save() {
+    if (typeof window !== "undefined") return;
     try {
       fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 2), "utf-8");
     } catch (err) {
@@ -120,7 +137,7 @@ export class CentralConfiguration implements IConfigurationProvider {
     this.save();
     
     // Ensure root directory exists if updated
-    if (key === "artifacts.rootDir" && typeof value === "string") {
+    if (typeof window === "undefined" && key === "artifacts.rootDir" && typeof value === "string") {
       if (!fs.existsSync(value)) {
         try {
           fs.mkdirSync(value, { recursive: true });

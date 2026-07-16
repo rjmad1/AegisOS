@@ -75,7 +75,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
   },
 
-  initialize: () => {
+  initialize: async () => {
     if (typeof window === "undefined") return;
 
     const token = localStorage.getItem("ops_auth_token");
@@ -96,6 +96,25 @@ export const useAuthStore = create<AuthState>((set) => ({
         localStorage.removeItem("ops_auth_token");
         localStorage.removeItem("ops_user");
       }
+    }
+
+    // Try fetching cookie-based session if localStorage is empty
+    try {
+      const res = await fetch("/api/auth/me");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.user) {
+          set({
+            user: data.user,
+            token: data.token || "cookie-auth",
+            isAuthenticated: true,
+            isLoading: false,
+          });
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("Failed to check active cookie session:", err);
     }
 
     set({ isLoading: false });

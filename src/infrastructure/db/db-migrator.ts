@@ -335,7 +335,7 @@ async function migrateLegacyJsonData(): Promise<void> {
           where: { id: item.id },
           update: {
             timestamp: item.timestamp,
-            eventType: item.eventType,
+            eventType: item.eventType || item.name || "UnknownEvent",
             userId: item.userId || null,
             userEmail: item.userEmail || null,
             ipAddress: item.ipAddress || null,
@@ -344,7 +344,7 @@ async function migrateLegacyJsonData(): Promise<void> {
           create: {
             id: item.id,
             timestamp: item.timestamp,
-            eventType: item.eventType,
+            eventType: item.eventType || item.name || "UnknownEvent",
             userId: item.userId || null,
             userEmail: item.userEmail || null,
             ipAddress: item.ipAddress || null,
@@ -365,36 +365,50 @@ async function migrateLegacyJsonData(): Promise<void> {
       const raw = await fs.readFile(configPath, "utf-8");
       const item = JSON.parse(raw);
       console.log("[DBMigrator] Migrating platform configuration...");
+      
+      const port = typeof item.port === "number" ? item.port : 3000;
+      const rateLimitMax = typeof item.rateLimitMax === "number" ? item.rateLimitMax : 150;
+      const rateLimitWindowMs = typeof item.rateLimitWindowMs === "number" ? item.rateLimitWindowMs : 60000;
+      const sessionTimeoutMinutes = typeof item.sessionTimeoutMinutes === "number" ? item.sessionTimeoutMinutes : 480;
+      const databasesDir = item.databasesDir || process.env.OPS_DATABASES_DIR || "D:\\AI-Operations\\runtime\\databases";
+      const artifactsDir = item.artifactsDir || process.env.OPS_ARTIFACTS_DIR || "D:\\AI-Operations\\artifacts";
+      const logsDir = item.logsDir || process.env.OPS_LOGS_DIR || "D:\\AI-Operations\\logs";
+      const uploadsDir = item.uploadsDir || process.env.OPS_UPLOADS_DIR || "D:\\AI-Operations\\uploads";
+      const exportsDir = item.exportsDir || process.env.OPS_EXPORTS_DIR || "D:\\AI-Operations\\exports";
+      const maintenanceMode = typeof item.maintenanceMode === "boolean" ? item.maintenanceMode : false;
+      const readOnlyMode = typeof item.readOnlyMode === "boolean" ? item.readOnlyMode : false;
+      const maintenanceBanner = item.maintenanceBanner || "System operational. All features online.";
+
       await prisma.config.upsert({
         where: { id: "active" },
         update: {
-          port: item.port,
-          rateLimitMax: item.rateLimitMax,
-          rateLimitWindowMs: item.rateLimitWindowMs,
-          sessionTimeoutMinutes: item.sessionTimeoutMinutes,
-          databasesDir: item.databasesDir,
-          artifactsDir: item.artifactsDir,
-          logsDir: item.logsDir,
-          uploadsDir: item.uploadsDir,
-          exportsDir: item.exportsDir,
-          maintenanceMode: item.maintenanceMode,
-          readOnlyMode: item.readOnlyMode,
-          maintenanceBanner: item.maintenanceBanner,
+          port,
+          rateLimitMax,
+          rateLimitWindowMs,
+          sessionTimeoutMinutes,
+          databasesDir,
+          artifactsDir,
+          logsDir,
+          uploadsDir,
+          exportsDir,
+          maintenanceMode,
+          readOnlyMode,
+          maintenanceBanner,
         },
         create: {
           id: "active",
-          port: item.port,
-          rateLimitMax: item.rateLimitMax,
-          rateLimitWindowMs: item.rateLimitWindowMs,
-          sessionTimeoutMinutes: item.sessionTimeoutMinutes,
-          databasesDir: item.databasesDir,
-          artifactsDir: item.artifactsDir,
-          logsDir: item.logsDir,
-          uploadsDir: item.uploadsDir,
-          exportsDir: item.exportsDir,
-          maintenanceMode: item.maintenanceMode,
-          readOnlyMode: item.readOnlyMode,
-          maintenanceBanner: item.maintenanceBanner,
+          port,
+          rateLimitMax,
+          rateLimitWindowMs,
+          sessionTimeoutMinutes,
+          databasesDir,
+          artifactsDir,
+          logsDir,
+          uploadsDir,
+          exportsDir,
+          maintenanceMode,
+          readOnlyMode,
+          maintenanceBanner,
         },
       });
       // We don't delete console_config.json as it is Next.js standard external config

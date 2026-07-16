@@ -7,7 +7,7 @@ This guide covers all deployment methods for AegisOS. For Windows-specific boots
 ## Prerequisites
 
 | Software | Minimum Version | Purpose |
-|----------|----------------|---------|
+| ---------- | ---------------- | --------- |
 | Node.js | 20 LTS | Runtime |
 | npm | 10+ | Package manager |
 | Docker | 24+ | Container deployment |
@@ -71,20 +71,22 @@ curl http://localhost:3000/health
 
 ### Services Started
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| Console | 3000 | Admin dashboard |
-| Nginx | 80/443 | Reverse proxy |
-| PostgreSQL | 5432 | Database |
-| Redis | 6379 | Cache / queue |
-| MinIO | 9000/9001 | Object storage |
-| Ollama | 11434 | AI inference |
-| LiteLLM | 4000 | AI routing proxy |
-| Prometheus | 9090 | Metrics |
-| Grafana | 3001 | Dashboards |
-| Jaeger | 16686 | Tracing |
-| Loki | 3100 | Log aggregation |
-| OTel Collector | 4317/4318 | Telemetry |
+The stack maps several host-side services. All host ports are configured dynamically and support auto-remapping in case of conflicts (see [PORTS_MANAGEMENT.md](PORTS_MANAGEMENT.md) for details).
+
+| Service | Default Host Port | Internal Container Port | Purpose |
+| --------- | ------------------- | ------------------------- | --------- |
+| Console | 3000 | 3000 | Admin dashboard UI |
+| Nginx | 80 / 443 | 80 / 443 | HTTPS reverse proxy |
+| PostgreSQL | 5432 | 5432 | Database engine |
+| Redis | 6379 | 6379 | Caching and queue layer |
+| MinIO | 9000 / 9001 | 9000 / 9001 | Object storage & Console |
+| Ollama | 11434 | 11434 | Local AI inference engine |
+| LiteLLM | 4000 | 4000 | AI Router and Proxy |
+| Prometheus | 9090 | 9090 | Metrics gathering |
+| Grafana | 3002 | 3000 | Metrics visualization |
+| Jaeger | 16686 | 16686 | Distributed tracing |
+| Loki | 3100 | 3100 | Log aggregation |
+| OTel Collector | 4317 / 4318 | 4317 / 4318 | Telemetry data collector |
 
 ### GPU Support
 
@@ -189,17 +191,20 @@ The Helm chart will **fail** if any secret value is empty, preventing accidental
 ## 5. Rollback
 
 ### Docker Compose
+
 ```bash
 docker compose down
 docker compose up -d  # Re-launches from current images
 ```
 
 ### Kubernetes
+
 ```bash
 kubectl rollout undo deployment/console -n aegisos-ops
 ```
 
 ### Helm
+
 ```bash
 helm rollback aegisos-ops 1 --namespace aegisos-ops
 ```
@@ -209,7 +214,7 @@ helm rollback aegisos-ops 1 --namespace aegisos-ops
 ## 6. Health Checks
 
 | Endpoint | Purpose | Expected |
-|----------|---------|----------|
+| ---------- | --------- | ---------- |
 | `GET /health` | Application health | `200 OK` |
 | `GET /ready` | Readiness (dependencies up) | `200 OK` |
 | `GET /live` | Liveness (process running) | `200 OK` |
@@ -220,7 +225,7 @@ helm rollback aegisos-ops 1 --namespace aegisos-ops
 ## 7. Troubleshooting
 
 | Symptom | Cause | Fix |
-|---------|-------|-----|
+| --------- | ------- | ----- |
 | `FATAL: AUTH_SECRET ... missing or insecure!` | Default/empty secret used | Set a proper secret in `.env` |
 | `FATAL: OPS_JWT_SECRET ... required` | Missing encryption key | Set `OPS_JWT_SECRET` in `.env` |
 | Docker: `Set POSTGRES_PASSWORD in .env` | Missing `.env` file | Copy `.env.example` to `.env` |

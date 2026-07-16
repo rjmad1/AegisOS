@@ -13,6 +13,7 @@ import { AgentRuntime } from "@/platform/ai-runtime/AgentRuntime";
 import prisma from "@/infrastructure/db/prisma";
 import { eventBus } from "@/infrastructure/events/event-bus";
 import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { PortRegistry } from "@/platform/ports/PortRegistry";
 
 let cachedServicesSummary: { name: string; status: string }[] = [];
 let lastServiceCheck = 0;
@@ -24,10 +25,10 @@ async function getServicesSummary(): Promise<{ name: string; status: string }[]>
   }
   try {
     const [ollama, litellm, openclaw, docker] = await Promise.all([
-      deploymentManager.checkPort(11434).catch(() => false),
-      deploymentManager.checkPort(4000).catch(() => false),
-      deploymentManager.checkPort(8000).catch(() => false),
-      deploymentManager.checkPort(2375).catch(() => false),
+      deploymentManager.checkPort(PortRegistry.getHostPort("ollama")).catch(() => false),
+      deploymentManager.checkPort(PortRegistry.getHostPort("litellm")).catch(() => false),
+      deploymentManager.checkPort(PortRegistry.getHostPort("openclaw")).catch(() => false),
+      deploymentManager.checkPort(PortRegistry.getHostPort("docker") || 2375).catch(() => false),
     ]);
     cachedServicesSummary = [
       { name: "Ollama", status: ollama ? "running" : "stopped" },
@@ -357,7 +358,8 @@ export function startWebSocketServer() {
     });
   });
 
-  server.listen(3001, () => {
-    console.log("[WebSocketServer] Telemetry server listening on port 3001");
+  const telemetryPort = PortRegistry.getHostPort("telemetry") || 3001;
+  server.listen(telemetryPort, () => {
+    console.log(`[WebSocketServer] Telemetry server listening on port ${telemetryPort}`);
   });
 }

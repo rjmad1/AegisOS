@@ -4,6 +4,7 @@
 import { NextResponse } from "next/server";
 import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
 import { infrastructureService } from "@/services/infrastructure.service";
+import { PortRegistry } from "@/platform/ports/PortRegistry";
 
 export const dynamic = "force-dynamic";
 
@@ -25,16 +26,16 @@ export async function GET() {
       aiGatewayOnline,
       apiGatewayOnline
     ] = await Promise.all([
-      deploymentManager.checkPort(11434), // Ollama
-      deploymentManager.checkPort(4000),  // LiteLLM
-      deploymentManager.checkPort(8000),  // OpenClaw (default)
-      deploymentManager.checkPort(5432),  // Postgres
-      deploymentManager.checkPort(6379),  // Redis
-      deploymentManager.checkPort(27017), // MongoDB
-      deploymentManager.checkPort(2375).catch(() => false),  // Docker engine API (fallback check)
-      deploymentManager.checkPort(3012).catch(() => false),  // MCP Server
-      deploymentManager.checkPort(4000),  // AI Gateway (routed to LiteLLM)
-      deploymentManager.checkPort(8443)   // API Gateway (Caddy)
+      deploymentManager.checkPort(PortRegistry.getHostPort("ollama")), // Ollama
+      deploymentManager.checkPort(PortRegistry.getHostPort("litellm")),  // LiteLLM
+      deploymentManager.checkPort(PortRegistry.getHostPort("openclaw")),  // OpenClaw (default)
+      deploymentManager.checkPort(PortRegistry.getHostPort("postgres")),  // Postgres
+      deploymentManager.checkPort(PortRegistry.getHostPort("redis")),  // Redis
+      deploymentManager.checkPort(PortRegistry.getHostPort("mongodb")), // MongoDB
+      deploymentManager.checkPort(PortRegistry.getHostPort("docker") || 2375).catch(() => false),  // Docker engine API (fallback check)
+      deploymentManager.checkPort(PortRegistry.getHostPort("mcp_server")).catch(() => false),  // MCP Server
+      deploymentManager.checkPort(PortRegistry.getHostPort("litellm")),  // AI Gateway (routed to LiteLLM)
+      deploymentManager.checkPort(PortRegistry.getHostPort("caddy"))   // API Gateway (Caddy)
     ]);
 
     // 3. Assemble target services mapping list
@@ -43,42 +44,42 @@ export async function GET() {
         name: "Ollama",
         displayName: "Ollama Inference Engine",
         status: ollamaOnline ? "running" : "stopped",
-        port: 11434,
+        port: PortRegistry.getHostPort("ollama"),
         description: "Serves local LLM models (Llama, Gemma, etc.)"
       },
       {
         name: "LiteLLM",
         displayName: "LiteLLM Router Proxy",
         status: litellmOnline ? "running" : "stopped",
-        port: 4000,
+        port: PortRegistry.getHostPort("litellm"),
         description: "API router and authentication translator"
       },
       {
         name: "OpenClaw",
         displayName: "OpenClaw Orchestrator Console",
         status: openclawOnline || litellmOnline ? "running" : "stopped",
-        port: 8000,
+        port: PortRegistry.getHostPort("openclaw"),
         description: "Task graph orchestration panel and telemetry parser"
       },
       {
         name: "PostgreSQL",
         displayName: "PostgreSQL Database Engine",
         status: postgresOnline ? "running" : "stopped",
-        port: 5432,
+        port: PortRegistry.getHostPort("postgres"),
         description: "Primary relational storage database"
       },
       {
         name: "Redis",
         displayName: "Redis In-Memory Key-Value Store",
         status: redisOnline ? "running" : "stopped",
-        port: 6379,
+        port: PortRegistry.getHostPort("redis"),
         description: "Caching layer and prompt token rate limiter"
       },
       {
         name: "MongoDB",
         displayName: "MongoDB Document Database",
         status: mongoOnline ? "running" : "stopped",
-        port: 27017,
+        port: PortRegistry.getHostPort("mongodb"),
         description: "NoSQL document storage for conversation history"
       },
       {
@@ -91,21 +92,21 @@ export async function GET() {
         name: "MCP Servers",
         displayName: "Model Context Protocol Cluster",
         status: mcpOnline || ollamaOnline ? "running" : "stopped",
-        port: 3012,
+        port: PortRegistry.getHostPort("mcp_server"),
         description: "Provides LLM tool integrations and schema lookups"
       },
       {
         name: "AI Gateway",
         displayName: "Enterprise AI Gateway",
         status: aiGatewayOnline ? "running" : "stopped",
-        port: 4000,
+        port: PortRegistry.getHostPort("litellm"),
         description: "Monitors token budgets and security guards"
       },
       {
         name: "API Gateway",
         displayName: "Caddy HTTPS Gateway Proxy",
         status: apiGatewayOnline || apiGatewayOnline ? "running" : "stopped",
-        port: 8443,
+        port: PortRegistry.getHostPort("caddy"),
         description: "Secures external loopbacks and handles certificate pinning"
       }
     ];

@@ -85,6 +85,7 @@ export const developerModule: PlatformModule = {
   lifecycle: {
     onInit: async () => {
       console.log('[DeveloperModule] Initializing Developer Platform module...');
+      if (typeof window !== 'undefined') return;
       // Auto-generate multi-language stubs into public directory on startup
       try {
         multiLanguageSdkGenerator.generateAll();

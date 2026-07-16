@@ -25,6 +25,15 @@ Log-PlatformInfo "==================================================="
 # 1. Enforce elevated privileges
 if (-not (Test-PlatformElevation)) { Exit 1 }
 
+# Run Port Resolver prior to service startup actions to prevent collision failures
+if ($Action -eq "start" -or $Action -eq "restart") {
+    $portManagerScript = Join-Path $PSScriptRoot "PortManager.ps1"
+    if (Test-Path $portManagerScript) {
+        Log-PlatformAction "Running Dynamic Port Manager check..."
+        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $portManagerScript
+    }
+}
+
 $serviceCatalog = @{
     "console"    = "AI_Console_Service"
     "proxy"      = "caddy"

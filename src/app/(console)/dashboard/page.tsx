@@ -99,9 +99,9 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {[
-              { name: "Ollama Inference Proxy", port: 11434, status: "healthy", role: "Model Inference" },
-              { name: "LiteLLM Router", port: 4000, status: "healthy", role: "Capability Routing" },
-              { name: "AegisOS Gateway", port: 18789, status: "healthy", role: "MCP Host & Agents" },
+              { name: "Ollama Inference Proxy", port: (() => { try { return parseInt(new URL(process.env.NEXT_PUBLIC_OLLAMA_URL || "http://127.0.0.1:11434").port) || 11434 } catch { return 11434 } })(), status: "healthy", role: "Model Inference" },
+              { name: "LiteLLM Router", port: (() => { try { return parseInt(new URL(process.env.NEXT_PUBLIC_LITELLM_URL || "http://127.0.0.1:4000").port) || 4000 } catch { return 4000 } })(), status: "healthy", role: "Capability Routing" },
+              { name: "AegisOS Gateway", port: (() => { try { return parseInt(new URL(process.env.NEXT_PUBLIC_AEGISOS_URL || "http://127.0.0.1:18789").port) || 18789 } catch { return 18789 } })(), status: "healthy", role: "MCP Host & Agents" },
               { name: "OmniRoute ELO Scorer", port: 20128, status: "healthy", role: "ELO Arena Engine" },
             ].map((service, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 rounded-lg border border-border/40 bg-accent/10">
