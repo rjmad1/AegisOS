@@ -1,5 +1,9 @@
 import * as os from "os";
 import * as net from "net";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 export interface PlatformServiceStatus {
   id: string;
@@ -106,9 +110,45 @@ export class DeploymentManager {
     return list;
   }
 
+  private async executeHostServiceCommand(serviceName: string, action: "start" | "stop" | "restart"): Promise<boolean> {
+    const isWindows = os.platform() === "win32";
+    if (!isWindows) return true;
+
+    try {
+      let cmd = "";
+      if (action === "start") {
+        cmd = `sc.exe start "${serviceName}"`;
+      } else if (action === "stop") {
+        cmd = `sc.exe stop "${serviceName}"`;
+      } else if (action === "restart") {
+        cmd = `sc.exe stop "${serviceName}" && sc.exe start "${serviceName}"`;
+      }
+
+      console.log(`[DeploymentManager:HostSCM] Executing: ${cmd}`);
+      await execAsync(cmd);
+      return true;
+    } catch (err: any) {
+      console.warn(`[DeploymentManager:HostSCM] Failed SCM control for "${serviceName}": ${err.message}`);
+      return false;
+    }
+  }
+
   public async controlService(serviceId: string, action: "start" | "stop" | "restart"): Promise<boolean> {
     const service = this.services.get(serviceId);
     if (!service) return false;
+
+    // SCM Mappings for live Windows service control
+    const scmMappings: Record<string, string> = {
+      ollama: "Ollama",
+      litellm: "LiteLLMService",
+      aegisos: "AegisOSService",
+      omniroute: "OmniRouteService"
+    };
+
+    const scmName = scmMappings[serviceId];
+    if (scmName) {
+      await this.executeHostServiceCommand(scmName, action);
+    }
 
     if (action === "start") {
       service.status = "started";

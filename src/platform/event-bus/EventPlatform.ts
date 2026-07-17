@@ -30,6 +30,9 @@ export class EventPlatform {
   private static instance: EventPlatform | null = null;
   private retryPolicies: Map<string, EventRetryPolicy> = new Map();
 
+  private processedEventIds: Set<string> = new Set();
+  private maxDuplicateCacheSize = 1000;
+
   private constructor() {
     // Set default retry policies for critical events
     this.registerRetryPolicy('platform:error', {
@@ -44,6 +47,45 @@ export class EventPlatform {
       EventPlatform.instance = new EventPlatform();
     }
     return EventPlatform.instance;
+  }
+
+  /**
+   * Replays events of a specific type from a starting timestamp.
+   */
+  public async replayEvents(eventName: string, handler: (event: any) => void | Promise<void>, startFromTimestamp: number): Promise<number> {
+    try {
+      const records = await prisma.auditEvent.findMany({
+        where: {
+          eventType: eventName,
+          timestamp: {
+            gte: new Date(startFromTimestamp).toISOString()
+          }
+        },
+        orderBy: {
+          timestamp: 'asc'
+        }
+      });
+
+      let count = 0;
+      for (const record of records) {
+        try {
+          const details = JSON.parse(record.details || '{}');
+          const replayedEvent = {
+            name: record.eventType,
+            source: details.source || 'replayed',
+            timestamp: new Date(record.timestamp).getTime(),
+            correlationId: details.correlationId,
+            traceId: details.traceId,
+            payload: details.payload
+          };
+          await handler(replayedEvent);
+          count++;
+        } catch {}
+      }
+      return count;
+    } catch {
+      return 0;
+    }
   }
 
   /**
@@ -82,10 +124,20 @@ export class EventPlatform {
       } as HardenedEvent, `Schema validation failure: ${parsed.error.message}`);
       return;
     }
-
     // 2. Inject Correlation and Trace IDs from context
     const correlationId = RuntimeContext.getCorrelationId();
     const traceId = RuntimeContext.getTraceId();
+
+    const dedupeKey = `${event.name}:${correlationId && !correlationId.startsWith('corr-') ? correlationId : ''}:${JSON.stringify(event.payload)}`;
+    if (this.processedEventIds.has(dedupeKey)) {
+      console.log(`[EventPlatform] Event duplicate suppressed: ${event.name}`);
+      return;
+    }
+    this.processedEventIds.add(dedupeKey);
+    if (this.processedEventIds.size > this.maxDuplicateCacheSize) {
+      const firstKey = this.processedEventIds.values().next().value;
+      if (firstKey) this.processedEventIds.delete(firstKey);
+    }
 
     const hardenedEvent: Partial<HardenedEvent> & { name: string; source: string; version: string; priority: HardenedEvent["priority"]; securityClassification: HardenedEvent["securityClassification"]; retentionPolicy: HardenedEvent["retentionPolicy"]; payload: any } = {
       name: event.name,
