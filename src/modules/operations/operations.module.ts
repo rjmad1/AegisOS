@@ -44,7 +44,7 @@ export const operationsModule: PlatformModule = {
       order: 3,
     },
     {
-      id: 'nav-workflows',
+      id: 'nav-operations-workflows',
       label: 'Workflows',
       href: '/workflows',
       icon: GitBranch,

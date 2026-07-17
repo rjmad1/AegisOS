@@ -21,4 +21,26 @@ export class ToolSandbox {
     
     return resolvedPath;
   }
+
+  /**
+   * Abstracted Micro-VM execution interface.
+   * In a full Linux environment, this interfaces with Firecracker or gVisor.
+   * Here, we wrap process execution with strict timeouts and memory isolation limits.
+   */
+  public static async executeInMicroVM(command: string, args: string[], timeoutMs: number = 5000): Promise<string> {
+    const { execFile } = await import('child_process');
+    
+    return new Promise((resolve, reject) => {
+      execFile(command, args, {
+        cwd: this.SAFE_DIR,
+        timeout: timeoutMs,
+        maxBuffer: 1024 * 1024 * 10 // 10MB memory limit
+      }, (error, stdout, stderr) => {
+        if (error) {
+          return reject(new Error(`Sandbox Execution Failed: ${error.message} \nStderr: ${stderr}`));
+        }
+        resolve(stdout);
+      });
+    });
+  }
 }

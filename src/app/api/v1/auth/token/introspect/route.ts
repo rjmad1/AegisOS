@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import prisma from "@/infrastructure/db/prisma";
 
-const authSecret = process.env.AUTH_SECRET;
-const key = new TextEncoder().encode(authSecret);
+const authSecret = process.env.AUTH_SECRET || process.env.OPS_JWT_SECRET;
+const key = authSecret ? new TextEncoder().encode(authSecret) : null;
 
 export async function POST(request: Request) {
   try {
@@ -19,9 +19,10 @@ export async function POST(request: Request) {
     }
 
     try {
+      if (!key) throw new Error("Server missing AUTH_SECRET and OPS_JWT_SECRET");
       const { payload } = await jwtVerify(token, key, { algorithms: ["HS256"] });
-      const now = Date.now();
-      const expires = (payload.expires as number) || 0;
+      const now = Math.floor(Date.now() / 1000);
+      const expires = (payload.exp as number) || 0;
 
       if (expires && now > expires) {
         return NextResponse.json({ active: false, reason: "Token expired" });
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
         // Update last active
         await prisma.session.update({
           where: { id: payload.sessionId as string },
-          data: { lastActive: now }
+          data: { lastActive: BigInt(now) }
         });
         userRole = dbSession.role;
       }
@@ -133,9 +134,10 @@ export async function POST(request: Request) {
         email,
         role: userRole,
         permissions: resolvedPermissions,
-        exp: Math.floor(expires / 1000)
+        exp: expires
       });
     } catch (e: any) {
+      console.error("[Introspect Route] JWT verification failed:", e.message, e);
       return NextResponse.json({ active: false, reason: "Invalid JWT token signature", error: e.message });
     }
   } catch (err: any) {

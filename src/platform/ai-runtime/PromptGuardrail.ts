@@ -11,8 +11,26 @@ export class PromptGuardrail {
    * Sanitizes the input prompt to prevent injection and leakages.
    */
   public static sanitizeInput(prompt: string): string {
-    // Basic redaction of potential API keys (e.g. sk-...)
-    return prompt.replace(/sk-[a-zA-Z0-9]{32,}/g, "[REDACTED_API_KEY]");
+    // 1. Basic redaction of potential API keys (e.g. sk-...)
+    let sanitized = prompt.replace(/sk-[a-zA-Z0-9]{32,}/g, "[REDACTED_API_KEY]");
+
+    // 2. Heuristic Dataset Tuning (Known Jailbreak Signatures)
+    const knownJailbreaks = [
+      /ignore (all )?previous instructions/i,
+      /system override/i,
+      /you are (now )?a bypass/i,
+      /DAN/i, // Do Anything Now
+      /simulate a hypothetical scenario where you don'?t have rules/i
+    ];
+
+    for (const pattern of knownJailbreaks) {
+      if (pattern.test(sanitized)) {
+        // Redact the jailbreak payload or replace the whole prompt
+        sanitized = sanitized.replace(pattern, "[JAILBREAK_ATTEMPT_REDACTED]");
+      }
+    }
+
+    return sanitized;
   }
 
   /**

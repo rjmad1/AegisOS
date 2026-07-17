@@ -331,8 +331,8 @@ model Session {
   id         String @id
   userId     String
   role       String
-  createdAt  Int
-  lastActive Int
+  createdAt  BigInt
+  lastActive BigInt
 
   // Multi-tenant scaffolding
   organizationId  String?

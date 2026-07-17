@@ -26,7 +26,7 @@ import { skillsModule } from '@/modules/skills/skills.module';
 import { engineeringIntelligenceModule } from '@/modules/engineering-intelligence/engineering-intelligence.module';
 import { missionControlModule } from '@/modules/mission-control/mission-control.module';
 
-const allModules: PlatformModule[] = [
+export const allModules: PlatformModule[] = [
   platformModule,
   operationsModule,
   knowledgeModule,

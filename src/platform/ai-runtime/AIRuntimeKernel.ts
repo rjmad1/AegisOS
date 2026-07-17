@@ -129,6 +129,19 @@ export class AIRuntimeKernel {
       let forceCloudFallback = false;
       if (currentTaskCount > 5) {
          this.dashboard.addRoutingTrace(`Local queue saturated (${currentTaskCount} > 5). Offloading to cloud fallback.`);
+         
+         // Trigger Dynamic VRAM Unloading for local models (e.g. Ollama Keep-Alive: 0)
+         try {
+           fetch('http://127.0.0.1:11434/api/generate', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({ model: "ollama:gemma2:9b", keep_alive: 0 })
+           }).catch(() => { /* silent fail */ });
+           this.dashboard.addRoutingTrace(`Triggered VRAM unload for background models to free capacity.`);
+         } catch (err) {
+           // Ignore network errors on best-effort VRAM unload
+         }
+
          forceCloudFallback = true;
       }
 

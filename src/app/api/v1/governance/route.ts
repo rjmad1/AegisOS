@@ -10,7 +10,10 @@ export async function GET() {
   let metricsData: any = {};
   if (fs.existsSync(metricsPath)) {
     try {
-      const raw = fs.readFileSync(metricsPath, "utf-8");
+      let raw = fs.readFileSync(metricsPath, "utf-8");
+      if (raw.charCodeAt(0) === 0xFEFF) {
+        raw = raw.slice(1);
+      }
       metricsData = JSON.parse(raw);
     } catch (e) {
       console.error("Failed to parse governance metrics:", e);

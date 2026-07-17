@@ -3,9 +3,15 @@
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthGuard } from "@/components/auth/AuthGuard";
-import { bootPlatform } from "@/platform/kernel/boot";
 import { realtimeSyncManager } from "@/platform/realtime/RealtimeSyncManager";
 import { EventBus } from "@/platform/event-bus/EventBus";
+import { allModules } from "@/platform/kernel/boot";
+import { ModuleRegistry } from "@/platform/module-registry/ModuleRegistry";
+
+// Register modules synchronously on the client so that initial render of Navigation groups works
+if (typeof window !== 'undefined') {
+  allModules.forEach(mod => ModuleRegistry.register(mod));
+}
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
@@ -21,8 +27,7 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
   );
 
   React.useEffect(() => {
-    // 1. Boot platform kernel
-    bootPlatform().catch(console.error);
+    // 1. (Server handles platform boot via instrumentation)
 
     // 2. Start real-time sync coordinator
     realtimeSyncManager.startSync().catch(console.error);

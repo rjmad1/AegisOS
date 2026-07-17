@@ -47,8 +47,8 @@ export class SessionService {
         id: sessionId,
         userId,
         role,
-        createdAt: now,
-        lastActive: now,
+        createdAt: BigInt(now),
+        lastActive: BigInt(now),
         organizationId: organizationId || null,
         tenantId: tenantId || null,
       },
@@ -90,20 +90,20 @@ export class SessionService {
 
       // Check idle timeout (2 hours)
       const IDLE_TIMEOUT = 2 * 60 * 60; // 2 hours in seconds
-      if (now - session.lastActive > IDLE_TIMEOUT) {
+      if (now - Number(session.lastActive) > IDLE_TIMEOUT) {
         await this.invalidateSession(sessionId);
         return null;
       }
 
       // Check absolute timeout (12 hours)
       const ABSOLUTE_TIMEOUT = 12 * 60 * 60; // 12 hours in seconds
-      if (now - session.createdAt > ABSOLUTE_TIMEOUT) {
+      if (now - Number(session.createdAt) > ABSOLUTE_TIMEOUT) {
         await this.invalidateSession(sessionId);
         return null;
       }
 
       // Token Rotation checking: if OIDC oauth token exists, verify rotation
-      const tokenAge = now - session.lastActive;
+      const tokenAge = now - Number(session.lastActive);
       const ROTATION_THRESHOLD = 55 * 60; // 55 minutes in seconds
       if (tokenAge > ROTATION_THRESHOLD && process.env.AUTH_PROVIDER !== 'ldap') {
         console.log(`[SessionService] Token age exceeded threshold. Triggering OIDC token rotation check.`);
@@ -118,14 +118,14 @@ export class SessionService {
       // Sliding expiration: update last active timestamp in SQLite
       await prisma.session.update({
         where: { id: sessionId },
-        data: { lastActive: now },
+        data: { lastActive: BigInt(now) },
       });
 
       return {
         id: session.id,
         userId: session.userId,
         role: session.role,
-        createdAt: session.createdAt * 1000,
+        createdAt: Number(session.createdAt) * 1000,
         lastActive: now * 1000,
         organizationId: session.organizationId || undefined,
         tenantId: session.tenantId || undefined,
