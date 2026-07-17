@@ -91,7 +91,7 @@ export class WorkflowRuntime {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   public async startExecution(workflowId: string, variables: Record<string, any>): Promise<WorkflowExecutionState> {
     const wf = this.getWorkflow(workflowId);
     if (!wf) {
@@ -226,7 +226,7 @@ export class WorkflowRuntime {
     await this.updateExecutionInDb(exec);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   public async checkpoint(executionId: string, variables: Record<string, any>): Promise<void> {
     const exec = await this.getExecution(executionId);
     if (exec) {

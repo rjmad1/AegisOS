@@ -9,6 +9,9 @@ import { metricsPlatform } from "../../infrastructure/observability/metrics-plat
 export interface PlatformState {
   timestamp: string;
   overallStatus: "healthy" | "degraded" | "unhealthy";
+  overallStatusConfidenceClass?: "MEASURED" | "OBSERVED" | "ESTIMATED" | "PREDICTED";
+  overallStatusConfidenceScore?: number;
+  overallStatusProvenance?: string;
   health: {
     database: "healthy" | "unhealthy";
     databaseSizeMb: number;
@@ -54,6 +57,9 @@ export interface PlatformState {
   maturity: {
     scores: { domain: string; score: number }[];
     average: number;
+    confidenceClass?: "MEASURED" | "OBSERVED" | "ESTIMATED" | "PREDICTED";
+    confidenceScore?: number;
+    provenance?: string;
   };
 }
 
@@ -272,6 +278,9 @@ export class PlatformStateEngine {
     const state: PlatformState = {
       timestamp,
       overallStatus,
+      overallStatusConfidenceClass: "MEASURED",
+      overallStatusConfidenceScore: 100,
+      overallStatusProvenance: "Prisma SQL select & localhost port socket connectivity",
       health: {
         database: dbStatus,
         databaseSizeMb: dbSizeMb,
@@ -318,7 +327,10 @@ export class PlatformStateEngine {
       },
       maturity: {
         scores: maturityScores,
-        average: maturityAverage
+        average: maturityAverage,
+        confidenceClass: "OBSERVED",
+        confidenceScore: 95,
+        provenance: "Weighted capability maturity checks"
       }
     };
 

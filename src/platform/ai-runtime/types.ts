@@ -360,6 +360,7 @@ export interface OperationsMetrics {
   activeAgents: number;
   activeWorkflows: number;
   modelDistribution: Record<string, number>;
+  activeCalls?: number;
 }
 
 export interface SystemHealthReport {

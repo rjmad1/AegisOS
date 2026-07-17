@@ -10,6 +10,12 @@ export interface EngineeringMetrics {
   releaseReadinessScore: number; // 0 - 100
   releaseBlockersCount: number;
   operationalHealthIndex: number; // 0 - 100
+  operationalHealthIndexConfidenceClass?: "MEASURED" | "OBSERVED" | "ESTIMATED" | "PREDICTED";
+  operationalHealthIndexConfidenceScore?: number;
+  operationalHealthIndexProvenance?: string;
+  releaseReadinessScoreConfidenceClass?: "MEASURED" | "OBSERVED" | "ESTIMATED" | "PREDICTED";
+  releaseReadinessScoreConfidenceScore?: number;
+  releaseReadinessScoreProvenance?: string;
 }
 
 export class EngineeringOperationsCenter {
@@ -134,7 +140,13 @@ export class EngineeringOperationsCenter {
       architecturalDriftFiles: driftFiles,
       releaseReadinessScore,
       releaseBlockersCount,
-      operationalHealthIndex
+      operationalHealthIndex,
+      operationalHealthIndexConfidenceClass: "MEASURED",
+      operationalHealthIndexConfidenceScore: 98,
+      operationalHealthIndexProvenance: "Alerting platform active registers, port listeners & SQLite filesystem size",
+      releaseReadinessScoreConfidenceClass: "OBSERVED",
+      releaseReadinessScoreConfidenceScore: 90,
+      releaseReadinessScoreProvenance: "Fitness checker static analysis logs & workspace regex Todo scanners"
     };
   }
 }

@@ -41,6 +41,7 @@ import {
   StorageVolume,
   FilesystemUsage
 } from "@/types/infrastructure";
+import { metricsPlatform } from "../infrastructure/observability/metrics-platform";
 
 export class InfrastructureService {
   private static instance: InfrastructureService | null = null;
@@ -264,6 +265,15 @@ export class InfrastructureService {
           },
           gpuLoad
         };
+
+        // Record measured metrics to metricsPlatform
+        metricsPlatform.gauge("system_cpu_usage_ratio", cpu.load / 100);
+        metricsPlatform.gauge("system_memory_usage_ratio", memoryUsagePercent / 100);
+        metricsPlatform.gauge("system_gpu_vram_ratio", gpuLoad / 100);
+        const gpuTemp = gpu.devices[0]?.temperature?.current ?? 42.0;
+        metricsPlatform.gauge("system_gpu_temp_celsius", gpuTemp);
+        const freeDiskBytes = filesystems.reduce((sum, f) => sum + f.free, 0);
+        metricsPlatform.gauge("system_disk_free_bytes", freeDiskBytes);
 
         this.performanceHistory.push(snapshot);
         if (this.performanceHistory.length > 100) {

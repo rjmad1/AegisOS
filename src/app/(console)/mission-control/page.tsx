@@ -131,6 +131,14 @@ export default function MissionControlPage() {
   };
 
 
+  const getConfidenceVariant = (cls?: string) => {
+    if (cls === 'MEASURED') return 'success' as const;
+    if (cls === 'OBSERVED') return 'info' as const;
+    if (cls === 'ESTIMATED') return 'warning' as const;
+    if (cls === 'PREDICTED') return 'default' as const;
+    return 'secondary' as const;
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -173,7 +181,13 @@ export default function MissionControlPage() {
             </div>
             <div className="flex items-center justify-between mt-1">
               <p className="text-xs text-muted-foreground font-mono">All services validated online</p>
-              <Badge variant="success" className="text-[8px] font-mono uppercase px-1 py-0 scale-90 origin-right">Measured</Badge>
+              <Badge
+                variant={getConfidenceVariant(data?.state?.overallStatusConfidenceClass)}
+                className="text-[8px] font-mono uppercase px-1 py-0 scale-90 origin-right cursor-help"
+                title={`Confidence: ${data?.state?.overallStatusConfidenceScore ?? 100}% | Source: ${data?.state?.overallStatusProvenance ?? 'N/A'}`}
+              >
+                {data?.state?.overallStatusConfidenceClass || 'MEASURED'}
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -188,7 +202,13 @@ export default function MissionControlPage() {
             <div className="text-2xl font-bold text-cyan-400">{engineering.operationalHealthIndex}%</div>
             <div className="flex items-center justify-between mt-1">
               <p className="text-xs text-muted-foreground font-mono">Service availability index</p>
-              <Badge variant="info" className="text-[8px] font-mono uppercase px-1 py-0 scale-90 origin-right">Inferred</Badge>
+              <Badge
+                variant={getConfidenceVariant(engineering.operationalHealthIndexConfidenceClass)}
+                className="text-[8px] font-mono uppercase px-1 py-0 scale-90 origin-right cursor-help"
+                title={`Confidence: ${engineering.operationalHealthIndexConfidenceScore ?? 98}% | Source: ${engineering.operationalHealthIndexProvenance ?? 'N/A'}`}
+              >
+                {engineering.operationalHealthIndexConfidenceClass || 'MEASURED'}
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -207,7 +227,13 @@ export default function MissionControlPage() {
               <p className="text-xs text-muted-foreground font-mono">
                 {engineering.releaseBlockersCount} Blockers &bull; {engineering.technicalDebtTodoCount} TODOs
               </p>
-              <Badge variant="info" className="text-[8px] font-mono uppercase px-1 py-0 scale-90 origin-right">Inferred</Badge>
+              <Badge
+                variant={getConfidenceVariant(engineering.releaseReadinessScoreConfidenceClass)}
+                className="text-[8px] font-mono uppercase px-1 py-0 scale-90 origin-right cursor-help"
+                title={`Confidence: ${engineering.releaseReadinessScoreConfidenceScore ?? 90}% | Source: ${engineering.releaseReadinessScoreProvenance ?? 'N/A'}`}
+              >
+                {engineering.releaseReadinessScoreConfidenceClass || 'OBSERVED'}
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -222,7 +248,13 @@ export default function MissionControlPage() {
             <div className="text-2xl font-bold text-indigo-400">{maturity.average} / 5.0</div>
             <div className="flex items-center justify-between mt-1">
               <p className="text-xs text-muted-foreground font-mono">Weighted capability average</p>
-              <Badge variant="warning" className="text-[8px] font-mono uppercase px-1 py-0 scale-90 origin-right">Simulated</Badge>
+              <Badge
+                variant={getConfidenceVariant(maturity.confidenceClass)}
+                className="text-[8px] font-mono uppercase px-1 py-0 scale-90 origin-right cursor-help"
+                title={`Confidence: ${maturity.confidenceScore ?? 95}% | Source: ${maturity.provenance ?? 'N/A'}`}
+              >
+                {maturity.confidenceClass || 'OBSERVED'}
+              </Badge>
             </div>
           </CardContent>
         </Card>

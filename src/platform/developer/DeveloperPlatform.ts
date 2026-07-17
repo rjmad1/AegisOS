@@ -12,6 +12,7 @@ import {
 } from './types';
 import { extensionRegistry } from '../extension/ExtensionFramework';
 import { pluginManager } from '../plugin/PluginFramework';
+import { ReferenceConsoleNotificationExtension } from '../extension/ReferenceExtension';
 
 export class DeveloperPlatform {
   private static instance: DeveloperPlatform | null = null;
@@ -49,6 +50,24 @@ export class DeveloperPlatform {
       name: 'Preview Providers',
       description: 'Aesthetic file renderers for the AegisOS console',
       version: '1.0.0'
+    });
+
+    this.declareExtensionPoint({
+      id: 'notification-provider',
+      name: 'Notification Providers',
+      description: 'Dynamic channels for delivering system alerts and logs',
+      version: '1.0.0'
+    });
+
+    const consoleNotif = new ReferenceConsoleNotificationExtension();
+    this.registerExtension({
+      pointId: 'notification-provider',
+      extensionId: consoleNotif.id,
+      version: consoleNotif.version,
+      implementation: consoleNotif,
+      priority: 100,
+      state: 'loaded',
+      metadata: { author: consoleNotif.author, channelName: consoleNotif.channelName }
     });
 
     // Seed default marketplace items

@@ -4,6 +4,7 @@ import path from 'path';
 export default defineConfig({
   test: {
     fileParallelism: false,
+    exclude: ['tests/e2e/**/*', 'node_modules/**/*'],
     alias: {
       '@': path.resolve(__dirname, './src')
     },

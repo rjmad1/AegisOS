@@ -17,6 +17,9 @@ import { AIOperationsDashboard } from "./AIOperationsDashboard";
 import { RuntimeHealthFramework } from "./RuntimeHealthFramework";
 import { policyEnforcer } from "../../infrastructure/security/policy-enforcer";
 import { recoveryEngine } from "../../infrastructure/reliability/RecoveryEngine";
+import { PromptGuardrail } from "./PromptGuardrail";
+import { ToolSandbox } from "./ToolSandbox";
+import { telemetryTracker } from "../../infrastructure/observability/telemetry";
 
 export class AIRuntimeKernel {
   private static instance: AIRuntimeKernel | null = null;
@@ -56,8 +59,16 @@ export class AIRuntimeKernel {
     const start = Date.now();
 
     // 1. Establish runtime context
-    const correlationId = request.context?.correlationId || `corr-${crypto.randomUUID().slice(0, 8)}`;
-    const traceId = request.context?.traceId || `trace-${crypto.randomUUID().slice(0, 8)}`;
+    let correlationId = request.context?.correlationId || `corr-${crypto.randomUUID().slice(0, 8)}`;
+    let traceId = request.context?.traceId || `trace-${crypto.randomUUID().slice(0, 8)}`;
+    
+    // Establish OTel W3C Trace Context if provided
+    const parsedTrace = telemetryTracker.parseTraceParent(request.context?.traceId);
+    if (parsedTrace && parsedTrace.traceId) {
+       traceId = parsedTrace.traceId;
+       correlationId = parsedTrace.traceId;
+    }
+
     const ctx: AIRuntimeContext = {
       correlationId,
       traceId,
@@ -79,7 +90,8 @@ export class AIRuntimeKernel {
     }
 
     // Redact sensitive PII and check for injection
-    const sanitizedPrompt = policyEnforcer.maskPII(request.prompt);
+    const piiMaskedPrompt = policyEnforcer.maskPII(request.prompt);
+    const sanitizedPrompt = PromptGuardrail.sanitizeInput(piiMaskedPrompt);
     const hasInjection = policyEnforcer.containsInjection(sanitizedPrompt);
     if (hasInjection) {
       this.dashboard.recordCall(0, 0, 0, false, true);
@@ -112,8 +124,16 @@ export class AIRuntimeKernel {
       // Compose final context prompt
       const finalPrompt = `${sanitizedPrompt}${ragContext}${conversationHistory}`;
 
+      // Check Queue Saturation for Cloud Fallback (Auto-Scaling logic)
+      const currentTaskCount = this.dashboard.getMetrics().activeCalls || 0;
+      let forceCloudFallback = false;
+      if (currentTaskCount > 5) {
+         this.dashboard.addRoutingTrace(`Local queue saturated (${currentTaskCount} > 5). Offloading to cloud fallback.`);
+         forceCloudFallback = true;
+      }
+
       // 5. Routing and Execution plane
-      if (request.agentId) {
+      if (request.agentId && !forceCloudFallback) {
         // Route through Agent runtime
         const agent = this.agents.getAgent(request.agentId);
         if (!agent) throw new Error(`Agent ${request.agentId} not found`);
@@ -154,6 +174,8 @@ export class AIRuntimeKernel {
       const elapsed = Date.now() - start;
 
       // 6. Output safety and Evaluation scoring
+      PromptGuardrail.scanForExfiltration(finalContent);
+
       const tokensCount = Math.round(finalPrompt.length / 4 + finalContent.length / 4);
       const cost = (tokensCount / 1000) * 0.0015;
 

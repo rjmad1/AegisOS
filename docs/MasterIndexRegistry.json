@@ -309,6 +309,62 @@
                           "Size":  18061
                       },
                       {
+                          "Title":  "01_Operational_Excellence_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/01_Operational_Excellence_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "01_Operational_Excellence_Report.md",
+                          "Size":  2241
+                      },
+                      {
+                          "Title":  "02_Enterprise_Readiness_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/02_Enterprise_Readiness_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "02_Enterprise_Readiness_Report.md",
+                          "Size":  1968
+                      },
+                      {
+                          "Title":  "03_High_Availability_Validation",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/03_High_Availability_Validation.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "03_High_Availability_Validation.md",
+                          "Size":  1585
+                      },
+                      {
+                          "Title":  "04_Engineering_Intelligence_Validation",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/04_Engineering_Intelligence_Validation.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "04_Engineering_Intelligence_Validation.md",
+                          "Size":  1590
+                      },
+                      {
+                          "Title":  "05_Product_Intelligence_Validation",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/05_Product_Intelligence_Validation.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "05_Product_Intelligence_Validation.md",
+                          "Size":  1482
+                      },
+                      {
+                          "Title":  "06_SDK_Validation_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/06_SDK_Validation_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "06_SDK_Validation_Report.md",
+                          "Size":  1433
+                      },
+                      {
+                          "Title":  "07_Mission_Control_Validation",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/07_Mission_Control_Validation.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "07_Mission_Control_Validation.md",
+                          "Size":  1726
+                      },
+                      {
+                          "Title":  "08_Platform_Certification_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/08_Platform_Certification_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "08_Platform_Certification_Report.md",
+                          "Size":  2398
+                      },
+                      {
                           "Title":  "baseline_freeze_package",
                           "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/baseline_freeze_package.md",
                           "DocumentId":  "N/A",
@@ -320,7 +376,7 @@
                           "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/master_certification_report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "master_certification_report.md",
-                          "Size":  16089
+                          "Size":  16082
                       },
                       {
                           "Title":  "01_enterprise_gap_matrix",
@@ -1373,6 +1429,6 @@
                           "Size":  2757
                       }
                   ],
-    "Timestamp":  "2026-07-17 09:35:24",
-    "TotalDocumentsChecked":  196
+    "Timestamp":  "2026-07-17 09:55:54",
+    "TotalDocumentsChecked":  204
 }
