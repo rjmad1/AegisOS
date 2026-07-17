@@ -3,6 +3,7 @@
 
 import { TenantContext } from '../tenant/TenantContext';
 import { entitlementService } from '../licensing/EntitlementService';
+import prisma from '../../infrastructure/db/prisma';
 
 // ============================================================================
 // Usage Record Types
@@ -84,7 +85,36 @@ export class UsageMeteringEngine {
   private records: UsageRecord[] = [];
   private maxRecords = 100_000;
 
-  private constructor() {}
+  private constructor() {
+    this.init();
+  }
+
+  private async init() {
+    try {
+      const dbRecords = await prisma.usageRecord.findMany({
+        take: this.maxRecords,
+        orderBy: { timestamp: 'desc' }
+      });
+      this.records = dbRecords.map(r => ({
+        id: r.id,
+        tenantId: r.tenantId,
+        organizationId: r.organizationId,
+        workspaceId: r.workspaceId,
+        userId: r.userId,
+        category: r.category as any,
+        metric: r.metric,
+        quantity: r.quantity,
+        unit: r.unit,
+        unitCost: r.unitCost,
+        totalCost: r.totalCost,
+        metadata: JSON.parse(r.metadata || '{}'),
+        timestamp: r.timestamp.toISOString()
+      })).reverse();
+      console.log(`[UsageMeteringEngine] Restored ${this.records.length} usage records from database.`);
+    } catch (err: any) {
+      console.warn(`[UsageMeteringEngine] Failed to restore records from database: ${err.message}`);
+    }
+  }
 
   public static getInstance(): UsageMeteringEngine {
     if (!UsageMeteringEngine.instance) {
@@ -136,6 +166,27 @@ export class UsageMeteringEngine {
     if (this.records.length > this.maxRecords) {
       this.records = this.records.slice(-this.maxRecords);
     }
+
+    // Persist asynchronously to DB
+    prisma.usageRecord.create({
+      data: {
+        id: record.id,
+        tenantId: record.tenantId,
+        organizationId: record.organizationId,
+        workspaceId: record.workspaceId,
+        userId: record.userId,
+        category: record.category,
+        metric: record.metric,
+        quantity: record.quantity,
+        unit: record.unit,
+        unitCost: record.unitCost,
+        totalCost: record.totalCost,
+        metadata: JSON.stringify(record.metadata),
+        timestamp: new Date(record.timestamp)
+      }
+    }).catch(err => {
+      console.error("[UsageMeteringEngine] Asynchronous database write failed:", err);
+    });
 
     // Update entitlement usage counters
     entitlementService.recordUsage(tenantId, params.metric, params.quantity);

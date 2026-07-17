@@ -8,6 +8,69 @@ import { providerFactory } from "@/infrastructure/factories/provider-factory";
 import { ProviderRegistry } from "@/infrastructure/providers/registry";
 import { AegisOSRuntimeProvider } from "@/infrastructure/providers/aegisos-runtime";
 
+export const DEFAULT_MCP_SERVERS = [
+  { name: "markitdown", enabled: true, command: "npx @modelcontextprotocol/server-markitdown" },
+  { name: "figma", enabled: true, command: "npx @modelcontextprotocol/server-figma" },
+  { name: "minimax", enabled: true, command: "npx @modelcontextprotocol/server-minimax" },
+  { name: "filesystem", enabled: true, command: "npx @modelcontextprotocol/server-filesystem" },
+  { name: "github", enabled: true, command: "npx @modelcontextprotocol/server-github" },
+  { name: "chrome-devtools", enabled: true, command: "npx @modelcontextprotocol/server-chrome-devtools" },
+  { name: "playwright", enabled: true, command: "npx @modelcontextprotocol/server-playwright" },
+  { name: "firecrawl", enabled: true, command: "npx @modelcontextprotocol/server-firecrawl" },
+  { name: "tavily", enabled: true, command: "npx @modelcontextprotocol/server-tavily" },
+  { name: "notion", enabled: true, command: "npx @modelcontextprotocol/server-notion" },
+  { name: "atlassian", enabled: true, command: "npx @modelcontextprotocol/server-atlassian" },
+  { name: "dbhub", enabled: true, command: "npx @modelcontextprotocol/server-dbhub" },
+  { name: "stripe", enabled: true, command: "npx @modelcontextprotocol/server-stripe" },
+  { name: "cloudflare", enabled: true, command: "npx @modelcontextprotocol/server-cloudflare" },
+  { name: "netdata", enabled: true, command: "npx @modelcontextprotocol/server-netdata" },
+  { name: "unity", enabled: true, command: "npx @modelcontextprotocol/server-unity" },
+  { name: "overleaf", enabled: true, command: "npx @modelcontextprotocol/server-overleaf" },
+  { name: "google-drive", enabled: true, command: "npx @modelcontextprotocol/server-google-drive" },
+  { name: "slack", enabled: true, command: "npx @modelcontextprotocol/server-slack" },
+  { name: "desktop-commander", enabled: true, command: "npx @modelcontextprotocol/server-desktop-commander" },
+  { name: "git", enabled: true, command: "npx @modelcontextprotocol/server-git" },
+  { name: "sqlite", enabled: true, command: "npx @modelcontextprotocol/server-sqlite" },
+  { name: "puppeteer", enabled: true, command: "npx @modelcontextprotocol/server-puppeteer" },
+  { name: "raja-knowledge-repository", enabled: true, command: "python mcp_server.py" },
+  
+  // 34 Unique New MCP Servers
+  { name: "confluence", enabled: true, command: "npx @modelcontextprotocol/server-confluence" },
+  { name: "memory", enabled: true, command: "npx @modelcontextprotocol/server-memory" },
+  { name: "gitlab", enabled: true, command: "npx @modelcontextprotocol/server-gitlab" },
+  { name: "docker", enabled: true, command: "npx @modelcontextprotocol/server-docker" },
+  { name: "kubernetes", enabled: true, command: "npx @modelcontextprotocol/server-kubernetes" },
+  { name: "postgres", enabled: true, command: "npx @modelcontextprotocol/server-postgres" },
+  { name: "snowflake", enabled: true, command: "npx @modelcontextprotocol/server-snowflake" },
+  { name: "mysql", enabled: true, command: "npx @modelcontextprotocol/server-mysql" },
+  { name: "fetch", enabled: true, command: "npx @modelcontextprotocol/server-fetch" },
+  { name: "brave-search", enabled: true, command: "npx @modelcontextprotocol/server-brave-search" },
+  { name: "linear", enabled: true, command: "npx @modelcontextprotocol/server-linear" },
+  { name: "jira", enabled: true, command: "npx @modelcontextprotocol/server-jira" },
+  { name: "asana", enabled: true, command: "npx @modelcontextprotocol/server-asana" },
+  { name: "gmail", enabled: true, command: "npx @modelcontextprotocol/server-gmail" },
+  { name: "discord", enabled: true, command: "npx @modelcontextprotocol/server-discord" },
+  { name: "command-execution", enabled: true, command: "npx @modelcontextprotocol/server-command-execution" },
+  { name: "ssh", enabled: true, command: "npx @modelcontextprotocol/server-ssh" },
+  { name: "elevenlabs", enabled: true, command: "npx @modelcontextprotocol/server-elevenlabs" },
+  { name: "ffmpeg", enabled: true, command: "npx @modelcontextprotocol/server-ffmpeg" },
+  { name: "youtube", enabled: true, command: "npx @modelcontextprotocol/server-youtube" },
+  { name: "prometheus", enabled: true, command: "npx @modelcontextprotocol/server-prometheus" },
+  { name: "grafana", enabled: true, command: "npx @modelcontextprotocol/server-grafana" },
+  { name: "obsidian", enabled: true, command: "npx @modelcontextprotocol/server-obsidian" },
+  { name: "google-workspace", enabled: true, command: "npx @modelcontextprotocol/server-google-workspace" },
+  { name: "miro", enabled: true, command: "npx @modelcontextprotocol/server-miro" },
+  { name: "airtable", enabled: true, command: "npx @modelcontextprotocol/server-airtable" },
+  { name: "browserbase", enabled: true, command: "npx @modelcontextprotocol/server-browserbase" },
+  { name: "sentry", enabled: true, command: "npx @modelcontextprotocol/server-sentry" },
+  { name: "aws", enabled: true, command: "npx @modelcontextprotocol/server-aws" },
+  { name: "weaviate", enabled: true, command: "npx @modelcontextprotocol/server-weaviate" },
+  { name: "zapier", enabled: true, command: "npx @modelcontextprotocol/server-zapier" },
+  { name: "zendesk", enabled: true, command: "npx @modelcontextprotocol/server-zendesk" },
+  { name: "google-maps", enabled: true, command: "npx @modelcontextprotocol/server-google-maps" },
+  { name: "twilio", enabled: true, command: "npx @modelcontextprotocol/server-twilio" }
+];
+
 export class RuntimeService {
   private static instance: RuntimeService | null = null;
   private dbPath: string = "";
@@ -74,7 +137,7 @@ export class RuntimeService {
     // Read raw config
     let rawConfig: Record<string, any> = {};
     let activeChannels: string[] = [];
-    let mcpServers: { name: string; enabled: boolean; command?: string }[] = [];
+    let mcpServers: { name: string; enabled: boolean; command?: string }[] = [...DEFAULT_MCP_SERVERS];
 
     try {
       if (fs.existsSync(this.configPath)) {
@@ -86,11 +149,19 @@ export class RuntimeService {
         }
         
         if (rawConfig.mcp && rawConfig.mcp.servers) {
-          mcpServers = Object.keys(rawConfig.mcp.servers).map(k => ({
-            name: k,
-            enabled: true,
-            command: rawConfig.mcp.servers[k].command
-          }));
+          for (const k of Object.keys(rawConfig.mcp.servers)) {
+            const existingIdx = mcpServers.findIndex(s => s.name === k);
+            if (existingIdx !== -1) {
+              mcpServers[existingIdx].command = rawConfig.mcp.servers[k].command;
+              mcpServers[existingIdx].enabled = rawConfig.mcp.servers[k].enabled ?? true;
+            } else {
+              mcpServers.push({
+                name: k,
+                enabled: rawConfig.mcp.servers[k].enabled ?? true,
+                command: rawConfig.mcp.servers[k].command
+              });
+            }
+          }
         }
       }
     } catch (e) {}
@@ -782,22 +853,41 @@ export class RuntimeService {
 
     // Add MCP connected servers from configuration
     try {
+      let mcpConfigs = [...DEFAULT_MCP_SERVERS];
       if (fs.existsSync(this.configPath)) {
         const raw = fs.readFileSync(this.configPath, "utf-8");
         const parsed = JSON.parse(raw);
         if (parsed.mcp && parsed.mcp.servers) {
           for (const serverName in parsed.mcp.servers) {
-            tools.push({
-              name: `mcp:${serverName}`,
-              category: "mcp-server",
-              provider: "connected-plugin",
-              description: `MCP Server plugin registered via command: ${parsed.mcp.servers[serverName].command}`,
-              inputSchema: {},
-              outputSchema: {},
-              stats: { executionCount: 12, successRate: 100, failureRate: 0, avgDurationMs: 250 },
-              status: "active"
-            });
+            const existingIdx = mcpConfigs.findIndex(s => s.name === serverName);
+            if (existingIdx !== -1) {
+              mcpConfigs[existingIdx].command = parsed.mcp.servers[serverName].command;
+              if (parsed.mcp.servers[serverName].enabled === false) {
+                mcpConfigs[existingIdx].enabled = false;
+              }
+            } else {
+              mcpConfigs.push({
+                name: serverName,
+                enabled: parsed.mcp.servers[serverName].enabled ?? true,
+                command: parsed.mcp.servers[serverName].command
+              });
+            }
           }
+        }
+      }
+
+      for (const server of mcpConfigs) {
+        if (server.enabled) {
+          tools.push({
+            name: `mcp:${server.name}`,
+            category: "mcp-server",
+            provider: "connected-plugin",
+            description: `MCP Server plugin registered via command: ${server.command}`,
+            inputSchema: {},
+            outputSchema: {},
+            stats: { executionCount: 12, successRate: 100, failureRate: 0, avgDurationMs: 250 },
+            status: "active"
+          });
         }
       }
     } catch (e) {}

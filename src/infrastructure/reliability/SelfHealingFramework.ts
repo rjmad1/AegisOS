@@ -2,6 +2,7 @@ import { selfHealer } from "../diagnostics/self-healer";
 import { recoveryEngine } from "./RecoveryEngine";
 import { recoveryValidator } from "./RecoveryValidator";
 import { reliabilityStore } from "./store";
+import { evaluationPipeline } from "../evaluation/evaluation-pipeline";
 
 export interface SelfHealingResult {
   timestamp: string;
@@ -33,8 +34,38 @@ export class SelfHealingFramework {
     const baseReport = await selfHealer.executeDiagnosticsAndHeal();
     const remediations: SelfHealingResult["remediations"] = [];
 
-    // Parse the baseline issues and trigger active recovery
-    for (const issue of baseReport.issues) {
+    // 1. Cascading dependency checks
+    const hasOllamaIssue = baseReport.issues.some(i => i.toLowerCase().includes("ollama"));
+    const filteredIssues = baseReport.issues.filter(issue => {
+      if (hasOllamaIssue) {
+        // If Ollama is down, skip attempting recovery on dependent services LiteLLM and AegisOS
+        if (issue.toLowerCase().includes("litellm") || issue.toLowerCase().includes("aegisos")) {
+          console.log(`[SelfHealingFramework] Skipping recovery of dependent service because upstream service Ollama is offline: ${issue}`);
+          return false;
+        }
+      }
+      return true;
+    });
+
+    // 2. Autonomic model quality checks
+    try {
+      const latestHistory = evaluationPipeline.getHistory();
+      if (latestHistory && latestHistory.length > 0) {
+        const avgCorrectness = latestHistory.reduce((sum, r) => sum + r.scores.correctness, 0) / latestHistory.length;
+        if (avgCorrectness < 85) {
+          this.escalateIncident(
+            "AI Model Inference", 
+            "AI Model validation correctness degraded", 
+            `Average model correctness score has dropped to ${avgCorrectness}%. Escalating for prompt tuning or fallback routing.`
+          );
+        }
+      }
+    } catch (err: any) {
+      console.warn(`[SelfHealingFramework] Autonomic evaluation check skipped: ${err.message}`);
+    }
+
+    // Parse the filtered issues and trigger active recovery
+    for (const issue of filteredIssues) {
       let component = "general";
       let serviceId = "";
       

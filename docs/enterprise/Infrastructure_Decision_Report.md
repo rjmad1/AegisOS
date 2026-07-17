@@ -1,5 +1,13 @@
 # Infrastructure Decision Report
 
+| Field | Value |
+|---|---|
+| **Document ID** | IDR-2026-001 |
+| **Version** | 1.0.0 |
+| **Date** | 2026-07-13 |
+| **Classification** | Public / Enterprise Standard |
+| **Owner** | Enterprise Architect |
+
 This document records the architectural rationales and design decisions behind the cloud-native, enterprise production infrastructure transformations.
 
 ## 1. Dynamic Database Provider Compiling

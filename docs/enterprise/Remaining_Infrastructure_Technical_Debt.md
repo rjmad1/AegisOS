@@ -1,5 +1,13 @@
 # Remaining Infrastructure Technical Debt
 
+| Field | Value |
+|---|---|
+| **Document ID** | ITD-2026-001 |
+| **Version** | 1.0.0 |
+| **Date** | 2026-07-13 |
+| **Classification** | Public / Enterprise Standard |
+| **Owner** | Compliance Architect / SRE Lead |
+
 This register tracks remaining items for future enhancement as the platform scales.
 
 ## 1. Dynamic Secret Provider Auth Rotation

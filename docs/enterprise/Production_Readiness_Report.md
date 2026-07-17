@@ -1,5 +1,13 @@
 # Production Readiness Report
 
+| Field | Value |
+|---|---|
+| **Document ID** | PRR-2026-001 |
+| **Version** | 1.0.0 |
+| **Date** | 2026-07-13 |
+| **Classification** | Public / Enterprise Standard |
+| **Owner** | Principal DevOps Engineer |
+
 This report evaluates the readiness of the Operations Console and local AI infrastructure platforms for enterprise production deployment.
 
 ## 1. Containerization & Isolation Readiness

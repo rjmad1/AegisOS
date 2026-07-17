@@ -6,6 +6,7 @@ import { alertingPlatform } from "@/infrastructure/observability/alerting-platfo
 import { intelligenceEngine } from "@/infrastructure/observability/intelligence-engine";
 import { telemetryHealthPlatform } from "@/infrastructure/observability/telemetry-health";
 import { validationFramework } from "@/infrastructure/observability/validation-framework";
+import prisma from "@/infrastructure/db/prisma";
 
 export async function GET() {
   try {
@@ -19,6 +20,30 @@ export async function GET() {
     const readiness = await validationFramework.getReadinessReport();
     const gaps = await validationFramework.getGapReport();
 
+    // Query cognitive scorecards from DB (Phase 4/5)
+    const scorecards = await prisma.evaluationScorecard.findMany({
+      orderBy: { timestamp: "desc" },
+      take: 20
+    });
+
+    const totalCost = await prisma.evaluationScorecard.aggregate({
+      _sum: { costUsd: true }
+    });
+
+    const avgGrounding = await prisma.evaluationScorecard.aggregate({
+      _avg: { grounding: true }
+    });
+
+    const avgLatency = await prisma.evaluationScorecard.aggregate({
+      _avg: { latencyMs: true }
+    });
+
+    const safetyViolations = await prisma.evaluationScorecard.count({
+      where: { safetyViolation: true }
+    });
+
+    const totalCalls = await prisma.evaluationScorecard.count();
+
     return NextResponse.json({
       alerts: {
         active: activeAlerts,
@@ -28,7 +53,17 @@ export async function GET() {
       hotspots,
       selfHealth,
       readiness,
-      gaps
+      gaps,
+      cognitive: {
+        scorecards,
+        stats: {
+          totalCalls,
+          totalCostUsd: totalCost._sum.costUsd || 0,
+          avgGrounding: avgGrounding._avg.grounding || 1.0,
+          avgLatencyMs: avgLatency._avg.latencyMs || 0,
+          safetyViolations
+        }
+      }
     });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

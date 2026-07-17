@@ -151,7 +151,7 @@ services:
     restart: always
     ports:
       - "${HOST_PORT_JAEGER:-16686}:16686" # UI
-      - "${HOST_PORT_OTEL_GRPC:-4317}"        # OTLP gRPC input
+      - "${HOST_PORT_JAEGER_OTLP:-4319}:4317"        # OTLP gRPC input
     networks:
       - aegisos-net
 

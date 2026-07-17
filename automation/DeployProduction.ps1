@@ -2,6 +2,11 @@
 # Production Deployment Automation Script for AI Operations Console.
 # MUST BE RUN IN AN ELEVATED POWERSHELL SESSION.
 
+param(
+    [Parameter(Mandatory=$false)]
+    [string]$ServicePassword
+)
+
 $HelperModule = Join-Path $PSScriptRoot "libs\PlatformHelper.psm1"
 if (-not (Test-Path $HelperModule)) {
     Write-Error "[ERROR] Platform Helper module is missing!"
@@ -115,12 +120,47 @@ foreach ($s in $services) {
 # 6.5. Configure Scoped Service User
 Log-PlatformAction "Configuring scoped service user..."
 $serviceUser = "AI_Service_User"
-$servicePass = "AegisPassword123!@#"
+
+# Determine password dynamically
+$servicePass = $ServicePassword
+$securePassFile = Join-Path $TargetRoot "config\.service_pass"
+
+if (-not $servicePass) {
+    if (Test-Path $securePassFile) {
+        $servicePass = Get-Content $securePassFile -Raw
+        Log-PlatformInfo "Loaded existing service account password from secure file."
+    } else {
+        # Generate random password satisfying complexity: 16 chars, uppercase, lowercase, numbers, specials
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%"
+        $rng = [System.Security.Cryptography.RNGCryptoServiceProvider]::new()
+        $bytes = New-Object Byte[] 16
+        $rng.GetBytes($bytes)
+        $passArr = foreach ($b in $bytes) { $chars[$b % $chars.Length] }
+        $servicePass = (-join $passArr) + "1aA!"
+        Log-PlatformInfo "Generated secure random password for service user."
+    }
+}
+
 $existingUser = Get-LocalUser -Name $serviceUser -ErrorAction SilentlyContinue
 if (-not $existingUser) {
     $secPass = ConvertTo-SecureString $servicePass -AsPlainText -Force
     New-LocalUser -Name $serviceUser -Password $secPass -Description "Scoped runtime account for AegisOS Platform Services" -PasswordNeverExpires $true | Out-Null
     Log-PlatformSuccess "Scoped service user '$serviceUser' created."
+    
+    # Save password to secure file for subsequent runs
+    $configDir = Split-Path $securePassFile
+    if (-not (Test-Path $configDir)) {
+        New-Item -ItemType Directory -Path $configDir -Force | Out-Null
+    }
+    $servicePass | Out-File $securePassFile -Force -Encoding utf8
+    Log-PlatformInfo "Service user credentials saved securely."
+} else {
+    if ($ServicePassword) {
+        $secPass = ConvertTo-SecureString $servicePass -AsPlainText -Force
+        Set-LocalUser -Name $serviceUser -Password $secPass | Out-Null
+        Log-PlatformSuccess "Password updated for existing local user '$serviceUser'."
+        $servicePass | Out-File $securePassFile -Force -Encoding utf8
+    }
 }
 
 # Grant directory permissions

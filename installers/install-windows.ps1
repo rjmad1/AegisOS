@@ -5,7 +5,8 @@ param (
     [switch]$Silent,
     [switch]$Repair,
     [switch]$Upgrade,
-    [string]$InstallDir = "C:\AIPlatform"
+    [string]$InstallDir = "C:\AIPlatform",
+    [string]$ServicePassword
 )
 
 function Log($msg, $color = "Cyan") {
@@ -87,12 +88,47 @@ if (-not (Test-Path $InstallDir)) {
 
 # Configure Scoped Service User
 $serviceUser = "AI_Service_User"
-$servicePass = "AegisPassword123!@#"
+
+# Determine password dynamically
+$servicePass = $ServicePassword
+$securePassFile = Join-Path $InstallDir "configs\.service_pass"
+
+if (-not $servicePass) {
+    if (Test-Path $securePassFile) {
+        $servicePass = Get-Content $securePassFile -Raw
+        Log "Loaded existing service account password from secure file."
+    } else {
+        # Generate random password satisfying complexity: 16 chars, uppercase, lowercase, numbers, specials
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%"
+        $rng = [System.Security.Cryptography.RNGCryptoServiceProvider]::new()
+        $bytes = New-Object Byte[] 16
+        $rng.GetBytes($bytes)
+        $passArr = foreach ($b in $bytes) { $chars[$b % $chars.Length] }
+        $servicePass = (-join $passArr) + "1aA!"
+        Log "Generated secure random password for service user."
+    }
+}
+
 $existingUser = Get-LocalUser -Name $serviceUser -ErrorAction SilentlyContinue
 if (-not $existingUser) {
     Log "Creating restricted system service user account '$serviceUser'..."
     $secPass = ConvertTo-SecureString $servicePass -AsPlainText -Force
     New-LocalUser -Name $serviceUser -Password $secPass -Description "Scoped runtime account for AegisOS Platform Services" -PasswordNeverExpires $true | Out-Null
+    
+    # Save password to secure file for subsequent runs
+    $configDir = Split-Path $securePassFile
+    if (-not (Test-Path $configDir)) {
+        New-Item -ItemType Directory -Path $configDir -Force | Out-Null
+    }
+    $servicePass | Out-File $securePassFile -Force -Encoding utf8
+    Log "Service user credentials saved securely."
+} else {
+    if ($ServicePassword) {
+        $secPass = ConvertTo-SecureString $servicePass -AsPlainText -Force
+        Set-LocalUser -Name $serviceUser -Password $secPass | Out-Null
+        Log "Password updated for existing local user '$serviceUser'."
+        $servicePass | Out-File $securePassFile -Force -Encoding utf8
+    }
 }
 
 # Grant directory permissions

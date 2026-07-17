@@ -689,5 +689,85 @@ model FeedbackTicket {
   emailNotificationSent Boolean  @default(false)
 }
 
+model Skill {
+  id              String   @id
+  name            String
+  purpose         String
+  domain          String   // e.g., "ai_engineering", "security", etc.
+  version         String   // e.g., "1.0.0"
+  status          String   // "enabled" | "disabled" | "degraded"
+  triggers        String   // JSON array of strings
+  prerequisites   String   // JSON array of strings
+  dependencies    String   // JSON array of strings (dependencies on other skill IDs)
+  supportedTools  String   // JSON array of strings
+  inputSchema     String   // JSON representation of input schema
+  outputSchema    String   // JSON representation of output schema
+  confidenceScore Float    // confidence level metric
+  executionCost   Float    // estimated execution cost metric
+  latencyMs       Int      // average latency in milliseconds
+  sandboxPolicy   String   // JSON string of SandboxPolicy
+  permissions     String   // JSON array of strings
+  metadata        String   // JSON metadata
+
+  // Multi-tenant scaffolding
+  organizationId  String?
+  tenantId        String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+}
+
+model SkillExecution {
+  id              String   @id @default(uuid())
+  skillId         String
+  status          String   // "queued" | "running" | "succeeded" | "failed" | "paused"
+  input           String   // JSON string representing input values
+  output          String?  // JSON string representing output values
+  error           String?
+  durationMs      Int?
+  cost            Float?
+  trace           String   // JSON string representing array of SkillExecutionStep
+  retryCount      Int      @default(0)
+  maxRetries      Int      @default(3)
+  parentId        String?  // parent SkillExecution ID if orchestrated
+  workflowId      String?  // associated workflow execution ID if any
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SkillTelemetry {
+  id              String   @id @default(uuid())
+  skillId         String
+  metricName      String   // "latency", "cost", "success", "failure", "sandbox_violation"
+  value           Float
+  timestamp       DateTime @default(now())
+  metadata        String?  // JSON string representing additional metadata
+}
+
+model EvaluationScorecard {
+  id                     String   @id @default(uuid())
+  timestamp              String
+  correlationId          String
+  traceId                String
+  promptId               String
+  modelId                String
+  correctness            Float
+  completeness           Float
+  grounding              Float
+  confidence             Float
+  security               Float
+  compliance             Float
+  latencyMs              Int
+  costUsd                Float
+  businessValue          Float
+  userObjectiveFulfilled Boolean
+  safetyViolation        Boolean
+  details                String? // JSON string
+}
+
+
+
 
 

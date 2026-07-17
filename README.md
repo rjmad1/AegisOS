@@ -2,7 +2,7 @@
 
 An enterprise-ready, local-first, privacy-preserving AI Workstation platform integrating Ollama inference models routing proxy, multi-agent frameworks, Tailscale mesh VPN, and a Next.js Console administration dashboard.
 
-## 🚀 Getting Started
+## ðŸš€ Getting Started
 
 To initialize the platform dependencies, SCM services, environment paths, and local models dynamically, run the interactive bootstrap installer:
 
@@ -21,21 +21,21 @@ The bootstrap wizard will:
 
 ---
 
-## 📂 Repository Information Architecture
+## ðŸ“‚ Repository Information Architecture
 
 The codebase is structured around clean architectural domains:
 
-- **[adr/](file:///d:/1_Projects/AegisOS/adr/)**: Architectural Decision Records (ADR-001 through ADR-008) capturing system boundaries and security contexts.
-- **[docs/](file:///d:/1_Projects/AegisOS/docs/)**: Canonical deployment guides, operations guides, disaster recovery runbooks, and handbooks.
-  - **[Master Documentation Index](file:///d:/1_Projects/AegisOS/docs/README.md)**
-- **[automation/](file:///d:/1_Projects/AegisOS/automation/)**: Re-engineered automation suite (installation, configuration, backups, restore, and package generation).
+- **[adr/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/)**: Architectural Decision Records (ADR-001 through ADR-012) capturing system boundaries, security contexts, and autonomic AI operating system specifications.
+- **[docs/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/)**: Canonical deployment guides, operations guides, disaster recovery runbooks, and handbooks.
+  - **[Master Documentation Index](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/README.md)**
+- **[automation/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/)**: Re-engineered automation suite (installation, configuration, backups, restore, and package generation).
   - Includes a shared helper library `libs/PlatformHelper.psm1`.
   - Deployment profiles (`profiles/`) and machine-readable catalogs (`catalogs/`).
-- **[src/](file:///d:/1_Projects/AegisOS/src/)**: Next.js 16 Console frontend dashboard.
+- **[src/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/)**: Next.js 16 Console frontend dashboard.
 
 ---
 
-## 💻 Running the Console Dashboard
+## ðŸ’» Running the Console Dashboard
 
 Once bootstrapped, run the Next.js Console admin panel locally:
 
@@ -52,3 +52,4 @@ To compile the production build:
 ```bash
 npm run build
 ```
+

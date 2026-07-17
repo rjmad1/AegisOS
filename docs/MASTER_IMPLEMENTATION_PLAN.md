@@ -1,4 +1,4 @@
-# AegisOS Master Implementation Plan
+﻿# AegisOS Master Implementation Plan
 **Authoritative Program Governance & Execution Blueprint (V1.0 GA)**
 
 | Role | Corporate Representative | Approved |
@@ -55,7 +55,7 @@ $$\text{Tailscale Tunneling} \rightarrow \text{mTLS \& Biometrics} \rightarrow \
 The program will execute using a Scaled Agile Framework (SAFe) model, running 2-week development sprints structured inside three-month Program Increments (PIs).
 
 ### 2.1 Engineering Code of Conduct
-All implementation tasks must conform to the **[Engineering Playbook](file:///d:/1_Projects/AegisOS/docs/ENGINEERING_PLAYBOOK.md)** and the **[Git Governance and QA Standard](file:///d:/1_Projects/AegisOS/docs/Git_Governance_and_QA_Standard.md)**.
+All implementation tasks must conform to the **[Engineering Playbook](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ENGINEERING_PLAYBOOK.md)** and the **[Git Governance and QA Standard](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Git_Governance_and_QA_Standard.md)**.
 * **Clean Architecture**: Strict separation of Presentation, Application, Domain, Infrastructure, and Platform layers. No imports bypass the dependency graph.
 * **Security First**: 100% test coverage target on cryptographic and authentication modules. Zero plaintext keys or unencrypted cache files allowed.
 * **Linting Enforcement**: Any PR violating `analysis_options.yaml` (Flutter) or `eslint.config.mjs` (Next.js) will be automatically blocked by CI.
@@ -72,8 +72,9 @@ All implementation tasks must conform to the **[Engineering Playbook](file:///d:
 ## 3. Reference Indexes
 
 To navigate the program documentation, refer to the following index files:
-* **[Implementation Backlog](file:///d:/1_Projects/AegisOS/docs/IMPLEMENTATION_BACKLOG.md)**: Exhaustive product backlog.
-* **[Release Plan](file:///d:/1_Projects/AegisOS/docs/RELEASE_PLAN.md)**: Sprint-by-sprint release schedule.
-* **[Dependency Map](file:///d:/1_Projects/AegisOS/docs/DEPENDENCY_MAP.md)**: Systems architecture diagram.
-* **[Risk Register](file:///d:/1_Projects/AegisOS/docs/RISK_REGISTER.md)**: Operational mitigations.
-* **[GA Checklist](file:///d:/1_Projects/AegisOS/docs/GA_CHECKLIST.md)**: Gating criteria for V1.0 launch.
+* **[Implementation Backlog](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/IMPLEMENTATION_BACKLOG.md)**: Exhaustive product backlog.
+* **[Release Plan](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/RELEASE_PLAN.md)**: Sprint-by-sprint release schedule.
+* **[Dependency Map](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/DEPENDENCY_MAP.md)**: Systems architecture diagram.
+* **[Risk Register](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/RISK_REGISTER.md)**: Operational mitigations.
+* **[GA Checklist](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/GA_CHECKLIST.md)**: Gating criteria for V1.0 launch.
+

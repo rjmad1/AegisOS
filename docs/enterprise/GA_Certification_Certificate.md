@@ -2,7 +2,11 @@
 
 | Field | Value |
 |---|---|
-| **Certificate ID** | CERT-GA-2026-0713 |
+| **Document ID** | CERT-GA-2026-0713 |
+| **Version** | 1.0.0 |
+| **Date** | 2026-07-13 |
+| **Classification** | Public / Enterprise Certification |
+| **Owner** | Enterprise Release Manager |
 | **Release Candidate** | v1.0.0-RC1 |
 | **Maturity Average** | 5.0 (Outstanding) |
 | **Status** | GA Approved |

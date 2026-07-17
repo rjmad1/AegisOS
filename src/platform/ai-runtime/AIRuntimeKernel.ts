@@ -157,7 +157,7 @@ export class AIRuntimeKernel {
       const tokensCount = Math.round(finalPrompt.length / 4 + finalContent.length / 4);
       const cost = (tokensCount / 1000) * 0.0015;
 
-      const evalRes = await this.evaluation.evaluateOutput("golden:kernel-boot", routedModelId, finalContent, elapsed, cost);
+      const evalRes = await this.evaluation.evaluateOutput("golden:kernel-boot", routedModelId, finalContent, elapsed, cost, ctx.correlationId, ctx.traceId);
       if (evalRes.safetyViolation) {
         throw new Error("AIRuntimeKernel: Output verification blocked due to sensitive signature leak.");
       }

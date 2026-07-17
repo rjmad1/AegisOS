@@ -76,7 +76,40 @@ try {
     if (Test-Path $dbBackup) {
         Log-PlatformInfo "Restoring SQLite and JSON databases..."
         if (-not (Test-Path $dbTarget)) { New-Item -ItemType Directory -Path $dbTarget -Force | Out-Null }
-        Copy-Item -Path (Join-Path $dbBackup "*") -Destination $dbTarget -Force
+        Copy-Item -Path (Join-Path $dbBackup "*") -Destination $dbTarget -Exclude "postgres_backup.sql" -Force
+        
+        # 5.5 PostgreSQL Restore
+        $pgBackup = Join-Path $dbBackup "postgres_backup.sql"
+        if (Test-Path $pgBackup) {
+            $dbUrl = $env:DATABASE_URL
+            if ($dbUrl -and $dbUrl.StartsWith("postgresql://")) {
+                Log-PlatformInfo "Detecting PostgreSQL destination. Preparing psql restore..."
+                try {
+                    if ($dbUrl -match "postgresql://([^:]+):([^@]+)@([^:/]+):?(\d+)?/(.+)") {
+                        $pgUser = $Matches[1]
+                        $pgPass = $Matches[2]
+                        $pgHost = $Matches[3]
+                        $pgPort = if ($Matches[4]) { $Matches[4] } else { "5432" }
+                        $pgDb = $Matches[5]
+
+                        $psqlPath = "psql.exe"
+                        if (-not (Get-Command psql -ErrorAction SilentlyContinue)) {
+                            $progFiles = $env:ProgramFiles
+                            $pgBins = Get-ChildItem -Path "$progFiles\PostgreSQL" -Filter "psql.exe" -Recurse -ErrorAction SilentlyContinue
+                            if ($pgBins) { $psqlPath = $pgBins[0].FullName }
+                        }
+
+                        $env:PGPASSWORD = $pgPass
+                        Log-PlatformInfo "Executing restore of $pgDb on $pgHost..."
+                        & $psqlPath -h $pgHost -p $pgPort -U $pgUser -d $pgDb -f $pgBackup 2>&1 | Out-Null
+                        Remove-Item Env:\PGPASSWORD
+                        Log-PlatformSuccess "PostgreSQL database successfully restored."
+                    }
+                } catch {
+                    Log-PlatformWarn "PostgreSQL restore failed: $_"
+                }
+            }
+        }
     }
 
     # 6. Restore Knowledge Context files
@@ -95,6 +128,23 @@ try {
         Log-PlatformInfo "Restoring artifacts storage..."
         if (-not (Test-Path $artifactsTarget)) { New-Item -ItemType Directory -Path $artifactsTarget -Force | Out-Null }
         Copy-Item -Path (Join-Path $artifactsBackup "*") -Destination $artifactsTarget -Recurse -Force
+    }
+
+    # 7.5 Restore MinIO volume (if Docker is running and archive exists)
+    $minioBackup = Join-Path $tempExtractDir "minio_data"
+    $minioTar = Join-Path $minioBackup "minio_data.tar.gz"
+    if ((Test-Path $minioTar) -and (Get-Command docker -ErrorAction SilentlyContinue)) {
+        Log-PlatformInfo "Restoring MinIO Docker volume..."
+        try {
+            $minioCheck = & docker ps -a --filter "name=aegisos-minio" --format "{{.Names}}"
+            if ($minioCheck -eq "aegisos-minio") {
+                Log-PlatformInfo "Extracting MinIO backup into docker volume..."
+                & docker run --rm -v aegisos_minio_data:/data -v ${minioBackup}:/backup alpine sh -c "rm -rf /data/* && rm -rf /data/.* 2>/dev/null; tar xzf /backup/minio_data.tar.gz -C /data" | Out-Null
+                Log-PlatformSuccess "MinIO data volume successfully restored."
+            }
+        } catch {
+            Log-PlatformWarn "MinIO volume restore failed: $_"
+        }
     }
 
     # 8. Start Services

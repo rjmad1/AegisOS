@@ -8,6 +8,7 @@ import { policyEnforcer } from "../security/policy-enforcer";
 import { telemetryTracker } from "../observability/telemetry";
 import { metricsPlatform } from "../observability/metrics-platform";
 import { aiRuntimeKernel } from "../../platform/ai-runtime/AIRuntimeKernel";
+import { executiveControlPlane } from "../../platform/control/ExecutiveControlPlane";
 import { AIRequest, AIResponse } from "../../platform/ai-runtime/types";
 
 export interface SDKConfig {
@@ -166,7 +167,7 @@ export const platformSdk: IPlatformSdk = {
     endSpan: (traceId, spanId, attributes) => telemetryTracker.endSpan(traceId, spanId, attributes)
   },
   ai: {
-    execute: (request) => aiRuntimeKernel.execute(request),
+    execute: (request) => executiveControlPlane.execute(request),
     getKernel: () => aiRuntimeKernel
   },
 

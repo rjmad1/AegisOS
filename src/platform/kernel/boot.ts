@@ -22,6 +22,9 @@ import { workflowsModule } from '@/modules/workflows/workflows.module';
 import { observabilityModule } from '@/modules/observability/observability.module';
 import { reliabilityModule } from '@/modules/reliability/reliability.module';
 import { developerModule } from '@/modules/developer/developer.module';
+import { skillsModule } from '@/modules/skills/skills.module';
+import { engineeringIntelligenceModule } from '@/modules/engineering-intelligence/engineering-intelligence.module';
+import { missionControlModule } from '@/modules/mission-control/mission-control.module';
 
 const allModules: PlatformModule[] = [
   platformModule,
@@ -36,6 +39,9 @@ const allModules: PlatformModule[] = [
   observabilityModule,
   reliabilityModule,
   developerModule,
+  skillsModule,
+  engineeringIntelligenceModule,
+  missionControlModule,
 ];
 
 let booted = false;

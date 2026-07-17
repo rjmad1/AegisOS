@@ -37,17 +37,17 @@ if (Test-Path $authPath) {
 
 # Control 2: Data Encryption (AES-GCM-256)
 Log-PlatformInfo "Auditing Control CRYP-1: Encrypted Secrets..."
-$secretRepoPath = Join-Path $rootDir "src\repositories\secret.repository.ts"
-if (Test-Path $secretRepoPath) {
-    $content = (Get-Content -LiteralPath $secretRepoPath) -join "`n"
+$secretsPlatformPath = Join-Path $rootDir "src\infrastructure\security\secrets-platform.ts"
+if (Test-Path $secretsPlatformPath) {
+    $content = (Get-Content -LiteralPath $secretsPlatformPath) -join "`n"
     if ($content -match "aes-256-gcm") {
-        Log-PlatformSuccess "Data Encryption: aes-256-gcm encryption algorithm verified."
+        Log-PlatformSuccess "Data Encryption: aes-256-gcm encryption algorithm verified in secrets-platform.ts."
     } else {
-        Log-PlatformWarn "Data Encryption: secret.repository.ts does not use aes-256-gcm."
+        Log-PlatformWarn "Data Encryption: secrets-platform.ts does not use aes-256-gcm."
         $allPassed = $false
     }
 } else {
-    Log-PlatformWarn "Data Encryption: secret.repository.ts not found."
+    Log-PlatformWarn "Data Encryption: secrets-platform.ts not found."
     $allPassed = $false
 }
 
@@ -92,15 +92,15 @@ Status: $(if ($allPassed) { "COMPLIANT" } else { "NON-COMPLIANT" })
 
 1. **Access Control (SOC2 CC6.1/CC6.2, ISO A.9.1)**:
    - Status: $(if (Test-Path $authPath) { "PASS" } else { "FAIL" })
-   - Evidence: Verified `hasPermission()` in [authorization.ts](file:///d:/1_Projects/AegisOS/src/platform/auth/authorization.ts).
+   - Evidence: Verified `hasPermission()` in [authorization.ts](file:///$($authPath.Replace('\', '/'))).
 
 2. **Data Encryption (SOC2 CC6.6/CC6.7, ISO A.8.2)**:
-   - Status: $(if (Test-Path $secretRepoPath) { "PASS" } else { "FAIL" })
-   - Evidence: Verified `aes-256-gcm` in [secret.repository.ts](file:///d:/1_Projects/AegisOS/src/repositories/secret.repository.ts).
+   - Status: $(if (Test-Path $secretsPlatformPath) { "PASS" } else { "FAIL" })
+   - Evidence: Verified `aes-256-gcm` in [secrets-platform.ts](file:///$($secretsPlatformPath.Replace('\', '/'))).
 
 3. **Audit Trail (SOC2 CC2.1, ISO A.12.4)**:
    - Status: $(if ($hasAuditLog -and $hasAuditEvent) { "PASS" } else { "FAIL" })
-   - Evidence: Verified AuditLogEntry & AuditEvent in [schema.prisma](file:///d:/1_Projects/AegisOS/prisma/schema.prisma).
+   - Evidence: Verified AuditLogEntry & AuditEvent in [schema.prisma](file:///$($schemaPath.Replace('\', '/'))).
 
 "@
 

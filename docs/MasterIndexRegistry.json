@@ -2,453 +2,1377 @@
     "Documents":  [
                       {
                           "Title":  "Administrator_Guide",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Administrator_Guide.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Administrator_Guide.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Administrator_Guide.md",
-                          "Size":  6263
+                          "Size":  6256
+                      },
+                      {
+                          "Title":  "API_GUIDELINES",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/API_GUIDELINES.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "API_GUIDELINES.md",
+                          "Size":  2958
+                      },
+                      {
+                          "Title":  "architecture_dependency_graph",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/architecture_dependency_graph.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "architecture_dependency_graph.md",
+                          "Size":  4880
                       },
                       {
                           "Title":  "Architecture_Handbook",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Architecture_Handbook.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Architecture_Handbook.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Architecture_Handbook.md",
-                          "Size":  11927
+                          "Size":  11921
                       },
                       {
                           "Title":  "CHANGELOG",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/CHANGELOG.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/CHANGELOG.md",
                           "DocumentId":  "N/A",
                           "Filename":  "CHANGELOG.md",
-                          "Size":  1823
+                          "Size":  2427
+                      },
+                      {
+                          "Title":  "CODING_STANDARDS",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/CODING_STANDARDS.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "CODING_STANDARDS.md",
+                          "Size":  3246
+                      },
+                      {
+                          "Title":  "ComplianceEvidenceReport",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ComplianceEvidenceReport.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ComplianceEvidenceReport.md",
+                          "Size":  791
                       },
                       {
                           "Title":  "CONTRIBUTING",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/CONTRIBUTING.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/CONTRIBUTING.md",
                           "DocumentId":  "N/A",
                           "Filename":  "CONTRIBUTING.md",
                           "Size":  1025
                       },
                       {
+                          "Title":  "DEPENDENCY_MAP",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/DEPENDENCY_MAP.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "DEPENDENCY_MAP.md",
+                          "Size":  4846
+                      },
+                      {
+                          "Title":  "DEPLOYMENT",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/DEPLOYMENT.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "DEPLOYMENT.md",
+                          "Size":  6495
+                      },
+                      {
                           "Title":  "Deployment_Guide",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Deployment_Guide.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Deployment_Guide.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Deployment_Guide.md",
-                          "Size":  3052
+                          "Size":  3047
                       },
                       {
                           "Title":  "Developer_Guide",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Developer_Guide.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Developer_Guide.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Developer_Guide.md",
                           "Size":  2293
                       },
                       {
                           "Title":  "Disaster_Recovery_Guide",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Disaster_Recovery_Guide.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Disaster_Recovery_Guide.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Disaster_Recovery_Guide.md",
-                          "Size":  2248
+                          "Size":  2244
+                      },
+                      {
+                          "Title":  "ENGINEERING_PLAYBOOK",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ENGINEERING_PLAYBOOK.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ENGINEERING_PLAYBOOK.md",
+                          "Size":  31945
+                      },
+                      {
+                          "Title":  "GA_CHECKLIST",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/GA_CHECKLIST.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "GA_CHECKLIST.md",
+                          "Size":  3341
+                      },
+                      {
+                          "Title":  "GITHUB_PROJECT_STRUCTURE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/GITHUB_PROJECT_STRUCTURE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "GITHUB_PROJECT_STRUCTURE.md",
+                          "Size":  4441
                       },
                       {
                           "Title":  "Git_Governance_and_QA_Standard",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Git_Governance_and_QA_Standard.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Git_Governance_and_QA_Standard.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Git_Governance_and_QA_Standard.md",
                           "Size":  33893
                       },
                       {
+                          "Title":  "IMPLEMENTATION_BACKLOG",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/IMPLEMENTATION_BACKLOG.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "IMPLEMENTATION_BACKLOG.md",
+                          "Size":  7858
+                      },
+                      {
                           "Title":  "LICENSE",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/LICENSE.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/LICENSE.md",
                           "DocumentId":  "N/A",
                           "Filename":  "LICENSE.md",
                           "Size":  1081
                       },
                       {
+                          "Title":  "MASTER_IMPLEMENTATION_PLAN",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/MASTER_IMPLEMENTATION_PLAN.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "MASTER_IMPLEMENTATION_PLAN.md",
+                          "Size":  6174
+                      },
+                      {
+                          "Title":  "master_remediation_register",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/master_remediation_register.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "master_remediation_register.md",
+                          "Size":  10656
+                      },
+                      {
+                          "Title":  "OBSERVABILITY",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/OBSERVABILITY.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "OBSERVABILITY.md",
+                          "Size":  2776
+                      },
+                      {
                           "Title":  "Operations_Guide",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Operations_Guide.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Operations_Guide.md",
-                          "Size":  2204
+                          "Size":  2198
                       },
                       {
                           "Title":  "Optimization_Roadmap",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Optimization_Roadmap.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Optimization_Roadmap.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Optimization_Roadmap.md",
-                          "Size":  1717
+                          "Size":  1716
                       },
                       {
                           "Title":  "Platform_Handbook",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Platform_Handbook.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Platform_Handbook.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Platform_Handbook.md",
-                          "Size":  2664
+                          "Size":  2658
+                      },
+                      {
+                          "Title":  "PORTS_MANAGEMENT",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/PORTS_MANAGEMENT.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "PORTS_MANAGEMENT.md",
+                          "Size":  6030
                       },
                       {
                           "Title":  "README",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/README.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/README.md",
                           "DocumentId":  "N/A",
                           "Filename":  "README.md",
-                          "Size":  7100
+                          "Size":  15978
+                      },
+                      {
+                          "Title":  "RELEASE_PLAN",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/RELEASE_PLAN.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "RELEASE_PLAN.md",
+                          "Size":  3852
+                      },
+                      {
+                          "Title":  "RISK_REGISTER",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/RISK_REGISTER.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "RISK_REGISTER.md",
+                          "Size":  4114
+                      },
+                      {
+                          "Title":  "ROADMAP_GA",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ROADMAP_GA.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ROADMAP_GA.md",
+                          "Size":  5156
+                      },
+                      {
+                          "Title":  "SECRETS_MANAGEMENT",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/SECRETS_MANAGEMENT.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "SECRETS_MANAGEMENT.md",
+                          "Size":  3592
                       },
                       {
                           "Title":  "SECURITY",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/SECURITY.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/SECURITY.md",
                           "DocumentId":  "N/A",
                           "Filename":  "SECURITY.md",
                           "Size":  517
                       },
                       {
+                          "Title":  "SECURITY_ARCHITECTURE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/SECURITY_ARCHITECTURE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "SECURITY_ARCHITECTURE.md",
+                          "Size":  3074
+                      },
+                      {
+                          "Title":  "SPRINT_BREAKDOWN",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/SPRINT_BREAKDOWN.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "SPRINT_BREAKDOWN.md",
+                          "Size":  7349
+                      },
+                      {
                           "Title":  "SUPPORT",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/SUPPORT.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/SUPPORT.md",
                           "DocumentId":  "N/A",
                           "Filename":  "SUPPORT.md",
-                          "Size":  626
+                          "Size":  631
+                      },
+                      {
+                          "Title":  "TECHNICAL_DEBT",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/TECHNICAL_DEBT.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "TECHNICAL_DEBT.md",
+                          "Size":  3548
                       },
                       {
                           "Title":  "Technical_Debt_Assessment",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Technical_Debt_Assessment.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Technical_Debt_Assessment.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Technical_Debt_Assessment.md",
-                          "Size":  2087
+                          "Size":  2086
+                      },
+                      {
+                          "Title":  "THREAT_MODEL",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/THREAT_MODEL.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "THREAT_MODEL.md",
+                          "Size":  5961
                       },
                       {
                           "Title":  "Troubleshooting_Guide",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Troubleshooting_Guide.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Troubleshooting_Guide.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Troubleshooting_Guide.md",
-                          "Size":  5634
+                          "Size":  5630
                       },
                       {
                           "Title":  "User_Guide",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/User_Guide.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/User_Guide.md",
                           "DocumentId":  "N/A",
                           "Filename":  "User_Guide.md",
-                          "Size":  5364
+                          "Size":  5352
                       },
                       {
                           "Title":  "ValidationReport",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/ValidationReport.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ValidationReport.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ValidationReport.md",
-                          "Size":  4913
+                          "Size":  9612
                       },
                       {
                           "Title":  "Walkthrough",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/Walkthrough.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Walkthrough.md",
                           "DocumentId":  "N/A",
                           "Filename":  "Walkthrough.md",
-                          "Size":  18984
+                          "Size":  23202
+                      },
+                      {
+                          "Title":  "ADR-009-Command-And-Control-Subsystem",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/adr/ADR-009-Command-And-Control-Subsystem.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ADR-009-Command-And-Control-Subsystem.md",
+                          "Size":  2451
+                      },
+                      {
+                          "Title":  "MASTER_DELIVERABLES",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/autonomic_transformation/MASTER_DELIVERABLES.md",
+                          "DocumentId":  "AOD-2026-001",
+                          "Filename":  "MASTER_DELIVERABLES.md",
+                          "Size":  18061
+                      },
+                      {
+                          "Title":  "baseline_freeze_package",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/baseline_freeze_package.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "baseline_freeze_package.md",
+                          "Size":  3041
+                      },
+                      {
+                          "Title":  "master_certification_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/master_certification_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "master_certification_report.md",
+                          "Size":  16089
                       },
                       {
                           "Title":  "01_enterprise_gap_matrix",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/01_enterprise_gap_matrix.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/01_enterprise_gap_matrix.md",
                           "DocumentId":  "N/A",
                           "Filename":  "01_enterprise_gap_matrix.md",
-                          "Size":  10771
+                          "Size":  10770
                       },
                       {
                           "Title":  "02_product_management",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/02_product_management.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/02_product_management.md",
                           "DocumentId":  "N/A",
                           "Filename":  "02_product_management.md",
-                          "Size":  8515
+                          "Size":  8509
                       },
                       {
                           "Title":  "03_enterprise_governance",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/03_enterprise_governance.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/03_enterprise_governance.md",
                           "DocumentId":  "N/A",
                           "Filename":  "03_enterprise_governance.md",
-                          "Size":  8306
+                          "Size":  8326
                       },
                       {
                           "Title":  "04_ai_governance",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/04_ai_governance.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/04_ai_governance.md",
                           "DocumentId":  "N/A",
                           "Filename":  "04_ai_governance.md",
-                          "Size":  6650
+                          "Size":  6648
                       },
                       {
                           "Title":  "05_quality_engineering",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/05_quality_engineering.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/05_quality_engineering.md",
                           "DocumentId":  "N/A",
                           "Filename":  "05_quality_engineering.md",
                           "Size":  6257
                       },
                       {
                           "Title":  "06_security_governance",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/06_security_governance.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/06_security_governance.md",
                           "DocumentId":  "N/A",
                           "Filename":  "06_security_governance.md",
                           "Size":  6363
                       },
                       {
                           "Title":  "07_reliability_engineering",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/07_reliability_engineering.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/07_reliability_engineering.md",
                           "DocumentId":  "N/A",
                           "Filename":  "07_reliability_engineering.md",
                           "Size":  6203
                       },
                       {
                           "Title":  "08_observability_excellence",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/08_observability_excellence.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/08_observability_excellence.md",
                           "DocumentId":  "N/A",
                           "Filename":  "08_observability_excellence.md",
                           "Size":  5267
                       },
                       {
                           "Title":  "09_documentation_excellence_audit",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/09_documentation_excellence_audit.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/09_documentation_excellence_audit.md",
                           "DocumentId":  "N/A",
                           "Filename":  "09_documentation_excellence_audit.md",
-                          "Size":  7062
+                          "Size":  7210
                       },
                       {
                           "Title":  "10_repository_knowledge_map",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/10_repository_knowledge_map.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/10_repository_knowledge_map.md",
                           "DocumentId":  "N/A",
                           "Filename":  "10_repository_knowledge_map.md",
-                          "Size":  5481
+                          "Size":  5478
                       },
                       {
                           "Title":  "11_traceability_matrix",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/11_traceability_matrix.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/11_traceability_matrix.md",
                           "DocumentId":  "N/A",
                           "Filename":  "11_traceability_matrix.md",
-                          "Size":  4405
+                          "Size":  4410
                       },
                       {
                           "Title":  "12_enterprise_review_findings",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/12_enterprise_review_findings.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/12_enterprise_review_findings.md",
                           "DocumentId":  "N/A",
                           "Filename":  "12_enterprise_review_findings.md",
-                          "Size":  5095
+                          "Size":  5094
                       },
                       {
                           "Title":  "13_enterprise_readiness_scorecard",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/enterprise/13_enterprise_readiness_scorecard.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/13_enterprise_readiness_scorecard.md",
                           "DocumentId":  "N/A",
                           "Filename":  "13_enterprise_readiness_scorecard.md",
-                          "Size":  5424
+                          "Size":  5423
+                      },
+                      {
+                          "Title":  "14_release_governance",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/14_release_governance.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "14_release_governance.md",
+                          "Size":  2757
+                      },
+                      {
+                          "Title":  "15_git_release_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/15_git_release_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "15_git_release_report.md",
+                          "Size":  8542
+                      },
+                      {
+                          "Title":  "GA_Certification_Certificate",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/GA_Certification_Certificate.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "GA_Certification_Certificate.md",
+                          "Size":  1491
+                      },
+                      {
+                          "Title":  "GA_Readiness_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/GA_Readiness_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "GA_Readiness_Report.md",
+                          "Size":  2727
+                      },
+                      {
+                          "Title":  "Infrastructure_Decision_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/Infrastructure_Decision_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Infrastructure_Decision_Report.md",
+                          "Size":  2530
+                      },
+                      {
+                          "Title":  "Production_Readiness_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/Production_Readiness_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Production_Readiness_Report.md",
+                          "Size":  2724
+                      },
+                      {
+                          "Title":  "Remaining_Infrastructure_Technical_Debt",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/Remaining_Infrastructure_Technical_Debt.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Remaining_Infrastructure_Technical_Debt.md",
+                          "Size":  1731
+                      },
+                      {
+                          "Title":  "agent_health_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/agent_health_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "agent_health_report.md",
+                          "Size":  464
+                      },
+                      {
+                          "Title":  "ai_quality_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/ai_quality_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ai_quality_report.md",
+                          "Size":  594
+                      },
+                      {
+                          "Title":  "architecture_decision_records",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/architecture_decision_records.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "architecture_decision_records.md",
+                          "Size":  2087
+                      },
+                      {
+                          "Title":  "architecture_fitness_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/architecture_fitness_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "architecture_fitness_report.md",
+                          "Size":  712
+                      },
+                      {
+                          "Title":  "dependency_graph",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/dependency_graph.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "dependency_graph.md",
+                          "Size":  491
+                      },
+                      {
+                          "Title":  "digital_twin",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/digital_twin.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "digital_twin.md",
+                          "Size":  968
+                      },
+                      {
+                          "Title":  "engineering_excellence_dashboard",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/engineering_excellence_dashboard.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "engineering_excellence_dashboard.md",
+                          "Size":  1502
+                      },
+                      {
+                          "Title":  "executive_scorecard",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/executive_scorecard.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "executive_scorecard.md",
+                          "Size":  830
+                      },
+                      {
+                          "Title":  "improvement_backlog",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/improvement_backlog.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "improvement_backlog.md",
+                          "Size":  585
+                      },
+                      {
+                          "Title":  "knowledge_health_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/knowledge_health_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "knowledge_health_report.md",
+                          "Size":  502
+                      },
+                      {
+                          "Title":  "model_health_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/model_health_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "model_health_report.md",
+                          "Size":  481
+                      },
+                      {
+                          "Title":  "operational_fitness_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/operational_fitness_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "operational_fitness_report.md",
+                          "Size":  703
+                      },
+                      {
+                          "Title":  "performance_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/performance_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "performance_report.md",
+                          "Size":  450
+                      },
+                      {
+                          "Title":  "security_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/security_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "security_report.md",
+                          "Size":  946
+                      },
+                      {
+                          "Title":  "technical_debt_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/technical_debt_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "technical_debt_report.md",
+                          "Size":  695
+                      },
+                      {
+                          "Title":  "Accessibility",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Accessibility.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Accessibility.md",
+                          "Size":  4118
+                      },
+                      {
+                          "Title":  "ArchitectureOverview",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/ArchitectureOverview.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ArchitectureOverview.md",
+                          "Size":  5049
+                      },
+                      {
+                          "Title":  "Assumptions",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Assumptions.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Assumptions.md",
+                          "Size":  2413
+                      },
+                      {
+                          "Title":  "Capabilities",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Capabilities.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Capabilities.md",
+                          "Size":  5045
+                      },
+                      {
+                          "Title":  "DecisionLog",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/DecisionLog.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "DecisionLog.md",
+                          "Size":  5259
+                      },
+                      {
+                          "Title":  "Glossary",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Glossary.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Glossary.md",
+                          "Size":  2995
+                      },
+                      {
+                          "Title":  "Mission",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Mission.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Mission.md",
+                          "Size":  2398
+                      },
+                      {
+                          "Title":  "PRD",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/PRD.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "PRD.md",
+                          "Size":  6153
+                      },
+                      {
+                          "Title":  "Risks",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Risks.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Risks.md",
+                          "Size":  3597
+                      },
+                      {
+                          "Title":  "Roadmap",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Roadmap.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Roadmap.md",
+                          "Size":  4936
+                      },
+                      {
+                          "Title":  "SCOPE_REDUCTION_DIRECTIVE_V1",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/SCOPE_REDUCTION_DIRECTIVE_V1.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "SCOPE_REDUCTION_DIRECTIVE_V1.md",
+                          "Size":  4389
+                      },
+                      {
+                          "Title":  "Security",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Security.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Security.md",
+                          "Size":  5060
+                      },
+                      {
+                          "Title":  "Synchronization",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Synchronization.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Synchronization.md",
+                          "Size":  5042
+                      },
+                      {
+                          "Title":  "Vision",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/Vision.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Vision.md",
+                          "Size":  3982
+                      },
+                      {
+                          "Title":  "API_REFERENCE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/api/API_REFERENCE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "API_REFERENCE.md",
+                          "Size":  4826
+                      },
+                      {
+                          "Title":  "ERROR_CATALOG",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/api/ERROR_CATALOG.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ERROR_CATALOG.md",
+                          "Size":  3129
+                      },
+                      {
+                          "Title":  "EVENT_CATALOG",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/api/EVENT_CATALOG.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "EVENT_CATALOG.md",
+                          "Size":  3443
+                      },
+                      {
+                          "Title":  "WEBSOCKET_PROTOCOL",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/api/WEBSOCKET_PROTOCOL.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "WEBSOCKET_PROTOCOL.md",
+                          "Size":  3217
+                      },
+                      {
+                          "Title":  "00_EXECUTIVE_ARCHITECTURE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/00_EXECUTIVE_ARCHITECTURE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "00_EXECUTIVE_ARCHITECTURE.md",
+                          "Size":  17994
+                      },
+                      {
+                          "Title":  "01_MOBILE_ARCHITECTURE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/01_MOBILE_ARCHITECTURE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "01_MOBILE_ARCHITECTURE.md",
+                          "Size":  17201
+                      },
+                      {
+                          "Title":  "02_LAYERED_ARCHITECTURE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/02_LAYERED_ARCHITECTURE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "02_LAYERED_ARCHITECTURE.md",
+                          "Size":  14399
+                      },
+                      {
+                          "Title":  "04_BACKEND_API_ARCHITECTURE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/04_BACKEND_API_ARCHITECTURE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "04_BACKEND_API_ARCHITECTURE.md",
+                          "Size":  16681
+                      },
+                      {
+                          "Title":  "05_SYNCHRONIZATION",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/05_SYNCHRONIZATION.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "05_SYNCHRONIZATION.md",
+                          "Size":  13123
+                      },
+                      {
+                          "Title":  "06_LOCAL_DATABASE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/06_LOCAL_DATABASE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "06_LOCAL_DATABASE.md",
+                          "Size":  11755
+                      },
+                      {
+                          "Title":  "07_SECURITY_ARCHITECTURE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/07_SECURITY_ARCHITECTURE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "07_SECURITY_ARCHITECTURE.md",
+                          "Size":  13164
+                      },
+                      {
+                          "Title":  "08_COMMUNICATION_AND_DESIGN_SYSTEM",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/08_COMMUNICATION_AND_DESIGN_SYSTEM.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "08_COMMUNICATION_AND_DESIGN_SYSTEM.md",
+                          "Size":  17065
+                      },
+                      {
+                          "Title":  "09_STATE_LOGGING_OBSERVABILITY",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/09_STATE_LOGGING_OBSERVABILITY.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "09_STATE_LOGGING_OBSERVABILITY.md",
+                          "Size":  15250
+                      },
+                      {
+                          "Title":  "10_TESTING_DOCS_ADR_SPRINT0",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/10_TESTING_DOCS_ADR_SPRINT0.md",
+                          "DocumentId":  "Title",
+                          "Filename":  "10_TESTING_DOCS_ADR_SPRINT0.md",
+                          "Size":  11187
+                      },
+                      {
+                          "Title":  "11_C4_AND_DETAILED_DESIGN",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/11_C4_AND_DETAILED_DESIGN.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "11_C4_AND_DETAILED_DESIGN.md",
+                          "Size":  15109
+                      },
+                      {
+                          "Title":  "README",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/architecture/README.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "README.md",
+                          "Size":  4561
+                      },
+                      {
+                          "Title":  "03_FEATURE_MODULES",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/03_FEATURE_MODULES.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "03_FEATURE_MODULES.md",
+                          "Size":  21120
+                      },
+                      {
+                          "Title":  "ARCHIVE_MANIFEST",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/ARCHIVE_MANIFEST.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ARCHIVE_MANIFEST.md",
+                          "Size":  2428
+                      },
+                      {
+                          "Title":  "FutureVision",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/FutureVision.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "FutureVision.md",
+                          "Size":  2997
+                      },
+                      {
+                          "Title":  "Goals",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/Goals.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Goals.md",
+                          "Size":  5151
+                      },
+                      {
+                          "Title":  "JTBD",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/JTBD.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "JTBD.md",
+                          "Size":  5344
+                      },
+                      {
+                          "Title":  "Modules",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/Modules.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Modules.md",
+                          "Size":  7598
+                      },
+                      {
+                          "Title":  "Navigation",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/Navigation.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Navigation.md",
+                          "Size":  4149
+                      },
+                      {
+                          "Title":  "Offline",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/Offline.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Offline.md",
+                          "Size":  4421
+                      },
+                      {
+                          "Title":  "Requirements",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/Requirements.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "Requirements.md",
+                          "Size":  7201
+                      },
+                      {
+                          "Title":  "UserStories",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/archive/UserStories.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "UserStories.md",
+                          "Size":  7283
+                      },
+                      {
+                          "Title":  "COMPONENT_LIBRARY",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/design/COMPONENT_LIBRARY.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "COMPONENT_LIBRARY.md",
+                          "Size":  2543
+                      },
+                      {
+                          "Title":  "COMPONENT_SPECIFICATIONS",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/design/COMPONENT_SPECIFICATIONS.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "COMPONENT_SPECIFICATIONS.md",
+                          "Size":  3014
+                      },
+                      {
+                          "Title":  "DESIGN_SYSTEM",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/design/DESIGN_SYSTEM.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "DESIGN_SYSTEM.md",
+                          "Size":  4026
+                      },
+                      {
+                          "Title":  "FIGMA_GUIDE",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/design/FIGMA_GUIDE.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "FIGMA_GUIDE.md",
+                          "Size":  1795
+                      },
+                      {
+                          "Title":  "NAVIGATION_AND_USER_FLOW",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/design/NAVIGATION_AND_USER_FLOW.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "NAVIGATION_AND_USER_FLOW.md",
+                          "Size":  3561
+                      },
+                      {
+                          "Title":  "SCREEN_SPECIFICATIONS",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/design/SCREEN_SPECIFICATIONS.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "SCREEN_SPECIFICATIONS.md",
+                          "Size":  4085
+                      },
+                      {
+                          "Title":  "DATABASE_SCHEMA",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/domain/DATABASE_SCHEMA.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "DATABASE_SCHEMA.md",
+                          "Size":  4543
+                      },
+                      {
+                          "Title":  "DOMAIN_MODEL",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/mobile/domain/DOMAIN_MODEL.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "DOMAIN_MODEL.md",
+                          "Size":  5497
                       },
                       {
                           "Title":  "01_Enterprise_Validation_Report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/01_Enterprise_Validation_Report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/01_Enterprise_Validation_Report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "01_Enterprise_Validation_Report.md",
-                          "Size":  22149
+                          "Size":  22144
                       },
                       {
                           "Title":  "02_Operational_Acceptance_Test_Report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/02_Operational_Acceptance_Test_Report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/02_Operational_Acceptance_Test_Report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "02_Operational_Acceptance_Test_Report.md",
-                          "Size":  8914
+                          "Size":  8913
                       },
                       {
                           "Title":  "03_Performance_Benchmark_Report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/03_Performance_Benchmark_Report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/03_Performance_Benchmark_Report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "03_Performance_Benchmark_Report.md",
-                          "Size":  6012
+                          "Size":  6010
                       },
                       {
                           "Title":  "04_Chaos_Engineering_Report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/04_Chaos_Engineering_Report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/04_Chaos_Engineering_Report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "04_Chaos_Engineering_Report.md",
-                          "Size":  5459
+                          "Size":  5456
                       },
                       {
                           "Title":  "05_Disaster_Recovery_Validation",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/05_Disaster_Recovery_Validation.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/05_Disaster_Recovery_Validation.md",
                           "DocumentId":  "N/A",
                           "Filename":  "05_Disaster_Recovery_Validation.md",
-                          "Size":  5112
+                          "Size":  5107
                       },
                       {
                           "Title":  "06_Security_Validation_Report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/06_Security_Validation_Report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/06_Security_Validation_Report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "06_Security_Validation_Report.md",
-                          "Size":  6656
+                          "Size":  6654
                       },
                       {
                           "Title":  "07_API_Certification_Report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/07_API_Certification_Report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/07_API_Certification_Report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "07_API_Certification_Report.md",
-                          "Size":  4105
+                          "Size":  4102
                       },
                       {
                           "Title":  "08_Compliance_Mapping_Report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/08_Compliance_Mapping_Report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/08_Compliance_Mapping_Report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "08_Compliance_Mapping_Report.md",
-                          "Size":  6273
+                          "Size":  6270
                       },
                       {
                           "Title":  "09_Long_Duration_Stability_Report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/09_Long_Duration_Stability_Report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/09_Long_Duration_Stability_Report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "09_Long_Duration_Stability_Report.md",
-                          "Size":  4080
+                          "Size":  4078
                       },
                       {
                           "Title":  "10_Remaining_Risk_Register",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/10_Remaining_Risk_Register.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/10_Remaining_Risk_Register.md",
                           "DocumentId":  "N/A",
                           "Filename":  "10_Remaining_Risk_Register.md",
-                          "Size":  3870
+                          "Size":  3868
                       },
                       {
                           "Title":  "11_Version_1_0_Release_Notes",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/11_Version_1_0_Release_Notes.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/11_Version_1_0_Release_Notes.md",
                           "DocumentId":  "N/A",
                           "Filename":  "11_Version_1_0_Release_Notes.md",
-                          "Size":  3246
+                          "Size":  3244
                       },
                       {
                           "Title":  "12_Known_Limitations",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/12_Known_Limitations.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/12_Known_Limitations.md",
                           "DocumentId":  "N/A",
                           "Filename":  "12_Known_Limitations.md",
-                          "Size":  3185
+                          "Size":  3182
                       },
                       {
                           "Title":  "13_Recommended_Version_1_1_Backlog",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/13_Recommended_Version_1_1_Backlog.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/13_Recommended_Version_1_1_Backlog.md",
                           "DocumentId":  "N/A",
                           "Filename":  "13_Recommended_Version_1_1_Backlog.md",
-                          "Size":  2911
+                          "Size":  2909
                       },
                       {
                           "Title":  "14_Recommended_Version_2_0_Vision",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/phase13/14_Recommended_Version_2_0_Vision.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/phase13/14_Recommended_Version_2_0_Vision.md",
                           "DocumentId":  "N/A",
                           "Filename":  "14_Recommended_Version_2_0_Vision.md",
-                          "Size":  3483
+                          "Size":  3481
+                      },
+                      {
+                          "Title":  "01_Pilot_Deployment_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pilot_validation/01_Pilot_Deployment_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "01_Pilot_Deployment_Report.md",
+                          "Size":  5045
+                      },
+                      {
+                          "Title":  "02_PostgreSQL_Validation_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pilot_validation/02_PostgreSQL_Validation_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "02_PostgreSQL_Validation_Report.md",
+                          "Size":  2923
+                      },
+                      {
+                          "Title":  "03_Operational_Benchmark_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pilot_validation/03_Operational_Benchmark_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "03_Operational_Benchmark_Report.md",
+                          "Size":  3159
+                      },
+                      {
+                          "Title":  "04_User_Experience_Assessment",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pilot_validation/04_User_Experience_Assessment.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "04_User_Experience_Assessment.md",
+                          "Size":  2777
+                      },
+                      {
+                          "Title":  "05_Platform_Stability_Assessment",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pilot_validation/05_Platform_Stability_Assessment.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "05_Platform_Stability_Assessment.md",
+                          "Size":  2790
+                      },
+                      {
+                          "Title":  "06_Production_Readiness_Confirmation",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pilot_validation/06_Production_Readiness_Confirmation.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "06_Production_Readiness_Confirmation.md",
+                          "Size":  2545
+                      },
+                      {
+                          "Title":  "07_Lessons_Learned_Register",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pilot_validation/07_Lessons_Learned_Register.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "07_Lessons_Learned_Register.md",
+                          "Size":  2290
+                      },
+                      {
+                          "Title":  "08_Improvement_Backlog",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pilot_validation/08_Improvement_Backlog.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "08_Improvement_Backlog.md",
+                          "Size":  2083
+                      },
+                      {
+                          "Title":  "01_platform_operating_model",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/01_platform_operating_model.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "01_platform_operating_model.md",
+                          "Size":  6322
+                      },
+                      {
+                          "Title":  "02_product_architecture_specification",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/02_product_architecture_specification.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "02_product_architecture_specification.md",
+                          "Size":  5520
+                      },
+                      {
+                          "Title":  "03_platform_boundary_map",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/03_platform_boundary_map.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "03_platform_boundary_map.md",
+                          "Size":  3803
+                      },
+                      {
+                          "Title":  "04_extension_framework_specification",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/04_extension_framework_specification.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "04_extension_framework_specification.md",
+                          "Size":  5020
+                      },
+                      {
+                          "Title":  "05_sdk_architecture",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/05_sdk_architecture.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "05_sdk_architecture.md",
+                          "Size":  5225
+                      },
+                      {
+                          "Title":  "06_enterprise_deployment_guide",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/06_enterprise_deployment_guide.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "06_enterprise_deployment_guide.md",
+                          "Size":  5977
+                      },
+                      {
+                          "Title":  "07_platform_lifecycle_governance",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/07_platform_lifecycle_governance.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "07_platform_lifecycle_governance.md",
+                          "Size":  3800
+                      },
+                      {
+                          "Title":  "08_release_engineering_framework",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/08_release_engineering_framework.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "08_release_engineering_framework.md",
+                          "Size":  5605
+                      },
+                      {
+                          "Title":  "09_security_governance_framework",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/09_security_governance_framework.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "09_security_governance_framework.md",
+                          "Size":  4688
+                      },
+                      {
+                          "Title":  "10_data_lifecycle_policy",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/10_data_lifecycle_policy.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "10_data_lifecycle_policy.md",
+                          "Size":  3600
+                      },
+                      {
+                          "Title":  "11_platform_economics_assessment",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/11_platform_economics_assessment.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "11_platform_economics_assessment.md",
+                          "Size":  4098
+                      },
+                      {
+                          "Title":  "12_product_documentation_suite",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/12_product_documentation_suite.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "12_product_documentation_suite.md",
+                          "Size":  5610
+                      },
+                      {
+                          "Title":  "13_three_year_product_roadmap",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/13_three_year_product_roadmap.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "13_three_year_product_roadmap.md",
+                          "Size":  3782
+                      },
+                      {
+                          "Title":  "14_platform_maturity_assessment",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/14_platform_maturity_assessment.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "14_platform_maturity_assessment.md",
+                          "Size":  4283
+                      },
+                      {
+                          "Title":  "15_productization_readiness_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/15_productization_readiness_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "15_productization_readiness_report.md",
+                          "Size":  3592
+                      },
+                      {
+                          "Title":  "16_operational_readiness_assessment",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/16_operational_readiness_assessment.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "16_operational_readiness_assessment.md",
+                          "Size":  4347
+                      },
+                      {
+                          "Title":  "17_postgresql_migration_program",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/17_postgresql_migration_program.md",
+                          "DocumentId":  "PMP-2026-001",
+                          "Filename":  "17_postgresql_migration_program.md",
+                          "Size":  3818
+                      },
+                      {
+                          "Title":  "18_production_deployment_guide",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/18_production_deployment_guide.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "18_production_deployment_guide.md",
+                          "Size":  3249
+                      },
+                      {
+                          "Title":  "19_adoption_readiness_report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/19_adoption_readiness_report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "19_adoption_readiness_report.md",
+                          "Size":  4037
+                      },
+                      {
+                          "Title":  "20_operational_telemetry_validation",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/20_operational_telemetry_validation.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "20_operational_telemetry_validation.md",
+                          "Size":  3318
+                      },
+                      {
+                          "Title":  "21_platform_performance_benchmark",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/21_platform_performance_benchmark.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "21_platform_performance_benchmark.md",
+                          "Size":  2515
+                      },
+                      {
+                          "Title":  "22_production_support_model",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/22_production_support_model.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "22_production_support_model.md",
+                          "Size":  3057
+                      },
+                      {
+                          "Title":  "23_first_year_operations_plan",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/23_first_year_operations_plan.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "23_first_year_operations_plan.md",
+                          "Size":  3370
                       },
                       {
                           "Title":  "01_current_state_assessment",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/01_current_state_assessment.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/01_current_state_assessment.md",
                           "DocumentId":  "N/A",
                           "Filename":  "01_current_state_assessment.md",
-                          "Size":  6956
+                          "Size":  6946
                       },
                       {
                           "Title":  "02_capability_gap_analysis",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/02_capability_gap_analysis.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/02_capability_gap_analysis.md",
                           "DocumentId":  "N/A",
                           "Filename":  "02_capability_gap_analysis.md",
-                          "Size":  6393
+                          "Size":  6389
                       },
                       {
                           "Title":  "03_repository_evaluation_matrix",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/03_repository_evaluation_matrix.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/03_repository_evaluation_matrix.md",
                           "DocumentId":  "N/A",
                           "Filename":  "03_repository_evaluation_matrix.md",
-                          "Size":  10762
+                          "Size":  10753
                       },
                       {
                           "Title":  "04_integration_strategy",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/04_integration_strategy.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/04_integration_strategy.md",
                           "DocumentId":  "N/A",
                           "Filename":  "04_integration_strategy.md",
-                          "Size":  4438
+                          "Size":  4432
                       },
                       {
                           "Title":  "05_risk_assessment",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/05_risk_assessment.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/05_risk_assessment.md",
                           "DocumentId":  "N/A",
                           "Filename":  "05_risk_assessment.md",
                           "Size":  3819
                       },
                       {
                           "Title":  "06_adrs",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/06_adrs.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/06_adrs.md",
                           "DocumentId":  "N/A",
                           "Filename":  "06_adrs.md",
-                          "Size":  5923
+                          "Size":  5920
                       },
                       {
                           "Title":  "07_rollback_strategy",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/07_rollback_strategy.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/07_rollback_strategy.md",
                           "DocumentId":  "N/A",
                           "Filename":  "07_rollback_strategy.md",
-                          "Size":  2953
+                          "Size":  2944
                       },
                       {
                           "Title":  "08_developer_guide",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/08_developer_guide.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/08_developer_guide.md",
                           "DocumentId":  "N/A",
                           "Filename":  "08_developer_guide.md",
-                          "Size":  3556
+                          "Size":  3553
                       },
                       {
                           "Title":  "09_final_report",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/docs/uawos_integration/09_final_report.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/uawos_integration/09_final_report.md",
                           "DocumentId":  "N/A",
                           "Filename":  "09_final_report.md",
-                          "Size":  5015
+                          "Size":  5014
                       },
                       {
                           "Title":  "ADR-001-Contract-First-Versioned-API-Boundaries",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ADR-001-Contract-First-Versioned-API-Boundaries.md",
                           "Size":  1453
                       },
                       {
                           "Title":  "ADR-002-Server-Side-Decoupled-Authentication",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/adr/ADR-002-Server-Side-Decoupled-Authentication.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-002-Server-Side-Decoupled-Authentication.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ADR-002-Server-Side-Decoupled-Authentication.md",
                           "Size":  1033
                       },
                       {
                           "Title":  "ADR-003-Unified-Event-Driven-Registry",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/adr/ADR-003-Unified-Event-Driven-Registry.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-003-Unified-Event-Driven-Registry.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ADR-003-Unified-Event-Driven-Registry.md",
                           "Size":  1279
                       },
                       {
                           "Title":  "ADR-004-Pipeline-Worker-Processing-Architecture",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/adr/ADR-004-Pipeline-Worker-Processing-Architecture.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-004-Pipeline-Worker-Processing-Architecture.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ADR-004-Pipeline-Worker-Processing-Architecture.md",
                           "Size":  1236
                       },
                       {
                           "Title":  "ADR-005-Repository-Information-Architecture-Rationalization",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/adr/ADR-005-Repository-Information-Architecture-Rationalization.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-005-Repository-Information-Architecture-Rationalization.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ADR-005-Repository-Information-Architecture-Rationalization.md",
                           "Size":  1883
                       },
                       {
                           "Title":  "ADR-006-Script-Engineering-Standards",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/adr/ADR-006-Script-Engineering-Standards.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-006-Script-Engineering-Standards.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ADR-006-Script-Engineering-Standards.md",
                           "Size":  1899
                       },
                       {
                           "Title":  "ADR-007-Portable-Configuration-Architecture",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/adr/ADR-007-Portable-Configuration-Architecture.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-007-Portable-Configuration-Architecture.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ADR-007-Portable-Configuration-Architecture.md",
-                          "Size":  1949
+                          "Size":  1947
                       },
                       {
                           "Title":  "ADR-008-Platform-Asset-Catalog-Design",
-                          "AbsolutePath":  "D:/1_Projects/AegisOS/adr/ADR-008-Platform-Asset-Catalog-Design.md",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-008-Platform-Asset-Catalog-Design.md",
                           "DocumentId":  "N/A",
                           "Filename":  "ADR-008-Platform-Asset-Catalog-Design.md",
                           "Size":  1666
+                      },
+                      {
+                          "Title":  "ADR-009-Autonomic-Operating-System-Architecture",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ADR-009-Autonomic-Operating-System-Architecture.md",
+                          "Size":  2185
+                      },
+                      {
+                          "Title":  "ADR-010-Executive-Control-Plane",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-010-Executive-Control-Plane.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ADR-010-Executive-Control-Plane.md",
+                          "Size":  1861
+                      },
+                      {
+                          "Title":  "ADR-011-Event-Driven-System-Decoupling",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-011-Event-Driven-System-Decoupling.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ADR-011-Event-Driven-System-Decoupling.md",
+                          "Size":  1784
+                      },
+                      {
+                          "Title":  "ADR-012-Cognitive-Observability-And-Continuous-Evaluation",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md",
+                          "Size":  1927
+                      },
+                      {
+                          "Title":  "ADR-MOB-006-domain-driven-data-architecture",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-MOB-006-domain-driven-data-architecture.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "ADR-MOB-006-domain-driven-data-architecture.md",
+                          "Size":  2757
                       }
                   ],
-    "Timestamp":  "2026-07-13 16:05:18",
-    "TotalDocumentsChecked":  64
+    "Timestamp":  "2026-07-17 09:35:24",
+    "TotalDocumentsChecked":  196
 }

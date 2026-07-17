@@ -1,4 +1,5 @@
 import { AIModelInfo, RoutingPolicy, ModelProviderType } from "./types";
+import prisma from "../../infrastructure/db/prisma";
 
 export class ModelRuntime {
   private static instance: ModelRuntime | null = null;
@@ -16,7 +17,13 @@ export class ModelRuntime {
     return ModelRuntime.instance;
   }
 
-  private seedDefaultModels(): void {
+  public reset(): void {
+    this.models.clear();
+    this.policies.clear();
+    this.seedDefaultModels();
+  }
+
+  public seedDefaultModels(): void {
     const defaultModels: AIModelInfo[] = [
       {
         id: "ollama:gemma2:9b",
@@ -190,6 +197,34 @@ export class ModelRuntime {
    * Routes the prompt based on policy constraints and capability matching.
    */
   public async route(prompt: string, policyId: string = "policy:default"): Promise<AIModelInfo> {
+    // Dynamically update model metrics from DB scorecards (Phase 9/10)
+    try {
+      const recentCards = await prisma.evaluationScorecard.findMany({
+        take: 50,
+        orderBy: { timestamp: "desc" }
+      });
+      if (recentCards.length > 0) {
+        const modelStats = new Map<string, { totalGrounding: number; count: number; totalLatency: number }>();
+        for (const card of recentCards) {
+          const stats = modelStats.get(card.modelId) || { totalGrounding: 0, count: 0, totalLatency: 0 };
+          stats.totalGrounding += card.grounding;
+          stats.totalLatency += card.latencyMs;
+          stats.count += 1;
+          modelStats.set(card.modelId, stats);
+        }
+
+        for (const [modelId, stats] of modelStats.entries()) {
+          const m = this.getModel(modelId);
+          if (m) {
+            m.reliabilityScore = parseFloat((stats.totalGrounding / stats.count).toFixed(2));
+            m.latencyAvgMs = Math.round(stats.totalLatency / stats.count);
+          }
+        }
+      }
+    } catch (e: any) {
+      console.warn("[ModelRuntime] Scorecard dynamic metrics sync failed:", e.message);
+    }
+
     const policy = this.policies.get(policyId) || this.policies.get("policy:default")!;
     const availableModels = this.getModels().filter((m) => m.status === "online");
 

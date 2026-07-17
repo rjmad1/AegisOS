@@ -97,7 +97,7 @@ if (Test-Path $adrPath) {
     $adrs = Get-ChildItem -Path $adrPath -Filter "*.md"
     foreach ($adr in $adrs) {
         # Check filename format: ADR-XXX-*.md
-        if ($adr.Name -match "^ADR-\d{3}-.+\.md$") {
+        if ($adr.Name -match "^ADR-([a-zA-Z]{3,4}-)?\d{3}-.+\.md$") {
             # Naming is correct
             $content = (Get-Content -LiteralPath $adr.FullName) -join "`n"
             $hasStatus = $content -match "Status"

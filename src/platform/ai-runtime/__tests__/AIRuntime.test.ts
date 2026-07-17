@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import prisma from "@/infrastructure/db/prisma";
 import { AIRuntimeKernel } from "../AIRuntimeKernel";
 import { ModelRuntime } from "../ModelRuntime";
 import { PromptRuntime } from "../PromptRuntime";
@@ -22,9 +23,11 @@ import { AIRuntimeTechnicalDebtRegister } from "../AIRuntimeTechnicalDebtRegiste
 describe("AI Runtime Platform Integration Suite", () => {
   let kernel: AIRuntimeKernel;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     kernel = AIRuntimeKernel.getInstance();
     AIOperationsDashboard.getInstance().resetMetrics();
+    ModelRuntime.getInstance().reset();
+    await prisma.evaluationScorecard.deleteMany({});
   });
 
   // 1. AI Runtime Kernel

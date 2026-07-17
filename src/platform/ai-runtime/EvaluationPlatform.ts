@@ -1,4 +1,5 @@
 import { EvaluationResult } from "./types";
+import prisma from "../../infrastructure/db/prisma";
 
 interface GoldenPrompt {
   id: string;
@@ -61,7 +62,9 @@ export class EvaluationPlatform {
     modelId: string,
     output: string,
     latencyMs: number,
-    costUsd: number
+    costUsd: number,
+    correlationId?: string,
+    traceId?: string
   ): Promise<EvaluationResult> {
     const golden = this.goldenPrompts.get(promptId);
     
@@ -106,6 +109,47 @@ export class EvaluationPlatform {
       qualityRating,
       timestamp: new Date().toISOString(),
     };
+
+    // Save to Database Scorecard table
+    try {
+      let alreadyExists = false;
+      if (correlationId) {
+        const existing = await prisma.evaluationScorecard.findFirst({
+          where: { correlationId }
+        });
+        if (existing) {
+          alreadyExists = true;
+          console.log(`[EvaluationPlatform] Scorecard already exists for correlationId: ${correlationId}. Skipping duplicate write.`);
+        }
+      }
+
+      if (!alreadyExists) {
+        await prisma.evaluationScorecard.create({
+          data: {
+            id: result.id,
+            timestamp: result.timestamp,
+            correlationId: correlationId || `corr-${result.id.split(':').pop()}`,
+            traceId: traceId || `trace-${result.id.split(':').pop()}`,
+            promptId: result.promptId,
+            modelId: result.modelId,
+            correctness: result.groundingScore,
+            completeness: result.groundingScore >= 0.8 ? 1.0 : 0.5,
+            grounding: result.groundingScore,
+            confidence: result.groundingScore,
+            security: result.safetyViolation ? 0.0 : 1.0,
+            compliance: result.safetyViolation ? 0.0 : 1.0,
+            latencyMs: result.latencyMs,
+            costUsd: result.costUsd,
+            businessValue: result.qualityRating >= 4 ? 1.0 : 0.5,
+            userObjectiveFulfilled: result.groundingScore >= 0.8 && !result.safetyViolation,
+            safetyViolation: result.safetyViolation,
+            details: JSON.stringify(result)
+          }
+        });
+      }
+    } catch (err: any) {
+      console.warn("[EvaluationPlatform] Failed to write scorecard to database:", err.message);
+    }
 
     this.resultsHistory.push(result);
     return result;

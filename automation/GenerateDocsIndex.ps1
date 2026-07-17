@@ -38,7 +38,7 @@ function Verify-MarkdownLinks([string]$filePath, [string]$content) {
         # Check if it's a file scheme absolute path or a local relative path
         if ($linkUrl -like "file:///*" -or $linkUrl -match "^[a-zA-Z]:") {
             # Convert file:// URI to standard windows file path
-            $cleanPath = $linkUrl -replace "file:///", "" -replace "/", "\"
+            $cleanPath = ($linkUrl -replace "file:///", "" -replace "/", "\") -replace "#.*$", ""
             if ($cleanPath -match "^[a-zA-Z]:") {
                 # Target path is absolute
                 if (-not (Test-Path $cleanPath)) {
