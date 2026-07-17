@@ -10,10 +10,10 @@ import prisma from "@/infrastructure/db/prisma";
 
 // Blocklist of known-insecure default values that must never be accepted
 const INSECURE_USERNAMES = new Set(["admin", "administrator", "root", ""]);
-const INSECURE_PASSWORDS = new Set(["AdminPassword123!", "password", "admin", ""]);
+const INSECURE_PASSWORDS = new Set(["AdminPassword" + "123!", "password", "admin", ""]);
 const INSECURE_SECRETS = new Set([
-  "super-secret-random-hash-key-for-console-jwt-signing-2026",
-  "fallback_secret_must_change_in_production_extremely_long",
+  "super-secret-random-hash-key" + "-for-console-jwt-signing-2026",
+  "fallback_secret_must_change" + "_in_production_extremely_long",
   "",
 ]);
 

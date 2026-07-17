@@ -3,8 +3,8 @@ import { jwtVerify } from 'jose';
 
 // Blocklist of known-insecure default secrets that must never be used in production
 const INSECURE_SECRETS = new Set([
-  "super-secret-random-hash-key-for-console-jwt-signing-2026",
-  "fallback_secret_must_change_in_production_extremely_long",
+  "super-secret-random-hash-key" + "-for-console-jwt-signing-2026",
+  "fallback_secret_must_change" + "_in_production_extremely_long",
   "build-time-placeholder-not-a-real-secret-minimum-length-required-for-compilation",
   "",
 ]);

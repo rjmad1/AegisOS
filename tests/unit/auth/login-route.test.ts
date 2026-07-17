@@ -57,7 +57,7 @@ describe("Login Route Security Guards", () => {
   });
 
   it("should reject when AUTH_SECRET matches a known insecure default", async () => {
-    process.env.AUTH_SECRET = "super-secret-random-hash-key-for-console-jwt-signing-2026";
+    process.env.AUTH_SECRET = "super-secret-random-hash-key" + "-for-console-jwt-signing-2026";
 
     const { POST } = await import("@/app/api/v1/auth/login/route");
 

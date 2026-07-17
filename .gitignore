@@ -60,3 +60,8 @@ databases/
 *.db-journal
 *.db-shm
 *.db-wal
+
+# testing outputs
+/playwright-report/
+/test-results/
+

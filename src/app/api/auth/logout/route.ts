@@ -3,7 +3,8 @@ import { sessionService } from '../../../../platform/auth/session.service';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 
-const secretKey = process.env.AUTH_SECRET || 'fallback_secret_must_change_in_production_extremely_long';
+const secretKey = process.env.AUTH_SECRET;
+if (!secretKey) throw new Error('AUTH_SECRET environment variable is missing');
 const key = new TextEncoder().encode(secretKey);
 
 export async function GET(request: Request) {

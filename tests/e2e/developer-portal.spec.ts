@@ -7,7 +7,7 @@ test.describe('Developer Portal', () => {
     // Authenticate via UI
     await page.goto('/login');
     await page.getByPlaceholder('username@enterprise.local').fill('console_admin_dev');
-    await page.getByPlaceholder('••••••••').fill('DevConsolePassword9023!');
+    await page.getByPlaceholder('••••••••').fill(process.env.OPS_ADMIN_PASSWORD || 'test_password');
     await page.getByRole('button', { name: /Sign in/i }).click();
     await page.waitForURL('**/dashboard');
     
@@ -30,7 +30,7 @@ test.describe('Developer Portal', () => {
     // Authenticate via UI
     await page.goto('/login');
     await page.getByPlaceholder('username@enterprise.local').fill('console_admin_dev');
-    await page.getByPlaceholder('••••••••').fill('DevConsolePassword9023!');
+    await page.getByPlaceholder('••••••••').fill(process.env.OPS_ADMIN_PASSWORD || 'test_password');
     await page.getByRole('button', { name: /Sign in/i }).click();
     await page.waitForURL('**/dashboard');
     
