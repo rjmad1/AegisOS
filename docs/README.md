@@ -11,7 +11,8 @@ Welcome to the AI Workstation platform documentation repository. This directory 
 * **[Architectural Decision Records (ADRs)](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/)**: Direct links to all numbered design decision records (ADR-001 through ADR-012).
 
 ### 2. Infrastructure & Operations
-* **[Deployment Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Deployment_Guide.md)**: Step-by-step instructions for installation, configuration, and migrations.
+* **[Canonical Installation & Getting Started Guide](../wiki/Install-Guide.md)**: The authoritative single source of truth for prerequisites, installation, startup, and onboarding.
+* **[Deployment Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Deployment_Guide.md)**: Details on dynamic system migrations, WSL2 environment configurations, and portability.
 * **[Operations Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md)**: Runbook for logs rotation, telemetry diagnostics, and scheduled tasks.
 * **[Disaster Recovery Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Disaster_Recovery_Guide.md)**: Backups pipeline and recovery procedures.
 * **[Troubleshooting Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Troubleshooting_Guide.md)**: Diagnostics runbook for service failures, GPU VRAM issues, and Tailscale connection drops.
