@@ -11,6 +11,7 @@ export const platformModule: PlatformModule = {
   routes: [
     { path: '/dashboard', moduleId: 'platform', label: 'Dashboard' },
     { path: '/help', moduleId: 'platform', label: 'Help & Documentation' },
+    { path: '/mission-replay', moduleId: 'platform', label: 'Mission Replay' },
   ],
   
   navItems: [

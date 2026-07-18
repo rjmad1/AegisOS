@@ -12,10 +12,10 @@ export default async function LoginPage() {
   const authProvider = process.env.AUTH_PROVIDER || 'google';
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-zinc-950 text-zinc-50">
-      <div className="flex flex-col items-center gap-6 rounded-lg border border-zinc-800 bg-zinc-900 p-8 shadow-2xl w-full max-w-md">
-        <h1 className="text-2xl font-bold tracking-tight">AI Operations Console</h1>
-        <p className="text-zinc-400 text-sm text-center max-w-sm">
+    <div className="flex min-h-[100dvh] w-full items-center justify-center bg-background text-foreground p-4">
+      <div className="flex flex-col items-center gap-6 rounded-xl border border-border/80 bg-card p-8 shadow-xl w-full max-w-md glass-panel">
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground">AI Operations Console</h1>
+        <p className="text-muted-foreground text-sm text-center max-w-sm leading-relaxed">
           Access is restricted to authorized enterprise users only. Please sign in to verify your identity.
         </p>
 
@@ -25,7 +25,7 @@ export default async function LoginPage() {
           <div className="flex flex-col gap-3 w-full">
             <a 
               href="/api/auth/login"
-              className="flex items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-medium text-black hover:bg-zinc-200 transition-colors w-full"
+              className="flex items-center justify-center gap-2 rounded-lg bg-foreground text-background px-6 py-2.5 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all w-full select-none shadow-sm cursor-pointer"
             >
               Sign in with {authProvider === 'entra' ? 'Microsoft Entra ID' : 'Google Workspace'}
             </a>

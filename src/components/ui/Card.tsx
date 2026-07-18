@@ -12,8 +12,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          "rounded-xl overflow-hidden",
-          glass ? "glass-panel" : "bg-card border border-border text-card-foreground",
+          "rounded-xl overflow-hidden transition-all duration-300",
+          glass ? "glass-panel" : "bg-card border border-border/80 text-card-foreground shadow-sm",
           glow && "glass-panel-glow hover-glow",
           className
         )}
@@ -26,7 +26,7 @@ Card.displayName = "Card";
 
 export const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-6 flex flex-col space-y-1.5 border-b border-border/20", className)} {...props} />
+    <div ref={ref} className={cn("p-5 md:p-6 flex flex-col space-y-1.5 border-b border-border/10 bg-muted/5", className)} {...props} />
   )
 );
 CardHeader.displayName = "CardHeader";
@@ -47,14 +47,14 @@ CardDescription.displayName = "CardDescription";
 
 export const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-6", className)} {...props} />
+    <div ref={ref} className={cn("p-5 md:p-6", className)} {...props} />
   )
 );
 CardContent.displayName = "CardContent";
 
 export const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-6 flex items-center justify-between border-t border-border/20", className)} {...props} />
+    <div ref={ref} className={cn("p-5 md:p-6 flex items-center justify-between border-t border-border/10", className)} {...props} />
   )
 );
 CardFooter.displayName = "CardFooter";

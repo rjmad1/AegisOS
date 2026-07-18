@@ -39,13 +39,13 @@ export const Header: React.FC<HeaderProps> = ({
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <header className="flex h-16 w-full items-center justify-between border-b border-border/60 bg-card/50 glass-panel px-6 relative z-10 select-none">
+    <header className="flex h-16 w-full items-center justify-between border-b border-border/10 bg-card/45 glass-panel px-6 relative z-10 select-none">
       {/* Left: Breadcrumbs & Status */}
       <div className="flex items-center space-x-4">
         {/* Status indicator */}
         <div className="flex items-center space-x-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 text-xs text-emerald-500">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400/75 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
           <span className="font-semibold select-none">API: Live</span>
@@ -60,8 +60,8 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => !bc.isLast && router.push(bc.href)}
                 disabled={bc.isLast}
                 className={cn(
-                  "transition-colors",
-                  bc.isLast ? "text-foreground font-semibold cursor-default" : "hover:text-foreground"
+                  "transition-colors duration-150 cursor-pointer",
+                  bc.isLast ? "text-foreground font-bold cursor-default" : "hover:text-foreground"
                 )}
               >
                 {bc.label}
@@ -137,9 +137,10 @@ export const Header: React.FC<HeaderProps> = ({
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setProfileOpen(false)} />
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, scale: 0.95, y: 8 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 8 }}
+                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                   className="absolute right-0 mt-1.5 w-48 rounded-lg border border-border bg-card p-1 shadow-lg z-40 glass-panel text-left"
                 >
                   <div className="px-2.5 py-2 border-b border-border/20">

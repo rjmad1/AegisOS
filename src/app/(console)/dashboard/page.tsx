@@ -1,34 +1,25 @@
+// src/app/(console)/dashboard/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Layers,
-  FolderGit2,
-  BookOpen,
-  FileCode,
-  Rocket,
-  Plus,
-  RefreshCw,
-  Clock,
-  Sparkles,
-  CheckCircle2,
-  Play,
-  FileText,
-  Workflow,
-  FileCheck,
-  Search,
-  ExternalLink,
-  ShieldCheck,
+  Layers, FolderGit2, BookOpen, FileCode, Rocket, Plus, RefreshCw,
+  Clock, Sparkles, CheckCircle2, Play, FileText, Workflow, FileCheck,
+  Search, ExternalLink, ShieldCheck, Cpu, AlertTriangle, Activity,
+  Wifi, WifiOff, HelpCircle, Power, Terminal, AlertCircle, CornerDownRight
 } from "lucide-react";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { LiveWorkspaceHealth } from "@/components/workspace/LiveWorkspaceHealth";
+import { ChiefOfStaff } from "@/components/workspace/ChiefOfStaff";
 import { Button } from "@/components/ui/Button";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function WorkspaceDashboardPage() {
+  const router = useRouter();
   const {
     workspaces,
     activeWorkspaceId,
-    setActiveWorkspaceId,
     createWorkspace,
     projects,
     importRepository,
@@ -38,11 +29,21 @@ export default function WorkspaceDashboardPage() {
     isIndexing,
     artifacts,
     missions,
-    createMission,
-    activityFeed,
+    createMission
   } = useWorkspaceStore();
 
-  // Modal states
+  // Network offline state
+  const [isOnline, setIsOnline] = useState(true);
+
+  // Onboarding Wizard states
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(0);
+
+  // Dynamic briefing telemetry
+  const [briefing, setBriefing] = useState<any>(null);
+  const [loadingBriefing, setLoadingBriefing] = useState(true);
+
+  // Action modals
   const [showWsModal, setShowWsModal] = useState(false);
   const [showRepoModal, setShowRepoModal] = useState(false);
   const [showDocModal, setShowDocModal] = useState(false);
@@ -60,7 +61,53 @@ export default function WorkspaceDashboardPage() {
   const [missionPack, setMissionPack] = useState("Security Audit Pack");
   const [missionGoal, setMissionGoal] = useState("");
 
+  // Approval status state
+  const [decisionLoading, setDecisionLoading] = useState<Record<string, boolean>>({});
+
   const activeWs = workspaces.find((w) => w.id === activeWorkspaceId) || workspaces[0];
+
+  // Fetch Workspace Briefing
+  const fetchBriefingData = async () => {
+    try {
+      const res = await fetch("/api/v1/briefing");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          setBriefing(data.briefing);
+        }
+      }
+    } catch (e) {
+      console.error("[Dashboard] Briefing load failed", e);
+    } finally {
+      setLoadingBriefing(false);
+    }
+  };
+
+  useEffect(() => {
+    // Check online status
+    setIsOnline(navigator.onLine);
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    // Load briefing data
+    fetchBriefingData();
+    const interval = setInterval(fetchBriefingData, 10000);
+
+    // Onboarding trigger
+    const onboardingCompleted = localStorage.getItem("onboarding:completed");
+    if (!onboardingCompleted) {
+      setShowOnboarding(true);
+    }
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleCreateWs = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +116,8 @@ export default function WorkspaceDashboardPage() {
     setWsName("");
     setWsDesc("");
     setShowWsModal(false);
+    fetchBriefingData();
+    if (showOnboarding && onboardingStep === 1) setOnboardingStep(2);
   };
 
   const handleImportRepo = async (e: React.FormEvent) => {
@@ -78,6 +127,8 @@ export default function WorkspaceDashboardPage() {
     setRepoName("");
     setRepoUrl("");
     setShowRepoModal(false);
+    fetchBriefingData();
+    if (showOnboarding && onboardingStep === 2) setOnboardingStep(3);
   };
 
   const handleImportDoc = async (e: React.FormEvent) => {
@@ -91,6 +142,16 @@ export default function WorkspaceDashboardPage() {
     setDocName("");
     setDocContent("");
     setShowDocModal(false);
+    fetchBriefingData();
+    if (showOnboarding && onboardingStep === 3) setOnboardingStep(4);
+  };
+
+  const handleKnowledgeIndex = async () => {
+    await triggerKnowledgeBuild();
+    fetchBriefingData();
+    if (showOnboarding && onboardingStep === 4) {
+      setTimeout(() => setOnboardingStep(5), 2000);
+    }
   };
 
   const handleLaunchMission = async (e: React.FormEvent) => {
@@ -104,10 +165,198 @@ export default function WorkspaceDashboardPage() {
     setMissionTitle("");
     setMissionGoal("");
     setShowMissionModal(false);
+    fetchBriefingData();
+    if (showOnboarding && onboardingStep === 5) {
+      setOnboardingStep(6);
+    }
+  };
+
+  const handleApprovalAction = async (approvalId: string, decision: "approved" | "rejected") => {
+    const key = `${approvalId}-${decision}`;
+    setDecisionLoading(prev => ({ ...prev, [key]: true }));
+    try {
+      const res = await fetch("/api/v1/workflows/approvals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "decide",
+          approvalId,
+          approverId: "admin@aegisos.io",
+          decision
+        })
+      });
+      if (res.ok) {
+        fetchBriefingData();
+      }
+    } catch (e) {
+      console.error("[Dashboard] Approval decision failed", e);
+    } finally {
+      setDecisionLoading(prev => ({ ...prev, [key]: false }));
+    }
+  };
+
+  const handleSkipOnboarding = () => {
+    localStorage.setItem("onboarding:completed", "true");
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingNext = () => {
+    if (onboardingStep === 0) setOnboardingStep(1);
+    else if (onboardingStep === 1) setShowWsModal(true);
+    else if (onboardingStep === 2) setShowRepoModal(true);
+    else if (onboardingStep === 3) setShowDocModal(true);
+    else if (onboardingStep === 4) handleKnowledgeIndex();
+    else if (onboardingStep === 5) setShowMissionModal(true);
+    else if (onboardingStep === 6) setOnboardingStep(7);
+    else if (onboardingStep === 7) {
+      localStorage.setItem("onboarding:completed", "true");
+      setShowOnboarding(false);
+    }
+  };
+
+  const currentFocusText = () => {
+    const running = missions.find(m => m.status === "running");
+    if (running) {
+      return `Executing Mission: ${running.title} (${running.progress}% complete)`;
+    }
+    const indexing = isIndexing;
+    if (indexing) {
+      return "Indexing workspace repositories & knowledge files...";
+    }
+    return "Ready to orchestrate new autonomous missions.";
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-[1600px] mx-auto">
+    <div className="p-6 space-y-6 max-w-[1600px] mx-auto text-left relative">
+      {/* Offline Status Recovery Indicator */}
+      <AnimatePresence>
+        {!isOnline && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="flex items-center justify-between p-3 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-200 text-xs font-mono mb-4"
+          >
+            <div className="flex items-center space-x-2">
+              <WifiOff className="h-4.5 w-4.5 text-rose-400 animate-pulse" />
+              <span>[OFFLINE MODE] Network connectivity lost. Reconnect handling is listening.</span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsOnline(navigator.onLine)}
+              className="text-[10px] h-6 px-2.5 border-rose-500/20 text-rose-300 hover:bg-rose-500/20"
+            >
+              Verify
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Onboarding Wizard Tour Guide */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-lg rounded-2xl border border-indigo-500/30 bg-card p-6 shadow-2xl relative overflow-hidden space-y-5 text-left"
+            >
+              {/* Decorative radial blur */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="flex items-center justify-between border-b border-border/20 pb-3">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="h-5 w-5 text-indigo-400 animate-pulse" />
+                  <h3 className="font-bold text-sm text-foreground">AegisOS Onboarding Walkthrough</h3>
+                </div>
+                <button
+                  onClick={handleSkipOnboarding}
+                  className="text-xs text-muted-foreground hover:text-foreground font-mono"
+                >
+                  Skip Tutorial
+                </button>
+              </div>
+
+              {/* Onboarding Step Details */}
+              <div className="space-y-3 font-mono text-xs text-zinc-300">
+                {onboardingStep === 0 && (
+                  <div className="space-y-2">
+                    <p className="font-bold text-foreground text-sm">Welcome to AegisOS Studio Beta!</p>
+                    <p className="leading-relaxed">This tutorial will guide you through the process of setting up and running your first autonomous mission inside the operating environment.</p>
+                  </div>
+                )}
+                {onboardingStep === 1 && (
+                  <div className="space-y-2">
+                    <p className="font-bold text-foreground">Step 1: Create a Workspace</p>
+                    <p className="leading-relaxed">Workspaces represent isolated boundaries for organizations, departments, and developer policies. Click Next to initialize a new workspace.</p>
+                  </div>
+                )}
+                {onboardingStep === 2 && (
+                  <div className="space-y-2">
+                    <p className="font-bold text-foreground">Step 2: Import Codebase Repository</p>
+                    <p className="leading-relaxed">Import Git repositories directly. AegisOS will automatically map directories and compile file graphs. Click Next to import.</p>
+                  </div>
+                )}
+                {onboardingStep === 3 && (
+                  <div className="space-y-2">
+                    <p className="font-bold text-foreground">Step 3: Import Documents</p>
+                    <p className="leading-relaxed">Import PDF playbooks, markdown files, and specs to populate the knowledge catalog. Click Next to ingest documents.</p>
+                  </div>
+                )}
+                {onboardingStep === 4 && (
+                  <div className="space-y-2">
+                    <p className="font-bold text-foreground">Step 4: Rebuild Knowledge index</p>
+                    <p className="leading-relaxed">Run the embedding pipeline to parse document chunks and map CodeGraph nodes into SQLite vector pools. Click Next to index.</p>
+                  </div>
+                )}
+                {onboardingStep === 5 && (
+                  <div className="space-y-2">
+                    <p className="font-bold text-foreground">Step 5: Launch Autonomous Mission</p>
+                    <p className="leading-relaxed">Missions parse goals, resolve intent, build graphs, and delegate to cognitive agents. Click Next to launch a security audit.</p>
+                  </div>
+                )}
+                {onboardingStep === 6 && (
+                  <div className="space-y-2">
+                    <p className="font-bold text-foreground">Step 6: Watch Mission Execute</p>
+                    <p className="leading-relaxed">Observe step logs, tool invocations, and reflection cycles in the timeline player. Click Next once you've reviewed execution logs.</p>
+                  </div>
+                )}
+                {onboardingStep === 7 && (
+                  <div className="space-y-2">
+                    <p className="font-bold text-foreground">Step 7: Review Output Artifacts</p>
+                    <p className="leading-relaxed">Analyze Markdown reports and topology diagrams produced by agent reflection processes. Click Next to complete the tutorial.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Progress dots & buttons */}
+              <div className="flex items-center justify-between border-t border-border/20 pt-4 font-mono text-[10px]">
+                <div className="flex space-x-1.5">
+                  {Array.from({ length: 8 }).map((_, idx) => (
+                    <span
+                      key={idx}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        idx === onboardingStep ? "bg-primary w-3.5" : "bg-muted w-1.5"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="flex space-x-2">
+                  <Button variant="ghost" onClick={handleSkipOnboarding} className="h-8 text-[10px]">
+                    Cancel
+                  </Button>
+                  <Button variant="primary" onClick={handleOnboardingNext} className="h-8 text-[10px] bg-primary text-primary-foreground font-semibold px-4">
+                    {onboardingStep === 0 ? "Get Started" : onboardingStep === 7 ? "Complete" : "Next Step"}
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* 1. WORKSPACE SUMMARY HEADER */}
       <div className="rounded-2xl border border-border/50 bg-gradient-to-r from-card via-card to-background p-6 shadow-md relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
@@ -135,7 +384,7 @@ export default function WorkspaceDashboardPage() {
             </p>
           </div>
 
-          {/* Quick User Journey Actions */}
+          {/* Quick Actions */}
           <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"
@@ -176,245 +425,339 @@ export default function WorkspaceDashboardPage() {
               <Rocket className="h-3.5 w-3.5" />
               <span>Launch Mission</span>
             </Button>
+            
+            {/* Onboarding Restart Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setOnboardingStep(0);
+                setShowOnboarding(true);
+              }}
+              className="text-xs flex items-center space-x-1 text-zinc-400 border-zinc-700/60"
+            >
+              <HelpCircle className="h-3.5 w-3.5" />
+              <span>Guide</span>
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* 2. LIVE WORKSPACE HEALTH (Deliverable 6) */}
-      <LiveWorkspaceHealth />
-
-      {/* 3. MAIN DASHBOARD GRID */}
+      {/* 2. DASHBOARD GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* LEFT COLUMN: Projects & Knowledge Overview */}
+        
+        {/* LEFT COLUMN: Briefing, Chief of Staff, Approvals */}
         <div className="lg:col-span-2 space-y-6">
-          {/* PROJECTS & REPOSITORIES (Deliverable 1 & 2) */}
-          <div className="rounded-xl border border-border/40 bg-card p-5 space-y-4">
-            <div className="flex items-center justify-between">
+          
+          {/* Workspace Intelligence Briefing */}
+          <div className="rounded-2xl border border-border/40 bg-card p-5 shadow-md relative overflow-hidden text-left space-y-4">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="flex items-center justify-between border-b border-border/20 pb-3">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="h-5 w-5 text-indigo-400" />
+                <h3 className="font-bold text-sm text-foreground">Workspace Intelligence Briefing</h3>
+              </div>
+              <span className="text-[10px] text-zinc-400 font-mono">Dynamic Analysis</span>
+            </div>
+
+            {loadingBriefing ? (
+              <div className="py-6 text-center text-xs text-muted-foreground flex items-center justify-center space-x-2 font-mono">
+                <RefreshCw className="h-4.5 w-4.5 animate-spin text-primary" />
+                <span>Compiling latest workspace events...</span>
+              </div>
+            ) : briefing ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                {/* Overnight summary */}
+                <div className="p-3.5 rounded-xl border border-border/30 bg-background/50 space-y-2">
+                  <span className="text-[9px] uppercase font-bold text-indigo-400 flex items-center gap-1">
+                    <Clock className="h-3.5 w-3.5" /> Overnight activity summary
+                  </span>
+                  <p className="text-zinc-300 leading-relaxed text-[11px]">
+                    {briefing.overnightActivity?.count > 0 
+                      ? `Detected ${briefing.overnightActivity.count} system operations overnight. ${briefing.overnightActivity.criticalAlertsCount} critical alert warning logs parsed.`
+                      : "No operational anomalies or service drift occurred overnight."}
+                  </p>
+                </div>
+
+                {/* Mission metrics */}
+                <div className="p-3.5 rounded-xl border border-border/30 bg-background/50 space-y-2 flex flex-col justify-between">
+                  <span className="text-[9px] uppercase font-bold text-indigo-400 flex items-center gap-1">
+                    <Rocket className="h-3.5 w-3.5" /> Mission Execution stats
+                  </span>
+                  <div className="grid grid-cols-3 gap-2 text-center pt-1.5">
+                    <div className="p-1 rounded bg-zinc-950/60 border border-zinc-900">
+                      <span className="text-[9px] text-zinc-500 block">RUNNING</span>
+                      <span className="text-xs font-bold text-sky-400">{briefing.missions?.runningCount}</span>
+                    </div>
+                    <div className="p-1 rounded bg-zinc-950/60 border border-zinc-900">
+                      <span className="text-[9px] text-zinc-500 block">COMPLETED</span>
+                      <span className="text-xs font-bold text-emerald-400">{briefing.missions?.completedCount}</span>
+                    </div>
+                    <div className="p-1 rounded bg-zinc-950/60 border border-zinc-900">
+                      <span className="text-[9px] text-zinc-500 block">QUEUED</span>
+                      <span className="text-xs font-bold text-zinc-400">{briefing.missions?.queueCount}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Knowledge freshness */}
+                <div className="p-3.5 rounded-xl border border-border/30 bg-background/50 space-y-2">
+                  <span className="text-[9px] uppercase font-bold text-indigo-400 flex items-center gap-1">
+                    <BookOpen className="h-3.5 w-3.5" /> Knowledge index integrity
+                  </span>
+                  <div className="space-y-1 pt-1">
+                    <div className="flex justify-between text-[10px]">
+                      <span className="text-zinc-500">FRESHNESS RATIO</span>
+                      <span className="font-bold text-emerald-400">{briefing.knowledge?.freshness}%</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-zinc-900 rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-500" style={{ width: `${briefing.knowledge?.freshness}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Model Availability */}
+                <div className="p-3.5 rounded-xl border border-border/30 bg-background/50 space-y-2">
+                  <span className="text-[9px] uppercase font-bold text-indigo-400 flex items-center gap-1">
+                    <Cpu className="h-3.5 w-3.5" /> AI Model provider availability
+                  </span>
+                  <div className="flex items-center justify-between text-[11px] pt-1">
+                    <div className="flex items-center space-x-1.5">
+                      <span className={`h-2 w-2 rounded-full ${briefing.models?.ollama ? "bg-emerald-500" : "bg-rose-500 animate-pulse"}`} />
+                      <span className="text-zinc-300">Ollama Local</span>
+                    </div>
+                    <span className="text-zinc-500 font-semibold">{briefing.models?.activeModel}</span>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Chief of Staff coordination Layer */}
+          <ChiefOfStaff />
+
+          {/* Pending approvals section */}
+          <div className="rounded-2xl border border-border/40 bg-card p-5 shadow-md text-left space-y-4">
+            <div className="flex items-center space-x-2 border-b border-border/20 pb-3">
+              <ShieldCheck className="h-5 w-5 text-emerald-400" />
+              <h3 className="font-bold text-sm text-foreground">Pending Human-in-the-Loop Approvals</h3>
+            </div>
+
+            {loadingBriefing ? (
+              <div className="py-6 text-center text-xs text-muted-foreground font-mono">Loading approvals...</div>
+            ) : briefing?.pendingApprovals?.length === 0 ? (
+              <div className="py-6 text-center text-xs text-muted-foreground font-mono">No pending approvals required. Execution runtime is autonomous.</div>
+            ) : (
+              <div className="space-y-3 font-mono text-xs">
+                {briefing?.pendingApprovals?.map((app: any) => (
+                  <div key={app.id} className="p-4 rounded-xl border border-border/40 bg-background/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-foreground">{app.workflowName}</span>
+                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase font-semibold">
+                          {app.status}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">ID: {app.id} | Step: {app.nodeId}</p>
+                    </div>
+
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={decisionLoading[`${app.id}-rejected`]}
+                        onClick={() => handleApprovalAction(app.id, "rejected")}
+                        className="text-[10px] h-8 text-rose-400 border border-rose-500/25 hover:bg-rose-500/10 font-bold px-3"
+                      >
+                        Reject
+                      </Button>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        disabled={decisionLoading[`${app.id}-approved`]}
+                        onClick={() => handleApprovalAction(app.id, "approved")}
+                        className="text-[10px] h-8 bg-emerald-650 hover:bg-emerald-600 text-white shadow font-bold px-3"
+                      >
+                        Approve
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Indexed Knowledge & Projects card */}
+          <div className="rounded-2xl border border-border/40 bg-card p-5 shadow-md text-left space-y-4">
+            <div className="flex items-center justify-between border-b border-border/20 pb-3">
               <div className="flex items-center space-x-2">
                 <FolderGit2 className="h-5 w-5 text-blue-400" />
-                <h3 className="font-semibold text-foreground text-sm">Projects & Repositories</h3>
-                <span className="text-xs bg-muted/50 text-muted-foreground px-2 py-0.5 rounded-full font-mono">
-                  {projects.length}
-                </span>
+                <h3 className="font-bold text-sm text-foreground">Projects & Indexed Knowledge Catalogs</h3>
               </div>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                onClick={() => setShowRepoModal(true)}
-                className="text-xs text-primary hover:text-primary/80"
+                disabled={isIndexing}
+                onClick={handleKnowledgeIndex}
+                className="text-xs h-7 font-mono flex items-center space-x-1"
               >
-                + Import Repository
+                <RefreshCw className={`h-3 w-3 ${isIndexing ? "animate-spin text-primary" : ""}`} />
+                <span>{isIndexing ? "Indexing..." : "Rebuild Index"}</span>
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid gap-3 md:grid-cols-2 text-xs font-mono">
               {projects.map((proj) => (
-                <div
-                  key={proj.id}
-                  className="rounded-lg border border-border/30 bg-background/60 p-4 space-y-2 hover:border-border/80 transition-all"
-                >
+                <div key={proj.id} className="p-3.5 rounded-xl border border-border/30 bg-background/60 space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground text-sm truncate">{proj.name}</h4>
-                    <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-mono capitalize ${
-                        proj.status === "indexing"
-                          ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                          : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                      }`}
-                    >
+                    <span className="font-semibold text-foreground truncate">{proj.name}</span>
+                    <span className={`text-[9px] px-1.5 py-0.2 rounded font-semibold capitalize ${
+                      proj.status === "indexing" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "bg-emerald-500/10 text-emerald-400"
+                    }`}>
                       {proj.status}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground line-clamp-2">{proj.description}</p>
-                  <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-muted-foreground border-t border-border/20">
-                    <span className="flex items-center space-x-1">
-                      <FolderGit2 className="h-3 w-3 text-muted-foreground" />
-                      <span>{proj.branch || "main"}</span>
-                    </span>
-                    <span>{proj.commitCount || 0} commits</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* KNOWLEDGE INDEX OVERVIEW (Deliverable 1 & 3) */}
-          <div className="rounded-xl border border-border/40 bg-card p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <BookOpen className="h-5 w-5 text-emerald-400" />
-                <h3 className="font-semibold text-foreground text-sm">Indexed Knowledge Base</h3>
-                <span className="text-xs bg-muted/50 text-muted-foreground px-2 py-0.5 rounded-full font-mono">
-                  {knowledgeDocs.length} docs
-                </span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={triggerKnowledgeBuild}
-                  disabled={isIndexing}
-                  className="text-xs flex items-center space-x-1 h-8"
-                >
-                  <RefreshCw className={`h-3 w-3 ${isIndexing ? "animate-spin text-primary" : ""}`} />
-                  <span>{isIndexing ? "Indexing..." : "Rebuild Index"}</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowDocModal(true)}
-                  className="text-xs text-emerald-400 hover:text-emerald-300"
-                >
-                  + Import Document
-                </Button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {knowledgeDocs.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="rounded-lg border border-border/30 bg-background/60 p-3 space-y-2 hover:border-border/80 transition-all"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-foreground truncate">{doc.name}</span>
-                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-muted/40 text-muted-foreground">
-                      {doc.type}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
-                    <span>{doc.chunkCount} chunks</span>
-                    <span className="text-emerald-400">{doc.vectorCount} vectors</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* GENERATED ARTIFACTS LIBRARY (Deliverable 1 & 4) */}
-          <div className="rounded-xl border border-border/40 bg-card p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <FileCode className="h-5 w-5 text-purple-400" />
-                <h3 className="font-semibold text-foreground text-sm">Artifact Library</h3>
-                <span className="text-xs bg-muted/50 text-muted-foreground px-2 py-0.5 rounded-full font-mono">
-                  {artifacts.length} artifacts
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              {artifacts.map((art) => (
-                <div
-                  key={art.id}
-                  className="flex items-center justify-between rounded-lg border border-border/30 bg-background/60 p-3 hover:border-border/80 transition-all"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="p-2 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                      {art.type === "markdown" ? (
-                        <FileText className="h-4 w-4" />
-                      ) : art.type === "architecture" ? (
-                        <Workflow className="h-4 w-4" />
-                      ) : (
-                        <FileCheck className="h-4 w-4" />
-                      )}
-                    </span>
-                    <div>
-                      <h5 className="font-medium text-foreground text-xs">{art.title}</h5>
-                      <p className="text-[11px] text-muted-foreground">{art.summary}</p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-mono text-muted-foreground shrink-0">{art.fileSize || "10 KB"}</span>
+                  <p className="text-[11px] text-muted-foreground line-clamp-2">{proj.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Missions & Recent Activity Feed */}
+        {/* RIGHT COLUMN: Current Focus, Active Missions, GPU Health, Recent Decisions */}
         <div className="space-y-6">
-          {/* MISSION CENTER SNAPSHOT (Deliverable 1 & 5) */}
-          <div className="rounded-xl border border-border/40 bg-card p-5 space-y-4">
-            <div className="flex items-center justify-between">
+          
+          {/* Current Focus card */}
+          <div className="rounded-2xl border border-indigo-500/30 bg-indigo-500/5 p-5 shadow-md text-left space-y-2">
+            <span className="text-[9px] uppercase font-bold text-indigo-400 font-mono tracking-widest block">Current Focus</span>
+            <p className="text-xs font-semibold text-zinc-200 leading-relaxed font-mono flex items-start gap-1.5">
+              <CornerDownRight className="h-4 w-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+              <span>{currentFocusText()}</span>
+            </p>
+          </div>
+
+          {/* Running & Queue Missions */}
+          <div className="rounded-2xl border border-border/40 bg-card p-5 shadow-md text-left space-y-4">
+            <div className="flex items-center justify-between border-b border-border/20 pb-3">
               <div className="flex items-center space-x-2">
                 <Rocket className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold text-foreground text-sm">Active Missions</h3>
+                <h3 className="font-bold text-sm text-foreground">Active Mission Pipelines</h3>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowMissionModal(true)}
-                className="text-xs text-primary hover:text-primary/80"
+                onClick={() => router.push("/mission-control")}
+                className="text-xs text-primary hover:text-primary/80 font-mono"
               >
-                + Launch Mission
+                Open Center
               </Button>
             </div>
 
-            <div className="space-y-3">
-              {missions.map((m) => (
-                <div
-                  key={m.id}
-                  className="rounded-lg border border-border/30 bg-background/60 p-3.5 space-y-2 hover:border-border/80 transition-all"
-                >
-                  <div className="flex items-center justify-between">
-                    <h5 className="font-semibold text-foreground text-xs truncate">{m.title}</h5>
-                    <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-mono capitalize ${
-                        m.status === "completed"
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                          : m.status === "running"
-                          ? "bg-sky-500/10 text-sky-400 border border-sky-500/20 animate-pulse"
-                          : "bg-muted/40 text-muted-foreground"
-                      }`}
-                    >
-                      {m.status}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground line-clamp-2">{m.goal}</p>
+            <div className="space-y-3 font-mono text-xs">
+              {missions.length === 0 ? (
+                <div className="py-6 text-center text-muted-foreground italic">No missions initialized.</div>
+              ) : (
+                missions.slice(0, 3).map((m) => (
+                  <div key={m.id} className="p-3.5 rounded-xl border border-border/30 bg-background/60 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-foreground truncate">{m.title}</span>
+                      <span className={`text-[9px] px-1.5 py-0.2 rounded font-semibold capitalize ${
+                        m.status === "completed" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
+                        m.status === "running" ? "bg-sky-500/10 text-sky-400 border border-sky-500/20 animate-pulse" :
+                        "bg-zinc-800 text-zinc-400"
+                      }`}>
+                        {m.status}
+                      </span>
+                    </div>
 
-                  {/* Progress bar */}
-                  <div className="space-y-1 pt-1">
-                    <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
-                      <span>{m.packName}</span>
-                      <span>{m.progress}%</span>
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[9px] text-muted-foreground">
+                        <span>{m.packName}</span>
+                        <span>{m.progress}%</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-zinc-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-primary" style={{ width: `${m.progress}%` }} />
+                      </div>
                     </div>
-                    <div className="h-1.5 w-full bg-muted/40 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary transition-all duration-500"
-                        style={{ width: `${m.progress}%` }}
-                      />
+
+                    {/* Mission Replay link */}
+                    <div className="flex justify-end pt-1 border-t border-border/10">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => router.push(`/mission-replay?missionId=${m.id}`)}
+                        className="text-[9px] h-6 px-2 border-indigo-500/25 text-indigo-300 font-mono"
+                      >
+                        Replay
+                      </Button>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
-          {/* RECENT ACTIVITY FEED (Deliverable 1 & 7) */}
-          <div className="rounded-xl border border-border/40 bg-card p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Clock className="h-5 w-5 text-amber-400" />
-                <h3 className="font-semibold text-foreground text-sm">Recent Activity</h3>
-              </div>
+          {/* GPU Health & Host telemetry */}
+          <div className="rounded-2xl border border-border/40 bg-card p-5 shadow-md text-left space-y-4">
+            <div className="flex items-center space-x-2 border-b border-border/20 pb-3">
+              <Cpu className="h-5 w-5 text-indigo-400" />
+              <h3 className="font-bold text-sm text-foreground">GPU & Hardware Telemetry</h3>
             </div>
 
-            <div className="space-y-3 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-border/30">
-              {activityFeed.slice(0, 6).map((act) => (
-                <div key={act.id} className="relative pl-7 space-y-0.5">
-                  <span className="absolute left-1.5 top-1.5 h-3 w-3 rounded-full bg-card border-2 border-primary" />
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-foreground text-xs">{act.title}</span>
-                    <span className="text-[10px] font-mono text-muted-foreground">
-                      {new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
+            {loadingBriefing ? (
+              <div className="py-6 text-center text-xs text-muted-foreground font-mono">Loading hardware statistics...</div>
+            ) : briefing?.gpu ? (
+              <div className="space-y-3 font-mono text-xs">
+                {/* VRAM Gauge */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-[10px]">
+                    <span className="text-muted-foreground">VRAM ALLOCATION:</span>
+                    <span className="font-semibold text-foreground">{briefing.gpu.vramUsedGb} / {briefing.gpu.vramTotalGb} GB</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-tight">{act.description}</p>
+                  <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full transition-all duration-500 ${briefing.gpu.vramUsedGb > 12 ? "bg-rose-500" : "bg-primary"}`} 
+                      style={{ width: `${(briefing.gpu.vramUsedGb / briefing.gpu.vramTotalGb) * 100}%` }} 
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-center">
+                  <div className="p-2 rounded-lg bg-background/80 border border-border/60">
+                    <span className="text-[9px] text-muted-foreground block font-bold">CORE LOAD</span>
+                    <span className="text-xs font-extrabold text-foreground">{briefing.gpu.utilization}%</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-background/80 border border-border/60">
+                    <span className="text-[9px] text-muted-foreground block font-bold">TEMPERATURE</span>
+                    <span className="text-xs font-extrabold text-foreground">{briefing.gpu.temp}°C</span>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Recent Artifacts */}
+          <div className="rounded-2xl border border-border/40 bg-card p-5 shadow-md text-left space-y-4">
+            <div className="flex items-center space-x-2 border-b border-border/20 pb-3">
+              <FileCheck className="h-5 w-5 text-purple-400" />
+              <h3 className="font-bold text-sm text-foreground">Recently Generated Artifacts</h3>
+            </div>
+
+            <div className="space-y-2 font-mono text-xs">
+              {artifacts.slice(0, 3).map((art) => (
+                <div key={art.id} className="p-2.5 rounded-lg border border-border/30 bg-background/60 flex items-center justify-between gap-3 truncate">
+                  <div className="space-y-0.5 truncate">
+                    <span className="font-semibold text-foreground truncate block">{art.title}</span>
+                    <span className="text-[9px] text-zinc-500">{art.fileSize || "8.5 KB"}</span>
+                  </div>
+                  <span className="text-primary hover:underline cursor-pointer font-bold shrink-0 text-[10px]">Open</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
+
       </div>
 
       {/* ========================================================================= */}

@@ -44,13 +44,13 @@ export const Sidebar: React.FC = () => {
       className="flex h-full flex-col border-r border-border/60 bg-card glass-panel text-card-foreground select-none relative z-20 transition-all duration-200"
     >
       {/* Brand Header */}
-      <div className="flex h-16 items-center justify-between px-4 border-b border-border/20">
+      <div className="flex h-16 items-center justify-between px-4 border-b border-border/10">
         <div className="flex items-center space-x-3 overflow-hidden">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary shrink-0">
             <Cpu className="h-5 w-5" />
           </div>
           {!sidebarCollapsed && (
-            <span className="text-sm font-extrabold tracking-wider uppercase bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent truncate">
+            <span className="text-sm font-extrabold tracking-wider uppercase text-foreground truncate">
               AI Ops Console
             </span>
           )}
@@ -88,7 +88,7 @@ export const Sidebar: React.FC = () => {
                         key={item.id}
                         onClick={() => router.push(item.href)}
                         className={cn(
-                          "flex w-full items-center rounded-lg p-2.5 text-sm font-semibold transition-all relative group text-left",
+                          "flex w-full items-center rounded-lg p-2.5 text-sm font-semibold transition-all duration-200 relative group text-left active:scale-[0.98] cursor-pointer",
                           isActive
                             ? "text-primary bg-primary/10 border border-primary/20 shadow-sm"
                             : "text-muted-foreground hover:bg-accent/40 hover:text-foreground border border-transparent"

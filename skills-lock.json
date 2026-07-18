@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "design-taste-frontend": {
+      "source": "leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+    },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "dbbe3ac1a6285c2d2a18f39f56b2dee5b977e9566e2d0bba4347028ba90285bd"
+    },
+    "lottie-animator": {
+      "source": "obeskay/lottie-animator-skill",
+      "sourceType": "github",
+      "skillPath": "skills/lottie-animator/SKILL.md",
+      "computedHash": "0196b118c9a9b8db2b68a822844aadcdbf6b7c679fbb6c2407c47ba58d4b0f39"
+    }
+  }
+}

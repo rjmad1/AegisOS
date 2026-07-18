@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Inbox, AlertCircle } from "lucide-react";
 import { Button } from "./Button";
+import { motion } from "framer-motion";
 
 export interface EmptyStateProps {
   title?: string;
@@ -15,21 +16,26 @@ export function EmptyState({
   description = "There are no records matching this query.",
   actionLabel,
   onAction,
-  icon = <Inbox className="h-10 w-10 text-muted-foreground" />,
+  icon = <Inbox className="h-6 w-6 text-muted-foreground" />,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center p-8 text-center rounded-xl border border-dashed border-border/60 bg-muted/10 glass-panel">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted/20 mb-4">
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col items-center justify-center p-10 text-center rounded-xl border border-dashed border-border/60 bg-muted/5 glass-panel"
+    >
+      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted/15 mb-4 shadow-sm">
         {icon}
       </div>
-      <h3 className="text-base font-semibold leading-none tracking-tight">{title}</h3>
-      <p className="mt-2 text-sm text-muted-foreground max-w-sm leading-relaxed">{description}</p>
+      <h3 className="text-base font-bold leading-none tracking-tight">{title}</h3>
+      <p className="mt-2.5 text-sm text-muted-foreground max-w-xs leading-relaxed">{description}</p>
       {actionLabel && onAction && (
-        <Button variant="outline" size="sm" onClick={onAction} className="mt-4">
+        <Button variant="outline" size="sm" onClick={onAction} className="mt-5">
           {actionLabel}
         </Button>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -47,17 +53,22 @@ export function ErrorState({
   onRetry,
 }: ErrorStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center p-8 text-center rounded-xl border border-destructive/20 bg-destructive/5 glass-panel">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10 mb-4">
-        <AlertCircle className="h-8 w-8 text-destructive" />
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col items-center justify-center p-10 text-center rounded-xl border border-destructive/20 bg-destructive/5 glass-panel"
+    >
+      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-destructive/10 mb-4 shadow-sm">
+        <AlertCircle className="h-6 w-6 text-destructive" />
       </div>
-      <h3 className="text-base font-semibold leading-none tracking-tight text-destructive">{title}</h3>
-      <p className="mt-2 text-sm text-muted-foreground max-w-sm leading-relaxed">{message}</p>
+      <h3 className="text-base font-bold leading-none tracking-tight text-destructive">{title}</h3>
+      <p className="mt-2.5 text-sm text-muted-foreground max-w-xs leading-relaxed">{message}</p>
       {onRetry && (
-        <Button variant="outline" size="sm" onClick={onRetry} className="mt-4 border-destructive/30 hover:bg-destructive/10 text-destructive hover:text-destructive">
+        <Button variant="outline" size="sm" onClick={onRetry} className="mt-5 border-destructive/20 hover:bg-destructive/10 text-destructive hover:text-destructive">
           {retryLabel}
         </Button>
       )}
-    </div>
+    </motion.div>
   );
 }

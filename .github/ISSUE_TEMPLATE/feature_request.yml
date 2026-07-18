@@ -1,0 +1,21 @@
+name: Feature Request
+description: Suggest a new capability or improvement for AegisOS Studio
+labels: ["feature", "triage"]
+body:
+  - type: textarea
+    id: concept
+    attributes:
+      label: User Story / Concept
+      description: What problem are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the ideal implementation.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe alternative paths or workarounds.

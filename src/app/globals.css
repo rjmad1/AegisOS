@@ -38,71 +38,71 @@
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #fafbfe;
+  --foreground: #090d16;
   
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #090d16;
   
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  --popover-foreground: #090d16;
   
-  --primary: #6366f1;
+  --primary: #4f46e5;
   --primary-foreground: #ffffff;
   
-  --secondary: #e2e8f0;
-  --secondary-foreground: #0f172a;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #090d16;
   
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted: #f8fafc;
+  --muted-foreground: #475569;
   
   --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
+  --accent-foreground: #090d16;
   
-  --destructive: #ef4444;
+  --destructive: #e11d48;
   --destructive-foreground: #ffffff;
   
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #6366f1;
+  --ring: #4f46e5;
   
   --radius: 0.75rem;
 
-  --info: #3b82f6;
-  --warning: #f59e0b;
-  --success: #10b981;
+  --info: #2563eb;
+  --warning: #d97706;
+  --success: #059669;
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #f4f4f5;
+  --background: #06070a;
+  --foreground: #f8fafc;
   
-  --card: #0f0f13;
-  --card-foreground: #f4f4f5;
+  --card: #0c0e17;
+  --card-foreground: #f8fafc;
   
-  --popover: #0f0f13;
-  --popover-foreground: #f4f4f5;
+  --popover: #0c0e17;
+  --popover-foreground: #f8fafc;
   
   --primary: #06b6d4;
-  --primary-foreground: #09090b;
+  --primary-foreground: #06070a;
   
-  --secondary: #1e1e24;
-  --secondary-foreground: #f4f4f5;
+  --secondary: #161925;
+  --secondary-foreground: #f8fafc;
   
-  --muted: #18181b;
-  --muted-foreground: #a1a1aa;
+  --muted: #11131c;
+  --muted-foreground: #94a3b8;
   
-  --accent: #1e1e24;
-  --accent-foreground: #f4f4f5;
+  --accent: #161925;
+  --accent-foreground: #f8fafc;
   
   --destructive: #f43f5e;
   --destructive-foreground: #ffffff;
   
-  --border: #27272a;
-  --input: #27272a;
+  --border: #1e2436;
+  --input: #1e2436;
   --ring: #06b6d4;
 
-  --info: #60a5fa;
+  --info: #38bdf8;
   --warning: #fbbf24;
   --success: #34d399;
 }
@@ -172,36 +172,37 @@
 
 /* Glassmorphism Styles */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .dark .glass-panel {
-  background: rgba(15, 15, 20, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  background: rgba(12, 14, 23, 0.65);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .glass-panel-glow {
-  box-shadow: 0 0 30px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 30px rgba(79, 70, 229, 0.06);
 }
 
 .dark .glass-panel-glow {
-  box-shadow: 0 0 40px rgba(6, 182, 212, 0.15);
+  box-shadow: 0 0 40px rgba(6, 182, 212, 0.12);
 }
 
 /* Micro-animations and utility classes */
 .hover-glow {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hover-glow:hover {
-  border-color: var(--primary);
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.08);
 }
 
 body {
@@ -209,4 +210,34 @@ body {
   color: var(--foreground);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overflow-x: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Custom transitions and interactive feedback helpers */
+.transition-spring-fast {
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.transition-spring-slow {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.05);
+}
+
+.active-tactile:active {
+  transform: scale(0.98);
+}
+
+/* Keyframe animations for loaders and skeleton layouts */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer-effect {
+  background: linear-gradient(90deg, var(--muted) 25%, var(--accent) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s infinite linear;
 }
