@@ -101,4 +101,20 @@ describe("Infrastructure Monitoring API Endpoints", () => {
     const body = await response.json();
     expect(Array.isArray(body)).toBe(true);
   });
+
+  it("should return live telemetry snapshot on GET telemetry", async () => {
+    const { GET } = await import("@/app/api/v2/mobile/telemetry/route");
+    const request = new Request("http://localhost/api/v2/mobile/telemetry") as any;
+    const response = await GET(request);
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.cpuUsage).toBeTypeOf("number");
+    expect(body.memoryUsage).toBeTypeOf("number");
+    expect(body.gpuUsage).toBeTypeOf("number");
+    expect(body.vramUsage).toBeTypeOf("number");
+    expect(body.hostStatus).toBe("Online");
+    expect(body.timestamp).toBeTypeOf("number");
+  });
 });
+

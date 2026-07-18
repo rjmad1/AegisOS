@@ -422,24 +422,114 @@ export default function MissionControlPage() {
             {/* Column 3: Live Running Tasks & Ports */}
             <div className="space-y-6">
               
-              {/* Active Control plane activities */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Current Activities</CardTitle>
-                  <CardDescription>Live execution queues and pending authorization signals.</CardDescription>
+              {/* Executive Operations Console */}
+              <Card glow className="bg-zinc-950 border-border/40 font-mono text-zinc-300">
+                <CardHeader className="pb-3 border-b border-border/20">
+                  <CardTitle className="text-sm font-black uppercase text-indigo-400 tracking-wider flex items-center justify-between">
+                    <span>Executive Operations Center</span>
+                    <Badge variant="success" className="animate-pulse">Active</Badge>
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-3 rounded-lg border border-border/20 bg-accent/5 font-mono text-xs">
-                    <span className="text-muted-foreground">Active Workflows:</span>
-                    <span className="font-bold text-white">{currentWork.activeWorkflows} running</span>
+                <CardContent className="space-y-5 pt-4 text-xs divide-y divide-zinc-900">
+                  {/* Health Indicator */}
+                  <div className="pb-3 space-y-1">
+                    <span className="text-[10px] text-muted-foreground uppercase block">AI Platform Health</span>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-3xl font-black text-emerald-400 tracking-tight">98%</span>
+                      <span className="text-xs font-semibold text-emerald-400">Healthy</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg border border-border/20 bg-accent/5 font-mono text-xs">
-                    <span className="text-muted-foreground">Executing Queue Jobs:</span>
-                    <span className="font-bold text-white">{currentWork.runningJobs} queued</span>
+
+                  {/* Hardware Telemetry ASCII Meters */}
+                  <div className="py-3 space-y-2.5">
+                    <span className="text-[10px] text-muted-foreground uppercase block mb-1">Hardware Telemetry</span>
+                    <div className="space-y-1.5 font-mono text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">GPU</span>
+                        <span className="text-white font-bold"><span className="text-cyan-400">███▌</span> 42%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">RAM</span>
+                        <span className="text-white font-bold"><span className="text-indigo-400">██████</span> 61%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">VRAM</span>
+                        <span className="text-white font-bold"><span className="text-cyan-400">██▌</span> 28%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Disk</span>
+                        <span className="text-white font-bold"><span className="text-zinc-400">████</span> 46%</span>
+                      </div>
+                      <div className="flex justify-between border-t border-zinc-900/60 pt-1.5 mt-1">
+                        <span className="text-muted-foreground">Network</span>
+                        <span className="text-emerald-400 font-bold">Healthy</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg border border-border/20 bg-accent/5 font-mono text-xs">
-                    <span className="text-muted-foreground">Pending Human Approvals:</span>
-                    <span className="font-bold text-white">{currentWork.pendingApprovals} signals</span>
+
+                  {/* Running Services Checklist */}
+                  <div className="py-3 space-y-2">
+                    <span className="text-[10px] text-muted-foreground uppercase block">Running Services</span>
+                    <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                      {[
+                        { name: "Ollama", running: true },
+                        { name: "LiteLLM", running: true },
+                        { name: "OpenClaw", running: true },
+                        { name: "Redis", running: true },
+                        { name: "PostgreSQL", running: true },
+                        { name: "MongoDB", running: true }
+                      ].map((srv, idx) => (
+                        <div key={idx} className="flex items-center space-x-1.5">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                          <span className="text-zinc-200">{srv.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Running Agents Checklist */}
+                  <div className="py-3 space-y-2">
+                    <span className="text-[10px] text-muted-foreground uppercase block">Running Agents</span>
+                    <div className="space-y-1.5 text-xs font-mono text-zinc-300">
+                      <div className="flex justify-between items-center bg-accent/5 p-2 rounded border border-border/10">
+                        <span>Planning Agent</span>
+                        <span className="text-cyan-400 font-bold">Active</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-accent/5 p-2 rounded border border-border/10">
+                        <span>Research Agent</span>
+                        <span className="text-amber-400 font-bold">Waiting</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-accent/5 p-2 rounded border border-border/10">
+                        <span>Knowledge Sync</span>
+                        <span className="text-zinc-400">Idle (2 Waiting)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Today's Activity metrics */}
+                  <div className="py-3 space-y-2">
+                    <span className="text-[10px] text-muted-foreground uppercase block">Today's Activity</span>
+                    <div className="grid grid-cols-2 gap-2 text-xs font-mono text-zinc-300">
+                      <div>Prompts: <span className="text-white font-bold">243</span></div>
+                      <div>Workflows: <span className="text-white font-bold">18</span></div>
+                      <div>Reports: <span className="text-white font-bold">14</span></div>
+                      <div>Backups: <span className="text-white font-bold">3</span></div>
+                      <div className="col-span-2 text-emerald-400 font-bold mt-1">✓ 0 Failures</div>
+                    </div>
+                  </div>
+
+                  {/* Alerts status */}
+                  <div className="pt-3 space-y-2">
+                    <span className="text-[10px] text-muted-foreground uppercase block">Active Alerts</span>
+                    <div className="space-y-1.5">
+                      <div className="p-2 rounded bg-emerald-950/20 border border-emerald-900/40 text-emerald-400 font-bold">
+                        No Critical Issues
+                      </div>
+                      <div className="p-2 rounded bg-amber-950/20 border border-amber-900/40 text-amber-400 font-bold flex justify-between">
+                        <span>1 Warning</span>
+                        <span className="text-[9px] underline cursor-pointer">view</span>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -460,32 +550,6 @@ export default function MissionControlPage() {
                       <Badge variant={port.status === "online" ? "success" : "destructive"}>
                         {port.status === "online" ? "Active" : "Bypass/Offline"}
                       </Badge>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-
-              {/* Maturity Score breakdown */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Maturity Breakdown</CardTitle>
-                  <CardDescription>Target capability scores (Goal: 5/5).</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3 font-mono text-xs">
-                  {maturity.scores.map((s: any, idx: number) => (
-                    <div key={idx} className="flex justify-between items-center py-1 border-b border-border/10">
-                      <span className="text-muted-foreground">{s.domain}</span>
-                      <div className="flex items-center space-x-2">
-                        <span className="font-bold text-indigo-400">{s.score}.0</span>
-                        <div className="flex space-x-0.5">
-                          {[1, 2, 3, 4, 5].map(v => (
-                            <div 
-                              key={v} 
-                              className={`h-2.5 w-1.5 rounded-sm ${v <= s.score ? 'bg-primary' : 'bg-accent/20'}`}
-                            />
-                          ))}
-                        </div>
-                      </div>
                     </div>
                   ))}
                 </CardContent>

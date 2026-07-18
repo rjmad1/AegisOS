@@ -231,6 +231,35 @@ export class WorkflowService {
       throw new Error(`Workflow "${workflowId}" has no valid starting node.`);
     }
 
+    // Intercept external triggers and wrap them in ExecutionRuntimeService
+    if (triggerSource !== "execution-runtime") {
+      const { executionRuntimeService } = await import("@/services/execution-runtime.service");
+      
+      const uExec = await executionRuntimeService.createExecution(
+        `Trigger workflow: ${workflow.name} (${workflowId}) via ${triggerSource}`,
+        { userId: inputs.userId || "usr-admin-01", role: "admin" },
+        { workflowId }
+      );
+      uExec.metadata.variables = inputs;
+
+      const isValid = await executionRuntimeService.validateExecution(uExec.executionId);
+      if (!isValid) {
+        throw new Error(uExec.error || "Workflow validation failed.");
+      }
+
+      const run = await executionRuntimeService.execute(uExec.executionId);
+      const runId = run.workflowReference?.runId;
+      if (!runId) {
+        throw new Error("Workflow failed to trigger and returned no run identifier.");
+      }
+
+      const wfExec = await workflowRepository.getExecution(runId);
+      if (!wfExec) {
+        throw new Error(`Workflow execution record not found for runId: ${runId}`);
+      }
+      return wfExec;
+    }
+
     const executionId = `exec-${Math.random().toString(36).substring(2, 10)}`;
     const now = new Date().toISOString();
 
@@ -705,9 +734,13 @@ export class WorkflowService {
       exec.checkpointState.completedNodeIds.push(node.id);
       exec.currentNodeId = nextNodeId;
       
-      // Save variables if node returned a payload
+      // Save variables if node returned a payload (avoiding circular structures)
       if (nodeOutput) {
-        exec.variables[`output_${node.id}`] = nodeOutput;
+        if (nodeOutput === exec.variables) {
+          exec.variables[`output_${node.id}`] = { ...nodeOutput };
+        } else {
+          exec.variables[`output_${node.id}`] = typeof nodeOutput === "object" && nodeOutput !== null ? { ...nodeOutput } : nodeOutput;
+        }
       }
 
       await workflowRepository.saveExecution(exec);
@@ -844,6 +877,67 @@ export class WorkflowService {
         this.publishExecutionEvent("WorkflowFailed", exec);
       }
       await workflowRepository.saveExecution(exec);
+    } else {
+      // Fallback for ExecutionGraph nodes running under ExecutionRuntimeService
+      const { executionRuntimeService } = await import("./execution-runtime.service");
+      const uExec = await executionRuntimeService.getExecution(approval.executionId);
+      if (uExec && uExec.metadata?.executionGraph) {
+        const graph = uExec.metadata.executionGraph;
+        const node = graph.nodes.find((n: any) => n.id === approval.nodeId);
+        if (node && node.status === "waiting") {
+          const step = uExec.steps.find((s) => s.id === node.id);
+          if (approval.status === "approved") {
+            node.status = "completed";
+            node.endedAt = now;
+            node.durationMs = Date.now() - new Date(node.startedAt || now).getTime();
+            if (step) {
+              step.status = "completed";
+              step.message = `Approved by ${approverId}`;
+            }
+            
+            // Traverse outgoing edges
+            const outgoing = graph.edges.filter((e: any) => e.source === node.id);
+            for (const edge of outgoing) {
+              edge.status = "traversed";
+            }
+            
+            uExec.status = "RUNNING";
+            await (executionRuntimeService as any).repository.save(uExec);
+            await executionRuntimeService.recordTimelineEvent(
+              uExec.executionId,
+              "HITL Approved",
+              approverId,
+              "execution-graph",
+              { approvalId }
+            );
+            
+            // Resume schedule asynchronously
+            const { executionGraphService } = await import("./execution-graph.service");
+            executionGraphService.schedule(uExec.executionId).catch((err) => {
+              console.error("[WorkflowService] Failed to resume execution graph after approval:", err);
+            });
+          } else if (approval.status === "rejected") {
+            node.status = "failed";
+            node.endedAt = now;
+            node.error = `Rejected by ${approverId}`;
+            if (step) {
+              step.status = "failed";
+              step.message = `Rejected by ${approverId}`;
+            }
+            
+            uExec.status = "FAILED";
+            uExec.error = `Rejected by ${approverId}`;
+            await (executionRuntimeService as any).repository.save(uExec);
+            await executionRuntimeService.recordTimelineEvent(
+              uExec.executionId,
+              "Failed",
+              approverId,
+              "execution-graph",
+              { approvalId, reason: "Rejected" }
+            );
+          }
+        }
+      }
     }
 
     return approval;
@@ -852,23 +946,40 @@ export class WorkflowService {
   // --- Helpers ---
 
   private publishExecutionEvent(eventName: string, exec: WorkflowExecution): void {
-    // 1. Publish to hardenedEventBus for audit trails
-    hardenedEventBus.publish({
-      name: eventName,
-      source: "WorkflowEngine",
-      version: "v1",
-      priority: exec.status === "failed" ? "high" : "medium",
-      securityClassification: "internal",
-      retentionPolicy: "archive",
-      payload: {
-        executionId: exec.id,
-        workflowId: exec.workflowId,
-        workflowName: exec.workflowName,
-        status: exec.status,
-        durationMs: exec.durationMs,
-        error: exec.error
-      }
-    });
+    import("@/infrastructure/events/execution-event-publisher").then(({ executionEventPublisher }) => {
+      import("@/services/execution-runtime.service").then(async ({ executionRuntimeService }) => {
+        const list = await executionRuntimeService.listHistory();
+        const uExec = list.find((e) => e.workflowReference?.runId === exec.id);
+
+        if (uExec) {
+          if (eventName === "WorkflowStarted") {
+            executionEventPublisher.publishStarted(uExec);
+          } else if (eventName === "WorkflowCompleted") {
+            executionEventPublisher.publishCompleted(uExec);
+          } else if (eventName === "WorkflowFailed") {
+            executionEventPublisher.publishFailed(uExec, exec.error || "Workflow failed");
+          }
+        } else {
+          // 1. Publish to hardenedEventBus for audit trails
+          hardenedEventBus.publish({
+            name: eventName,
+            source: "WorkflowEngine",
+            version: "v1",
+            priority: exec.status === "failed" ? "high" : "medium",
+            securityClassification: "internal",
+            retentionPolicy: "archive",
+            payload: {
+              executionId: exec.id,
+              workflowId: exec.workflowId,
+              workflowName: exec.workflowName,
+              status: exec.status,
+              durationMs: exec.durationMs,
+              error: exec.error
+            }
+          });
+        }
+      }).catch((err) => console.error("Failed to load executionRuntimeService:", err));
+    }).catch((err) => console.error("Failed to load executionEventPublisher:", err));
 
     // 2. Publish to browser EventBus for real-time console updates
     EventBus.publish("layout:changed", { layoutId: "workflow-execution-update" });

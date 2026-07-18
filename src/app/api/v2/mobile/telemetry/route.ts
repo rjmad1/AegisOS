@@ -1,13 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { infrastructureService } from '@/services/infrastructure.service';
 
 export async function GET(request: NextRequest) {
   try {
-    // Mock system diagnostics metrics aligning with the OpenAPI TelemetrySnapshot schema
+    const cpu = await infrastructureService.getCpu();
+    const mem = await infrastructureService.getMemory();
+    const gpu = await infrastructureService.getGpu();
+
+    const cpuUsage = cpu.load;
+    const memoryUsage = mem.total > 0 ? (mem.used / mem.total) * 100 : 0;
+
+    const primaryGpu = gpu?.devices?.[0];
+    const gpuUsage = primaryGpu ? primaryGpu.utilization : 0;
+    const vramUsage = primaryGpu ? primaryGpu.memoryUsage : 0;
+
     const telemetry = {
-      cpuUsage: 18.5,
-      memoryUsage: 54.2,
-      gpuUsage: 35.0,
-      vramUsage: 48.1,
+      cpuUsage: Number(cpuUsage.toFixed(1)),
+      memoryUsage: Number(memoryUsage.toFixed(1)),
+      gpuUsage: Number(gpuUsage.toFixed(1)),
+      vramUsage: Number(vramUsage.toFixed(1)),
       hostStatus: 'Online',
       timestamp: Math.floor(Date.now() / 1000)
     };
@@ -28,3 +39,4 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 }
+

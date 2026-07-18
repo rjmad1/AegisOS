@@ -403,6 +403,24 @@ model Workspace {
   deletedAt      DateTime?
 }
 
+model Project {
+  id             String   @id @default(uuid())
+  tenantId       String
+  organizationId String
+  workspaceId    String
+  name           String
+  slug           String
+  description    String
+  status         String   // "active" | "archived" | "completed" | "deleted"
+  settings       String   // JSON string representing ProjectSettings
+  goals          String   // JSON string array
+  metadata       String   // JSON string representing custom metadata
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  deletedAt      DateTime?
+}
+
 model Department {
   id             String   @id @default(uuid())
   tenantId       String
@@ -766,6 +784,58 @@ model EvaluationScorecard {
   safetyViolation        Boolean
   details                String? // JSON string
 }
+
+model UniversalExecution {
+  id                String    @id
+  executionId       String    @unique
+  correlationId     String
+  parentExecutionId String?
+  childExecutions   String    // JSON array of strings
+  status            String
+  userContext       String    // JSON string
+  workspaceContext  String?   // JSON string
+  projectContext    String?   // JSON string
+  intent            String    // JSON string
+  capability        String    // JSON string
+  executionPlan     String?   // JSON string
+  workflowReference String?   // JSON string
+  priority          String
+  createdAt         String
+  startedAt         String?
+  endedAt           String?
+  durationMs        Int?
+  error             String?
+  steps             String    // JSON string
+  artifacts         String    // JSON string
+  toolsUsed         String    // JSON string
+  retryCount        Int
+  maxRetries        Int
+  metadata          String    // JSON string
+  telemetry         String    // JSON string
+  costMetrics       String    // JSON string
+  timeline          String    // JSON string
+}
+
+model Mission {
+  id                String   @id
+  name              String
+  goals             String   // JSON string array
+  constraints       String   // JSON string array
+  status            String   // "CREATED" | "PLANNING" | "EXECUTING" | "REFLECTING" | "COMPLETED" | "FAILED"
+  history           String   // JSON string array of events
+  decisions         String   // JSON string array
+  artifacts         String   // JSON string array
+  evaluations       String   // JSON string array of MissionEvaluation
+  confidence        Float
+  lessons           String   // JSON string array
+  metrics           String   // JSON string representing MissionMetrics
+  createdAt         String
+  updatedAt         String
+  activeExecutionId String?
+  workspaceId       String?
+  projectId         String?
+}
+
 
 
 

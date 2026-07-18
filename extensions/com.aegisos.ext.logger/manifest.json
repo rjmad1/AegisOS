@@ -1,0 +1,21 @@
+{
+  "id": "com.aegisos.ext.logger",
+  "name": "Security Activity Logger",
+  "version": "1.0.0",
+  "author": "Security Architect Team",
+  "description": "Monitors and logs all execution events, security actions, and tool runtimes in AegisOS.",
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "capabilities": [
+    "audit-logging"
+  ],
+  "permissions": [
+    "event-subscribe",
+    "*"
+  ],
+  "entryPoints": {
+    "main": "index.js"
+  },
+  "signature": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+}

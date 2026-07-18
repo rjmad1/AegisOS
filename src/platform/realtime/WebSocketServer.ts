@@ -338,7 +338,7 @@ export function startWebSocketServer() {
         } catch (err) {
           console.error("[WebSocketServer:TelemetryError]", err);
         }
-      }, 500);
+      }, 200);
     }
 
     ws.on("close", () => {

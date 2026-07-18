@@ -29,6 +29,13 @@
                           "Size":  11921
                       },
                       {
+                          "Title":  "capability_orchestration_blueprint",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/capability_orchestration_blueprint.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "capability_orchestration_blueprint.md",
+                          "Size":  29576
+                      },
+                      {
                           "Title":  "CHANGELOG",
                           "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/CHANGELOG.md",
                           "DocumentId":  "N/A",
@@ -99,6 +106,13 @@
                           "Size":  31945
                       },
                       {
+                          "Title":  "EVOLUTION_MASTER_IMPLEMENTATION_PROGRAM",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/EVOLUTION_MASTER_IMPLEMENTATION_PROGRAM.md",
+                          "DocumentId":  "AOD-2026-002",
+                          "Filename":  "EVOLUTION_MASTER_IMPLEMENTATION_PROGRAM.md",
+                          "Size":  42119
+                      },
+                      {
                           "Title":  "GA_CHECKLIST",
                           "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/GA_CHECKLIST.md",
                           "DocumentId":  "N/A",
@@ -125,6 +139,13 @@
                           "DocumentId":  "N/A",
                           "Filename":  "IMPLEMENTATION_BACKLOG.md",
                           "Size":  7858
+                      },
+                      {
+                          "Title":  "intent_resolution_planning_engine",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/intent_resolution_planning_engine.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "intent_resolution_planning_engine.md",
+                          "Size":  31360
                       },
                       {
                           "Title":  "LICENSE",
@@ -187,7 +208,7 @@
                           "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/README.md",
                           "DocumentId":  "N/A",
                           "Filename":  "README.md",
-                          "Size":  15978
+                          "Size":  16211
                       },
                       {
                           "Title":  "RELEASE_PLAN",
@@ -209,6 +230,13 @@
                           "DocumentId":  "N/A",
                           "Filename":  "ROADMAP_GA.md",
                           "Size":  5156
+                      },
+                      {
+                          "Title":  "runtime_semantics_specification",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/runtime_semantics_specification.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "runtime_semantics_specification.md",
+                          "Size":  39627
                       },
                       {
                           "Title":  "SECRETS_MANAGEMENT",
@@ -272,6 +300,13 @@
                           "DocumentId":  "N/A",
                           "Filename":  "Troubleshooting_Guide.md",
                           "Size":  5630
+                      },
+                      {
+                          "Title":  "universal_execution_contract",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/universal_execution_contract.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "universal_execution_contract.md",
+                          "Size":  56328
                       },
                       {
                           "Title":  "User_Guide",
@@ -379,6 +414,13 @@
                           "Size":  16082
                       },
                       {
+                          "Title":  "Release_Candidate_Evidence_Package",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/certification/Release_Candidate_Evidence_Package.md",
+                          "DocumentId":  "RC-EV-PKG-2026-GA",
+                          "Filename":  "Release_Candidate_Evidence_Package.md",
+                          "Size":  12572
+                      },
+                      {
                           "Title":  "01_enterprise_gap_matrix",
                           "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/01_enterprise_gap_matrix.md",
                           "DocumentId":  "N/A",
@@ -484,11 +526,25 @@
                           "Size":  8542
                       },
                       {
+                          "Title":  "16_Enterprise_Implementation_Traceability_Matrix",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/16_Enterprise_Implementation_Traceability_Matrix.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "16_Enterprise_Implementation_Traceability_Matrix.md",
+                          "Size":  2345
+                      },
+                      {
+                          "Title":  "17_Enterprise_Implementation_Readiness_Report",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/17_Enterprise_Implementation_Readiness_Report.md",
+                          "DocumentId":  "N/A",
+                          "Filename":  "17_Enterprise_Implementation_Readiness_Report.md",
+                          "Size":  4299
+                      },
+                      {
                           "Title":  "GA_Certification_Certificate",
                           "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/GA_Certification_Certificate.md",
                           "DocumentId":  "N/A",
                           "Filename":  "GA_Certification_Certificate.md",
-                          "Size":  1491
+                          "Size":  1284
                       },
                       {
                           "Title":  "GA_Readiness_Report",
@@ -565,7 +621,7 @@
                           "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/engineering_excellence_dashboard.md",
                           "DocumentId":  "N/A",
                           "Filename":  "engineering_excellence_dashboard.md",
-                          "Size":  1502
+                          "Size":  1501
                       },
                       {
                           "Title":  "executive_scorecard",
@@ -608,6 +664,13 @@
                           "DocumentId":  "N/A",
                           "Filename":  "performance_report.md",
                           "Size":  450
+                      },
+                      {
+                          "Title":  "Platform_Governance_Package",
+                          "AbsolutePath":  "D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/Platform_Governance_Package.md",
+                          "DocumentId":  "APGP-2026-01",
+                          "Filename":  "Platform_Governance_Package.md",
+                          "Size":  12893
                       },
                       {
                           "Title":  "security_report",
@@ -1429,6 +1492,6 @@
                           "Size":  2757
                       }
                   ],
-    "Timestamp":  "2026-07-17 09:55:54",
-    "TotalDocumentsChecked":  204
+    "Timestamp":  "2026-07-17 20:05:13",
+    "TotalDocumentsChecked":  213
 }

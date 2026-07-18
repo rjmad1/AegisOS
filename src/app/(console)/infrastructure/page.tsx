@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { DataGrid } from "@/components/ui/DataGrid";
 import { InfrastructureGraph, GraphNode, GraphEdge } from "@/components/infrastructure/InfrastructureGraph";
 
@@ -59,6 +60,95 @@ export default function InfrastructurePage() {
   const [processTotalCount, setProcessTotalCount] = React.useState(0);
   const [processLoading, setProcessLoading] = React.useState(false);
   const [gridApi, setGridApi] = React.useState<any>(null);
+
+  // Node selection & log streaming state
+  const [selectedNode, setSelectedNode] = React.useState<any>(null);
+  const [isRestarting, setIsRestarting] = React.useState(false);
+  const [logs, setLogs] = React.useState<string[]>([]);
+
+  // Telemetry stream logs generator effect
+  React.useEffect(() => {
+    if (!selectedNode) {
+      setLogs([]);
+      return;
+    }
+
+    const nodeName = selectedNode.label;
+    const initialLogs = [
+      `[${new Date().toLocaleTimeString()}] [SYSTEM] Telemetry channel established for ${nodeName}...`,
+      `[${new Date().toLocaleTimeString()}] [SYSTEM] Connected on virtual socket PID ${Math.floor(Math.random() * 8000) + 1000}.`,
+      `[${new Date().toLocaleTimeString()}] [INFO] Reading stdout/stderr stream...`,
+      `[${new Date().toLocaleTimeString()}] [OK] Logging console active.`
+    ];
+
+    const typeLogs: Record<string, string[]> = {
+      host: [
+        "AegisOS Host Bootloader loaded.",
+        "ACPI parameters checked: 0 warnings.",
+        "System PCI Bus enumerator complete.",
+        "Direct rendering system context active."
+      ],
+      gpu: [
+        "PCI: Gpu Nvidia RTX 4090 detected.",
+        "CUDA toolkit v12.3 runtime initialized.",
+        "Direct memory access allocation: 24GB VRAM active.",
+        "GPU temperature 41 C, Fan speed 12%."
+      ],
+      container: [
+        "Docker daemon daemon.json parsed.",
+        "Bridge network br-aegis-overlay bound.",
+        "Container group startup list parsed.",
+        "Active handles verified: 0 leaks."
+      ],
+      service: [
+        "Systemd unit file loaded.",
+        "Daemon listening on network interface socket.",
+        "Ping endpoint initialized at localhost:11434.",
+        "API router mapping completed."
+      ],
+      database: [
+        "Storage engine verification complete.",
+        "Write ahead logs (WAL) segment recycled.",
+        "Client pool initialized with max 100 connections.",
+        "Active telemetry index built."
+      ],
+      ai_runtime: [
+        "AegisOS AI Runtime fabric initializing...",
+        "Model preloader checking VRAM caches: 2 models found.",
+        "API proxy health status check: OK",
+        "Runtime worker loops operational."
+      ],
+      projects: [
+        "Workspace profile loaded: AegisOS Platform Core",
+        "Sync task scheduled: every 5 minutes",
+        "Active database backend verified.",
+        "Workspace activity recorder: Active."
+      ]
+    };
+
+    const specificLogs = typeLogs[selectedNode.type] || [
+      `Initializing telemetry for ${selectedNode.label}...`,
+      `Operational status: ${selectedNode.status.toUpperCase()}`,
+      `Memory footprint verified.`
+    ];
+
+    const combined = [...initialLogs, ...specificLogs.map(l => `[${new Date().toLocaleTimeString()}] [DAEMON] ${l}`)];
+    setLogs(combined);
+
+    const interval = setInterval(() => {
+      const liveEvents = [
+        "Ping gateway heartbeat OK",
+        "Memory clean sweep completed.",
+        "Refreshed telemetry registry snapshot.",
+        "Active handle count verification: 0 errors.",
+        "Resource allocation metrics flushed to disk."
+      ];
+      const randomEvent = liveEvents[Math.floor(Math.random() * liveEvents.length)];
+      setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] [HEARTBEAT] ${randomEvent}`].slice(-100));
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [selectedNode]);
 
   // Fetch all telemetry except processes (which are fetched on tab load/scroll)
   const fetchTelemetry = async (silent = false) => {
@@ -151,73 +241,163 @@ export default function InfrastructurePage() {
     const nodes: GraphNode[] = [];
     const edges: GraphEdge[] = [];
 
-    // Layer 1: Host
-    nodes.push({ id: "host", label: host.hostname, type: "host", status: host.healthStatus, description: `CPU: ${cpu.brand}` });
+    // Backbone Node 1: Windows Host (host)
+    nodes.push({ 
+      id: "host", 
+      label: host.hostname, 
+      type: "host", 
+      status: host.healthStatus, 
+      description: `CPU: ${cpu.brand} | Kernel: ${host.operatingSystem.release}` 
+    });
 
-    // Layer 2: OS
-    nodes.push({ id: "os", label: host.operatingSystem.version, type: "operating_system", status: "healthy", description: `Kernel: ${host.operatingSystem.release}` });
+    // Backbone Node 2: OS (operating_system)
+    nodes.push({ 
+      id: "os", 
+      label: host.operatingSystem.version, 
+      type: "operating_system", 
+      status: "healthy", 
+      description: `Release: ${host.operatingSystem.release}` 
+    });
     edges.push({ source: "host", target: "os" });
 
-    // Layer 3: Key Processes
-    const activeProcesses = [
-      { pid: "proc-9210", name: "ollama.exe", desc: "Local Models Runner" },
-      { pid: "proc-10402", name: "python.exe (LiteLLM)", desc: "LiteLLM Router Chain" },
-      { pid: "proc-8840", name: "aegisos.exe", desc: "Orchestrator Kernel" }
-    ];
-    activeProcesses.forEach(p => {
-      nodes.push({ id: p.pid, label: `${p.name} (${p.pid.replace("proc-", "")})`, type: "process", status: "healthy", description: p.desc });
-      edges.push({ source: "os", target: p.pid });
+    // Backbone Node 3: GPU (gpu)
+    nodes.push({ 
+      id: "gpu", 
+      label: "NVIDIA RTX 4090", 
+      type: "gpu", 
+      status: "healthy", 
+      description: "VRAM: 24GB GDDR6X | Temp: 42 C" 
     });
+    edges.push({ source: "os", target: "gpu" });
 
-    // Layer 4: Services
-    const activeServices = [
-      { id: "svc-ollama", name: "Ollama", pid: "proc-9210" },
-      { id: "svc-litellm", name: "LiteLLMProxy", pid: "proc-10402" },
-      { id: "svc-aegisos", name: "AegisOSCore", pid: "proc-8840" }
-    ];
-    activeServices.forEach(s => {
-      nodes.push({ id: s.id, label: s.name, type: "service", status: "healthy", description: "Background Service Daemon" });
-      edges.push({ source: s.pid, target: s.id });
+    // Backbone Node 4: Docker Engine (container)
+    nodes.push({ 
+      id: "docker-engine", 
+      label: "Docker Engine", 
+      type: "container", 
+      status: "healthy", 
+      description: "Docker Desktop daemon v24.0.7 active" 
     });
+    edges.push({ source: "gpu", target: "docker-engine" });
 
-    // Layer 5: Databases
-    databases.forEach(db => {
-      const dbId = `db-${db.type}`;
-      nodes.push({ id: dbId, label: db.type.toUpperCase(), type: "database", status: db.health, description: `Ver: ${db.version} | ${db.location}` });
-      edges.push({ source: "svc-aegisos", target: dbId });
-    });
-
-    // Layer 6: Containers
+    // Branching off Docker: Individual Container Nodes
     containers.forEach(c => {
       const cId = `cont-${c.id}`;
-      nodes.push({ id: cId, label: c.name, type: "container", status: "healthy", description: `Img: ${c.image}` });
-      edges.push({ source: "svc-aegisos", target: cId });
+      nodes.push({ 
+        id: cId, 
+        label: c.name, 
+        type: "container", 
+        status: c.status === "running" ? "healthy" : "unhealthy", 
+        description: `Image: ${c.image}` 
+      });
+      edges.push({ source: "docker-engine", target: cId });
     });
 
-    // Layer 7: AI Runtime
-    nodes.push({ id: "ai-runtime", label: "AegisOS Runtime Fabric", type: "ai_runtime", status: "healthy", description: "V1.0.0-core" });
-    edges.push({ source: "svc-aegisos", target: "ai-runtime" });
+    // Backbone Node 5: Ollama Server (service)
+    nodes.push({ 
+      id: "svc-ollama", 
+      label: "Ollama Local Service", 
+      type: "service", 
+      status: "healthy", 
+      description: "Local Model Weights Engine | Port: 11434" 
+    });
+    edges.push({ source: "docker-engine", target: "svc-ollama" });
+
+    // Backbone Node 6: LiteLLM Router (service)
+    nodes.push({ 
+      id: "svc-litellm", 
+      label: "LiteLLM Router Proxy", 
+      type: "service", 
+      status: "healthy", 
+      description: "Routing, Guardrails & Balancing | Port: 4000" 
+    });
+    edges.push({ source: "svc-ollama", target: "svc-litellm" });
+
+    // Backbone Node 7: OpenClaw Kernel (ai_runtime)
+    nodes.push({ 
+      id: "ai-runtime", 
+      label: "OpenClaw Kernel Runtime", 
+      type: "ai_runtime", 
+      status: "healthy", 
+      description: "System coordinator daemon v1.0.0-core" 
+    });
     edges.push({ source: "svc-litellm", target: "ai-runtime" });
 
-    // Layer 8: AI Models
+    // Backbone Node 8: Agent Suite (model / agent)
+    nodes.push({ 
+      id: "agents-suite", 
+      label: "Agent Fleet Orchestrator", 
+      type: "model", 
+      status: "healthy", 
+      description: "Planner, Research, Writer, Security Personas active" 
+    });
+    edges.push({ source: "ai-runtime", target: "agents-suite" });
+
+    // Backbone Node 9: Knowledge Sync (knowledge)
+    nodes.push({ 
+      id: "knowledge-sync", 
+      label: "Vector Store Sync Plane", 
+      type: "knowledge", 
+      status: "healthy", 
+      description: "PGVector, Redis caches, embeddings indexers" 
+    });
+    edges.push({ source: "agents-suite", target: "knowledge-sync" });
+
+    // Backbone Node 10: Projects Workspace (projects)
+    nodes.push({ 
+      id: "projects-workspace", 
+      label: "Active Projects Console", 
+      type: "projects", 
+      status: "healthy", 
+      description: "Scoped developer workspaces and taskboards" 
+    });
+    edges.push({ source: "knowledge-sync", target: "projects-workspace" });
+
+    // Branching off Ollama: Models
     const modelNodes = [
-      { id: "model-deepseek", name: "deepseek-r1:32b" },
-      { id: "model-gemma", name: "gemma2:9b" }
+      { id: "model-deepseek", name: "deepseek-r1:32b", desc: "Quantized 32B weights active" },
+      { id: "model-gemma", name: "gemma2:9b", desc: "Quantized 9B weights active" }
     ];
     modelNodes.forEach(m => {
-      nodes.push({ id: m.id, label: m.name, type: "model", status: "healthy", description: "Quantized Weights Active" });
-      edges.push({ source: "ai-runtime", target: m.id });
+      nodes.push({ 
+        id: m.id, 
+        label: m.name, 
+        type: "model", 
+        status: "healthy", 
+        description: m.desc 
+      });
       edges.push({ source: "svc-ollama", target: m.id });
+      // Connect model back to agents suite who calls it
+      edges.push({ source: "agents-suite", target: m.id });
     });
 
-    // Layer 9: Artifacts
+    // Branching off Knowledge Sync: Database Nodes
+    databases.forEach(db => {
+      const dbId = `db-${db.type}`;
+      nodes.push({ 
+        id: dbId, 
+        label: db.type.toUpperCase(), 
+        type: "database", 
+        status: db.health, 
+        description: `Ver: ${db.version} | ${db.location}` 
+      });
+      edges.push({ source: "knowledge-sync", target: dbId });
+    });
+
+    // Branching off Projects/Models: Artifacts
     const artifactNodes = [
-      { id: "art-specs", name: "system_info.txt" },
-      { id: "art-weights", name: "model_weights_catalog.csv" }
+      { id: "art-specs", name: "system_info.txt", desc: "Hardware diagnostics snapshot" },
+      { id: "art-weights", name: "weights_catalog.csv", desc: "Active models manifest" }
     ];
     artifactNodes.forEach(a => {
-      nodes.push({ id: a.id, label: a.name, type: "artifact", status: "healthy", description: "Cached file" });
-      edges.push({ source: "model-deepseek", target: a.id });
+      nodes.push({ 
+        id: a.id, 
+        label: a.name, 
+        type: "artifact", 
+        status: "healthy", 
+        description: a.desc 
+      });
+      edges.push({ source: "projects-workspace", target: a.id });
     });
 
     return { nodes, edges };
@@ -1042,8 +1222,95 @@ export default function InfrastructurePage() {
 
         {/* RELATIONSHIP TOPOLOGY GRAPH TAB */}
         {activeTab === "graph" && (
-          <div className="space-y-4">
-            <InfrastructureGraph nodes={graphData.nodes} edges={graphData.edges} />
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-stretch">
+            <div className={`${selectedNode ? 'xl:col-span-3' : 'xl:col-span-4'} transition-all duration-300`}>
+              <InfrastructureGraph 
+                nodes={graphData.nodes} 
+                edges={graphData.edges} 
+                onSelectNode={setSelectedNode} 
+                selectedNodeId={selectedNode?.id} 
+              />
+            </div>
+            
+            {selectedNode && (
+              <Card className="xl:col-span-1 flex flex-col h-[600px] bg-zinc-950 border-border/40 font-mono text-xs text-zinc-300">
+                <CardHeader className="pb-3 border-b border-zinc-900/60 flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="text-sm font-bold text-indigo-400 truncate max-w-[180px]">{selectedNode.label}</CardTitle>
+                    <CardDescription className="text-[10px] uppercase font-bold text-muted-foreground">{selectedNode.type}</CardDescription>
+                  </div>
+                  <button 
+                    onClick={() => setSelectedNode(null)} 
+                    className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </CardHeader>
+                <CardContent className="flex-1 overflow-y-auto space-y-4 pt-4 divide-y divide-zinc-900">
+                  {/* Status & Actions */}
+                  <div className="pb-3 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Status:</span>
+                      <Badge variant={selectedNode.status === "healthy" ? "success" : "destructive"}>
+                        {selectedNode.status.toUpperCase()}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Control Action:</span>
+                      <Button 
+                        size="sm" 
+                        variant="secondary"
+                        disabled={isRestarting}
+                        onClick={async () => {
+                          setIsRestarting(true);
+                          setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] [CONTROL] Initiating restart sequence...`]);
+                          await new Promise(r => setTimeout(r, 1500));
+                          setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] [CONTROL] Restart complete. Node online.`]);
+                          setIsRestarting(false);
+                        }}
+                      >
+                        {isRestarting ? "Restarting..." : "Restart Node"}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Node Configuration */}
+                  <div className="py-3 space-y-1.5 font-mono text-[11px]">
+                    <span className="text-[10px] text-indigo-400 font-bold block mb-1">Configuration</span>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Node ID:</span>
+                      <span className="text-white font-bold">{selectedNode.id}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">IP Address:</span>
+                      <span className="text-white">127.0.0.1</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Binding Host:</span>
+                      <span className="text-white">localhost</span>
+                    </div>
+                    {selectedNode.description && (
+                      <div className="pt-1.5 border-t border-zinc-900/60 mt-1">
+                        <span className="text-muted-foreground block mb-0.5">Meta Description:</span>
+                        <span className="text-zinc-200 block text-[10px] bg-zinc-900 p-1.5 rounded border border-border/10">
+                          {selectedNode.description}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Logs stream console */}
+                  <div className="pt-3 flex-1 flex flex-col min-h-[220px]">
+                    <span className="text-[10px] text-indigo-400 font-bold block mb-1">Live Logs Console</span>
+                    <div className="flex-1 bg-black p-2 rounded-lg border border-border/20 font-mono text-[10px] text-emerald-400 overflow-y-auto h-[200px] leading-tight space-y-1 select-text scrollbar-thin">
+                      {logs.map((log, idx) => (
+                        <div key={idx} className="break-all whitespace-pre-wrap">{log}</div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         )}
       </div>

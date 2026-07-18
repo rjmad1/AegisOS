@@ -56,6 +56,11 @@ export async function register() {
       await workflowService.start();
       console.log("[Instrumentation] Server-side Workflow Engine background service initialized.");
 
+      // Boot Extension Runtime Ecosystem
+      const { extensionRuntimeService } = await import("@/platform/extension/ExtensionRuntimeService");
+      await extensionRuntimeService.initialize();
+      console.log("[Instrumentation] Server-side Dynamic Extension Runtime Service initialized.");
+
       // Boot Command & Control Subsystem Execution workers
       const { executionEngine } = await import("@/platform/control/ExecutionEngine");
       executionEngine.start();

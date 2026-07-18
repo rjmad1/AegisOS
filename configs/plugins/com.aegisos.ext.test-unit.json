@@ -1,0 +1,18 @@
+{
+  "id": "com.aegisos.ext.test-unit",
+  "name": "Test Unit Extension",
+  "version": "1.0.0",
+  "manifestVersion": "1.0",
+  "capabilities": [
+    "test-capability"
+  ],
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "configSchema": {
+    "type": "object"
+  },
+  "permissions": [
+    "event-publish"
+  ]
+}

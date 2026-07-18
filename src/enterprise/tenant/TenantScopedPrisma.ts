@@ -20,7 +20,7 @@ const TENANT_SCOPED_MODELS = new Set([
   'AuditLogEntry', 'AuditEvent', 'Config', 'ConfigHistory',
   'FeatureFlag', 'Secret', 'SchedulerJob', 'Job', 'JobCheckpoint', 'Session',
   // Enterprise models
-  'Tenant', 'Workspace', 'Department', 'BusinessUnit',
+  'Tenant', 'Workspace', 'Project', 'Department', 'BusinessUnit',
   'License', 'Subscription', 'UsageRecord', 'Invoice',
   'GovernancePolicy', 'WhiteLabelConfig',
 ]);

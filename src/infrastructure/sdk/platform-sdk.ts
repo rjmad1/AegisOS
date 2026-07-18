@@ -218,8 +218,18 @@ export const platformSdk: IPlatformSdk = {
       console.log(`[PlatformSDK] Registering Agent Spec: ${agentSpec.name}`);
     },
     execute: async (agentId, prompt, options) => {
-      console.log(`[PlatformSDK] Executing Agent ${agentId} with prompt: ${prompt}`);
-      return { response: "Execution successful mock", tokens: 48 };
+      const { executionRuntimeService } = require("../../services/execution-runtime.service");
+      const execution = await executionRuntimeService.createExecution(prompt, { userId: "usr-admin-01", role: "admin" });
+      const isValid = await executionRuntimeService.validateExecution(execution.executionId);
+      if (isValid) {
+        await executionRuntimeService.execute(execution.executionId);
+      }
+      const finalExec = (await executionRuntimeService.getExecution(execution.executionId))!;
+      return {
+        response: finalExec.status === "FAILED" ? finalExec.error : finalExec.metadata.assistantReply || "Executed agent successfully.",
+        tokens: finalExec.costMetrics.tokensSpent.totalTokens,
+        executionId: finalExec.executionId
+      };
     },
     getStats: (agentId) => {
       return { latencyMs: 230, successRate: 0.99, calls: 485 };
@@ -230,11 +240,26 @@ export const platformSdk: IPlatformSdk = {
       console.log(`[PlatformSDK] Registering Workflow Spec: ${workflowSpec.name}`);
     },
     trigger: async (workflowId, variables) => {
-      console.log(`[PlatformSDK] Triggering Workflow ${workflowId}`);
-      return `exec-${Math.random().toString(36).slice(2, 9)}`;
+      const { executionRuntimeService } = require("../../services/execution-runtime.service");
+      const execution = await executionRuntimeService.createExecution("Trigger workflow: " + workflowId, { userId: "usr-admin-01", role: "admin" }, { workflowId });
+      execution.metadata.variables = variables || {};
+      const isValid = await executionRuntimeService.validateExecution(execution.executionId);
+      if (isValid) {
+        await executionRuntimeService.execute(execution.executionId);
+      }
+      return execution.executionId;
     },
     getExecutionStatus: async (executionId) => {
-      return { id: executionId, status: "succeeded", progress: 100 };
+      const { executionRuntimeService } = require("../../services/execution-runtime.service");
+      const execution = await executionRuntimeService.getExecution(executionId);
+      if (execution) {
+        return {
+          id: executionId,
+          status: execution.status.toLowerCase(),
+          progress: execution.status === "COMPLETED" ? 100 : execution.status === "FAILED" ? 100 : 50
+        };
+      }
+      return { id: executionId, status: "unknown", progress: 0 };
     }
   },
 

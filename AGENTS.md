@@ -74,3 +74,64 @@ Always:
 * Consider scalability, security, maintainability, and supportability before recommending an approach.
 * Explain why an option is preferred over alternatives.
 
+---
+
+# AegisOS Engineering Constitution
+
+This constitution is the supreme engineering authority governing all future development. Every implementation, pull request, feature, workflow, agent, API, prompt, database change, mobile feature, infrastructure modification, and architectural evolution shall comply with this constitution.
+
+## PART I: Engineering Principles
+- Reuse before Extend.
+- Extend before Create.
+- Refactor before Rewrite.
+- Delete before Duplicate.
+- Configuration before Code.
+- Contracts before Implementations.
+- Composition before Inheritance.
+- Automation before Manual Processes.
+- Observability before Optimization.
+- Security before Exposure.
+- Correctness before Performance.
+- Maintainability before Cleverness.
+
+## PART II: Architectural Rules
+- No duplicate runtimes.
+- No duplicate event buses.
+- No duplicate workflow engines.
+- No duplicate prompt systems.
+- No duplicate registries.
+- No duplicate knowledge stores.
+- No duplicate configuration systems.
+- No duplicate execution payloads.
+- No duplicate authentication systems.
+- Every capability must reuse existing platform services.
+
+## PART III: Implementation Rules
+Every implementation shall begin by identifying:
+- Existing code, services, APIs, workflows, prompts, models, registries, documentation, and tests.
+- If reuse is possible, **DO NOT CREATE NEW CODE.**
+
+## PART IV: Documentation Rules
+- No feature may exist without documentation.
+- No documentation may exist without implementation references.
+- Every ADR must reference implementation; every implementation must reference ADR.
+
+## PART V: Testing Rules
+- No implementation without tests.
+- No feature without integration tests.
+- No API without contract tests.
+- No workflow without execution tests.
+- No agent without evaluation.
+- No model without benchmarks.
+
+## PART VI: Quality Gates
+Every Pull Request must satisfy Compilation, Lint, Formatting, Unit Tests, Integration Tests, Performance, Security, Documentation, and Architecture.
+
+## PART VII: Architecture Gates
+Before implementation, answer: Does it already exist? Can it be reused? Can it be extended? Does it duplicate anything? Does it violate the Capability Layer, Intent Layer, Universal Execution Contract, or Runtime Semantics? If **YES** (to duplication/violations or existence), **Stop implementation.**
+
+## PART VIII: Evolution Rules
+Every release shall reduce technical debt, increase reuse, improve observability, improve security, and improve maintainability.
+
+## PART IX: Definition of Excellence
+A feature is complete only when: Implemented, Documented, Tested, Observable, Recoverable, Secure, Governed, Extensible, and Backward Compatible.

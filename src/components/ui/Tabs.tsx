@@ -9,12 +9,12 @@ interface TabsContextProps {
 const TabsContext = React.createContext<TabsContextProps | null>(null);
 
 export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
-  defaultValue: string;
+  defaultValue?: string;
   value?: string;
   onValueChange?: (value: string) => void;
 }
 
-export function Tabs({ defaultValue, value, onValueChange, className, children, ...props }: TabsProps) {
+export function Tabs({ defaultValue = "", value, onValueChange, className, children, ...props }: TabsProps) {
   const [localValue, setLocalValue] = React.useState(defaultValue);
   const activeValue = value !== undefined ? value : localValue;
   const setActiveValue = React.useCallback(

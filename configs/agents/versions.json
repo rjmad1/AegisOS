@@ -1,0 +1,133 @@
+[
+  {
+    "agentId": "main",
+    "activeVersion": "2.1",
+    "versions": [
+      {
+        "version": "2.1",
+        "timestamp": "2026-07-17T23:39:48.553Z",
+        "author": "System Platform Admin",
+        "changeDescription": "Initial seed agent configuration",
+        "configuration": {
+          "agentId": "main",
+          "name": "Main Orchestrator Agent",
+          "role": "Routes generic developer inquiries and breaks down execution steps",
+          "models": [
+            "gemma4:latest",
+            "gemma2:9b"
+          ],
+          "version": "2.1",
+          "mcpServers": [
+            "filesystem",
+            "git",
+            "sqlite",
+            "github",
+            "tavily",
+            "notion",
+            "atlassian",
+            "google-drive",
+            "slack",
+            "stripe",
+            "confluence",
+            "memory",
+            "linear",
+            "jira",
+            "asana",
+            "gmail",
+            "discord",
+            "google-workspace",
+            "google-maps",
+            "twilio",
+            "obsidian"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "agentId": "developer",
+    "activeVersion": "1.8",
+    "versions": [
+      {
+        "version": "1.8",
+        "timestamp": "2026-07-17T23:39:48.554Z",
+        "author": "System Platform Admin",
+        "changeDescription": "Initial seed agent configuration",
+        "configuration": {
+          "agentId": "developer",
+          "name": "Coding Agent",
+          "role": "Writes clean code, fixes syntax issues, and performs code generation",
+          "models": [
+            "qwen2.5:14b",
+            "gpt-oss:20b"
+          ],
+          "version": "1.8",
+          "mcpServers": [
+            "filesystem",
+            "git",
+            "puppeteer",
+            "github",
+            "chrome-devtools",
+            "playwright",
+            "markitdown",
+            "dbhub",
+            "cloudflare",
+            "desktop-commander",
+            "overleaf",
+            "gitlab",
+            "docker",
+            "kubernetes",
+            "postgres",
+            "snowflake",
+            "mysql",
+            "fetch",
+            "browserbase",
+            "command-execution",
+            "ssh",
+            "aws",
+            "zapier"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "agentId": "reviewer",
+    "activeVersion": "1.4",
+    "versions": [
+      {
+        "version": "1.4",
+        "timestamp": "2026-07-17T23:39:48.554Z",
+        "author": "System Platform Admin",
+        "changeDescription": "Initial seed agent configuration",
+        "configuration": {
+          "agentId": "reviewer",
+          "name": "Code Reviewer Agent",
+          "role": "Reviews diffs, looks for memory leaks, and checks engineering standards",
+          "models": [
+            "deepseek-r1:32b"
+          ],
+          "version": "1.4",
+          "mcpServers": [
+            "raja-knowledge-repository",
+            "figma",
+            "minimax",
+            "firecrawl",
+            "netdata",
+            "unity",
+            "elevenlabs",
+            "ffmpeg",
+            "youtube",
+            "prometheus",
+            "grafana",
+            "sentry",
+            "weaviate",
+            "zendesk",
+            "miro",
+            "airtable"
+          ]
+        }
+      }
+    ]
+  }
+]

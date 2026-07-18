@@ -1,0 +1,45 @@
+{
+  "id": "com.aegisos.ext.translator",
+  "name": "Dynamic Translation Utility",
+  "version": "1.1.0",
+  "author": "Localization Team",
+  "description": "Dynamic multi-language translations and locale conversions in AegisOS.",
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "capabilities": [
+    "text-translation"
+  ],
+  "permissions": [
+    "event-publish"
+  ],
+  "entryPoints": {
+    "main": "index.js"
+  },
+  "tools": [
+    {
+      "id": "tool:text:translate",
+      "name": "Translate Text",
+      "description": "Translates raw string to target language locale.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string", "description": "Raw input string" },
+          "targetLang": { "type": "string", "description": "Target language, e.g. Spanish, French" }
+        },
+        "required": ["text", "targetLang"]
+      },
+      "permissionsRequired": ["network:outbound"],
+      "sandboxLevel": "full",
+      "enabled": true
+    }
+  ],
+  "prompts": [
+    {
+      "name": "system-text-translation",
+      "purpose": "Directs LLMs to translate text accurately.",
+      "template": "Translate the following text to the specified target language."
+    }
+  ],
+  "signature": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+}

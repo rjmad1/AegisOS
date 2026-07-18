@@ -11,6 +11,7 @@ import { predictiveEngine } from "@/infrastructure/intelligence/predictive-engin
 import { recommendationEngine } from "@/infrastructure/intelligence/recommendation-engine";
 import { knowledgeAnalytics } from "@/platform/knowledge/KnowledgeAnalytics";
 import { organizationalIntelligence } from "@/platform/knowledge/OrganizationalIntelligence";
+import { executionRuntimeService } from "./execution-runtime.service";
 
 export interface EipPlatformSummary {
   timestamp: string;
@@ -51,6 +52,18 @@ export class EngineeringIntelligenceService {
     if (this.isScanning) {
       // Return cached/current state if concurrent scan request
       return this.assembleSummary(100, 4, { modularity: 4, testing: 4, documentation: 3, observability: 4 }, [], [], [], [], [], { nodes: [], edges: [] }, []);
+    }
+
+    let uExec: any = null;
+    try {
+      uExec = await executionRuntimeService.createExecution(
+        "Run Engineering Intelligence Platform Analysis",
+        { userId: "system-eip", role: "admin" }
+      );
+      await executionRuntimeService.validateExecution(uExec.executionId);
+      await executionRuntimeService.recordTimelineEvent(uExec.executionId, "Started", "system:eip", "engineering-intelligence");
+    } catch (err: any) {
+      console.warn("[EIPService] Failed to initialize execution tracking:", err.message);
     }
 
     this.isScanning = true;
@@ -134,7 +147,7 @@ export class EngineeringIntelligenceService {
         }))
         .slice(0, 2);
 
-      return this.assembleSummary(
+      const summary = this.assembleSummary(
         phi,
         emiLevel,
         { modularity: modularityScore, testing: testingScore, documentation: documentationScore, observability: observabilityScore },
@@ -146,6 +159,19 @@ export class EngineeringIntelligenceService {
         graph,
         outcomes
       );
+
+      if (uExec) {
+        uExec.metadata.summary = summary;
+        await executionRuntimeService.recordTimelineEvent(uExec.executionId, "Completed", "system:eip", "engineering-intelligence");
+        await executionRuntimeService.completeExecution(uExec.executionId);
+      }
+
+      return summary;
+    } catch (err: any) {
+      if (uExec) {
+        await executionRuntimeService.failExecution(uExec.executionId, err.message);
+      }
+      throw err;
     } finally {
       this.isScanning = false;
     }

@@ -25,8 +25,7 @@ import { developerModule } from '@/modules/developer/developer.module';
 import { skillsModule } from '@/modules/skills/skills.module';
 import { engineeringIntelligenceModule } from '@/modules/engineering-intelligence/engineering-intelligence.module';
 import { missionControlModule } from '@/modules/mission-control/mission-control.module';
-
-import { platformOperationsControlPlane } from '../control-plane/PlatformOperationsControlPlane';
+import { projectsModule } from '@/modules/projects/projects.module';
 
 export const allModules: PlatformModule[] = [
   platformModule,
@@ -44,20 +43,8 @@ export const allModules: PlatformModule[] = [
   skillsModule,
   engineeringIntelligenceModule,
   missionControlModule,
+  projectsModule,
 ];
-
-let booted = false;
-
-export async function bootPlatform(): Promise<void> {
-  if (booted) return;
-  booted = true;
-  await PlatformKernel.boot(allModules);
-  try {
-    await platformOperationsControlPlane.initialize();
-  } catch (err) {
-    console.error('[Boot] Platform Operations Control Plane failed to initialize:', err);
-  }
-}
 
 export { PlatformKernel };
 

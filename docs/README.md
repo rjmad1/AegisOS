@@ -24,6 +24,7 @@ Welcome to the AI Workstation platform documentation repository. This directory 
 * **[User Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/User_Guide.md)**: Walkthrough for managing local models, configuring editor connections, and creating plugins.
 
 ### 4. Master Implementation Program (Path to V1.0 GA)
+* **[Evolution Master Implementation Program (EMIP)](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/EVOLUTION_MASTER_IMPLEMENTATION_PROGRAM.md)**: Authoritative platform transformation & version 1.0 GA execution plan.
 * **[Master Implementation Plan](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/MASTER_IMPLEMENTATION_PLAN.md)**: Authoritative program governance & execution blueprint.
 * **[Implementation Backlog](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/IMPLEMENTATION_BACKLOG.md)**: Prioritized backlog & user stories.
 * **[Release Plan](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/RELEASE_PLAN.md)**: General Availability release train & versioning pipeline.

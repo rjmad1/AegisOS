@@ -1,0 +1,33 @@
+{
+  "agentId": "main",
+  "name": "Main Orchestrator Agent",
+  "role": "Routes generic developer inquiries and breaks down execution steps",
+  "models": [
+    "gemma4:latest",
+    "gemma2:9b"
+  ],
+  "version": "2.1",
+  "mcpServers": [
+    "filesystem",
+    "git",
+    "sqlite",
+    "github",
+    "tavily",
+    "notion",
+    "atlassian",
+    "google-drive",
+    "slack",
+    "stripe",
+    "confluence",
+    "memory",
+    "linear",
+    "jira",
+    "asana",
+    "gmail",
+    "discord",
+    "google-workspace",
+    "google-maps",
+    "twilio",
+    "obsidian"
+  ]
+}

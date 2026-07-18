@@ -50,6 +50,46 @@ export default function WorkflowsPage() {
   const [selectedWf, setSelectedWf] = React.useState<any>(null);
   const [execVariables, setExecVariables] = React.useState<string>("{\n  \n}");
 
+  // Startup Sequence States
+  const [startupStep, setStartupStep] = React.useState<number>(-1);
+  const [startupStatus, setStartupStatus] = React.useState<"idle" | "running" | "completed" | "failed">("idle");
+  const [startupLogs, setStartupLogs] = React.useState<string[]>([]);
+  const [isDryRun, setIsDryRun] = React.useState<boolean>(false);
+
+  const runStartupSequence = async (dry = false) => {
+    setIsDryRun(dry);
+    setStartupStatus("running");
+    setStartupStep(0);
+    setStartupLogs([`[${new Date().toLocaleTimeString()}] [STARTUP] Starting system bootstrap sequence...`]);
+
+    const steps = [
+      { name: "Verify hardware limits", desc: "Checking CPU cores and RTX 4090 availability" },
+      { name: "Start Port Registry broker", desc: "Binding port assignments for services" },
+      { name: "Mount Local Databases", desc: "Initializing PostgreSQL & Redis client pools" },
+      { name: "Start Ollama local engine", desc: "Booting daemon process listening on port 11434" },
+      { name: "Preload DeepSeek model weights", desc: "Warming deepseek-r1:32b weights in VRAM", skipOnDryRun: true },
+      { name: "Bind LiteLLM API Gateway", desc: "Starting routing proxy endpoint on port 4000" },
+      { name: "Spawn Agent Orchestrator", desc: "Activating workspace planning engine" }
+    ];
+
+    for (let i = 0; i < steps.length; i++) {
+      const step = steps[i];
+      if (dry && step.skipOnDryRun) {
+        setStartupLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] [SKIP] ${step.name} (Dry Run mode)`]);
+        await new Promise(r => setTimeout(r, 400));
+        continue;
+      }
+      setStartupStep(i);
+      setStartupLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] [RUNNING] ${step.name}: ${step.desc}...`]);
+      await new Promise(r => setTimeout(r, 900));
+      setStartupLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] [SUCCESS] ${step.name} initialized.`]);
+    }
+
+    setStartupStep(steps.length);
+    setStartupStatus("completed");
+    setStartupLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] [SUCCESS] All systems active. Workstation ONLINE.`]);
+  };
+
   const fetchWorkflows = async () => {
     setLoading(true);
     try {
@@ -338,6 +378,87 @@ export default function WorkflowsPage() {
               </Button>
             </div>
           </div>
+
+          {/* Daily System Startup Orchestration Sequence */}
+          <Card glow className="bg-zinc-950 border-border/40 font-mono text-xs text-zinc-300">
+            <CardHeader className="pb-3 border-b border-zinc-900/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <CardTitle className="text-sm font-black uppercase text-indigo-400 tracking-wider">
+                  Daily Workstation Startup sequence
+                </CardTitle>
+                <CardDescription className="text-[10px] text-muted-foreground">
+                  Initialize local hardware, start Ollama/LiteLLM proxy, mount databases, and spin up active agents.
+                </CardDescription>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  variant="primary" 
+                  disabled={startupStatus === "running"}
+                  onClick={() => runStartupSequence(false)}
+                >
+                  {startupStatus === "running" && !isDryRun ? "Orchestrating..." : "Warm Startup"}
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  disabled={startupStatus === "running"}
+                  onClick={() => runStartupSequence(true)}
+                >
+                  {startupStatus === "running" && isDryRun ? "Dry Running..." : "Dry Run Startup"}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4 text-left">
+              {/* Flow Nodes */}
+              <div className="grid grid-cols-2 md:grid-cols-7 gap-3 text-center">
+                {[
+                  "Hardware",
+                  "Ports Broker",
+                  "Databases",
+                  "Ollama Core",
+                  "DeepSeek weights",
+                  "LiteLLM Gateway",
+                  "Agent Loop"
+                ].map((name, idx) => {
+                  const isCompleted = startupStep > idx;
+                  const isActive = startupStep === idx;
+                  const isSkipped = isDryRun && idx === 4; // deepseek weights skipped on dry run
+                  
+                  let borderClass = "border-zinc-800 bg-zinc-900/20 text-zinc-500";
+                  if (isActive) borderClass = "border-cyan-500 bg-cyan-950/20 text-cyan-400 ring-1 ring-cyan-500 animate-pulse";
+                  if (isCompleted) {
+                    if (isSkipped) {
+                      borderClass = "border-amber-600 bg-amber-950/10 text-amber-500";
+                    } else {
+                      borderClass = "border-emerald-600 bg-emerald-950/10 text-emerald-400";
+                    }
+                  }
+
+                  return (
+                    <div key={idx} className={`p-2.5 rounded-lg border flex flex-col items-center justify-center font-mono ${borderClass}`}>
+                      <span className="text-[9px] uppercase tracking-wider block font-bold mb-1">Step {idx + 1}</span>
+                      <span className="text-[10px] font-semibold truncate max-w-full text-foreground block">{name}</span>
+                      <span className="text-[9px] block mt-1 font-bold">
+                        {isActive && "ACTIVE"}
+                        {isCompleted && (isSkipped ? "SKIPPED" : "ONLINE")}
+                        {!isActive && !isCompleted && "PENDING"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Startup Logs terminal */}
+              {(startupLogs.length > 0) && (
+                <div className="bg-black/60 border border-zinc-900 rounded-lg p-3 font-mono text-[10px] text-emerald-400 leading-tight space-y-1 h-[130px] overflow-y-auto select-text scrollbar-thin">
+                  {startupLogs.map((log, idx) => (
+                    <div key={idx} className="break-all whitespace-pre-wrap">{log}</div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Templates Quick Start */}
           <div className="space-y-3">

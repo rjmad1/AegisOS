@@ -1,0 +1,35 @@
+{
+  "agentId": "developer",
+  "name": "Coding Agent",
+  "role": "Writes clean code, fixes syntax issues, and performs code generation",
+  "models": [
+    "qwen2.5:14b",
+    "gpt-oss:20b"
+  ],
+  "version": "1.8",
+  "mcpServers": [
+    "filesystem",
+    "git",
+    "puppeteer",
+    "github",
+    "chrome-devtools",
+    "playwright",
+    "markitdown",
+    "dbhub",
+    "cloudflare",
+    "desktop-commander",
+    "overleaf",
+    "gitlab",
+    "docker",
+    "kubernetes",
+    "postgres",
+    "snowflake",
+    "mysql",
+    "fetch",
+    "browserbase",
+    "command-execution",
+    "ssh",
+    "aws",
+    "zapier"
+  ]
+}

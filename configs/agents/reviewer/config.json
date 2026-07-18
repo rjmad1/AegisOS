@@ -1,0 +1,27 @@
+{
+  "agentId": "reviewer",
+  "name": "Code Reviewer Agent",
+  "role": "Reviews diffs, looks for memory leaks, and checks engineering standards",
+  "models": [
+    "deepseek-r1:32b"
+  ],
+  "version": "1.4",
+  "mcpServers": [
+    "raja-knowledge-repository",
+    "figma",
+    "minimax",
+    "firecrawl",
+    "netdata",
+    "unity",
+    "elevenlabs",
+    "ffmpeg",
+    "youtube",
+    "prometheus",
+    "grafana",
+    "sentry",
+    "weaviate",
+    "zendesk",
+    "miro",
+    "airtable"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "codegraph-ast-plugin",
+  "name": "CodeGraph AST Engine",
+  "version": "1.2.0",
+  "manifestVersion": "1.0",
+  "capabilities": [
+    "ast-indexing",
+    "symbol-query"
+  ],
+  "dependencies": {
+    "platform": ">=1.0.0"
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "indexTargetFolder": {
+        "type": "string",
+        "default": "./src"
+      }
+    }
+  },
+  "permissions": [
+    "file-read",
+    "registry-write"
+  ]
+}

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { workflowRepository } from "@/repositories/workflow.repository";
-import { workflowService } from "@/services/workflow.service";
+import { executionRuntimeService } from "@/services/execution-runtime.service";
 import { formatErrorResponse } from "@/utils/api-helper";
 import { ValidationError, NotFoundError } from "@/utils/errors";
 
@@ -34,14 +34,61 @@ export async function POST(request: NextRequest) {
       if (!workflowId) {
         throw new ValidationError("Missing workflowId to trigger execution");
       }
-      const exec = await workflowService.triggerWorkflow(workflowId, variables || {}, "manual");
-      return Response.json({ success: true, execution: exec }, { status: 201 });
+
+      // 1. Create execution
+      const execution = await executionRuntimeService.createExecution(
+        "Trigger workflow: " + workflowId,
+        { userId: "usr-admin-01", role: "admin" },
+        { workflowId }
+      );
+      execution.metadata.variables = variables || {};
+
+      // 2. Validate
+      const isValid = await executionRuntimeService.validateExecution(execution.executionId);
+      if (!isValid) {
+        const finalExec = (await executionRuntimeService.getExecution(execution.executionId))!;
+        throw new Error(finalExec.error || "Workflow failed safety validation.");
+      }
+
+      // 3. Execute
+      await executionRuntimeService.execute(execution.executionId);
+
+      const finalExec = (await executionRuntimeService.getExecution(execution.executionId))!;
+      const runId = finalExec.workflowReference?.runId;
+      if (!runId) {
+        throw new Error("Workflow failed to trigger and returned no run identifier.");
+      }
+
+      const workflowExecution = await workflowRepository.getExecution(runId);
+      return Response.json({ success: true, execution: workflowExecution }, { status: 201 });
     }
 
     if (action === "cancel") {
       if (!executionId) {
         throw new ValidationError("Missing executionId to cancel");
       }
+
+      // Handle Universal Execution Cancellation
+      if (executionId.startsWith("exec-")) {
+        const exec = await executionRuntimeService.cancelExecution(executionId, "Manual administrative cancellation");
+        // Also cancel referenced workflow if present
+        const runId = exec.workflowReference?.runId;
+        if (runId) {
+          const wfExec = await workflowRepository.getExecution(runId);
+          if (wfExec) {
+            wfExec.status = "cancelled";
+            wfExec.endedAt = new Date().toISOString();
+            wfExec.logs.push({
+              timestamp: wfExec.endedAt,
+              level: "warn",
+              message: "Workflow cancelled by manual administrative request."
+            });
+            await workflowRepository.saveExecution(wfExec);
+          }
+        }
+        return Response.json({ success: true, execution: exec });
+      }
+
       const exec = await workflowRepository.getExecution(executionId);
       if (!exec) {
         throw new NotFoundError("Execution not found");

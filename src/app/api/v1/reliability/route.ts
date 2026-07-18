@@ -10,6 +10,7 @@ import { riskRegister } from "@/infrastructure/reliability/RiskRegister";
 import { selfHealingFramework } from "@/infrastructure/reliability/SelfHealingFramework";
 import { serviceMeshLayer } from "@/infrastructure/reliability/ServiceMeshLayer";
 import { reliabilityStore } from "@/infrastructure/reliability/store";
+import { executionRuntimeService } from "@/services/execution-runtime.service";
 
 export const dynamic = "force-dynamic";
 
@@ -60,49 +61,80 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { action } = body;
 
-    switch (action) {
-      case "chaos_inject": {
-        const { faultId } = body;
-        if (!faultId) return NextResponse.json({ error: "Missing faultId" }, { status: 400 });
-        const success = await chaosPlatform.injectFault(faultId);
-        return NextResponse.json({ success });
-      }
+    const uExec = await executionRuntimeService.createExecution(
+      `SRE Action: ${action}`,
+      { userId: "usr-admin-01", role: "admin" }
+    );
+    uExec.metadata.body = body;
 
-      case "chaos_recover": {
-        const { faultId } = body;
-        if (!faultId) return NextResponse.json({ error: "Missing faultId" }, { status: 400 });
-        const success = await chaosPlatform.recoverFault(faultId);
-        return NextResponse.json({ success });
-      }
+    const isValid = await executionRuntimeService.validateExecution(uExec.executionId);
+    if (!isValid) {
+      throw new Error(uExec.error || "Validation failed for SRE Action.");
+    }
 
-      case "backup": {
-        const { type } = body;
-        if (!type) return NextResponse.json({ error: "Missing backup type" }, { status: 400 });
-        const success = await disasterRecovery.performBackup(type);
-        return NextResponse.json({ success });
-      }
+    await executionRuntimeService.recordTimelineEvent(uExec.executionId, "Started", "sre", "reliability-endpoint");
 
-      case "failover_drill": {
-        const success = await disasterRecovery.executeFailoverDrill();
-        return NextResponse.json({ success });
-      }
-
-      case "heal": {
-        const result = await selfHealingFramework.executeHealingCycle();
-        return NextResponse.json({ result });
-      }
-
-      case "traffic_split": {
-        const { serviceId, canaryPercent } = body;
-        if (!serviceId || canaryPercent === undefined) {
-          return NextResponse.json({ error: "Missing serviceId or canaryPercent" }, { status: 400 });
+    try {
+      let result;
+      switch (action) {
+        case "chaos_inject": {
+          const { faultId } = body;
+          if (!faultId) return NextResponse.json({ error: "Missing faultId" }, { status: 400 });
+          const success = await chaosPlatform.injectFault(faultId);
+          result = { success };
+          break;
         }
-        const success = await serviceMeshLayer.configureTrafficSplit(serviceId, canaryPercent);
-        return NextResponse.json({ success });
+
+        case "chaos_recover": {
+          const { faultId } = body;
+          if (!faultId) return NextResponse.json({ error: "Missing faultId" }, { status: 400 });
+          const success = await chaosPlatform.recoverFault(faultId);
+          result = { success };
+          break;
+        }
+
+        case "backup": {
+          const { type } = body;
+          if (!type) return NextResponse.json({ error: "Missing backup type" }, { status: 400 });
+          const success = await disasterRecovery.performBackup(type);
+          result = { success };
+          break;
+        }
+
+        case "failover_drill": {
+          const success = await disasterRecovery.executeFailoverDrill();
+          result = { success };
+          break;
+        }
+
+        case "heal": {
+          const healResult = await selfHealingFramework.executeHealingCycle();
+          result = { result: healResult };
+          break;
+        }
+
+        case "traffic_split": {
+          const { serviceId, canaryPercent } = body;
+          if (!serviceId || canaryPercent === undefined) {
+            return NextResponse.json({ error: "Missing serviceId or canaryPercent" }, { status: 400 });
+          }
+          const success = await serviceMeshLayer.configureTrafficSplit(serviceId, canaryPercent);
+          result = { success };
+          break;
+        }
+
+        default:
+          return NextResponse.json({ error: `Unknown action: '${action}'` }, { status: 400 });
       }
 
-      default:
-        return NextResponse.json({ error: `Unknown action: '${action}'` }, { status: 400 });
+      uExec.metadata.result = result;
+      await executionRuntimeService.recordTimelineEvent(uExec.executionId, "Completed", "sre", "reliability-endpoint");
+      await executionRuntimeService.completeExecution(uExec.executionId);
+
+      return NextResponse.json(result);
+    } catch (err: any) {
+      await executionRuntimeService.failExecution(uExec.executionId, err.message);
+      throw err;
     }
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

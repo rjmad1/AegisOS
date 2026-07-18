@@ -62,7 +62,7 @@ if (-not (Test-Path $rollbackDir) -and -not $DryRun) {
 }
 
 function Backup-RegistryKey($keyPath, $filename) {
-    if (Test-Path $keyPath -and -not $DryRun) {
+    if ((Test-Path $keyPath) -and -not $DryRun) {
         $outFile = Join-Path $rollbackDir $filename
         Log-PlatformInfo "Backing up registry key $keyPath to $outFile..."
         $regPath = $keyPath.Replace("HKLM:\", "HKLM\")
@@ -153,7 +153,7 @@ if (-not $existingUser) {
         Log-PlatformAction "[DRY-RUN] Would create local user '$serviceUser'"
     } else {
         $secPass = ConvertTo-SecureString $servicePass -AsPlainText -Force
-        New-LocalUser -Name $serviceUser -Password $secPass -Description "Scoped runtime account for AegisOS Platform Services" -PasswordNeverExpires $true | Out-Null
+        New-LocalUser -Name $serviceUser -Password $secPass -Description "AegisOS Scoped Runtime Account" -PasswordNeverExpires $true | Out-Null
         Log-PlatformSuccess "Scoped service user '$serviceUser' created."
         
         # Save password to secure file for subsequent runs

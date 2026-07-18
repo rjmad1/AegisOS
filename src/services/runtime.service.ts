@@ -7,6 +7,10 @@ import {
 import { providerFactory } from "@/infrastructure/factories/provider-factory";
 import { ProviderRegistry } from "@/infrastructure/providers/registry";
 import { AegisOSRuntimeProvider } from "@/infrastructure/providers/aegisos-runtime";
+import { workflowRepository } from "@/repositories/workflow.repository";
+import { executionRuntimeService } from "@/services/execution-runtime.service";
+import { executionQueryService } from "@/services/execution-query.service";
+
 
 export const DEFAULT_MCP_SERVERS = [
   { name: "markitdown", enabled: true, command: "npx @modelcontextprotocol/server-markitdown" },
@@ -463,104 +467,37 @@ export class RuntimeService {
     agentId?: string;
     workflowId?: string;
   } = {}): Promise<{ executions: Execution[]; total: number }> {
-    const page = options.page || 1;
-    const limit = options.limit || 15;
-    const search = options.search?.toLowerCase() || "";
-    const statusFilter = options.status || "";
-    const agentFilter = options.agentId || "";
-    const workflowFilter = options.workflowId || "";
-
-    const db = this.getDbConnection();
-    const executions: Execution[] = [];
-
-    if (db) {
-      try {
-        const rows = db.prepare("SELECT * FROM task_runs ORDER BY created_at DESC").all();
-        for (const r of rows) {
-          const durationMs = r.ended_at && r.started_at ? r.ended_at - r.started_at : undefined;
-          
-          executions.push({
-            id: r.task_id,
-            conversationId: `execution-${r.task_id}`,
-            workflowId: r.runtime === "workflow" ? "audit" : undefined,
-            agentId: r.agent_id,
-            task: r.task || "",
-            status: r.status as any,
-            createdAt: new Date(r.created_at).toISOString(),
-            startedAt: r.started_at ? new Date(r.started_at).toISOString() : undefined,
-            endedAt: r.ended_at ? new Date(r.ended_at).toISOString() : undefined,
-            durationMs,
-            error: r.error || undefined,
-            retryCount: 0,
-            metadata: { runtime: r.runtime, terminal_summary: r.terminal_summary }
-          });
-        }
-      } catch (err) {
-        console.error("Failed to query executions:", err);
-      }
-    }
-
-    // Merge Workflow Executions from JSON DB
-    try {
-      const { workflowRepository } = require("../repositories/workflow.repository");
-      const wfExecs = await workflowRepository.getExecutions();
-      for (const r of wfExecs) {
-        executions.push({
-          id: r.id,
-          conversationId: r.conversationId || `wf-exec-${r.id}`,
-          workflowId: r.workflowId,
-          agentId: "workflows",
-          task: `Workflow Pipeline: ${r.workflowName}`,
-          status: r.status === "succeeded" ? "succeeded" : r.status === "failed" ? "failed" : r.status === "running" ? "running" : r.status === "queued" ? "queued" : "running",
-          createdAt: r.createdAt,
-          startedAt: r.startedAt,
-          endedAt: r.endedAt,
-          durationMs: r.durationMs,
-          error: r.error,
-          retryCount: r.retryCount,
-          metadata: r.metadata
-        });
-      }
-    } catch (e) {
-      console.error("[RuntimeService] Failed to load workflow executions:", e);
-    }
-
-    // Apply Filter & Search
-    let filtered = executions;
-    if (search) {
-      filtered = filtered.filter(e => 
-        e.id.toLowerCase().includes(search) || 
-        e.task.toLowerCase().includes(search) ||
-        (e.error && e.error.toLowerCase().includes(search))
-      );
-    }
-    if (statusFilter) {
-      filtered = filtered.filter(e => e.status === statusFilter);
-    }
-    if (agentFilter) {
-      filtered = filtered.filter(e => e.agentId === agentFilter);
-    }
-    if (workflowFilter) {
-      filtered = filtered.filter(e => e.workflowId === workflowFilter);
-    }
-
-    // Sort by createdAt descending
-    filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    const total = filtered.length;
-    const startIndex = (page - 1) * limit;
-    const paginated = filtered.slice(startIndex, startIndex + limit);
-
-    return {
-      executions: paginated,
-      total
-    };
+    return executionQueryService.getExecutionHistory(options);
   }
 
   public async getExecution(id: string): Promise<Execution | null> {
     if (id.startsWith("exec-")) {
       try {
-        const { workflowRepository } = require("../repositories/workflow.repository");
+        const r = await executionRuntimeService.getExecution(id);
+        if (r) {
+          return {
+            id: r.executionId,
+            conversationId: r.metadata.conversationId || `execution-${r.executionId}`,
+            workflowId: r.workflowReference?.workflowId || undefined,
+            agentId: r.workflowReference?.workflowId ? "workflows" : "assistant",
+            task: r.intent.rawPrompt,
+            status: r.status === "COMPLETED" ? "succeeded" : r.status === "FAILED" ? "failed" : r.status === "RUNNING" ? "running" : r.status === "QUEUED" ? "queued" : "running",
+            createdAt: r.createdAt,
+            startedAt: r.startedAt || undefined,
+            endedAt: r.endedAt || undefined,
+            durationMs: r.durationMs || undefined,
+            error: r.error || undefined,
+            retryCount: r.retryCount,
+            steps: r.steps,
+            toolsUsed: r.toolsUsed,
+            metadata: r.metadata
+          };
+        }
+      } catch (err) {
+        console.error("Failed to query universal execution detail:", err);
+      }
+
+      try {
         const r = await workflowRepository.getExecution(id);
         if (!r) return null;
 
