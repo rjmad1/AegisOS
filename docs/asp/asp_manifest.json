@@ -1,0 +1,87 @@
+{
+  "$schema": "https://aegisos.org/schemas/asp-manifest.json",
+  "program": "AegisOS Studio Program",
+  "version": "1.0.0",
+  "status": "APPROVED",
+  "governance": {
+    "platformKernelStatus": "RC1 Certified & Frozen",
+    "pvpStatus": "Certified (50/50 Missions)",
+    "oapStatus": "Operational",
+    "aedpStatus": "Complete",
+    "zeroPrivilegeMandate": true
+  },
+  "domainEntities": [
+    "Workspace",
+    "Project",
+    "Knowledge",
+    "Mission",
+    "Agent",
+    "Artifact",
+    "Extension",
+    "Settings",
+    "Search"
+  ],
+  "perspectives": [
+    {
+      "id": "pers-developer",
+      "name": "Developer",
+      "targetPersona": "Software & DevOps Engineers",
+      "defaultLayout": "Split Code Editor, Live Terminal, Agent Console, File Tree",
+      "primaryTools": ["CodeGraph", "Diff Viewer", "Terminal", "Debugger"]
+    },
+    {
+      "id": "pers-research",
+      "name": "Research",
+      "targetPersona": "AI Researchers & Technical Writers",
+      "defaultLayout": "Knowledge Graph, Literature Explorer, Markdown Canvas, Citations",
+      "primaryTools": ["Vector Search", "Paper Summarizer", "Claim Validator"]
+    },
+    {
+      "id": "pers-product",
+      "name": "Product",
+      "targetPersona": "Product Managers & Technical Leads",
+      "defaultLayout": "Mission Kanban Board, Feature Spec Canvas, Project Explorer",
+      "primaryTools": ["Mission Pack Launcher", "User Story Generator", "HITL Approver"]
+    },
+    {
+      "id": "pers-operations",
+      "name": "Operations",
+      "targetPersona": "SREs & System Administrators",
+      "defaultLayout": "Health Gauges, Agent Resource Table, Log Console, Capability Explorer",
+      "primaryTools": ["Resource Limiter", "Log Streamer", "Container Auditor"]
+    },
+    {
+      "id": "pers-executive",
+      "name": "Executive",
+      "targetPersona": "VPs, CTOs, Strategic Leaders",
+      "defaultLayout": "Mission Scorecard, Decision Log, Value Deliverable Canvas, Cost Meter",
+      "primaryTools": ["Mission Brief", "Exec Summary Generator", "ROI Tracker"]
+    },
+    {
+      "id": "pers-personal",
+      "name": "Personal",
+      "targetPersona": "Individual Knowledge Workers",
+      "defaultLayout": "Distraction-Free Canvas, Daily Scratchpad, Simple Task List",
+      "primaryTools": ["Quick Note", "Personal Mission Runner", "Voice Dictation"]
+    }
+  ],
+  "coreExperiences": [
+    { "id": "SCR-01", "name": "Workspace Home", "component": "WorkspaceHomeView" },
+    { "id": "SCR-02", "name": "Project Explorer", "component": "ProjectExplorerView" },
+    { "id": "SCR-03", "name": "Mission Center", "component": "MissionCenterView" },
+    { "id": "SCR-04", "name": "Agent Console", "component": "AgentConsoleView" },
+    { "id": "SCR-05", "name": "Knowledge Graph", "component": "KnowledgeGraphView" },
+    { "id": "SCR-06", "name": "Artifact Library", "component": "ArtifactLibraryView" },
+    { "id": "SCR-07", "name": "Execution Timeline", "component": "ExecutionTimelineView" },
+    { "id": "SCR-08", "name": "Extension Marketplace", "component": "ExtensionMarketplaceView" },
+    { "id": "SCR-09", "name": "Capability Explorer", "component": "CapabilityExplorerView" },
+    { "id": "SCR-10", "name": "Global Search", "component": "GlobalSearchOverlay" },
+    { "id": "SCR-11", "name": "Settings", "component": "SettingsView" }
+  ],
+  "platformConsumption": {
+    "restEndpointPrefix": "/api/v1",
+    "webSocketChannelPrefix": "/ws",
+    "sdkPackage": "@aegisos/sdk",
+    "zeroPrivilegeVerified": true
+  }
+}

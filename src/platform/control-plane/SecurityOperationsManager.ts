@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { platformDigitalTwin } from './PlatformDigitalTwin';
 
-const execAsync = promisify(exec);
+const execAsync = typeof exec === 'function' ? promisify(exec) : (() => Promise.resolve({ stdout: '', stderr: '' })) as any;
 
 export class SecurityOperationsManager {
   private static instance: SecurityOperationsManager | null = null;

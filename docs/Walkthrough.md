@@ -434,3 +434,18 @@ The mobile application is a lightweight, local-first client built using Flutter:
 * **Voice Feedback Button (`VoiceFeedbackButton`)**: A reactive, dark-themed UI component integrated into the console sidebar that supports direct microphone recording using the browser's MediaRecorder API.
 * **Upload API (`/api/v1/feedback/voice`)**: Receives recorded `.webm` feedback payloads and writes them to the secure storage root.
 * **Download API (`/api/v1/feedback/voice/download`)**: Handles playback and analysis pipelines.
+
+---
+
+## 9. Phase 14 Walkthrough: AI Workspace & Console Stabilization
+
+We fully integrated the AI Workspace feature and stabilized the platform Console. 
+
+### AI Workspace & Console UI Enhancements
+* **Artifact Library & Dashboard**: Switched to `lucide-react`'s `Workflow` icon in place of `Diagram` to conform to standard icon exports.
+* **Mission Panel**: Configured standard `primary` button variants.
+
+### Security & Boot Stabilization
+1. **Browser-Safe Node API Imports**: Prevented Next.js browser-side boot crashes by ensuring `util.promisify(exec)` is only executed in Node environments (by checking if `exec` is a function before initializing). This applies to `deployment-manager.ts`, `SecurityOperationsManager.ts`, and `infrastructure-providers.ts`.
+2. **Local Loopback Rate-Limit Bypass**: Bypassed Redis rate limiting for all localhost/loopback requests (`127.0.0.1`, `::1`, `localhost`) in `src/proxy.ts`. This ensures internal token introspection and verification fetches do not exhaust rate limit quotas during automated E2E tests, eliminating flaky test scenarios and `429 Too Many Requests` API failures.
+

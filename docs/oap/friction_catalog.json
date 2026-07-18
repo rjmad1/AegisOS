@@ -1,0 +1,99 @@
+[
+  {
+    "id": "FRIC-001",
+    "domain": "Coding",
+    "description": "HITL permission prompt triggers repeatedly for read-only repository inspection commands",
+    "severity": "MAJOR",
+    "frequency": "ALWAYS",
+    "reproductionSteps": [
+      "Submit prompt to inspect repository structure",
+      "Agent attempts git log or directory read via terminal",
+      "HITL approval dialog blocks execution waiting for manual click"
+    ],
+    "subsystem": "HITL Manager",
+    "suggestedImprovement": "Auto-grant permission for read-only CLI commands and file inspection operations",
+    "status": "TRIAGED",
+    "backlogTicketId": "OP-BACK-001"
+  },
+  {
+    "id": "FRIC-002",
+    "domain": "Research",
+    "description": "Knowledge Item (KI) search vector lookup experiences cold-start latency > 3.5s on initial query",
+    "severity": "MAJOR",
+    "frequency": "FREQUENT",
+    "reproductionSteps": [
+      "Launch deep research mission in fresh workspace session",
+      "Query Knowledge Engine for existing pattern KI",
+      "Observe 3.8s delay before vector search returns matching KIs"
+    ],
+    "subsystem": "Knowledge Engine",
+    "suggestedImprovement": "Pre-warm vector cache during workspace startup background indexing",
+    "status": "TRIAGED",
+    "backlogTicketId": "OP-BACK-002"
+  },
+  {
+    "id": "FRIC-003",
+    "domain": "Architecture",
+    "description": "Artifact link paths in markdown outputs use relative paths instead of standard clickable file:// URLs",
+    "severity": "MINOR",
+    "frequency": "FREQUENT",
+    "reproductionSteps": [
+      "Generate architectural blueprint artifact",
+      "View generated markdown summary",
+      "Attempt to click referenced file link",
+      "Link fails to open because path lacks absolute file:// scheme"
+    ],
+    "subsystem": "UI/UX",
+    "suggestedImprovement": "Enforce absolute file:// URL formatting for all generated artifact file references",
+    "status": "TRIAGED",
+    "backlogTicketId": "OP-BACK-003"
+  },
+  {
+    "id": "FRIC-004",
+    "domain": "Planning",
+    "description": "Mission graph plan synthesis executes steps sequentially when nodes have zero mutual dependencies",
+    "severity": "MAJOR",
+    "frequency": "FREQUENT",
+    "reproductionSteps": [
+      "Launch multi-step mission requiring documentation, linting, and diagram generation",
+      "Observe execution timeline",
+      "Nodes execute strictly sequentially, taking 45s total instead of parallel 15s"
+    ],
+    "subsystem": "Execution Graph",
+    "suggestedImprovement": "Enable DAG parallel branch execution for independent execution nodes",
+    "status": "TRIAGED",
+    "backlogTicketId": "OP-BACK-004"
+  },
+  {
+    "id": "FRIC-005",
+    "domain": "Product Management",
+    "description": "Context window sliding window pruner truncates earlier requirements when prompt exceeds 8k tokens",
+    "severity": "CRITICAL",
+    "frequency": "OCCASIONAL",
+    "reproductionSteps": [
+      "Provide comprehensive multi-section PRD input",
+      "Agent triggers reflection due to truncated initial constraints",
+      "Requires user manual correction to re-inject truncated acceptance criteria"
+    ],
+    "subsystem": "Intent Engine",
+    "suggestedImprovement": "Implement semantic chunking and summary preservation in sliding window context pruner",
+    "status": "TRIAGED",
+    "backlogTicketId": "OP-BACK-005"
+  },
+  {
+    "id": "FRIC-006",
+    "domain": "Documentation",
+    "description": "Command line output line count limit requires multiple pagination iterations for large logs",
+    "severity": "MINOR",
+    "frequency": "OCCASIONAL",
+    "reproductionSteps": [
+      "Run broad audit test command",
+      "Command output exceeds 800 lines limit",
+      "Agent must issue follow-up calls to read full log content"
+    ],
+    "subsystem": "Tools",
+    "suggestedImprovement": "Add auto-summarization tool flag for command outputs exceeding 500 lines",
+    "status": "TRIAGED",
+    "backlogTicketId": "OP-BACK-006"
+  }
+]

@@ -64,4 +64,6 @@ databases/
 # testing outputs
 /playwright-report/
 /test-results/
+/artifacts_storage/
+
 

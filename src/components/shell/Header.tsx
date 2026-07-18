@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { SearchBar } from "./SearchBar";
 import { CommandBar } from "./CommandBar";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
+import { PerspectiveSwitcher } from "./PerspectiveSwitcher";
 import { cn } from "@/utils/cn";
 
 interface HeaderProps {
@@ -72,8 +73,11 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right: Quick actions, Theme, Profile */}
       <div className="flex items-center space-x-3">
-        {/* Workspace layout switcher */}
-        <WorkspaceSwitcher />
+        {/* Perspective Selector & Workspace layout switcher */}
+        <div className="flex items-center space-x-2">
+          <PerspectiveSwitcher />
+          <WorkspaceSwitcher />
+        </div>
 
         {/* Search trigger */}
         <SearchBar onClick={onSearchOpen} />

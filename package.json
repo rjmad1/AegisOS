@@ -9,7 +9,9 @@
     "lint": "eslint",
     "test": "node scripts/configure-db.js && vitest run",
     "test:watch": "node scripts/configure-db.js && vitest",
-    "test:coverage": "node scripts/configure-db.js && vitest run --coverage"
+    "test:coverage": "node scripts/configure-db.js && vitest run --coverage",
+    "pvp": "node scripts/pvp-runner.js",
+    "oap": "npx tsx scripts/oap-runner.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1086.0",

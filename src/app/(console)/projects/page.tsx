@@ -1,824 +1,450 @@
 "use client";
 
-import * as React from "react";
-import { 
-  Briefcase, Cpu, Users, Database, FileText, GitBranch, Activity, 
-  Clock, BarChart2, ListTodo, Plus, Search, CheckSquare, Layers, 
-  Wifi, AlertTriangle, Play, Pause, RefreshCw, CheckCircle2, ChevronRight,
-  TrendingUp, Trash2, Globe, Send, ShieldAlert, Award
+import React, { useState } from "react";
+import {
+  FolderGit2,
+  FileText,
+  Database,
+  Box,
+  Puzzle,
+  ChevronRight,
+  ChevronDown,
+  Plus,
+  Search,
+  ExternalLink,
+  CheckCircle2,
+  Clock,
+  Layers,
+  Code2,
+  Shield,
+  Zap,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 
-interface TaskItem {
+interface TreeNode {
   id: string;
-  text: string;
-  status: "todo" | "in-progress" | "done";
+  name: string;
+  type: "category" | "repo" | "doc" | "source" | "pack" | "extension";
+  icon: any;
+  children?: TreeNode[];
+  metadata?: Record<string, any>;
 }
 
-export default function ProjectsWorkspacePage() {
-  // Lists
-  const [workspaces, setWorkspaces] = React.useState<any[]>([]);
-  const [projects, setProjects] = React.useState<any[]>([]);
-  const [missions, setMissions] = React.useState<any[]>([]);
-  const [executions, setExecutions] = React.useState<any[]>([]);
-  const [artifacts, setArtifacts] = React.useState<any[]>([]);
-  const [agents, setAgents] = React.useState<any[]>([]);
-  const [approvals, setApprovals] = React.useState<any[]>([]);
+export default function ProjectExplorerPage() {
+  const {
+    projects,
+    knowledgeDocs,
+    importRepository,
+    importDocument,
+    workspaces,
+    activeWorkspaceId,
+  } = useWorkspaceStore();
 
-  // Selection
-  const [selectedWorkspaceId, setSelectedWorkspaceId] = React.useState<string>("");
-  const [selectedProjectId, setSelectedProjectId] = React.useState<string>("");
+  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({
+    cat_repos: true,
+    cat_docs: true,
+    cat_sources: true,
+    cat_packs: true,
+    cat_exts: true,
+  });
 
-  // Loading States
-  const [loading, setLoading] = React.useState(true);
-  const [runningMission, setRunningMission] = React.useState(false);
+  const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Modals
+  const [showRepoModal, setShowRepoModal] = useState(false);
+  const [showDocModal, setShowDocModal] = useState(false);
 
   // Forms
-  const [showWorkspaceForm, setShowWorkspaceForm] = React.useState(false);
-  const [wsName, setWsName] = React.useState("");
-  const [wsDesc, setWsDesc] = React.useState("");
+  const [repoName, setRepoName] = useState("");
+  const [repoUrl, setRepoUrl] = useState("");
+  const [docName, setDocName] = useState("");
+  const [docContent, setDocContent] = useState("");
 
-  const [showProjectForm, setShowProjectForm] = React.useState(false);
-  const [projName, setProjName] = React.useState("");
-  const [projDesc, setProjDesc] = React.useState("");
-  const [projGoals, setProjGoals] = React.useState("");
-
-  const [newMissionPrompt, setNewMissionPrompt] = React.useState("");
-  const [newTaskText, setNewTaskText] = React.useState("");
-
-  // Explorers Search
-  const [artifactFilter, setArtifactFilter] = React.useState("");
-  const [knowledgeQuery, setKnowledgeQuery] = React.useState("");
-  const [knowledgeResults, setKnowledgeResults] = React.useState<any[]>([]);
-  const [searchingKnowledge, setSearchingKnowledge] = React.useState(false);
-
-  const [activeTab, setActiveTab] = React.useState<string>("overview");
-
-  // Fetch Workspaces on mount
-  const fetchWorkspaces = async () => {
-    try {
-      const res = await fetch("/api/v1/workspaces");
-      const data = await res.json();
-      setWorkspaces(data);
-      if (data.length > 0 && !selectedWorkspaceId) {
-        setSelectedWorkspaceId(data[0].id);
-      }
-    } catch (err) {
-      console.error("Failed to load workspaces:", err);
-    }
+  const toggleNode = (id: string) => {
+    setExpandedNodes((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Fetch Projects when selected Workspace changes
-  const fetchProjects = async (wsId: string) => {
-    try {
-      const res = await fetch(`/api/v1/projects?workspaceId=${wsId}`);
-      const data = await res.json();
-      setProjects(data);
-      if (data.length > 0) {
-        setSelectedProjectId(data[0].id);
-      } else {
-        setSelectedProjectId("");
-        setMissions([]);
-        setExecutions([]);
-        setArtifacts([]);
-      }
-    } catch (err) {
-      console.error("Failed to load projects:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Build tree structure
+  const treeData: TreeNode[] = [
+    {
+      id: "cat_repos",
+      name: "Repositories",
+      type: "category",
+      icon: FolderGit2,
+      children: projects.map((p) => ({
+        id: p.id,
+        name: p.name,
+        type: "repo",
+        icon: FolderGit2,
+        metadata: {
+          url: p.repositoryUrl || "https://github.com/rjmad1/AegisOS",
+          branch: p.branch || "main",
+          commits: p.commitCount || 342,
+          status: p.status,
+          description: p.description,
+          goals: p.goals,
+        },
+      })),
+    },
+    {
+      id: "cat_docs",
+      name: "Documents",
+      type: "category",
+      icon: FileText,
+      children: knowledgeDocs.map((d) => ({
+        id: d.id,
+        name: d.name,
+        type: "doc",
+        icon: FileText,
+        metadata: {
+          fileType: d.type,
+          chunkCount: d.chunkCount,
+          vectorCount: d.vectorCount,
+          status: d.embeddingStatus,
+          uri: d.sourceUri,
+        },
+      })),
+    },
+    {
+      id: "cat_sources",
+      name: "Knowledge Sources",
+      type: "category",
+      icon: Database,
+      children: [
+        {
+          id: "ks-01",
+          name: "CodeGraph AST Parser",
+          type: "source",
+          icon: Database,
+          metadata: { type: "AST Graph", status: "online", nodeCount: 14200, edgeCount: 48900 },
+        },
+        {
+          id: "ks-02",
+          name: "Ollama Vector Memory Store",
+          type: "source",
+          icon: Database,
+          metadata: { type: "Chroma / SQLite", status: "online", dimension: 768, indexType: "HNSW" },
+        },
+      ],
+    },
+    {
+      id: "cat_packs",
+      name: "Mission Packs",
+      type: "category",
+      icon: Box,
+      children: [
+        {
+          id: "mp-01",
+          name: "Security Audit Pack",
+          type: "pack",
+          icon: Box,
+          metadata: { version: "v1.4.0", scope: "Zero Trust", permissions: "Read-only REST" },
+        },
+        {
+          id: "mp-02",
+          name: "Knowledge Indexer Pack",
+          type: "pack",
+          icon: Box,
+          metadata: { version: "v2.1.0", scope: "Semantic Graph", vectorEngine: "gemma2:9b" },
+        },
+      ],
+    },
+    {
+      id: "cat_exts",
+      name: "Extensions",
+      type: "category",
+      icon: Puzzle,
+      children: [
+        {
+          id: "ext-01",
+          name: "LiteLLM Proxy Bridge",
+          type: "extension",
+          icon: Puzzle,
+          metadata: { status: "active", endpoint: "http://127.0.0.1:4000", auth: "Bearer" },
+        },
+        {
+          id: "ext-02",
+          name: "Ollama Loopback Tunnel",
+          type: "extension",
+          icon: Puzzle,
+          metadata: { status: "active", endpoint: "http://127.0.0.1:11434", models: ["gemma2:9b", "llama3.2"] },
+        },
+      ],
+    },
+  ];
 
-  // Fetch project scoped items (missions, executions, artifacts, agents)
-  const fetchProjectDetails = async (projId: string) => {
-    if (!projId) return;
-    try {
-      // Missions
-      const resMissions = await fetch(`/api/v1/missions?projectId=${projId}`);
-      const dataMissions = await resMissions.json();
-      setMissions(dataMissions);
-
-      // Executions
-      const resExecutions = await fetch(`/api/v1/mobile/executions?projectId=${projId}`);
-      const dataExecutions = await resExecutions.json();
-      setExecutions(dataExecutions);
-
-      // Artifacts
-      const resArtifacts = await fetch(`/api/v1/mobile/artifacts?projectId=${projId}`);
-      const dataArtifacts = await resArtifacts.json();
-      setArtifacts(dataArtifacts);
-
-      // Approvals
-      const resApprovals = await fetch(`/api/v1/mobile/approvals`);
-      const dataApprovals = await resApprovals.json();
-      setApprovals(dataApprovals);
-    } catch (err) {
-      console.error("Failed to load project details:", err);
-    }
-  };
-
-  // Fetch Agents
-  const fetchAgents = async () => {
-    try {
-      const res = await fetch("/api/v1/agents");
-      const data = await res.json();
-      setAgents(data.agents || []);
-    } catch (err) {
-      console.error("Failed to load agents:", err);
-    }
-  };
-
-  React.useEffect(() => {
-    fetchWorkspaces();
-    fetchAgents();
-  }, []);
-
-  React.useEffect(() => {
-    if (selectedWorkspaceId) {
-      setLoading(true);
-      fetchProjects(selectedWorkspaceId);
-    }
-  }, [selectedWorkspaceId]);
-
-  React.useEffect(() => {
-    if (selectedProjectId) {
-      fetchProjectDetails(selectedProjectId);
-      // Setup polling for dynamic validation updates
-      const interval = setInterval(() => {
-        fetchProjectDetails(selectedProjectId);
-      }, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [selectedProjectId]);
-
-  // Action handlers
-  const handleCreateWorkspace = async (e: React.FormEvent) => {
+  const handleImportRepoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!wsName.trim()) return;
-    try {
-      const res = await fetch("/api/v1/workspaces", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tenantId: "tnt-default",
-          organizationId: "org-default",
-          name: wsName,
-          slug: wsName.toLowerCase().replace(/\s+/g, "-"),
-          description: wsDesc,
-        }),
-      });
-      const newWs = await res.json();
-      setWorkspaces(prev => [...prev, newWs]);
-      setSelectedWorkspaceId(newWs.id);
-      setWsName("");
-      setWsDesc("");
-      setShowWorkspaceForm(false);
-    } catch (err) {
-      console.error("Failed to create workspace:", err);
-    }
+    if (!repoName.trim() || !repoUrl.trim()) return;
+    await importRepository({ name: repoName, repositoryUrl: repoUrl });
+    setRepoName("");
+    setRepoUrl("");
+    setShowRepoModal(false);
   };
 
-  const handleCreateProject = async (e: React.FormEvent) => {
+  const handleImportDocSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projName.trim() || !selectedWorkspaceId) return;
-    try {
-      const res = await fetch("/api/v1/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tenantId: "tnt-default",
-          organizationId: "org-default",
-          workspaceId: selectedWorkspaceId,
-          name: projName,
-          slug: projName.toLowerCase().replace(/\s+/g, "-"),
-          description: projDesc,
-          goals: projGoals.split("\n").filter(g => g.trim()),
-        }),
-      });
-      const newProj = await res.json();
-      setProjects(prev => [...prev, newProj]);
-      setSelectedProjectId(newProj.id);
-      setProjName("");
-      setProjDesc("");
-      setProjGoals("");
-      setShowProjectForm(false);
-    } catch (err) {
-      console.error("Failed to create project:", err);
-    }
+    if (!docName.trim()) return;
+    await importDocument({
+      name: docName,
+      type: "markdown",
+      content: docContent || "Sample doc content",
+    });
+    setDocName("");
+    setDocContent("");
+    setShowDocModal(false);
   };
-
-  const handleCreateMission = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMissionPrompt.trim() || !selectedProjectId) return;
-    setRunningMission(true);
-    try {
-      const res = await fetch("/api/v1/missions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: newMissionPrompt,
-          constraints: ["Max cost: $2.00 USD", "Max executions: 5"],
-          workspaceId: selectedWorkspaceId,
-          projectId: selectedProjectId,
-        }),
-      });
-      const mission = await res.json();
-      setMissions(prev => [mission, ...prev]);
-      setNewMissionPrompt("");
-      fetchProjectDetails(selectedProjectId);
-    } catch (err) {
-      console.error("Failed to launch mission:", err);
-    } finally {
-      setRunningMission(false);
-    }
-  };
-
-  const handleApproveApproval = async (approvalId: string, action: "approved" | "rejected") => {
-    try {
-      const res = await fetch("/api/v1/mobile/approvals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ approvalId, action }),
-      });
-      if (res.ok) {
-        fetchProjectDetails(selectedProjectId);
-      }
-    } catch (err) {
-      console.error("Failed to action approval:", err);
-    }
-  };
-
-  const handleSearchKnowledge = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!knowledgeQuery.trim()) return;
-    setSearchingKnowledge(true);
-    try {
-      const res = await fetch(`/api/v1/search?q=${encodeURIComponent(knowledgeQuery)}`);
-      const data = await res.json();
-      setKnowledgeResults(data);
-    } catch (err) {
-      console.error("Failed to search knowledge:", err);
-    } finally {
-      setSearchingKnowledge(false);
-    }
-  };
-
-  const currentWorkspace = workspaces.find(w => w.id === selectedWorkspaceId);
-  const currentProject = projects.find(p => p.id === selectedProjectId);
-
-  if (loading && workspaces.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <RefreshCw className="h-8 w-8 text-primary animate-spin" />
-        <p className="text-sm text-muted-foreground font-mono">Orchestrating Workspace Environment...</p>
-      </div>
-    );
-  }
 
   return (
-    <div className="space-y-6 text-left">
-      {/* Title & Selector Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-zinc-900/60 border border-border/40 rounded-xl backdrop-blur-md">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-2">
-            <Briefcase className="h-6 w-6 text-primary" />
-            <span>Workspace Operating Environment</span>
+    <div className="p-6 space-y-6 max-w-[1600px] mx-auto">
+      {/* HEADER BAR */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center space-x-2">
+            <FolderGit2 className="h-6 w-6 text-blue-400" />
+            <span>Project Explorer</span>
           </h1>
-          <p className="text-xs text-muted-foreground font-mono">
-            Isolate knowledge, run missions, and track timelines inside persistent workspaces.
+          <p className="text-xs text-muted-foreground">
+            Structured workspace content tree for Repositories, Documents, Knowledge Sources, Mission Packs, and Extensions.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-mono text-muted-foreground uppercase font-bold">Workspace:</span>
-            <select
-              value={selectedWorkspaceId}
-              onChange={(e) => setSelectedWorkspaceId(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 text-xs font-mono text-white rounded-lg px-3 py-2 font-bold cursor-pointer outline-none focus:border-primary"
-            >
-              {workspaces.map((w) => (
-                <option key={w.id} value={w.id} className="bg-zinc-900 text-white font-mono">
-                  {w.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-mono text-muted-foreground uppercase font-bold">Project:</span>
-            <select
-              value={selectedProjectId}
-              onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 text-xs font-mono text-white rounded-lg px-3 py-2 font-bold cursor-pointer outline-none focus:border-primary"
-              disabled={projects.length === 0}
-            >
-              {projects.length === 0 ? (
-                <option>No projects</option>
-              ) : (
-                projects.map((p) => (
-                  <option key={p.id} value={p.id} className="bg-zinc-900 text-white font-mono">
-                    {p.name}
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
-
-          <div className="flex space-x-2">
-            <Button size="sm" variant="outline" onClick={() => setShowWorkspaceForm(!showWorkspaceForm)}>
-              <Plus className="h-3 w-3 mr-1" /> WS
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setShowProjectForm(!showProjectForm)} disabled={!selectedWorkspaceId}>
-              <Plus className="h-3 w-3 mr-1" /> Proj
-            </Button>
-          </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowRepoModal(true)}
+            className="text-xs flex items-center space-x-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Import Repository</span>
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setShowDocModal(true)}
+            className="text-xs flex items-center space-x-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Import Document</span>
+          </Button>
         </div>
       </div>
 
-      {/* Creation Forms */}
-      {showWorkspaceForm && (
-        <Card className="border border-primary/20 bg-zinc-950/80">
-          <CardHeader>
-            <CardTitle className="text-sm">Create Persistent Workspace</CardTitle>
-            <CardDescription className="text-xs">Setup a top-level workspace to isolate documents, policy settings, and agents.</CardDescription>
-          </CardHeader>
-          <form onSubmit={handleCreateWorkspace}>
-            <CardContent className="space-y-3">
-              <Input placeholder="Workspace Name (e.g. Finance Intelligence)" value={wsName} onChange={e => setWsName(e.target.value)} required />
-              <Input placeholder="Description" value={wsDesc} onChange={e => setWsDesc(e.target.value)} />
-            </CardContent>
-            <CardFooter className="flex justify-end space-x-2">
-              <Button size="sm" variant="ghost" type="button" onClick={() => setShowWorkspaceForm(false)}>Cancel</Button>
-              <Button size="sm" type="submit">Create Workspace</Button>
-            </CardFooter>
-          </form>
-        </Card>
-      )}
+      {/* TREE & INSPECTOR SPLIT VIEW */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* TREE VIEW PANEL */}
+        <div className="lg:col-span-1 rounded-xl border border-border/40 bg-card p-4 space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search tree nodes..."
+              className="w-full rounded-lg border border-border/40 bg-background/50 pl-9 pr-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
 
-      {showProjectForm && (
-        <Card className="border border-primary/20 bg-zinc-950/80">
-          <CardHeader>
-            <CardTitle className="text-sm">Add Scoped Project</CardTitle>
-            <CardDescription className="text-xs">Create a project within the active workspace to compile goals, memory logs, and custom missions.</CardDescription>
-          </CardHeader>
-          <form onSubmit={handleCreateProject}>
-            <CardContent className="space-y-3">
-              <Input placeholder="Project Name (e.g. Audit Automation)" value={projName} onChange={e => setProjName(e.target.value)} required />
-              <Input placeholder="Description" value={projDesc} onChange={e => setProjDesc(e.target.value)} />
-              <textarea 
-                placeholder="Project Goals (one per line)" 
-                value={projGoals} 
-                onChange={e => setProjGoals(e.target.value)}
-                className="w-full min-h-[80px] bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs text-white font-mono"
-              />
-            </CardContent>
-            <CardFooter className="flex justify-end space-x-2">
-              <Button size="sm" variant="ghost" type="button" onClick={() => setShowProjectForm(false)}>Cancel</Button>
-              <Button size="sm" type="submit">Create Project</Button>
-            </CardFooter>
-          </form>
-        </Card>
-      )}
+          <div className="space-y-1 font-mono text-xs select-none">
+            {treeData.map((category) => {
+              const isCatExpanded = expandedNodes[category.id];
+              const CatIcon = category.icon;
 
-      {/* Tabs Layout */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 h-auto gap-1 bg-zinc-950 border border-border/20 p-1.5 rounded-xl">
-          <TabsTrigger value="overview" className="text-xs font-semibold py-2">Overview</TabsTrigger>
-          <TabsTrigger value="missions" className="text-xs font-semibold py-2">Missions</TabsTrigger>
-          <TabsTrigger value="executions" className="text-xs font-semibold py-2">Workflows</TabsTrigger>
-          <TabsTrigger value="artifacts" className="text-xs font-semibold py-2">Artifacts</TabsTrigger>
-          <TabsTrigger value="agents" className="text-xs font-semibold py-2">Agents</TabsTrigger>
-          <TabsTrigger value="knowledge" className="text-xs font-semibold py-2">Knowledge</TabsTrigger>
-          <TabsTrigger value="infrastructure" className="text-xs font-semibold py-2">Infrastructure</TabsTrigger>
-          <TabsTrigger value="models" className="text-xs font-semibold py-2">Models</TabsTrigger>
-          <TabsTrigger value="timeline" className="text-xs font-semibold py-2">Timeline</TabsTrigger>
-        </TabsList>
+              const filteredChildren = category.children?.filter((child) =>
+                child.name.toLowerCase().includes(searchTerm.toLowerCase())
+              );
 
-        <div className="mt-6">
-          {/* TAB 1: OVERVIEW */}
-          <TabsContent value="overview">
-            <div className="grid gap-6 md:grid-cols-3">
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-lg">Project Profile: {currentProject?.name || "No Project Selected"}</CardTitle>
-                  <CardDescription>{currentProject?.description || "Select or add a project from the selector bar."}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Goals */}
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold uppercase text-muted-foreground tracking-wider block">Project Scoped Goals</span>
-                    <div className="space-y-2 font-mono text-xs">
-                      {currentProject?.goals && currentProject.goals.map((goal: string, idx: number) => (
-                        <div key={idx} className="flex items-center space-x-2.5 p-3 rounded-lg border border-border/20 bg-accent/5">
-                          <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                          <span className="text-zinc-200">{goal}</span>
-                        </div>
-                      ))}
-                      {(!currentProject?.goals || currentProject.goals.length === 0) && (
-                        <p className="text-muted-foreground italic">No goals defined for this project.</p>
-                      )}
-                    </div>
+              if (searchTerm && filteredChildren?.length === 0) return null;
+
+              return (
+                <div key={category.id} className="space-y-1">
+                  {/* Category Header */}
+                  <div
+                    onClick={() => toggleNode(category.id)}
+                    className="flex items-center space-x-2 px-2.5 py-1.5 rounded-md hover:bg-accent/40 cursor-pointer text-foreground font-semibold"
+                  >
+                    {isCatExpanded ? (
+                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                    ) : (
+                      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                    <CatIcon className="h-4 w-4 text-primary shrink-0" />
+                    <span className="text-xs">{category.name}</span>
+                    <span className="text-[10px] text-muted-foreground ml-auto bg-muted/40 px-1.5 py-0.2 rounded">
+                      {category.children?.length || 0}
+                    </span>
                   </div>
 
-                  {/* Settings overview */}
-                  <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-                    <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-lg">
-                      <span className="text-muted-foreground block">Data Classification</span>
-                      <strong className="text-indigo-400 capitalize">{currentProject?.settings?.dataClassification || "internal"}</strong>
-                    </div>
-                    <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-lg">
-                      <span className="text-muted-foreground block">Model Core Engine</span>
-                      <strong className="text-white">{currentProject?.settings?.defaultAiModel || "ollama:gemma2:9b"}</strong>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  {/* Category Children */}
+                  {isCatExpanded && (
+                    <div className="pl-6 space-y-0.5 border-l border-border/20 ml-4">
+                      {filteredChildren?.map((child) => {
+                        const ChildIcon = child.icon;
+                        const isSelected = selectedNode?.id === child.id;
 
-              {/* Quick stats / overview sidebar */}
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                      <Activity className="h-4 w-4 text-indigo-400" /> Resource Statistics
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4 font-mono text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Active Missions:</span>
-                      <span className="text-white font-bold">{missions.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Executions Run:</span>
-                      <span className="text-white font-bold">{executions.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Cataloged Artifacts:</span>
-                      <span className="text-white font-bold">{artifacts.length}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* HITL Approvals Queue */}
-                {approvals.length > 0 && (
-                  <Card className="border-amber-900/40 bg-amber-950/5">
-                    <CardHeader>
-                      <CardTitle className="text-sm font-bold flex items-center gap-1.5 text-amber-400">
-                        <ShieldAlert className="h-4 w-4" /> HITL Action Required
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3 font-mono text-xs">
-                      {approvals.map((app) => (
-                        <div key={app.id} className="p-3 bg-zinc-950 border border-zinc-800 rounded-lg space-y-2">
-                          <p className="text-zinc-200 font-sans font-semibold">Workflow: {app.workflowName}</p>
-                          <p className="text-zinc-400 text-[10px]">Node: {app.nodeId}</p>
-                          <div className="flex gap-2 mt-2">
-                            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] h-7 px-2.5" onClick={() => handleApproveApproval(app.id, "approved")}>
-                              Approve
-                            </Button>
-                            <Button size="sm" variant="outline" className="text-rose-500 border-rose-900/40 hover:bg-rose-950/20 text-[10px] h-7 px-2.5" onClick={() => handleApproveApproval(app.id, "rejected")}>
-                              Reject
-                            </Button>
+                        return (
+                          <div
+                            key={child.id}
+                            onClick={() => setSelectedNode(child)}
+                            className={`flex items-center space-x-2 px-2.5 py-1.5 rounded-md cursor-pointer text-xs transition-colors ${
+                              isSelected
+                                ? "bg-primary/15 text-primary font-semibold border border-primary/20"
+                                : "text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                            }`}
+                          >
+                            <ChildIcon className="h-3.5 w-3.5 shrink-0" />
+                            <span className="truncate">{child.name}</span>
                           </div>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                )}
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* INSPECTOR DETAILS PANEL */}
+        <div className="lg:col-span-2 rounded-xl border border-border/40 bg-card p-6 space-y-4">
+          {selectedNode ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-border/20 pb-4">
+                <div className="flex items-center space-x-3">
+                  <span className="p-3 rounded-xl bg-primary/10 text-primary border border-primary/20">
+                    <selectedNode.icon className="h-6 w-6" />
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">{selectedNode.name}</h3>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono">
+                      Type: {selectedNode.type}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                  Active in Workspace
+                </span>
+              </div>
+
+              {/* METADATA PROPERTIES */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider">Node Metadata & Status</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
+                  {Object.entries(selectedNode.metadata || {}).map(([key, val]) => (
+                    <div key={key} className="rounded-lg border border-border/30 bg-background/50 p-3 space-y-1">
+                      <span className="text-[10px] text-muted-foreground uppercase">{key}</span>
+                      <p className="text-foreground font-semibold truncate">
+                        {typeof val === "object" ? JSON.stringify(val) : String(val)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </TabsContent>
-
-          {/* TAB 2: MISSIONS */}
-          <TabsContent value="missions">
-            <div className="grid gap-6 md:grid-cols-3">
-              {/* Mission Launch Form */}
-              <Card className="md:col-span-1">
-                <CardHeader>
-                  <CardTitle className="text-sm">Launch Autonomous Mission</CardTitle>
-                  <CardDescription className="text-xs">Describe an objective. AegisOS will classification plan and run loop execution graphs.</CardDescription>
-                </CardHeader>
-                <form onSubmit={handleCreateMission}>
-                  <CardContent className="space-y-3">
-                    <textarea 
-                      placeholder="Prompt (e.g. Conduct research on local network security guidelines)" 
-                      value={newMissionPrompt} 
-                      onChange={e => setNewMissionPrompt(e.target.value)}
-                      required
-                      className="w-full min-h-[100px] bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs text-white"
-                      disabled={!selectedProjectId}
-                    />
-                  </CardContent>
-                  <CardFooter>
-                    <Button type="submit" className="w-full" disabled={runningMission || !selectedProjectId}>
-                      {runningMission ? <RefreshCw className="h-3 w-3 animate-spin mr-1" /> : <Play className="h-3 w-3 mr-1" />}
-                      Launch Mission
-                    </Button>
-                  </CardFooter>
-                </form>
-              </Card>
-
-              {/* Missions list */}
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-sm">Project Missions List</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {missions.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic font-mono text-center py-6">No active missions for this project.</p>
-                  ) : (
-                    missions.map((mission) => (
-                      <div key={mission.id} className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg space-y-3 font-mono text-xs">
-                        <div className="flex justify-between items-center">
-                          <strong className="text-white font-sans text-sm">{mission.name}</strong>
-                          <Badge variant={mission.status === "COMPLETED" ? "success" : mission.status === "FAILED" ? "destructive" : "secondary"}>
-                            {mission.status}
-                          </Badge>
-                        </div>
-                        <div className="text-zinc-400">
-                          <strong>Goals:</strong> {mission.goals.join("; ")}
-                        </div>
-                        <div className="text-[10px] text-muted-foreground flex justify-between">
-                          <span>Updated: {new Date(mission.updatedAt).toLocaleTimeString()}</span>
-                          <span className="text-indigo-400">Confidence: {mission.confidence}%</span>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </CardContent>
-              </Card>
+          ) : (
+            <div className="h-96 flex flex-col items-center justify-center text-center space-y-3 text-muted-foreground">
+              <Layers className="h-12 w-12 text-muted-foreground/30 stroke-1" />
+              <div>
+                <h4 className="font-semibold text-foreground text-sm">Select a Tree Node</h4>
+                <p className="text-xs max-w-sm">
+                  Click on any Repository, Document, Knowledge Source, Mission Pack, or Extension in the tree view to inspect its metadata and configuration.
+                </p>
+              </div>
             </div>
-          </TabsContent>
-
-          {/* TAB 3: WORKFLOWS & EXECUTIONS */}
-          <TabsContent value="executions">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Project Execution History</CardTitle>
-                <CardDescription>Execution runs generated from planned workflow graphs.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {executions.length === 0 ? (
-                  <p className="text-xs text-muted-foreground italic font-mono text-center py-6">No execution logs for this project.</p>
-                ) : (
-                  executions.map((exec) => (
-                    <div key={exec.id} className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg space-y-3 font-mono text-xs">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center space-x-2">
-                          <Activity className="h-4 w-4 text-cyan-400" />
-                          <strong className="text-zinc-200">Execution: {exec.executionId.slice(0, 12)}...</strong>
-                        </div>
-                        <Badge variant={exec.status === "COMPLETED" ? "success" : exec.status === "FAILED" ? "destructive" : "secondary"}>
-                          {exec.status}
-                        </Badge>
-                      </div>
-                      <div className="text-[10px] text-muted-foreground">
-                        <span>Created: {new Date(exec.createdAt).toLocaleString()}</span>
-                        {exec.durationMs && <span className="ml-4">Duration: {exec.durationMs}ms</span>}
-                      </div>
-                      <div className="space-y-1.5 pt-2 border-t border-border/10">
-                        {exec.timeline.slice(-3).map((item: any, idx: number) => (
-                          <div key={idx} className="flex justify-between text-[10px] text-zinc-400">
-                            <span>- {item.event}</span>
-                            <span className="text-zinc-500">{new Date(item.timestamp).toLocaleTimeString()}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* TAB 4: ARTIFACTS */}
-          <TabsContent value="artifacts">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <div>
-                  <CardTitle className="text-lg">Project Scoped Artifact Catalog</CardTitle>
-                  <CardDescription>Generated documents, spreadsheets, diagrams, and files isolated for this project.</CardDescription>
-                </div>
-                <div className="flex items-center space-x-2 bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-lg w-full max-w-xs">
-                  <Search className="h-4 w-4 text-zinc-500" />
-                  <input
-                    placeholder="Filter files..."
-                    value={artifactFilter}
-                    onChange={(e) => setArtifactFilter(e.target.value)}
-                    className="bg-transparent border-none outline-none text-xs text-zinc-200 w-full"
-                  />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {artifacts.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic font-mono text-center py-6">No artifacts found in project scope.</p>
-                  ) : (
-                    artifacts
-                      .filter(f => f.name.toLowerCase().includes(artifactFilter.toLowerCase()))
-                      .map((file, idx) => (
-                        <div key={idx} className="p-3 bg-accent/5 border border-border/20 rounded-xl flex items-center justify-between text-xs font-mono">
-                          <div className="flex items-center space-x-3">
-                            <FileText className="h-5 w-5 text-indigo-400 shrink-0" />
-                            <div className="space-y-0.5">
-                              <span className="font-semibold text-white block">{file.name}</span>
-                              <span className="text-[10px] text-muted-foreground">Version: {file.version} • Created: {new Date(file.createdDate).toLocaleDateString()}</span>
-                            </div>
-                          </div>
-                          <Badge variant="outline" className="uppercase text-[9px]">
-                            {file.type}
-                          </Badge>
-                        </div>
-                      ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* TAB 5: AGENTS */}
-          <TabsContent value="agents">
-            <div className="grid gap-6 md:grid-cols-3">
-              {agents.map((ag) => (
-                <Card key={ag.id} className="border border-border/30 bg-zinc-900/40">
-                  <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                    <div>
-                      <CardTitle className="text-sm font-bold text-white">{ag.name}</CardTitle>
-                      <CardDescription className="text-xs uppercase font-mono text-muted-foreground tracking-wider mt-0.5">
-                        Model: {ag.model}
-                      </CardDescription>
-                    </div>
-                    <Badge variant={ag.healthStatus === "healthy" ? "success" : "warning"}>
-                      {ag.healthStatus}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent className="space-y-3 font-mono text-xs text-zinc-300">
-                    <p className="font-sans text-zinc-400 text-xs leading-relaxed">{ag.role}</p>
-                    <div className="flex flex-wrap gap-1 pt-1.5">
-                      {ag.capabilities.map((cap: string, cIdx: number) => (
-                        <Badge key={cIdx} variant="outline" className="text-[9px]">{cap}</Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* TAB 6: KNOWLEDGE */}
-          <TabsContent value="knowledge">
-            <div className="grid gap-6 md:grid-cols-3">
-              {/* RAG Search Card */}
-              <Card className="md:col-span-1">
-                <CardHeader>
-                  <CardTitle className="text-sm">RAG Knowledge Search</CardTitle>
-                  <CardDescription className="text-xs">Search documents, guidelines, and embeddings across workspace contexts.</CardDescription>
-                </CardHeader>
-                <form onSubmit={handleSearchKnowledge}>
-                  <CardContent className="space-y-3">
-                    <Input placeholder="Enter search term..." value={knowledgeQuery} onChange={e => setKnowledgeQuery(e.target.value)} required />
-                  </CardContent>
-                  <CardFooter>
-                    <Button type="submit" className="w-full" disabled={searchingKnowledge}>
-                      {searchingKnowledge ? <RefreshCw className="h-3 w-3 animate-spin mr-1" /> : <Search className="h-3 w-3 mr-1" />}
-                      Search Knowledge
-                    </Button>
-                  </CardFooter>
-                </form>
-              </Card>
-
-              {/* RAG Results List */}
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-sm">Semantic Search Results</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {knowledgeResults.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic font-mono text-center py-6">Enter a query to retrieve RAG documentation.</p>
-                  ) : (
-                    knowledgeResults.map((res, idx) => (
-                      <div key={idx} className="p-3 bg-zinc-950 border border-zinc-800 rounded-lg space-y-2 font-mono text-xs">
-                        <div className="flex justify-between items-center">
-                          <strong className="text-indigo-300 font-sans">{res.title || res.name}</strong>
-                          <Badge variant="outline" className="text-[9px]">Score: {res.score?.toFixed(2) || res.score?.semanticScore?.toFixed(2) || "0.9"}</Badge>
-                        </div>
-                        <p className="text-zinc-400 text-xs">{res.description}</p>
-                      </div>
-                    ))
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* TAB 7: INFRASTRUCTURE */}
-          <TabsContent value="infrastructure">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Project Scoped Adaptors & Bindings</CardTitle>
-                <CardDescription>Logical socket engines active for this project's execution loop.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs font-mono border-collapse">
-                    <thead>
-                      <tr className="border-b border-border/20 text-muted-foreground uppercase font-bold">
-                        <th className="pb-3">Service Adapter</th>
-                        <th className="pb-3">Endpoint Bound</th>
-                        <th className="pb-3">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-900">
-                      <tr className="hover:bg-accent/5">
-                        <td className="py-3 font-semibold text-white font-sans">LiteLLM Proxy</td>
-                        <td className="py-3 text-cyan-400">localhost:14000</td>
-                        <td className="py-3"><Badge variant="success">healthy</Badge></td>
-                      </tr>
-                      <tr className="hover:bg-accent/5">
-                        <td className="py-3 font-semibold text-white font-sans">Ollama Local Engine</td>
-                        <td className="py-3 text-cyan-400">localhost:21434</td>
-                        <td className="py-3"><Badge variant="success">healthy</Badge></td>
-                      </tr>
-                      <tr className="hover:bg-accent/5">
-                        <td className="py-3 font-semibold text-white font-sans">SQLite Transaction DB</td>
-                        <td className="py-3 text-cyan-400">localhost:19789</td>
-                        <td className="py-3"><Badge variant="success">healthy</Badge></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* TAB 8: MODELS */}
-          <TabsContent value="models">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Project Bound Inference Router</CardTitle>
-                <CardDescription>VRAM metrics and active routing latency summaries.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-accent/5 border border-border/20 rounded-xl flex items-center justify-between text-xs font-mono">
-                  <div className="space-y-1">
-                    <span className="text-sm font-bold text-white block">ollama:gemma2:9b</span>
-                    <span className="text-muted-foreground">VRAM allocation: <strong className="text-indigo-400">5.4 GB</strong></span>
-                  </div>
-                  <div className="text-right space-y-1">
-                    <Badge variant="success">active</Badge>
-                    <span className="text-muted-foreground block text-[10px]">Latency: 24ms</span>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-accent/5 border border-border/20 rounded-xl flex items-center justify-between text-xs font-mono">
-                  <div className="space-y-1">
-                    <span className="text-sm font-bold text-white block">litellm:gpt-4o</span>
-                    <span className="text-muted-foreground">VRAM allocation: <strong className="text-indigo-400">Cloud (0 GB)</strong></span>
-                  </div>
-                  <div className="text-right space-y-1">
-                    <Badge variant="secondary">standby</Badge>
-                    <span className="text-muted-foreground block text-[10px]">Latency: 180ms</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* TAB 9: TIMELINE */}
-          <TabsContent value="timeline">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Project Event Timeline</CardTitle>
-                <CardDescription>Chronological log of events aggregated from child executions and missions.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-4 font-mono text-xs border-l border-zinc-800 pl-4 ml-2 relative">
-                  {executions.flatMap(e => e.timeline || []).length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic text-center py-6 pl-0">No timeline events compiled yet.</p>
-                  ) : (
-                    executions.flatMap(e => e.timeline || [])
-                      .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-                      .map((tle: any) => (
-                        <div key={tle.id} className="relative space-y-1">
-                          <span className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-indigo-500 border border-zinc-950" />
-                          <div className="flex justify-between text-[10px]">
-                            <span className="text-indigo-400 font-bold uppercase">{tle.event}</span>
-                            <span className="text-muted-foreground">{new Date(tle.timestamp).toLocaleTimeString()}</span>
-                          </div>
-                          <p className="text-zinc-300 text-xs font-sans leading-relaxed">{tle.metadata?.message || `Execution run event triggered by ${tle.actor}`}</p>
-                        </div>
-                      ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          )}
         </div>
-      </Tabs>
+      </div>
+
+      {/* IMPORT REPO MODAL */}
+      {showRepoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-2xl space-y-4">
+            <h3 className="text-lg font-bold text-foreground">Import Repository</h3>
+            <form onSubmit={handleImportRepoSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1">
+                  Repository Name
+                </label>
+                <input
+                  type="text"
+                  value={repoName}
+                  onChange={(e) => setRepoName(e.target.value)}
+                  placeholder="e.g. AegisOS Core Engine"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1">
+                  Repository URL
+                </label>
+                <input
+                  type="text"
+                  value={repoUrl}
+                  onChange={(e) => setRepoUrl(e.target.value)}
+                  placeholder="https://github.com/org/repo.git"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="ghost" type="button" onClick={() => setShowRepoModal(false)}>
+                  Cancel
+                </Button>
+                <Button variant="primary" type="submit">
+                  Import Repository
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* IMPORT DOC MODAL */}
+      {showDocModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-2xl space-y-4">
+            <h3 className="text-lg font-bold text-foreground">Import Document</h3>
+            <form onSubmit={handleImportDocSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1">
+                  Document Name
+                </label>
+                <input
+                  type="text"
+                  value={docName}
+                  onChange={(e) => setDocName(e.target.value)}
+                  placeholder="e.g. ARCHITECTURE_SPEC.md"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1">
+                  Content
+                </label>
+                <textarea
+                  value={docContent}
+                  onChange={(e) => setDocContent(e.target.value)}
+                  placeholder="Paste specification content..."
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary h-24 resize-none"
+                />
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="ghost" type="button" onClick={() => setShowDocModal(false)}>
+                  Cancel
+                </Button>
+                <Button variant="primary" type="submit">
+                  Import Document
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

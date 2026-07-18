@@ -9,16 +9,26 @@ export interface SystemNotification {
   read: boolean;
 }
 
+export type PersonaPerspective =
+  | "developer"
+  | "research"
+  | "product"
+  | "operations"
+  | "executive"
+  | "personal";
+
 interface AppState {
   sidebarCollapsed: boolean;
   theme: "light" | "dark" | "high-contrast";
   notifications: SystemNotification[];
   systemStatus: "healthy" | "degraded" | "failed";
   activeNavId: string;
+  activePerspective: PersonaPerspective;
   setSidebarCollapsed: (collapsed: boolean) => void;
   toggleSidebar: () => void;
   setTheme: (theme: "light" | "dark" | "high-contrast") => void;
   setActiveNavId: (id: string) => void;
+  setActivePerspective: (perspective: PersonaPerspective) => void;
   addNotification: (notification: Omit<SystemNotification, "id" | "timestamp" | "read">) => void;
   markAllNotificationsRead: () => void;
   clearNotifications: () => void;
@@ -29,6 +39,7 @@ export const useAppStore = create<AppState>((set) => ({
   theme: "dark",
   systemStatus: "healthy",
   activeNavId: "dashboard",
+  activePerspective: "developer",
   notifications: [
     {
       id: "nt-01",
@@ -68,6 +79,7 @@ export const useAppStore = create<AppState>((set) => ({
     set({ theme });
   },
   setActiveNavId: (activeNavId) => set({ activeNavId }),
+  setActivePerspective: (activePerspective) => set({ activePerspective }),
   addNotification: (notification) =>
     set((state) => ({
       notifications: [

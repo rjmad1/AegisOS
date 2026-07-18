@@ -1,0 +1,245 @@
+{
+  "timestamp": "2026-07-18T10:19:58.939Z",
+  "scorecard": {
+    "totalMissionsExecuted": 42,
+    "passedMissions": 36,
+    "warningMissions": 5,
+    "failedMissions": 1,
+    "overallSuccessRatePercent": 95.2,
+    "avgCompletionDurationSeconds": 18.6,
+    "avgHitlInterventionsPerMission": 0.14,
+    "avgReflectionCyclesPerMission": 1.17,
+    "totalManualCorrections": 2,
+    "overallKnowledgeReusePercent": 85.6,
+    "avgArtifactQualityScore": 96,
+    "executionRecoveryRatePercent": 100,
+    "operationalAdoptionIndex": 92,
+    "uxMetricAverages": {
+      "timeToCreateWorkspaceMs": 3199,
+      "timeToLaunchMissionMs": 1399,
+      "timeToFindArtifactsMs": 2104,
+      "timeToLocateKnowledgeMs": 1726,
+      "timeToApproveHitlMs": 4076,
+      "timeToRecoverExecutionMs": 6821,
+      "timeToOnboardProjectMs": 18324
+    },
+    "frictionCountBySeverity": {
+      "CRITICAL": 1,
+      "MAJOR": 3,
+      "MINOR": 2,
+      "COSMETIC": 0
+    }
+  },
+  "frictionItems": [
+    {
+      "id": "FRIC-001",
+      "domain": "Coding",
+      "description": "HITL permission prompt triggers repeatedly for read-only repository inspection commands",
+      "severity": "MAJOR",
+      "frequency": "ALWAYS",
+      "reproductionSteps": [
+        "Submit prompt to inspect repository structure",
+        "Agent attempts git log or directory read via terminal",
+        "HITL approval dialog blocks execution waiting for manual click"
+      ],
+      "subsystem": "HITL Manager",
+      "suggestedImprovement": "Auto-grant permission for read-only CLI commands and file inspection operations",
+      "status": "TRIAGED",
+      "backlogTicketId": "OP-BACK-001"
+    },
+    {
+      "id": "FRIC-002",
+      "domain": "Research",
+      "description": "Knowledge Item (KI) search vector lookup experiences cold-start latency > 3.5s on initial query",
+      "severity": "MAJOR",
+      "frequency": "FREQUENT",
+      "reproductionSteps": [
+        "Launch deep research mission in fresh workspace session",
+        "Query Knowledge Engine for existing pattern KI",
+        "Observe 3.8s delay before vector search returns matching KIs"
+      ],
+      "subsystem": "Knowledge Engine",
+      "suggestedImprovement": "Pre-warm vector cache during workspace startup background indexing",
+      "status": "TRIAGED",
+      "backlogTicketId": "OP-BACK-002"
+    },
+    {
+      "id": "FRIC-003",
+      "domain": "Architecture",
+      "description": "Artifact link paths in markdown outputs use relative paths instead of standard clickable file:// URLs",
+      "severity": "MINOR",
+      "frequency": "FREQUENT",
+      "reproductionSteps": [
+        "Generate architectural blueprint artifact",
+        "View generated markdown summary",
+        "Attempt to click referenced file link",
+        "Link fails to open because path lacks absolute file:// scheme"
+      ],
+      "subsystem": "UI/UX",
+      "suggestedImprovement": "Enforce absolute file:// URL formatting for all generated artifact file references",
+      "status": "TRIAGED",
+      "backlogTicketId": "OP-BACK-003"
+    },
+    {
+      "id": "FRIC-004",
+      "domain": "Planning",
+      "description": "Mission graph plan synthesis executes steps sequentially when nodes have zero mutual dependencies",
+      "severity": "MAJOR",
+      "frequency": "FREQUENT",
+      "reproductionSteps": [
+        "Launch multi-step mission requiring documentation, linting, and diagram generation",
+        "Observe execution timeline",
+        "Nodes execute strictly sequentially, taking 45s total instead of parallel 15s"
+      ],
+      "subsystem": "Execution Graph",
+      "suggestedImprovement": "Enable DAG parallel branch execution for independent execution nodes",
+      "status": "TRIAGED",
+      "backlogTicketId": "OP-BACK-004"
+    },
+    {
+      "id": "FRIC-005",
+      "domain": "Product Management",
+      "description": "Context window sliding window pruner truncates earlier requirements when prompt exceeds 8k tokens",
+      "severity": "CRITICAL",
+      "frequency": "OCCASIONAL",
+      "reproductionSteps": [
+        "Provide comprehensive multi-section PRD input",
+        "Agent triggers reflection due to truncated initial constraints",
+        "Requires user manual correction to re-inject truncated acceptance criteria"
+      ],
+      "subsystem": "Intent Engine",
+      "suggestedImprovement": "Implement semantic chunking and summary preservation in sliding window context pruner",
+      "status": "TRIAGED",
+      "backlogTicketId": "OP-BACK-005"
+    },
+    {
+      "id": "FRIC-006",
+      "domain": "Documentation",
+      "description": "Command line output line count limit requires multiple pagination iterations for large logs",
+      "severity": "MINOR",
+      "frequency": "OCCASIONAL",
+      "reproductionSteps": [
+        "Run broad audit test command",
+        "Command output exceeds 800 lines limit",
+        "Agent must issue follow-up calls to read full log content"
+      ],
+      "subsystem": "Tools",
+      "suggestedImprovement": "Add auto-summarization tool flag for command outputs exceeding 500 lines",
+      "status": "TRIAGED",
+      "backlogTicketId": "OP-BACK-006"
+    }
+  ],
+  "telemetryEventsSummary": {
+    "eventCount": 42,
+    "sampleEvents": [
+      {
+        "missionId": "OAP-MIS-1001",
+        "domain": "Coding",
+        "timestamp": "2026-07-18T08:10:00.000Z",
+        "status": "PASS",
+        "executionTimeMs": 19514,
+        "reflectionCycles": 1,
+        "userInterventionCount": 0,
+        "manualCorrections": 0,
+        "agentUtilization": {
+          "Intent Engine": 1,
+          "Developer Agent": 2,
+          "Architecture Agent": 1,
+          "Governance Agent": 1
+        },
+        "toolUtilization": {
+          "view_file": 3,
+          "write_to_file": 2,
+          "grep_search": 2,
+          "run_command": 2
+        },
+        "knowledgeReuseRatePercent": 89,
+        "executionGraphNodeCount": 5,
+        "artifactQualityScore": 98,
+        "promptRevisionCount": 1,
+        "recoveryCount": 0,
+        "uxMetrics": {
+          "timeToCreateWorkspaceMs": 3058,
+          "timeToLaunchMissionMs": 1208,
+          "timeToFindArtifactsMs": 2112,
+          "timeToLocateKnowledgeMs": 1615,
+          "timeToApproveHitlMs": 3515,
+          "timeToRecoverExecutionMs": 6407,
+          "timeToOnboardProjectMs": 17904
+        }
+      },
+      {
+        "missionId": "OAP-MIS-1002",
+        "domain": "Research",
+        "timestamp": "2026-07-18T08:20:00.000Z",
+        "status": "PASS",
+        "executionTimeMs": 12355,
+        "reflectionCycles": 1,
+        "userInterventionCount": 0,
+        "manualCorrections": 0,
+        "agentUtilization": {
+          "Intent Engine": 1,
+          "Developer Agent": 1,
+          "Architecture Agent": 1,
+          "Governance Agent": 1
+        },
+        "toolUtilization": {
+          "view_file": 3,
+          "write_to_file": 1,
+          "grep_search": 2,
+          "run_command": 2
+        },
+        "knowledgeReuseRatePercent": 85,
+        "executionGraphNodeCount": 7,
+        "artifactQualityScore": 98,
+        "promptRevisionCount": 1,
+        "recoveryCount": 0,
+        "uxMetrics": {
+          "timeToCreateWorkspaceMs": 3351,
+          "timeToLaunchMissionMs": 1321,
+          "timeToFindArtifactsMs": 2242,
+          "timeToLocateKnowledgeMs": 1994,
+          "timeToApproveHitlMs": 4217,
+          "timeToRecoverExecutionMs": 7486,
+          "timeToOnboardProjectMs": 18433
+        }
+      },
+      {
+        "missionId": "OAP-MIS-1003",
+        "domain": "Architecture",
+        "timestamp": "2026-07-18T08:30:00.000Z",
+        "status": "PASS",
+        "executionTimeMs": 15909,
+        "reflectionCycles": 1,
+        "userInterventionCount": 0,
+        "manualCorrections": 0,
+        "agentUtilization": {
+          "Intent Engine": 1,
+          "Developer Agent": 1,
+          "Architecture Agent": 2,
+          "Governance Agent": 1
+        },
+        "toolUtilization": {
+          "view_file": 4,
+          "write_to_file": 2,
+          "grep_search": 3,
+          "run_command": 1
+        },
+        "knowledgeReuseRatePercent": 90,
+        "executionGraphNodeCount": 5,
+        "artifactQualityScore": 98,
+        "promptRevisionCount": 1,
+        "recoveryCount": 0,
+        "uxMetrics": {
+          "timeToCreateWorkspaceMs": 3481,
+          "timeToLaunchMissionMs": 1540,
+          "timeToFindArtifactsMs": 2232,
+          "timeToLocateKnowledgeMs": 1739,
+          "timeToApproveHitlMs": 3858,
+          "timeToRecoverExecutionMs": 6441,
+          "timeToOnboardProjectMs": 17523
+        }
+      }
+    ]
+  }
+}

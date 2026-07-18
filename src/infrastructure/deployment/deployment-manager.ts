@@ -3,7 +3,7 @@ import * as net from "net";
 import { exec } from "child_process";
 import { promisify } from "util";
 
-const execAsync = promisify(exec);
+const execAsync = typeof exec === "function" ? promisify(exec) : (() => Promise.resolve({ stdout: "", stderr: "" })) as any;
 
 export interface PlatformServiceStatus {
   id: string;

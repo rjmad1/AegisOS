@@ -1,0 +1,18 @@
+{
+  "id": "com.aegisos.ext.translator",
+  "name": "Dynamic Translation Utility",
+  "version": "1.1.0",
+  "manifestVersion": "1.0",
+  "capabilities": [
+    "text-translation"
+  ],
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "configSchema": {
+    "type": "object"
+  },
+  "permissions": [
+    "event-publish"
+  ]
+}

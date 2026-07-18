@@ -32,7 +32,7 @@
   {
     "name": "test-prompt-template",
     "purpose": "Unit testing prompt template loading",
-    "activeVersion": 10,
+    "activeVersion": 12,
     "versions": [
       {
         "version": 1,
@@ -113,6 +113,45 @@
         "author": "Quality Assurance",
         "changeDescription": "Dynamic registration by extension Test Unit Extension",
         "commitHash": "local-ad1d3fa"
+      },
+      {
+        "version": 11,
+        "content": "Hello World testing.",
+        "timestamp": "2026-07-18T10:28:52.555Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-1fef74e"
+      },
+      {
+        "version": 12,
+        "content": "Hello World testing.",
+        "timestamp": "2026-07-18T11:00:38.607Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-e7b32ac"
+      }
+    ]
+  },
+  {
+    "name": "system-text-translation",
+    "purpose": "Directs LLMs to translate text accurately.",
+    "activeVersion": 2,
+    "versions": [
+      {
+        "version": 1,
+        "content": "Translate the following text to the specified target language.",
+        "timestamp": "2026-07-18T11:00:54.946Z",
+        "author": "Localization Team",
+        "changeDescription": "Dynamic registration by extension Dynamic Translation Utility",
+        "commitHash": "local-8d1851b"
+      },
+      {
+        "version": 2,
+        "content": "Translate the following text to the specified target language.",
+        "timestamp": "2026-07-18T11:02:02.398Z",
+        "author": "Localization Team",
+        "changeDescription": "Dynamic registration by extension Dynamic Translation Utility",
+        "commitHash": "local-12f2e6e"
       }
     ]
   }

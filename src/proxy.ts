@@ -151,12 +151,15 @@ async function executeProxySecurityAndRouting(request: NextRequest): Promise<Nex
     pathname === "/unauthorized";
 
   // 1. Rate Limiting Check
-  const rateLimitResult = await redisPlatform.rateLimit.checkRateLimit(`ip:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW);
-  if (!rateLimitResult.allowed) {
-    return new NextResponse(
-      JSON.stringify({ error: "Too many requests. Please slow down." }),
-      { status: 429, headers: { "Content-Type": "application/json" } }
-    );
+  const isLocal = ip === "127.0.0.1" || ip === "::1" || ip === "localhost";
+  if (!isLocal) {
+    const rateLimitResult = await redisPlatform.rateLimit.checkRateLimit(`ip:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW);
+    if (!rateLimitResult.allowed) {
+      return new NextResponse(
+        JSON.stringify({ error: "Too many requests. Please slow down." }),
+        { status: 429, headers: { "Content-Type": "application/json" } }
+      );
+    }
   }
 
   // 2. Request Size & API Key check

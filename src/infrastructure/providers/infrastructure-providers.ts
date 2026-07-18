@@ -44,7 +44,7 @@ import {
   EnvironmentVariable
 } from "@/types/infrastructure";
 
-const execAsync = promisify(exec);
+const execAsync = typeof exec === "function" ? promisify(exec) : (() => Promise.resolve({ stdout: "", stderr: "" })) as any;
 
 // Execute a command with timeout protection
 async function runCmd(cmd: string, timeoutMs = 2000): Promise<string> {

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://aegisos.dev/schemas/v1/ecosystem-manifest.schema.json",
+  "program": "AegisOS Ecosystem Development Program (AEDP)",
+  "version": "1.0.0",
+  "baseline": "RC1 Certified / PVP Complete / OAP Operational",
+  "timestamp": "2026-07-18T15:51:53Z",
+  "capabilities": {
+    "corePlatform": ["Console", "LiteLLM", "Ollama", "PrismaDB", "EventBus", "MCPContext"],
+    "officialExtensions": ["com.aegisos.ext.logger", "com.aegisos.ext.translator", "com.aegisos.ext.codegraph"],
+    "officialMissionPacks": [
+      "com.aegisos.pack.swe",
+      "com.aegisos.pack.pm",
+      "com.aegisos.pack.arch",
+      "com.aegisos.pack.ops",
+      "com.aegisos.pack.research",
+      "com.aegisos.pack.productivity",
+      "com.aegisos.pack.security",
+      "com.aegisos.pack.infra"
+    ],
+    "referenceApplications": [
+      "aegis-app-developer",
+      "aegis-app-pm",
+      "aegis-app-ops",
+      "aegis-app-research",
+      "aegis-app-personal",
+      "aegis-app-executive"
+    ],
+    "sdks": [
+      "@aegisos/extension-sdk",
+      "@aegisos/mission-sdk",
+      "@aegisos/testing-sdk",
+      "@aegisos/certification-sdk"
+    ],
+    "developerTooling": ["aegis-cli", "aegis-emulator", "aegis-test-runner"],
+    "templates": ["extension-starter", "mission-pack-starter", "react-app-template"],
+    "marketplaces": [
+      "Capability Marketplace",
+      "Mission Marketplace",
+      "Template Marketplace",
+      "Prompt Marketplace",
+      "Extension Marketplace"
+    ]
+  },
+  "apis": [
+    { "name": "Platform API", "package": "@aegisos/api-platform", "status": "STABLE" },
+    { "name": "Extension API", "package": "@aegisos/api-extension", "status": "STABLE" },
+    { "name": "Mission API", "package": "@aegisos/api-mission", "status": "STABLE" },
+    { "name": "Knowledge API", "package": "@aegisos/api-knowledge", "status": "STABLE" },
+    { "name": "Workspace API", "package": "@aegisos/api-workspace", "status": "STABLE" },
+    { "name": "Execution API", "package": "@aegisos/api-execution", "status": "STABLE" },
+    { "name": "Artifact API", "package": "@aegisos/api-artifact", "status": "STABLE" },
+    { "name": "Marketplace API", "package": "@aegisos/api-marketplace", "status": "STABLE" }
+  ],
+  "governance": {
+    "platformMutationAllowed": false,
+    "securitySandboxing": true,
+    "signatureAlgorithm": "Ed25519",
+    "semverEnforced": true
+  }
+}

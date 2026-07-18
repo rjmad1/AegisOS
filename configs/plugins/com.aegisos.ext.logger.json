@@ -1,0 +1,19 @@
+{
+  "id": "com.aegisos.ext.logger",
+  "name": "Security Activity Logger",
+  "version": "1.0.0",
+  "manifestVersion": "1.0",
+  "capabilities": [
+    "audit-logging"
+  ],
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "configSchema": {
+    "type": "object"
+  },
+  "permissions": [
+    "event-subscribe",
+    "*"
+  ]
+}
