@@ -268,4 +268,4 @@ Yes. Select the `offline` deployment profile during the bootstrap phase. Ensure 
 LiteLLM serves as a unified routing proxy. It allows the Next.js app to interact with various local models (Ollama, local vLLM instances) through a standard OpenAI-compatible API format, providing failovers and load balancing.
 
 #### Q: How do I audit security configurations?
-AegisOS is built on Zero Trust principles. Consult [adr/ADR-002-Server-Side-Decoupled-Authentication.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-002-Server-Side-Decoupled-Authentication.md) and [docs/productization/09_security_governance_framework.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/09_security_governance_framework.md) for detail on DPAPI storage, token rotations, and LDAP setups.
+AegisOS is built on Zero Trust principles. Consult [adr/ADR-002-Server-Side-Decoupled-Authentication.md](../adr/ADR-002-Server-Side-Decoupled-Authentication.md) and [docs/productization/09_security_governance_framework.md](../docs/productization/09_security_governance_framework.md) for detail on DPAPI storage, token rotations, and LDAP setups.

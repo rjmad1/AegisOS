@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers all deployment methods for AegisOS. For Windows-specific bootstrap setup, see [Deployment_Guide.md](Deployment_Guide.md).
+This guide covers all deployment methods for AegisOS, including migration and portability. For Windows-specific installation, see the [Installation & Getting Started Guide](../wiki/Install-Guide.md).
 
 ---
 
@@ -232,3 +232,24 @@ helm rollback aegisos-ops 1 --namespace aegisos-ops
 | Helm: `fail: secrets.authSecret is required` | Missing `--set` values | Provide all required secrets |
 | Cannot connect to database | Database not ready | Wait for PostgreSQL health check |
 | `ECONNREFUSED :11434` | Ollama not running | Verify Ollama service is started |
+
+---
+
+## 8. Migration and Portability
+
+If you need to move the platform installation from one partition or machine to another (e.g., migrating from `D:\AIPlatform` to `E:\AIPlatform` or onto a new machine), use the migration engine:
+
+```powershell
+# Open an elevated PowerShell session (Run as Administrator)
+.\automation\Migrate.ps1 -SourcePath "D:\AIPlatform" -TargetPath "E:\AIPlatform"
+```
+
+### Migration Engine Process
+1. **Service Suspension**: Automatically stops running services (`AegisOSService`, `LiteLLMService`, `OmniRouteService`, `Ollama`) to release file locks.
+2. **File Migration**: Copies all folders and database blocks via robocopy with timestamps preserved.
+3. **Path Rewriting**: Scans JSON/YAML configs in the new destination, replacing old paths with the new base path.
+4. **Junction Redirection**: Deletes the old `%USERPROFILE%\.aegisos` directory junction and points it to the new path.
+5. **SCM Registry Update**: Patches service working directories, executables, and stdout/stderr paths in the registry.
+6. **Environment Update**: Rewrites the system/user variables for `AEGISOS_CONFIG_PATH`, `AEGISOS_STATE_DIR`, and `OLLAMA_MODELS`.
+7. **Service Resumption**: Restarts services and runs the validation check to verify migration success.
+
