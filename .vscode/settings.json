@@ -1,0 +1,11 @@
+{
+  "files.exclude": {
+    "**/node_modules_backup": true,
+    "**/.next": true
+  },
+  "search.exclude": {
+    "**/node_modules_backup": true,
+    "**/.next": true
+  },
+  "git.ignoreLimitWarning": true
+}
