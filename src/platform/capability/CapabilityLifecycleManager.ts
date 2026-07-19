@@ -8,6 +8,7 @@ import { CapabilityScheduler } from "./CapabilityScheduler";
 import { CapabilityLearningEngine } from "./CapabilityLearningEngine";
 import { CapabilityGarbageCollector } from "./CapabilityGarbageCollector";
 import { CapabilityTelemetryService } from "./CapabilityTelemetryService";
+import { CapabilityTrustManager } from "./CapabilityTrustManager";
 import { CapabilityMetadata, AssessmentResult } from "./types";
 
 export class CapabilityLifecycleManager {
@@ -20,6 +21,7 @@ export class CapabilityLifecycleManager {
   public readonly learning = CapabilityLearningEngine.getInstance();
   public readonly gc = CapabilityGarbageCollector.getInstance();
   public readonly telemetry = CapabilityTelemetryService.getInstance();
+  public readonly trust = CapabilityTrustManager.getInstance();
 
   private isStarted = false;
 
