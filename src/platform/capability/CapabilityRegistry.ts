@@ -1,85 +1,63 @@
-// src/platform/capability/CapabilityRegistry.ts
-// Domain Registry management for AegisOS Capabilities
+import { ICapabilityRegistry, CapabilityMetadata, CapabilityType } from "./types";
+import { ICapabilityStorageProvider, TenantContext } from "../core/storage/types";
 
-import { SQLiteCapabilityStore } from "./SQLiteCapabilityStore";
-import { CapabilityMetadata, LifecycleState, CapabilityType } from "./types";
+export class CapabilityRegistry implements ICapabilityRegistry {
+  constructor(private storageProvider: ICapabilityStorageProvider) {}
 
-export class CapabilityRegistry {
-  private static instance: CapabilityRegistry | null = null;
-  private store: SQLiteCapabilityStore;
-  private isInitialized = false;
-
-  private constructor() {
-    this.store = new SQLiteCapabilityStore();
+  public async getCapability(id: string, context: TenantContext): Promise<CapabilityMetadata | null> {
+    return this.storageProvider.getCapability(id, context);
   }
 
-  public static getInstance(): CapabilityRegistry {
-    if (!CapabilityRegistry.instance) {
-      CapabilityRegistry.instance = new CapabilityRegistry();
-    }
-    return CapabilityRegistry.instance;
-  }
-
-  public async init(seedDefault = true): Promise<void> {
-    await this.store.initialize();
-    this.isInitialized = true;
-
-    if (seedDefault) {
-      await this.seedDefaultCapabilities();
-    }
-  }
-
-  public getStore(): SQLiteCapabilityStore {
-    return this.store;
-  }
-
-  public async getCapability(id: string): Promise<CapabilityMetadata | null> {
-    await this.init();
-    return this.store.getCapability(id);
-  }
-
-  public async saveCapability(metadata: CapabilityMetadata): Promise<void> {
-    await this.init();
-    
-    // Semantic version validation
+  public async saveCapability(metadata: CapabilityMetadata, context: TenantContext): Promise<void> {
     if (!/^\d+\.\d+\.\d+$/.test(metadata.version)) {
       throw new Error(`[CapabilityRegistry] Invalid semantic version format: ${metadata.version}`);
     }
 
-    // Verify dependency loops
-    await this.verifyDependencyLoops(metadata.id, metadata.dependencyGraph);
+    await this.verifyDependencyLoops(metadata.id, metadata.dependencyGraph, context);
 
-    await this.store.saveCapability(metadata);
+    await this.storageProvider.saveCapability(metadata, context);
   }
 
-  public async updateCapabilityState(id: string, state: LifecycleState): Promise<void> {
-    const cap = await this.getCapability(id);
-    if (!cap) {
-      throw new Error(`[CapabilityRegistry] Capability ${id} not found.`);
+  public async listCapabilities(context: TenantContext, filters?: { type?: CapabilityType; status?: any }): Promise<CapabilityMetadata[]> {
+    let caps = await this.storageProvider.listCapabilities(context);
+    
+    if (filters) {
+      if (filters.type) caps = caps.filter(c => c.type === filters.type);
+      if (filters.status) caps = caps.filter(c => c.status === filters.status);
     }
-    cap.status = state;
-    if (state === "ACTIVE") {
-      cap.lastUsed = new Date().toISOString();
-      cap.usageCount++;
-    }
-    await this.saveCapability(cap);
+    return caps;
   }
 
-  public async deleteCapability(id: string): Promise<boolean> {
-    await this.init();
-    return this.store.deleteCapability(id);
+  private async verifyDependencyLoops(id: string, dependencies: string[], context: TenantContext): Promise<void> {
+    const visited = new Set<string>();
+    const stack = new Set<string>();
+
+    const check = async (currId: string, deps: string[]) => {
+      visited.add(currId);
+      stack.add(currId);
+
+      for (const depId of deps) {
+        if (depId === id) {
+          throw new Error(`[CapabilityRegistry] Circular dependency detected involving ${id} -> ${currId}`);
+        }
+        if (!visited.has(depId)) {
+          const cap = await this.getCapability(depId, context);
+          if (cap) {
+            await check(depId, cap.dependencyGraph);
+          }
+        } else if (stack.has(depId)) {
+          throw new Error(`[CapabilityRegistry] Circular dependency loop detected involving ${currId} -> ${depId}`);
+        }
+      }
+      stack.delete(currId);
+    };
+
+    await check(id, dependencies);
   }
 
-  public async listCapabilities(filters?: { type?: CapabilityType; status?: LifecycleState }): Promise<CapabilityMetadata[]> {
-    await this.init();
-    return this.store.listCapabilities(filters);
-  }
-
-  // --- Seed Heuristics ---
-
-  private async seedDefaultCapabilities(): Promise<void> {
-    const list = await this.store.listCapabilities();
-    if (list.length > 0) return; // Already seeded
+  public async seedDefaultCapabilities(context: TenantContext): Promise<void> {
+    const list = await this.storageProvider.listCapabilities(context);
+    if (list.length > 0) return;
 
     console.log("[CapabilityRegistry] Seeding default capabilities metadata...");
 
@@ -91,7 +69,7 @@ export class CapabilityRegistry {
         version: "1.0.0",
         publisher: "AegisOS Core Team",
         repository: "https://github.com/modelcontextprotocol/server-filesystem",
-        signature: "a".repeat(64), // Simulated Cosign signature
+        signature: "a".repeat(64),
         trustScore: 1.0,
         status: "UNLOADED",
         installedAt: new Date().toISOString(),
@@ -163,9 +141,9 @@ export class CapabilityRegistry {
         installedAt: new Date().toISOString(),
         usageCount: 0,
         averageLatencyMs: 850.0,
-        memoryProfileKb: 2097152, // 2GB host RAM
+        memoryProfileKb: 2097152,
         cpuProfileRatio: 0.15,
-        gpuProfileMb: 4608, // 4.5 GB VRAM
+        gpuProfileMb: 4608,
         dependencyGraph: [],
         compatibilityProfile: { minVramGb: 6.0, cuda: true },
         sandboxPolicy: {
@@ -186,38 +164,7 @@ export class CapabilityRegistry {
     ];
 
     for (const d of defaults) {
-      await this.store.saveCapability(d);
+      await this.storageProvider.saveCapability(d, context);
     }
   }
-
-  // --- Dependency Loop Verification ---
-
-  private async verifyDependencyLoops(id: string, dependencies: string[]): Promise<void> {
-    const visited = new Set<string>();
-    const stack = new Set<string>();
-
-    const check = async (currId: string, deps: string[]) => {
-      visited.add(currId);
-      stack.add(currId);
-
-      for (const depId of deps) {
-        if (depId === id) {
-          throw new Error(`[CapabilityRegistry] Circular dependency detected involving ${id} -> ${currId}`);
-        }
-        if (!visited.has(depId)) {
-          const cap = await this.getCapability(depId);
-          if (cap) {
-            await check(depId, cap.dependencyGraph);
-          }
-        } else if (stack.has(depId)) {
-          throw new Error(`[CapabilityRegistry] Circular dependency loop detected involving ${currId} -> ${depId}`);
-        }
-      }
-      stack.delete(currId);
-    };
-
-    await check(id, dependencies);
-  }
 }
-export const capabilityRegistry = CapabilityRegistry.getInstance();
-export default capabilityRegistry;

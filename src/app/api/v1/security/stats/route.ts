@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import prisma from "@/infrastructure/db/prisma";
-import { complianceEngine } from "@/infrastructure/security/compliance-engine";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
+import { complianceEngine } from "@/infrastructure/sdk/platform-sdk";
 import fs from "fs/promises";
 import path from "path";
 

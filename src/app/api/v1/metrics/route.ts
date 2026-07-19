@@ -1,7 +1,7 @@
 // src/app/api/v1/metrics/route.ts
 // Exposes Prometheus-compatible text metrics for CPU, memory, GPU, and AI model inference parameters.
 
-import { metricsPlatform } from "@/infrastructure/observability/metrics-platform";
+import { metricsPlatform } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET() {
   const prometheusText = metricsPlatform.toPrometheusFormat();

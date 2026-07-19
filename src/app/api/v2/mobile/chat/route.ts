@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { getAuthenticatedUser } from "@/app/api/v1/mobile/commands/route";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 import { conversationService } from "@/platform/assistant/ConversationService";
 import { executionRuntimeService } from "@/services/execution-runtime.service";
 

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { userRepository } from '@/repositories/user.repository';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 
 export async function GET() {
   const admin = await getAdminUser();
@@ -9,8 +8,8 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const users = await userRepository.getAllUsers();
-  await auditRepository.logEvent(
+  const users = await adminService.users.getAllUsers();
+  await adminService.audit.logEvent(
     admin.username,
     'List Users',
     'administration',
@@ -32,7 +31,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const existing = await userRepository.getUserByEmail(body.email);
+    const existing = await adminService.users.getUserByEmail(body.email);
     const userId = body.id || (existing ? existing.id : crypto.randomUUID());
     const user = {
       id: userId,
@@ -49,8 +48,8 @@ export async function POST(request: Request) {
       notes: body.notes || ''
     };
 
-    await userRepository.saveUser(user);
-    await auditRepository.logEvent(
+    await adminService.users.saveUser(user);
+    await adminService.audit.logEvent(
       admin.username,
       existing ? 'Update User' : 'Create User',
       'administration',

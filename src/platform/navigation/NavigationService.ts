@@ -6,7 +6,7 @@ import { create } from 'zustand';
 import type { NavigationEntry, NavigationGroup, Breadcrumb } from './types';
 import { ModuleRegistry } from '../module-registry/ModuleRegistry';
 import { EventBus } from '../event-bus/EventBus';
-
+import { useAppStore } from '@/store/appStore';
 const STORAGE_FAVORITES_KEY = 'platform:navigation-favorites';
 const STORAGE_RECENT_KEY = 'platform:navigation-recent';
 
@@ -111,7 +111,15 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     const navItems = ModuleRegistry.getNavItems();
     const groupsMap: Record<string, NavigationEntry[]> = {};
 
+    const { activePerspective } = useAppStore.getState();
+    const activeRoles = [activePerspective]; // Map perspective to roles, or just use it directly.
     navItems.forEach((item) => {
+      // Role-aware filtering
+      if (item.roles && item.roles.length > 0) {
+        const hasAccess = item.roles.some((role) => (activeRoles as string[]).includes(role));
+        if (!hasAccess) return;
+      }
+
       const groupName = item.group || 'General';
       if (!groupsMap[groupName]) {
         groupsMap[groupName] = [];
@@ -124,7 +132,8 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         group: item.group,
         order: item.order,
         badge: get().badges[item.id] ?? item.badge,
-        hidden: item.hidden
+        hidden: item.hidden,
+        roles: item.roles
       });
     });
 

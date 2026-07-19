@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAuthProvider } from '../../../../platform/auth/providers/AuthProvider';
-import { userRepository } from '../../../../repositories/user.repository';
+import { adminService } from "@/services/admin.service";
 import { sessionService } from '../../../../platform/auth/session.service';
 import { cookies } from 'next/headers';
 import { auditService } from '../../../../platform/audit/audit.service';
@@ -22,9 +22,9 @@ export async function GET(request: Request) {
     const profile = await provider.handleCallback(url, expectedState, expectedNonce);
     
     // Check Authorization Registry
-    let user = await userRepository.getUserByGoogleId(profile.id);
+    let user = await adminService.users.getUserByGoogleId(profile.id);
     if (!user) {
-      user = await userRepository.getUserByEmail(profile.email);
+      user = await adminService.users.getUserByEmail(profile.email);
     }
     
     if (!user || user.status !== 'Enabled') {
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
 
     // Update last login
     user.lastLogin = new Date().toISOString();
-    await userRepository.saveUser(user);
+    await adminService.users.saveUser(user);
     
     // Create Session
     await sessionService.createSession(user.id, user.role);

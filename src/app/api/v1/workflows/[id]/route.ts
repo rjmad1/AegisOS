@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { workflowRepository } from "@/repositories/workflow.repository";
+import { workflowService } from "@/services/workflow.service";
 import { handleCaching } from "@/utils/api-helper";
 
 export async function GET(
@@ -8,12 +8,12 @@ export async function GET(
 ) {
   try {
     const { id } = await props.params;
-    const workflow = await workflowRepository.getWorkflow(id);
+    const workflow = await workflowService.getWorkflow(id);
     if (!workflow) {
       return Response.json({ error: "Workflow not found" }, { status: 404 });
     }
     // Also attach execution history dynamically
-    const executions = await workflowRepository.getExecutions();
+    const executions = await workflowService.getExecutions();
     const runs = executions.filter((exec) => exec.workflowId === id);
     const mappedWorkflow = {
       ...workflow,
@@ -38,7 +38,7 @@ export async function PUT(
   try {
     const { id } = await props.params;
     const body = await request.json();
-    const existing = await workflowRepository.getWorkflow(id);
+    const existing = await workflowService.getWorkflow(id);
     if (!existing) {
       return Response.json({ error: "Workflow not found" }, { status: 404 });
     }
@@ -50,7 +50,7 @@ export async function PUT(
       updatedAt: new Date().toISOString()
     };
 
-    await workflowRepository.saveWorkflow(updated);
+    await workflowService.saveWorkflow(updated);
     
     // Log history
     const { userEmail } = body;
@@ -64,7 +64,7 @@ export async function PUT(
       details: `Updated workflow definition details and nodes configuration.`,
       timestamp: new Date().toISOString()
     };
-    await workflowRepository.saveHistory(historyItem);
+    await workflowService.saveHistory(historyItem);
 
     return Response.json({ success: true, workflow: updated });
   } catch (err: any) {
@@ -78,7 +78,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await props.params;
-    const deleted = await workflowRepository.deleteWorkflow(id);
+    const deleted = await workflowService.deleteWorkflow(id);
     if (!deleted) {
       return Response.json({ error: "Workflow not found" }, { status: 404 });
     }

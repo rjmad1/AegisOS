@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 import { commandBus } from "@/platform/control/CommandBus";
 
 const authSecret = process.env.AUTH_SECRET!;

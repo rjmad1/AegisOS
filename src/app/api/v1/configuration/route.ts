@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { centralConfig } from "@/infrastructure/configuration/central-config";
+import { centralConfig } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(request: NextRequest) {
   try {

@@ -13,39 +13,41 @@ import type { PlatformModule } from './types';
 import { platformModule } from '@/modules/platform/platform.module';
 import { operationsModule } from '@/modules/operations/operations.module';
 import { knowledgeModule } from '@/modules/knowledge/knowledge.module';
-import { artifactsModule } from '@/modules/artifacts/artifacts.module';
-import { administrationModule } from '@/modules/administration/administration.module';
+import { governanceModule } from '@/modules/governance/governance.module';
 import { settingsModule } from '@/modules/settings/settings.module';
-import { aiRuntimeModule } from '@/modules/ai-runtime/ai-runtime.module';
-import { infrastructureModule } from '@/modules/infrastructure/infrastructure.module';
+import { platformIntelligenceModule } from '@/modules/platform-intelligence/platform-intelligence.module';
 import { workflowsModule } from '@/modules/workflows/workflows.module';
 import { observabilityModule } from '@/modules/observability/observability.module';
-import { reliabilityModule } from '@/modules/reliability/reliability.module';
 import { developerModule } from '@/modules/developer/developer.module';
-import { skillsModule } from '@/modules/skills/skills.module';
-import { engineeringIntelligenceModule } from '@/modules/engineering-intelligence/engineering-intelligence.module';
-import { missionControlModule } from '@/modules/mission-control/mission-control.module';
+import { capabilitiesModule } from '@/modules/capabilities/capabilities.module';
 import { projectsModule } from '@/modules/projects/projects.module';
+
+// New Architecture Modules
+import { mcpEcosystemModule } from '@/modules/mcp-ecosystem/mcp-ecosystem.module';
+import { benchmarkingModule } from '@/modules/benchmarking/benchmarking.module';
+import { certificationModule } from '@/modules/certification/certification.module';
+import { qualificationModule } from '@/modules/qualification/qualification.module';
+import { architectureExplorerModule } from '@/modules/architecture-explorer/architecture-explorer.module';
 
 export const allModules: PlatformModule[] = [
   platformModule,
   operationsModule,
   knowledgeModule,
-  artifactsModule,
-  administrationModule,
+  governanceModule,
   settingsModule,
-  aiRuntimeModule,
-  infrastructureModule,
+  platformIntelligenceModule,
   workflowsModule,
   observabilityModule,
-  reliabilityModule,
   developerModule,
-  skillsModule,
-  engineeringIntelligenceModule,
-  missionControlModule,
+  capabilitiesModule,
   projectsModule,
+  
+  // New Architecture Modules
+  mcpEcosystemModule,
+  benchmarkingModule,
+  certificationModule,
+  qualificationModule,
+  architectureExplorerModule,
 ];
 
 export { PlatformKernel };
-
-

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ProviderRegistry } from "@/infrastructure/providers/registry";
-import { IFileProviderAdapter } from "@/infrastructure/contracts/file";
+import { ProviderRegistry } from "@/infrastructure/sdk/platform-sdk";
+import { IFileProviderAdapter } from "@/infrastructure/sdk/platform-sdk";
 import * as fs from "fs";
 import * as path from "path";
 

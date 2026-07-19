@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
-import { srePlatform } from "@/infrastructure/reliability/SREPlatform";
-import { chaosPlatform } from "@/infrastructure/reliability/ChaosPlatform";
-import { incidentManager } from "@/infrastructure/reliability/IncidentManager";
-import { disasterRecovery } from "@/infrastructure/reliability/DisasterRecovery";
-import { capacityEngine } from "@/infrastructure/reliability/CapacityEngine";
-import { diagnosticsEngine } from "@/infrastructure/reliability/DiagnosticsEngine";
-import { readinessReport } from "@/infrastructure/reliability/ReadinessReport";
-import { riskRegister } from "@/infrastructure/reliability/RiskRegister";
-import { selfHealingFramework } from "@/infrastructure/reliability/SelfHealingFramework";
-import { serviceMeshLayer } from "@/infrastructure/reliability/ServiceMeshLayer";
-import { reliabilityStore } from "@/infrastructure/reliability/store";
+import { srePlatform } from "@/infrastructure/sdk/platform-sdk";
+import { chaosPlatform } from "@/infrastructure/sdk/platform-sdk";
+import { incidentManager } from "@/infrastructure/sdk/platform-sdk";
+import { disasterRecovery } from "@/infrastructure/sdk/platform-sdk";
+import { capacityEngine } from "@/infrastructure/sdk/platform-sdk";
+import { diagnosticsEngine } from "@/infrastructure/sdk/platform-sdk";
+import { readinessReport } from "@/infrastructure/sdk/platform-sdk";
+import { riskRegister } from "@/infrastructure/sdk/platform-sdk";
+import { selfHealingFramework } from "@/infrastructure/sdk/platform-sdk";
+import { serviceMeshLayer } from "@/infrastructure/sdk/platform-sdk";
+import { reliabilityStore } from "@/infrastructure/sdk/platform-sdk";
 import { executionRuntimeService } from "@/services/execution-runtime.service";
 
 export const dynamic = "force-dynamic";

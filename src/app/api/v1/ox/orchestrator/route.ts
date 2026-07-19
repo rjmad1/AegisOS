@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { platformLifecycleOrchestrator } from "@/platform/control-plane/PlatformLifecycleOrchestrator";
 import { platformServiceManager } from "@/platform/control-plane/PlatformServiceManager";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 import { dependencyManager } from "@/platform/control-plane/DependencyManager";
 import { modelLifecycleManager } from "@/platform/control-plane/ModelLifecycleManager";
 

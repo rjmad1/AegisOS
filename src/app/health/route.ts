@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { runtimeService } from "@/services/runtime.service";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
-import { ProviderRegistry } from "@/infrastructure/providers/registry";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
+import { ProviderRegistry } from "@/infrastructure/sdk/platform-sdk";
 
 const startTime = Date.now();
 

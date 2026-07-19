@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 import { getAuthenticatedUser } from "../route";
 
 export async function GET(

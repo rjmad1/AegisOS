@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { selfHealer } from "@/infrastructure/diagnostics/self-healer";
+import { selfHealer } from "@/infrastructure/sdk/platform-sdk";
 import { executionRuntimeService } from "@/services/execution-runtime.service";
 
 export async function GET() {

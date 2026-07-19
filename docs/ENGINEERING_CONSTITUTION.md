@@ -140,3 +140,17 @@ A feature is complete only when:
 ---
 
 This constitution supersedes all future implementation decisions unless formally amended through an Architecture Decision Record.
+
+---
+
+## PART X: The Platform Verifiability Principle
+
+Every architectural capability must have four artifacts:
+
+1. **A specification** (descriptor or contract).
+2. **An implementation** (platform service or subsystem).
+3. **A verification suite** (benchmarks, representative workloads, and certification tests).
+4. **An operational contract** (performance budgets, SLOs, governance policies, and release criteria).
+
+This transforms AegisOS from a well-designed architecture into a continuously verifiable platform, where every subsystem is specified, implemented, measured, and certified throughout its lifecycle.
+

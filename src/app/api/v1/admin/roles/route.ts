@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { roleRepository } from '@/repositories/role.repository';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 import { Role } from '@/platform/auth/authorization';
 
 export async function GET() {
@@ -10,8 +9,8 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const matrix = await roleRepository.getRolePermissions();
-  await auditRepository.logEvent(
+  const matrix = await adminService.roles.getRolePermissions();
+  await adminService.audit.logEvent(
     admin.username,
     'List Roles',
     'administration',
@@ -34,8 +33,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing role or permissions array' }, { status: 400 });
     }
 
-    await roleRepository.saveRolePermissions(role as Role, permissions);
-    await auditRepository.logEvent(
+    await adminService.roles.saveRolePermissions(role as Role, permissions);
+    await adminService.audit.logEvent(
       admin.username,
       'Update Role Permissions',
       'authorization',

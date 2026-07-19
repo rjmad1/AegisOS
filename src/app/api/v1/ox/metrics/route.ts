@@ -1,6 +1,6 @@
 // src/app/api/v1/ox/metrics/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 import * as fs from "fs";
 import * as path from "path";
 

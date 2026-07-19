@@ -3,7 +3,7 @@
 
 import { NextResponse } from "next/server";
 import { engineeringIntelligenceService } from "@/services/engineering-intelligence.service";
-import { recommendationEngine } from "@/infrastructure/intelligence/recommendation-engine";
+import { recommendationEngine } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET() {
   try {

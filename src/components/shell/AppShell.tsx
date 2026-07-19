@@ -13,6 +13,7 @@ import { GlobalSearch } from "../search/GlobalSearch";
 import { CommandPalette } from "../command-palette/CommandPalette";
 import { VoiceFeedbackButton } from "./VoiceFeedbackButton";
 import { OperationalCopilot } from "./OperationalCopilot";
+import { HitlApprovalModal } from "./HitlApprovalModal";
 import { Brain, Keyboard, X } from "lucide-react";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -49,10 +50,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       );
       if (isInput) return;
 
-      // Ctrl+K -> Search
+      // Ctrl+K -> Command Palette (Universal Search)
       if (e.ctrlKey && e.key === "k") {
         e.preventDefault();
-        setSearchOpen((prev) => !prev);
+        setCommandOpen((prev) => !prev);
       }
       
       // Ctrl+Shift+P -> Command Palette
@@ -136,10 +137,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <StatusBar />
       </div>
 
-      {/* Global Search Interface */}
-      <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-
-      {/* Global Command Palette */}
+      {/* Global Command Palette (Universal Search) */}
       <CommandPalette isOpen={commandOpen} onClose={() => setCommandOpen(false)} />
 
       {/* Operational Logs Center */}
@@ -159,6 +157,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Operational Copilot Right Side Drawer */}
       <OperationalCopilot isOpen={copilotOpen} onClose={() => setCopilotOpen(false)} />
+
+      {/* HITL Policy Enforcement Blocking Modal */}
+      <HitlApprovalModal />
 
       {/* Keyboard Shortcuts Cheat-sheet Modal */}
       <AnimatePresence>

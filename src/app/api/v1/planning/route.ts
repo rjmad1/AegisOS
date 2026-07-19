@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { specKitService } from "@/infrastructure/planning/spec-kit-service";
+import { specKitService } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET() {
   return NextResponse.json({

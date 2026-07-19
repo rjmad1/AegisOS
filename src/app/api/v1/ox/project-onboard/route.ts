@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 
 const execAsync = promisify(exec);
 

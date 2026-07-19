@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { workflowRepository } from "@/repositories/workflow.repository";
+import { workflowService } from "@/services/workflow.service";
 
 export async function GET(request: NextRequest) {
   try {
-    const list = await workflowRepository.getTemplates();
+    const list = await workflowService.getTemplates();
     return Response.json(list);
   } catch (err: any) {
     return Response.json({ error: err.message }, { status: 500 });
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       nodes: nodes || [],
       metadata: metadata || {}
     };
-    await workflowRepository.saveTemplate(tpl);
+    await workflowService.saveTemplate(tpl);
     return Response.json({ success: true, template: tpl }, { status: 201 });
   } catch (err: any) {
     return Response.json({ error: err.message }, { status: 500 });

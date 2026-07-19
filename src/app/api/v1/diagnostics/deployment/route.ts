@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 import { runtimeService } from "@/services/runtime.service";
-import { ProviderRegistry } from "@/infrastructure/providers/registry";
+import { ProviderRegistry } from "@/infrastructure/sdk/platform-sdk";
 import * as fs from "fs";
 import * as path from "path";
 

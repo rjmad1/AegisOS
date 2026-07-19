@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { artifactRegistry } from "@/infrastructure/registry/artifact-registry";
+import { artifactRegistry } from "@/infrastructure/sdk/platform-sdk";
 import * as fs from "fs";
 import * as path from "path";
 

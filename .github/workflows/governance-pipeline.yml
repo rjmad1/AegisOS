@@ -1,0 +1,65 @@
+name: Operational Governance & Production Qualification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * *' # Nightly runs at 2:00 AM
+
+jobs:
+  qualify-pipeline:
+    name: AegisOS Platform Qualification
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js Environment
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y iproute2
+
+    - name: Install Project Dependencies
+      run: npm ci
+
+    - name: Execute Pull Request Gate Checks
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "Executing PR Gate Qualification..."
+        # In a real environment, this invokes a boot script or package CLI
+        npx ts-node -e "
+          import { QualifyCommand } from './src/platform/commands/qualify';
+          new QualifyCommand().execute({ gateId: 'pr-gate' })
+            .then(res => {
+              if (!res.success) {
+                console.error('❌ PR Qualification Gate Failed!');
+                process.exit(1);
+              }
+              console.log('✅ PR Qualification Gate Passed!');
+            });
+        "
+
+    - name: Execute Scheduled Nightly Checks
+      if: github.event_name == 'schedule'
+      run: |
+        echo "Executing Nightly Scheduled Qualification..."
+        npx ts-node -e "
+          import { QualifyCommand } from './src/platform/commands/qualify';
+          new QualifyCommand().execute({ gateId: 'nightly' })
+            .then(res => {
+              if (!res.success) {
+                console.error('❌ Nightly Scheduled Qualification Failed!');
+                process.exit(1);
+              }
+              console.log('✅ Nightly Scheduled Qualification Passed!');
+            });
+        "

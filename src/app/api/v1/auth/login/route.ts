@@ -3,10 +3,10 @@
 
 import { NextResponse } from "next/server";
 import { SignJWT } from "jose";
-import LockoutManager from "@/infrastructure/security/lockout-manager";
+import { LockoutManager } from "@/infrastructure/sdk/platform-sdk";
 
 import { comparePassword } from "@/platform/auth/hashing";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 
 // Blocklist of known-insecure default values that must never be accepted
 const INSECURE_USERNAMES = new Set(["admin", "administrator", "root", ""]);

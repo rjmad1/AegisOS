@@ -2,7 +2,7 @@
 // REST endpoint for mobile client querying system event audits and timeline history
 
 import { NextResponse } from "next/server";
-import { eventBus } from "@/infrastructure/events/event-bus";
+import { eventBus } from "@/infrastructure/sdk/platform-sdk";
 
 export const dynamic = "force-dynamic";
 

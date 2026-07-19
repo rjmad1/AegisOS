@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { artifactRegistry } from "@/infrastructure/registry/artifact-registry";
-import { ProviderRegistry } from "@/infrastructure/providers/registry";
-import { LocalArtifactStorageProvider } from "@/infrastructure/providers/local-artifact-storage";
+import { artifactRegistry } from "@/infrastructure/sdk/platform-sdk";
+import { ProviderRegistry } from "@/infrastructure/sdk/platform-sdk";
+import { LocalArtifactStorageProvider } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(
   request: NextRequest,

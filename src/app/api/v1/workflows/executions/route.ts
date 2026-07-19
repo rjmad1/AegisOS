@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { workflowRepository } from "@/repositories/workflow.repository";
+import { workflowService } from "@/services/workflow.service";
 import { executionRuntimeService } from "@/services/execution-runtime.service";
 import { formatErrorResponse } from "@/utils/api-helper";
 import { ValidationError, NotFoundError } from "@/utils/errors";
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const workflowId = searchParams.get("workflowId");
     const status = searchParams.get("status");
 
-    let list = await workflowRepository.getExecutions();
+    let list = await workflowService.getExecutions();
     if (workflowId) {
       list = list.filter((e) => e.workflowId === workflowId);
     }
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         throw new Error("Workflow failed to trigger and returned no run identifier.");
       }
 
-      const workflowExecution = await workflowRepository.getExecution(runId);
+      const workflowExecution = await workflowService.getExecution(runId);
       return Response.json({ success: true, execution: workflowExecution }, { status: 201 });
     }
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
         // Also cancel referenced workflow if present
         const runId = exec.workflowReference?.runId;
         if (runId) {
-          const wfExec = await workflowRepository.getExecution(runId);
+          const wfExec = await workflowService.getExecution(runId);
           if (wfExec) {
             wfExec.status = "cancelled";
             wfExec.endedAt = new Date().toISOString();
@@ -83,13 +83,13 @@ export async function POST(request: NextRequest) {
               level: "warn",
               message: "Workflow cancelled by manual administrative request."
             });
-            await workflowRepository.saveExecution(wfExec);
+            await workflowService.saveExecution(wfExec);
           }
         }
         return Response.json({ success: true, execution: exec });
       }
 
-      const exec = await workflowRepository.getExecution(executionId);
+      const exec = await workflowService.getExecution(executionId);
       if (!exec) {
         throw new NotFoundError("Execution not found");
       }
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
         level: "warn",
         message: "Workflow cancelled by manual administrative request."
       });
-      await workflowRepository.saveExecution(exec);
+      await workflowService.saveExecution(exec);
       return Response.json({ success: true, execution: exec });
     }
 
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
       if (!executionId) {
         throw new ValidationError("Missing executionId to resume");
       }
-      const exec = await workflowRepository.getExecution(executionId);
+      const exec = await workflowService.getExecution(executionId);
       if (!exec) {
         throw new NotFoundError("Execution not found");
       }
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
         level: "info",
         message: "Workflow execution manually resumed."
       });
-      await workflowRepository.saveExecution(exec);
+      await workflowService.saveExecution(exec);
       return Response.json({ success: true, execution: exec });
     }
 

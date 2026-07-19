@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ponytailCompressor, ChatMessage } from "@/infrastructure/compression/ponytail";
-import { headroomCompressor } from "@/infrastructure/compression/headroom";
+import { ponytailCompressor, ChatMessage } from "@/infrastructure/sdk/platform-sdk";
+import { headroomCompressor } from "@/infrastructure/sdk/platform-sdk";
 
 export async function POST(request: NextRequest) {
   try {

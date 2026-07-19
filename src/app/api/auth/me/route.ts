@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sessionService } from '../../../../platform/auth/session.service';
-import { userRepository } from '../../../../repositories/user.repository';
+import { adminService } from "@/services/admin.service";
 
 export async function GET() {
   try {
@@ -9,7 +9,7 @@ export async function GET() {
       return NextResponse.json({ user: null });
     }
 
-    const user = await userRepository.getUserById(session.userId);
+    const user = await adminService.users.getUserById(session.userId);
     if (!user) {
       return NextResponse.json({ user: null });
     }

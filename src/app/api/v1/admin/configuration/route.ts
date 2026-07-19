@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { configRepository, PlatformConfig } from '@/repositories/config.repository';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 
 export async function GET() {
   const admin = await getAdminUser();
@@ -9,10 +8,10 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const config = await configRepository.getActiveConfig();
-  const history = await configRepository.getHistory();
+  const config = await adminService.config.getActiveConfig();
+  const history = await adminService.config.getHistory();
 
-  await auditRepository.logEvent(
+  await adminService.audit.logEvent(
     admin.username,
     'Read Configuration',
     'configuration',
@@ -37,7 +36,7 @@ export async function POST(request: Request) {
       if (isNaN(version)) {
         return NextResponse.json({ error: 'Invalid version number' }, { status: 400 });
       }
-      const newConfig = await configRepository.revertToVersion(version, admin.username);
+      const newConfig = await adminService.config.revertToVersion(version, admin.username);
       if (!newConfig) {
         return NextResponse.json({ error: `Version ${version} not found` }, { status: 404 });
       }
@@ -49,13 +48,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing configuration payload' }, { status: 400 });
     }
 
-    const validation = configRepository.validateConfig(config);
+    const validation = adminService.config.validateConfig(config);
     if (!validation.valid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 });
     }
 
-    await configRepository.saveConfig(config, admin.username, notes || 'Configuration updated via administrative portal');
-    await auditRepository.logEvent(
+    await adminService.config.saveConfig(config, admin.username, notes || 'Configuration updated via administrative portal');
+    await adminService.audit.logEvent(
       admin.username,
       'Update Configuration',
       'configuration',

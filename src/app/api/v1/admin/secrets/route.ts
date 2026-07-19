@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { secretRepository } from '@/repositories/secret.repository';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 
 export async function GET() {
   const admin = await getAdminUser();
@@ -9,7 +8,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const secrets = await secretRepository.getAllSecrets();
+  const secrets = await adminService.secrets.getAllSecrets();
   
   // Return ONLY keys and masked placeholders to prevent exposure
   const masked = secrets.map(s => ({
@@ -29,7 +28,7 @@ export async function GET() {
     return NextResponse.json(defaultKeys);
   }
 
-  await auditRepository.logEvent(
+  await adminService.audit.logEvent(
     admin.username,
     'List Secret Keys',
     'security',
@@ -52,8 +51,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing key or value' }, { status: 400 });
     }
 
-    await secretRepository.saveSecret(key, value);
-    await auditRepository.logEvent(
+    await adminService.secrets.saveSecret(key, value);
+    await adminService.audit.logEvent(
       admin.username,
       'Save Secret',
       'security',
@@ -79,8 +78,8 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Missing key parameter' }, { status: 400 });
     }
 
-    await secretRepository.deleteSecret(key);
-    await auditRepository.logEvent(
+    await adminService.secrets.deleteSecret(key);
+    await adminService.audit.logEvent(
       admin.username,
       'Delete Secret',
       'security',

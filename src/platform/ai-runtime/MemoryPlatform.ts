@@ -56,7 +56,7 @@ export class MemoryPlatform {
     const seeds: MemoryEntry[] = [
       {
         id: "mem:workspace:settings",
-        domain: "workspace",
+        domain: "long-term", // was workspace
         ownerId: "system",
         content: "Developer workspace relies on TypeScript compiler, Next.js framework, and Prisma ORM.",
         confidence: 1.0,
@@ -65,7 +65,7 @@ export class MemoryPlatform {
       },
       {
         id: "mem:user:preferences",
-        domain: "user",
+        domain: "long-term", // was user
         ownerId: "usr-admin-01",
         content: "User prefers local execution using Ollama:gemma2:9b and strict compliance checks.",
         confidence: 0.95,

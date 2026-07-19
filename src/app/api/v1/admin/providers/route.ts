@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
 import { ProviderRegistry } from '@/infrastructure/providers/registry';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -46,7 +46,7 @@ export async function GET() {
     version: '1.0.0'
   }));
 
-  await auditRepository.logEvent(
+  await adminService.audit.logEvent(
     admin.username,
     'List Providers',
     'provider',
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     }
 
     await saveProviderStatus(id, enabled);
-    await auditRepository.logEvent(
+    await adminService.audit.logEvent(
       admin.username,
       enabled ? 'Enable Provider' : 'Disable Provider',
       'provider',

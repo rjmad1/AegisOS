@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET() {
   try {

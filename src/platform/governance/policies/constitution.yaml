@@ -1,0 +1,37 @@
+constitution:
+  principles:
+    - id: kernel-single-responsibility
+      severity: critical
+      description: Kernel components must have exactly one responsibility.
+
+    - id: no-cross-layer-dependencies
+      severity: critical
+      description: Higher level layers may depend on lower level layers, but never the reverse.
+
+    - id: composition-over-inheritance
+      severity: warning
+      description: Prefer composing behaviors over deep inheritance chains.
+
+    - id: deterministic-execution
+      severity: critical
+      description: Platform execution should be entirely deterministic based on its inputs and state.
+
+    - id: local-first
+      severity: warning
+      description: Platform components should default to running locally where possible.
+
+    - id: capability-least-privilege
+      severity: critical
+      description: Capabilities should be granted the minimum necessary permissions.
+
+    - id: no-duplicate-platform-logic
+      severity: critical
+      description: Every capability must reuse existing platform services if they exist.
+
+    - id: immutable-execution-context
+      severity: critical
+      description: Execution contexts must not be mutated directly by executing nodes.
+
+    - id: derived-analytical-models
+      severity: critical
+      description: Every analytical model is derived; every operational decision comes from authoritative platform services.

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { ProviderRegistry } from "@/infrastructure/providers/registry";
+import { ProviderRegistry } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(request: NextRequest) {
   let providerCalls: any[] = [];

@@ -836,6 +836,133 @@ model Mission {
   projectId         String?
 }
 
+model QualificationHistory {
+  id              String   @id @default(uuid())
+  artifactId      String   // Links to Artifact record (the JSON report)
+  timestamp       DateTime @default(now())
+  triggerSource   String   // "EVENT" | "SCHEDULE" | "LIFECYCLE" | "MANUAL"
+  triggerReason   String
+  decision        String   // "PASS" | "WARNING" | "FAIL"
+  overallScore    Float
+  durationMs      Int
+  gitSha          String
+  platformVersion String
+  environment     String
+  summary         String?  // Text summary
+}
+
+model MaturityHistory {
+  id                     String   @id @default(uuid())
+  qualificationHistoryId String
+  timestamp              DateTime @default(now())
+  architecture           Float
+  engineering            Float
+  reliability            Float
+  scalability            Float
+  security               Float
+  governance             Float
+  observability          Float
+  performance            Float
+  maintainability        Float
+  extensibility          Float
+  aiReadiness            Float
+  overall                Float
+}
+
+model CapabilityCertification {
+  id              String   @id @default(uuid())
+  capabilityId    String   @unique
+  name            String
+  version         String
+  status          String   // "CERTIFIED" | "DEGRADED" | "UNCERTIFIED"
+  score           Float
+  lastCertifiedAt DateTime @default(now())
+  constraints     String   // JSON string of budgets/constraints
+  deviations      String   // JSON array of current warnings/failures
+}
+
+model RemediationHistory {
+  id                     String   @id @default(uuid())
+  qualificationHistoryId String
+  timestamp              DateTime @default(now())
+  problemId              String
+  domain                 String
+  probableRootCause      String
+  estimatedImpact        String
+  remediationSteps       String   // JSON string of steps
+  estimatedEffortMinutes Int
+  confidenceScore        Float
+  priority               String   // "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"
+  status                 String   // "OPEN" | "RESOLVED" | "IGNORED"
+  resolvedAt             DateTime?
+}
+
+model DigitalTwinMutation {
+  id             String   @id @default(uuid())
+  graphVersionId String
+  timestamp      DateTime @default(now())
+  mutationType   String   // "NODE_ADD" | "NODE_REMOVE" | "NODE_UPDATE" | "EDGE_ADD" | "EDGE_REMOVE" | "EDGE_UPDATE"
+  nodeId         String?
+  edgeSourceId   String?
+  edgeTargetId   String?
+  payload        String   // JSON string of mutations/properties
+  actor          String   // "system" | "operator" | "agent"
+  reason         String?
+  correlationId  String?
+}
+
+model DigitalTwinSnapshot {
+  id             String   @id @default(uuid())
+  graphVersionId String   @unique
+  timestamp      DateTime @default(now())
+  nodeCount      Int
+  edgeCount      Int
+  graphHash      String
+  serializedData String   // JSON string of full node/edge structure
+  evidenceHash   String?
+  signature      String?
+}
+
+model DigitalTwinVersion {
+  id             String   @id
+  parentVersionId String?
+  snapshotId     String?
+  timestamp      DateTime @default(now())
+  graphHash      String
+  evidenceHash   String?
+  isSimulation   Boolean  @default(false)
+  metadata       String   // JSON string metadata (gitSha, platformVersion)
+}
+
+model DigitalTwinDriftLog {
+  id               String   @id @default(uuid())
+  timestamp        DateTime @default(now())
+  expectedVersion  String
+  detectedDrift    Boolean
+  driftDetails     String   // JSON string of drift findings
+  nodesDrifted     Int
+  edgesDrifted     Int
+  repaired         Boolean  @default(false)
+  repairAction     String?
+  reconciledAt     DateTime?
+}
+
+model SimulationSession {
+  id               String   @id @default(uuid())
+  parentSessionId  String?
+  snapshotVersion  String
+  executionEngine  String   // "OVERLAY" | "BRANCH" | "SANDBOX"
+  projectionScope  String   // JSON string array of projection scopes
+  deltaPayload     String   // JSON string of simulated modifications
+  policiesChecked  String   // JSON string array
+  reasoningTrace   String?  // JSON or text trace
+  evidenceHash     String?
+  status           String   // "RUNNING" | "COMPLETED" | "FAILED"
+  createdAt        DateTime @default(now())
+  completedAt      DateTime?
+}
+
+
 
 
 

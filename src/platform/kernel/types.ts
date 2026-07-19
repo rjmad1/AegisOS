@@ -9,16 +9,12 @@ import type { ComponentType } from 'react';
 // ---------------------------------------------------------------------------
 
 export type LifecyclePhase =
-  | 'created'
-  | 'bootstrapping'
-  | 'initializing'
-  | 'resolving'
+  | 'registered'
+  | 'initialized'
+  | 'started'
   | 'ready'
-  | 'running'
-  | 'degraded'
   | 'stopping'
-  | 'stopped'
-  | 'error';
+  | 'stopped';
 
 export interface LifecycleHooks {
   onInit?: () => void | Promise<void>;
@@ -30,7 +26,7 @@ export interface LifecycleHooks {
 // Health
 // ---------------------------------------------------------------------------
 
-export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+export type HealthStatus = 'healthy' | 'warning' | 'degraded' | 'unhealthy' | 'unknown';
 
 export interface HealthReport {
   status: HealthStatus;
@@ -48,6 +44,86 @@ export interface ModuleHealthEntry {
 }
 
 // ---------------------------------------------------------------------------
+// Kernel Services
+// ---------------------------------------------------------------------------
+
+/** Platform Execution Context Service (PECS) */
+export interface IExecutionContext {
+  id: string;
+  tenantId?: string;
+  workspaceId?: string;
+  projectId?: string;
+  agentId?: string;
+  userId?: string;
+  correlationId: string;
+  causationId?: string;
+  roles: string[];
+  securityLabels: string[];
+  operatingMode: 'performance' | 'balanced' | 'efficiency' | 'safe';
+  [key: string]: unknown; // Extensible for telemetry
+}
+
+export interface IExecutionContextProvider {
+  run<T>(context: IExecutionContext, fn: () => T): T;
+  runAsync<T>(context: IExecutionContext, fn: () => Promise<T>): Promise<T>;
+  current(): IExecutionContext | undefined;
+  requireCurrent(): IExecutionContext;
+  create(partial?: Partial<IExecutionContext>): IExecutionContext;
+}
+
+/** Platform Resource Manager (PRM) */
+export interface ResourceRequest {
+  cpuCores?: number;
+  memoryMb?: number;
+  vramMb?: number;
+  gpuCount?: number;
+  tokens?: number; // e.g. for concurrency limits
+  priority?: number;
+}
+
+export interface ResourceToken {
+  id: string;
+  granted: ResourceRequest;
+  release(): void;
+}
+
+export interface IPlatformResourceManager {
+  acquire(request: ResourceRequest): ResourceToken | null; // null if rejected
+  acquireAsync(request: ResourceRequest, timeoutMs?: number): Promise<ResourceToken | null>;
+  getUtilization(): Record<string, number>;
+  getBudgets(): Record<string, number>;
+}
+
+/** Platform Policy Service (PPS) */
+export interface PolicyDecision {
+  action: 'permit' | 'deny' | 'permit_with_constraints';
+  reason?: string;
+  source: string;
+  durationMs: number;
+  constraints?: Record<string, unknown>;
+}
+
+export interface IPolicyService {
+  evaluate(action: string, resource?: string, context?: IExecutionContext): PolicyDecision;
+  evaluateAsync(action: string, resource?: string, context?: IExecutionContext): Promise<PolicyDecision>;
+}
+
+/** Platform Advisor & Optimization Service (PAOS) */
+export interface OptimizationAction {
+  id: string;
+  reason: string;
+  benefit: string;
+  confidence: number;
+  execute(): Promise<void> | void;
+}
+
+export interface IOptimizationService {
+  observe(metric: string, value: number, tags?: Record<string, string>): void;
+  getRecommendations(): OptimizationAction[];
+  executeSafeOptimizations(): Promise<void>;
+}
+
+// ---------------------------------------------------------------------------
 // Navigation
 // ---------------------------------------------------------------------------
 
@@ -60,6 +136,7 @@ export interface PlatformNavItem {
   order?: number;
   badge?: string | number;
   hidden?: boolean;
+  roles?: string[];
 }
 
 export interface PlatformRoute {

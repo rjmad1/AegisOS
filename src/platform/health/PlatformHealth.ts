@@ -5,7 +5,7 @@
 import prisma from '../../infrastructure/db/prisma';
 import { deploymentManager } from '../../infrastructure/deployment/deployment-manager';
 import { platformDiagnostics } from '../diagnostics/PlatformDiagnostics';
-import { PortRegistry } from '@/platform/ports/PortRegistry';
+import { PortRegistry } from '../ports/PortRegistry';
 
 export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
 

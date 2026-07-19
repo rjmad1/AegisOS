@@ -60,6 +60,19 @@ export interface PlatformEventMap {
   'layout:changed': { layoutId: string };
   'layout:panel:resized': { panelId: string; size: number };
 
+  // PIAL & Twin Events
+  'participant:registered': { participantId: string; type: string };
+  'participant:removed': { participantId: string };
+  'workflow:started': { workflowId: string; name: string };
+  'workflow:completed': { workflowId: string; status: string };
+  'capability:loaded': { capabilityId: string };
+  'capability:released': { capabilityId: string };
+  'policy:updated': { policyId: string; version: string };
+  'resource:allocated': { resourceId: string; amount: number };
+  'resource:released': { resourceId: string };
+  'knowledge:indexed': { documentId: string };
+  'model:changed': { modelId: string };
+
   // Generic
   [key: string]: unknown;
 }

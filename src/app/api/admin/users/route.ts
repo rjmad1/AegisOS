@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { userRepository } from '../../../../repositories/user.repository';
+import { adminService } from "@/services/admin.service";
 import { Role } from '../../../../platform/auth/authorization';
 
 export async function GET(request: Request) {
-  const users = await userRepository.getAllUsers();
+  const users = await adminService.users.getAllUsers();
   return NextResponse.json(users);
 }
 
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       notes: body.notes || ''
     };
 
-    await userRepository.saveUser(user);
+    await adminService.users.saveUser(user);
     return NextResponse.json(user);
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

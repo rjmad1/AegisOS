@@ -4,7 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(request: NextRequest) {
   try {

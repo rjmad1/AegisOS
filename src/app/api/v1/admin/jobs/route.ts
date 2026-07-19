@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { jobRepository } from '@/repositories/job.repository';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 
 export async function GET() {
   const admin = await getAdminUser();
@@ -9,7 +8,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const jobs = await jobRepository.getAllJobs();
+  const jobs = await adminService.jobs.getAllJobs();
   return NextResponse.json(jobs);
 }
 
@@ -26,12 +25,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing job ID' }, { status: 400 });
     }
 
-    const triggered = await jobRepository.triggerJobImmediately(id);
+    const triggered = await adminService.jobs.triggerJobImmediately(id);
     if (!triggered) {
       return NextResponse.json({ error: 'Job not found' }, { status: 404 });
     }
 
-    await auditRepository.logEvent(
+    await adminService.audit.logEvent(
       admin.username,
       'Trigger Job',
       'administration',

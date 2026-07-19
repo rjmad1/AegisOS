@@ -19,6 +19,7 @@ import {
 import { executionEventPublisher } from "../infrastructure/events/execution-event-publisher";
 import { eventBus } from "../infrastructure/events/event-bus";
 import { ExecutionGraphNode } from "../types/execution-graph";
+import { CapabilityLifecycleManager } from "../platform/capability/CapabilityLifecycleManager";
 
 export interface UniversalExecutionStep {
   id: string;
@@ -648,7 +649,7 @@ export class ExecutionRuntimeService {
     }
 
     const requiredCapId = execution.workflowReference?.workflowId ? "cap:mcp:filesystem" : "cap:skill:code-generation";
-    const clm = require("../platform/capability/CapabilityLifecycleManager").CapabilityLifecycleManager.getInstance();
+    const clm = CapabilityLifecycleManager.getInstance();
     await clm.assessAndAcquire(executionId, [requiredCapId]);
 
     const start = Date.now();

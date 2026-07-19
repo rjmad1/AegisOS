@@ -47,7 +47,7 @@ function configureDb() {
   // Generate Prisma Client
   try {
     console.log('[ConfigureDB] Running "prisma generate" to build Client binaries...');
-    execSync('npx prisma generate', { stdio: 'inherit' });
+    execSync('npx --no-install prisma generate', { stdio: 'inherit' });
     console.log('[ConfigureDB] Prisma Client compiled successfully.');
   } catch (err) {
     console.error('[ConfigureDB] Failed to run prisma generate:', err.message);

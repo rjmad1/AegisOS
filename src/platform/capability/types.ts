@@ -1,6 +1,8 @@
 // src/platform/capability/types.ts
 // Core type definitions for the AegisOS Adaptive Capability Lifecycle Subsystem
 
+import { TenantContext } from "../core/storage/types";
+
 export type CapabilityType =
   | "MCP"
   | "Skill"
@@ -128,4 +130,43 @@ export interface AssessmentResult {
     vramMb: number;
     startupMs: number;
   };
+}
+
+export interface ICapabilityRegistry {
+  getCapability(id: string, context: TenantContext): Promise<CapabilityMetadata | null>;
+  saveCapability(metadata: CapabilityMetadata, context: TenantContext): Promise<void>;
+  listCapabilities(context: TenantContext, filters?: any): Promise<CapabilityMetadata[]>;
+}
+
+export interface ICapabilityScheduler {
+  calculateUtility(capability: CapabilityMetadata, context: TenantContext): UtilityScore;
+  prioritize(capabilities: CapabilityMetadata[], context: TenantContext): CapabilityMetadata[];
+  transition(id: string, targetState: LifecycleState, trigger: string, context: TenantContext): Promise<void>;
+}
+
+export interface ICapabilityDiscovery {
+  discover(intent: string, context: TenantContext): Promise<CapabilityMetadata[]>;
+}
+
+export interface ICapabilityTrustManager {
+  validateTrust(metadata: CapabilityMetadata): Promise<boolean>;
+}
+
+export interface ICapabilitySandbox {
+  applyPolicy(metadata: CapabilityMetadata): Promise<void>;
+}
+
+export interface ICapabilityOptimizer {
+  optimize(profile: ResourceProfile): Promise<void>;
+}
+
+export interface ICapabilityTelemetry {
+  recordEvent(event: CapabilityEvent, context: TenantContext): Promise<void>;
+}
+
+export interface ICapabilityLifecycle {
+  assessCapability(intent: string, context: TenantContext): Promise<AssessmentResult>;
+  acquireCapability(metadata: CapabilityMetadata, context: TenantContext): Promise<void>;
+  assessAndAcquire(taskName: string, requiredCapabilities: string[], context?: TenantContext): Promise<Record<string, AssessmentResult>>;
+  releaseCapability(capabilityId: string, success: boolean, durationMs: number, context?: TenantContext): Promise<void>;
 }

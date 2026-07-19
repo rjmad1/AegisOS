@@ -13,6 +13,7 @@ export interface NavigationEntry {
   order?: number;
   badge?: string | number;
   hidden?: boolean;
+  roles?: string[];
 }
 
 export interface NavigationGroup {

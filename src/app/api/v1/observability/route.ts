@@ -2,11 +2,11 @@
 // Exposes central telemetry diagnostics, self-observability metrics, alerting states, and forecasting items.
 
 import { NextResponse } from "next/server";
-import { alertingPlatform } from "@/infrastructure/observability/alerting-platform";
-import { intelligenceEngine } from "@/infrastructure/observability/intelligence-engine";
-import { telemetryHealthPlatform } from "@/infrastructure/observability/telemetry-health";
-import { validationFramework } from "@/infrastructure/observability/validation-framework";
-import prisma from "@/infrastructure/db/prisma";
+import { alertingPlatform } from "@/infrastructure/sdk/platform-sdk";
+import { intelligenceEngine } from "@/infrastructure/sdk/platform-sdk";
+import { telemetryHealthPlatform } from "@/infrastructure/sdk/platform-sdk";
+import { validationFramework } from "@/infrastructure/sdk/platform-sdk";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET() {
   try {

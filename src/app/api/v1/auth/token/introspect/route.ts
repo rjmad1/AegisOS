@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 
 const authSecret = process.env.AUTH_SECRET || process.env.OPS_JWT_SECRET;
 const key = authSecret ? new TextEncoder().encode(authSecret) : null;

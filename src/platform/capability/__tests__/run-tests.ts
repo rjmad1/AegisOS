@@ -86,7 +86,7 @@ globalAny.vi = {
 };
 
 // Trigger mock environment BEFORE imports happen
-process.env.NODE_ENV = "test";
+(process.env as any).NODE_ENV = "test";
 process.env.AEGISOS_STATE_DIR = path.resolve(__dirname, "../../../../../test-state");
 
 // Load the tests and run them sequentially

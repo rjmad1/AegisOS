@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { workflowRepository } from "@/repositories/workflow.repository";
+import { workflowService } from "@/services/workflow.service";
 
 export async function GET(request: NextRequest) {
   try {
-    const list = await workflowRepository.getSchedules();
+    const list = await workflowService.getSchedules();
     return Response.json(list);
   } catch (err: any) {
     return Response.json({ error: err.message }, { status: 500 });
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       nextRun: body.nextRun || runAt
     };
 
-    await workflowRepository.saveSchedule(schedule);
+    await workflowService.saveSchedule(schedule);
     return Response.json({ success: true, schedule });
   } catch (err: any) {
     return Response.json({ error: err.message }, { status: 500 });

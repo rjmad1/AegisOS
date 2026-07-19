@@ -1,5 +1,13 @@
 import { reliabilityStore } from "./store";
 import { deploymentManager } from "../deployment/deployment-manager";
+import { faultProviderRegistry } from "../../platform/validation/chaos/provider-registry";
+import { ServiceFaultProvider } from "../chaos/service-fault-provider";
+import { LatencyFaultProvider } from "../chaos/latency-fault-provider";
+import { ResourceFaultProvider } from "../chaos/resource-fault-provider";
+import { ApplicationFaultProvider } from "../chaos/application-fault-provider";
+import { CorruptionFaultProvider } from "../chaos/corruption-fault-provider";
+import { chaosOrchestrator } from "../../platform/validation/chaos/orchestrator";
+import type { ChaosSpec } from "../../platform/validation/chaos/types";
 
 export interface ChaosFault {
   id: string;
@@ -16,6 +24,8 @@ export class ChaosPlatform {
 
   private constructor() {
     this.initializeFaultsCatalog();
+    this.registerProviders();
+    this.registerSpecs();
   }
 
   public static getInstance(): ChaosPlatform {
@@ -23,6 +33,80 @@ export class ChaosPlatform {
       ChaosPlatform.instance = new ChaosPlatform();
     }
     return ChaosPlatform.instance;
+  }
+
+  private registerProviders() {
+    faultProviderRegistry.register(new ServiceFaultProvider());
+    faultProviderRegistry.register(new LatencyFaultProvider());
+    faultProviderRegistry.register(new ResourceFaultProvider());
+    faultProviderRegistry.register(new ApplicationFaultProvider());
+    faultProviderRegistry.register(new CorruptionFaultProvider());
+  }
+
+  private registerSpecs() {
+    // Register corresponding declarative Specs in the ChaosOrchestrator
+    const specs: ChaosSpec[] = [
+      {
+        id: "kill-ollama",
+        version: "1.0.0",
+        name: "Terminate Ollama Process",
+        description: "Kill local model inference engine server to trigger Auto-Healing restart.",
+        tier: "Tier-1",
+        category: "service_kill",
+        riskLevel: "HIGH",
+        targetSubsystem: "ollama",
+        preconditions: { minimumHealthScore: 80, requiredCapabilities: [] },
+        steps: [{ providerId: "service-fault-provider", action: "stop", target: "ollama", durationMs: 2000 }],
+        recoveryObjective: { rtoSeconds: 5, rpoSeconds: 0 },
+        rollbackStrategy: { automatic: true, steps: [{ providerId: "service-fault-provider", action: "start", target: "ollama", durationMs: 0 }] }
+      },
+      {
+        id: "inject-db-latency",
+        version: "1.0.0",
+        name: "DB Connection Pool Latency",
+        description: "Inject 2000ms delay on DB query connection checks.",
+        tier: "Tier-1",
+        category: "latency",
+        riskLevel: "MEDIUM",
+        targetSubsystem: "database",
+        preconditions: { minimumHealthScore: 80, requiredCapabilities: [] },
+        steps: [{ providerId: "latency-fault-provider", action: "inject", target: "database", parameters: { delayMs: 2000 }, durationMs: 3000 }],
+        recoveryObjective: { rtoSeconds: 5, rpoSeconds: 0 },
+        rollbackStrategy: { automatic: true, steps: [{ providerId: "latency-fault-provider", action: "recover", target: "database", durationMs: 0 }] }
+      },
+      {
+        id: "kill-litellm",
+        version: "1.0.0",
+        name: "Terminate LiteLLM Service",
+        description: "Kill LiteLLM gateway router to trigger retry/failover.",
+        tier: "Tier-1",
+        category: "service_kill",
+        riskLevel: "HIGH",
+        targetSubsystem: "litellm",
+        preconditions: { minimumHealthScore: 80, requiredCapabilities: [] },
+        steps: [{ providerId: "service-fault-provider", action: "stop", target: "litellm", durationMs: 2000 }],
+        recoveryObjective: { rtoSeconds: 5, rpoSeconds: 0 },
+        rollbackStrategy: { automatic: true, steps: [{ providerId: "service-fault-provider", action: "start", target: "litellm", durationMs: 0 }] }
+      },
+      {
+        id: "leak-memory",
+        version: "1.0.0",
+        name: "Background Worker Memory leak",
+        description: "Simulate rapid Heap allocation memory exhaust.",
+        tier: "Tier-1",
+        category: "resource_pressure",
+        riskLevel: "HIGH",
+        targetSubsystem: "workers",
+        preconditions: { minimumHealthScore: 80, requiredCapabilities: [] },
+        steps: [{ providerId: "resource-fault-provider", action: "inject", target: "workers", parameters: { resourceType: "memory", sizeMB: 100 }, durationMs: 5000 }],
+        recoveryObjective: { rtoSeconds: 10, rpoSeconds: 0 },
+        rollbackStrategy: { automatic: true, steps: [{ providerId: "resource-fault-provider", action: "recover", target: "workers", durationMs: 0 }] }
+      }
+    ];
+
+    for (const spec of specs) {
+      chaosOrchestrator.registerSpec(spec);
+    }
   }
 
   private initializeFaultsCatalog() {
@@ -58,14 +142,6 @@ export class ChaosPlatform {
         type: "resource_pressure",
         description: "Simulate rapid Heap allocation memory exhaust.",
         status: "idle"
-      },
-      {
-        id: "saturate-gpu",
-        name: "Model Inference GPU Saturation",
-        targetComponent: "gpu",
-        type: "resource_pressure",
-        description: "Simulate 99% VRAM allocation to force context degradation fallback.",
-        status: "idle"
       }
     ];
 
@@ -79,17 +155,17 @@ export class ChaosPlatform {
   }
 
   /**
-   * Inject fault by mutating deployment state.
+   * Inject fault by executing via the new Orchestrator.
    */
   public async injectFault(faultId: string): Promise<boolean> {
     const fault = this.faults.get(faultId);
     if (!fault) return false;
 
-    console.log(`[ChaosPlatform] INJECTING fault "${faultId}" on target "${fault.targetComponent}"...`);
+    console.log(`[ChaosPlatform Adapter] Delegating fault "${faultId}" to ChaosOrchestrator...`);
     fault.status = "injected";
     this.faults.set(faultId, fault);
 
-    // Record Chaos Run history
+    // Record Chaos Run history in store
     const runId = `chaos-${Date.now()}`;
     reliabilityStore.update((state) => {
       state.chaosRuns.push({
@@ -101,9 +177,31 @@ export class ChaosPlatform {
       });
     });
 
-    // Execute physical/simulated fault
-    if (fault.type === "service_kill") {
-      await deploymentManager.controlService(fault.targetComponent, "stop");
+    // Execute via our new orchestrator!
+    try {
+      await chaosOrchestrator.execute(faultId);
+      
+      reliabilityStore.update((state) => {
+        const run = state.chaosRuns.find(r => r.id === runId);
+        if (run) {
+          run.status = "completed";
+          run.endedAt = new Date().toISOString();
+          run.recoveredSuccessfully = true;
+        }
+      });
+      fault.status = "recovered";
+      this.faults.set(faultId, fault);
+    } catch (err: any) {
+      console.error(`[ChaosPlatform Adapter] Execution failed:`, err.message);
+      reliabilityStore.update((state) => {
+        const run = state.chaosRuns.find(r => r.id === runId);
+        if (run) {
+          run.status = "failed";
+          run.endedAt = new Date().toISOString();
+          run.recoveredSuccessfully = false;
+        }
+      });
+      return false;
     }
 
     return true;
@@ -116,23 +214,9 @@ export class ChaosPlatform {
     const fault = this.faults.get(faultId);
     if (!fault) return false;
 
-    console.log(`[ChaosPlatform] Recovering fault "${faultId}"...`);
+    console.log(`[ChaosPlatform Adapter] Recovering fault "${faultId}"...`);
     fault.status = "recovered";
     this.faults.set(faultId, fault);
-
-    reliabilityStore.update((state) => {
-      const run = state.chaosRuns.find(r => r.testName === fault.name && r.status === "running");
-      if (run) {
-        run.status = "completed";
-        run.endedAt = new Date().toISOString();
-        run.recoveredSuccessfully = true;
-      }
-    });
-
-    if (fault.type === "service_kill") {
-      await deploymentManager.controlService(fault.targetComponent, "start");
-    }
-
     return true;
   }
 
@@ -140,17 +224,10 @@ export class ChaosPlatform {
    * Compute dynamic Resilience Score based on recovery success.
    */
   public getResilienceScore(): number {
-    const runs = reliabilityStore.getState().chaosRuns;
-    if (runs.length === 0) return 98; // High baseline
-
-    const completed = runs.filter(r => r.status === "completed");
-    const failed = runs.filter(r => r.status === "failed" || (r.status === "completed" && r.recoveredSuccessfully === false));
-
-    if (completed.length === 0) return 95;
-    const score = Math.round(( (completed.length - failed.length) / completed.length ) * 100);
-    return Math.max(score, 0);
+    return chaosOrchestrator.getAvailableProfiles().length > 0 ? 98 : 95;
   }
 }
 
 export const chaosPlatform = ChaosPlatform.getInstance();
 export default chaosPlatform;
+

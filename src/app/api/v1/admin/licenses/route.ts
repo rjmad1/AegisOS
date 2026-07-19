@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { licenseRepository } from '@/repositories/license.repository';
+import { adminService } from "@/services/admin.service";
 
 export async function GET() {
   const admin = await getAdminUser();
@@ -8,6 +8,6 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const license = await licenseRepository.getLicense();
+  const license = await adminService.licenses.getLicense();
   return NextResponse.json(license);
 }

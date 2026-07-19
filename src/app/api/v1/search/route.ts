@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { artifactRegistry } from "@/infrastructure/registry/artifact-registry";
-import { jobQueue } from "@/infrastructure/jobs/job-queue";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { artifactRegistry } from "@/infrastructure/sdk/platform-sdk";
+import { jobQueue } from "@/infrastructure/sdk/platform-sdk";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 import { SearchResult } from "@/api/types/search";
 
 export async function GET(request: NextRequest) {

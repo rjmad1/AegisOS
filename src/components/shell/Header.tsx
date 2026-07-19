@@ -90,6 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant="ghost"
           size="icon"
           className="text-muted-foreground hover:text-foreground h-9 w-9 rounded-lg"
+          aria-label="Toggle theme"
           onClick={() => {
             const nextTheme = theme === "dark" ? "light" : theme === "light" ? "high-contrast" : "dark";
             setTheme(nextTheme);
@@ -107,6 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
           size="icon"
           className="text-muted-foreground hover:text-foreground h-9 w-9 rounded-lg relative"
           onClick={onNotifOpen}
+          aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (

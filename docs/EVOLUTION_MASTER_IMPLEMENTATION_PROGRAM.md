@@ -567,3 +567,18 @@ Ordered by **Business Value**, **Implementation Risk**, **Dependencies**, and **
 
 ---
 *Approved by the Architectural Review Board, 2026-07-17.*
+
+---
+
+## Phase 6.2/6.3 Roadmap Update: Platform Certification
+
+Based on the shift from subsystem benchmarking to End-to-End Representative Workload Certification (ERWC), the remaining phases are sequenced as follows:
+
+| Phase | Focus | Primary Deliverable |
+|---|---|---|
+| **6.2.4** | Representative Workload Certification | End-to-end enterprise workloads with measurable success criteria |
+| **6.2.5** | Chaos Engineering | Fault injection, resilience, graceful degradation, recovery validation |
+| **6.2.6** | Long-Duration Stability | 24-hour, 72-hour, and 7-day endurance testing with leak detection |
+| **6.2.7** | Scalability & Capacity Planning | Horizontal and vertical scaling limits, concurrency, resource saturation |
+| **6.2.8** | Production Readiness Certification | Release gates, operational runbooks, deployment validation, disaster recovery, observability completeness |
+

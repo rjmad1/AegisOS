@@ -2,7 +2,7 @@
 // REST endpoint for mobile dashboard to monitor workstation running services
 
 import { NextResponse } from "next/server";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 import { infrastructureService } from "@/services/infrastructure.service";
 import { PortRegistry } from "@/platform/ports/PortRegistry";
 

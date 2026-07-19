@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 
 export async function GET(request: Request) {
   const admin = await getAdminUser();
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   const startDate = searchParams.get('startDate') || undefined;
   const endDate = searchParams.get('endDate') || undefined;
 
-  const logs = await auditRepository.getLogs({
+  const logs = await adminService.audit.getLogs({
     query,
     category,
     startDate,

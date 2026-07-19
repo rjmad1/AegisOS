@@ -42,6 +42,8 @@ export const Sidebar: React.FC = () => {
     <aside
       style={{ width: sidebarCollapsed ? "72px" : "240px" }}
       className="flex h-full flex-col border-r border-border/60 bg-card glass-panel text-card-foreground select-none relative z-20 transition-all duration-200"
+      role="navigation"
+      aria-label="Platform navigation"
     >
       {/* Brand Header */}
       <div className="flex h-16 items-center justify-between px-4 border-b border-border/10">
@@ -133,10 +135,12 @@ export const Sidebar: React.FC = () => {
       <div className="border-t border-border/20 p-2">
         <button
           onClick={toggleSidebar}
+          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           className="flex w-full items-center justify-center rounded-lg p-2 text-muted-foreground hover:bg-accent/40 hover:text-foreground transition-colors"
         >
           {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
         </button>
+
       </div>
     </aside>
   );

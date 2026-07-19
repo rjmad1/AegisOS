@@ -1,12 +1,12 @@
 import { NextRequest } from "next/server";
-import { workflowRepository } from "@/repositories/workflow.repository";
+import { workflowService } from "@/services/workflow.service";
 import { workflowService } from "@/services/workflow.service";
 import { formatErrorResponse } from "@/utils/api-helper";
 import { ValidationError, NotFoundError } from "@/utils/errors";
 
 export async function GET(request: NextRequest) {
   try {
-    const list = await workflowRepository.getApprovals();
+    const list = await workflowService.getApprovals();
     list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return Response.json(list);
   } catch (err: any) {
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       throw new ValidationError("Missing required fields: approvalId, approverId");
     }
 
-    const approval = await workflowRepository.getApproval(approvalId);
+    const approval = await workflowService.getApproval(approvalId);
     if (!approval) {
       throw new NotFoundError("Approval request not found");
     }
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       approval.status = "delegated";
       approval.delegatedTo = delegateTo;
       approval.actionedAt = new Date().toISOString();
-      await workflowRepository.saveApproval(approval);
+      await workflowService.saveApproval(approval);
 
       // Create new approval for the delegated user
       const delegatedApproval = {
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
         actionedAt: undefined,
         delegatedTo: undefined
       };
-      await workflowRepository.saveApproval(delegatedApproval);
+      await workflowService.saveApproval(delegatedApproval);
 
       return Response.json({ success: true, approval, delegatedApproval });
     }

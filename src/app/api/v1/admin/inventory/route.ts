@@ -3,7 +3,7 @@ import { getAdminUser } from '@/platform/auth/adminAuth';
 import { ModuleRegistry } from '@/platform/module-registry/ModuleRegistry';
 import { CommandRegistry } from '@/platform/commands/CommandRegistry';
 import { WidgetRegistry } from '@/platform/widgets/WidgetRegistry';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -92,7 +92,7 @@ export async function GET() {
     ]
   };
 
-  await auditRepository.logEvent(
+  await adminService.audit.logEvent(
     admin.username,
     'List Inventory',
     'administration',

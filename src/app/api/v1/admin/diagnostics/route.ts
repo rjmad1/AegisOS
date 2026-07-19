@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
@@ -56,7 +56,7 @@ export async function GET() {
     }
   };
 
-  await auditRepository.logEvent(
+  await adminService.audit.logEvent(
     admin.username,
     'Read Diagnostics',
     'administration',

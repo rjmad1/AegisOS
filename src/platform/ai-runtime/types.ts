@@ -133,7 +133,17 @@ export type AgentRole =
   | "self-improving"
   | "human-in-the-loop";
 
-export type AgentLifecycleState = "created" | "idle" | "running" | "suspended" | "stopped";
+export type AgentLifecycleState =
+  | "created"
+  | "initialized"
+  | "ready"
+  | "thinking"
+  | "planning"
+  | "waiting_for_workflow"
+  | "reflecting"
+  | "completed"
+  | "cancelled"
+  | "failed";
 
 export interface AgentConfig {
   id: string;
@@ -165,19 +175,12 @@ export interface AgentState {
 // ---------------------------------------------------------------------------
 
 export type MemoryDomain =
-  | "conversation"
-  | "long-term"
-  | "semantic"
-  | "episodic"
-  | "procedural"
   | "working"
-  | "entity"
-  | "task"
-  | "workspace"
-  | "user"
-  | "project"
-  | "team"
-  | "knowledge";
+  | "conversation"
+  | "execution"
+  | "knowledge"
+  | "reflection"
+  | "long-term";
 
 export interface MemoryEntry {
   id: string;
@@ -292,18 +295,31 @@ export interface ThoughtNode {
   evaluationScore?: number;
 }
 
-export interface PlanStep {
-  id: string;
-  action: string;
-  target: string;
-  dependencies: string[];
-  status: "pending" | "running" | "completed" | "failed";
+export interface AgentIntent {
+  objective: string;
+  constraints: string[];
+  successCriteria: string[];
+  assumptions: string[];
+  risks: string[];
+  informationGaps: string[];
+}
+
+export interface SemanticPlanStep {
+  task: string;
+  dependencies: string[]; // references by task name or logical index
+  requiredCapabilities?: string[];
+  requiredActors?: string[];
+  expectedOutcome?: string;
+  successCriteria?: string;
+  risks?: string[];
+  priority?: "low" | "medium" | "high" | "critical";
+  constraints?: string[];
 }
 
 export interface ExecutionPlan {
   id: string;
-  steps: PlanStep[];
-  goal: string;
+  objective: string;
+  steps: SemanticPlanStep[];
   confidence: number;
 }
 

@@ -6,7 +6,7 @@ import { ModelRuntime } from "@/platform/ai-runtime/ModelRuntime";
 import { AIOperationsDashboard } from "@/platform/ai-runtime/AIOperationsDashboard";
 import { AgentRuntime } from "@/platform/ai-runtime/AgentRuntime";
 import { infrastructureService } from "@/services/infrastructure.service";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 
 export const dynamic = "force-dynamic";
 

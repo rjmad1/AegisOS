@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { complianceEngine } from "@/infrastructure/security/compliance-engine";
+import { complianceEngine } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET() {
   try {

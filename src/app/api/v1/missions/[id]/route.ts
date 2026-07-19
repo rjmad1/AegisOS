@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { missionRuntimeService } from "@/services/mission-runtime.service";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

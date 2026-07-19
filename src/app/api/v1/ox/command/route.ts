@@ -1,7 +1,7 @@
 // src/app/api/v1/ox/command/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { platformLifecycleOrchestrator } from "@/platform/control-plane/PlatformLifecycleOrchestrator";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 import { platformOILService } from "@/platform/control-plane/oil/PlatformOILService";
 
 export async function POST(request: NextRequest) {

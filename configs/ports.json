@@ -6,7 +6,10 @@
     "default_host_port": 3000,
     "protocol": "HTTP",
     "health_endpoint": "/api/health",
-    "dependencies": ["postgres", "redis"],
+    "dependencies": [
+      "postgres",
+      "redis"
+    ],
     "exposure": "private",
     "reserved": true,
     "dynamic": true
@@ -18,7 +21,9 @@
     "default_host_port": 4000,
     "protocol": "HTTP",
     "health_endpoint": "/health/readiness",
-    "dependencies": ["ollama"],
+    "dependencies": [
+      "ollama"
+    ],
     "exposure": "private",
     "reserved": true,
     "dynamic": true
@@ -27,7 +32,7 @@
     "name": "ollama",
     "purpose": "Ollama local inference engine",
     "internal_port": 11434,
-    "default_host_port": 11434,
+    "default_host_port": 11435,
     "protocol": "HTTP",
     "health_endpoint": "/api/tags",
     "dependencies": [],
@@ -66,7 +71,9 @@
     "default_host_port": 20128,
     "protocol": "HTTP",
     "health_endpoint": "/ready",
-    "dependencies": ["litellm"],
+    "dependencies": [
+      "litellm"
+    ],
     "exposure": "private",
     "reserved": true,
     "dynamic": true
@@ -78,7 +85,9 @@
     "default_host_port": 8443,
     "protocol": "HTTP",
     "health_endpoint": null,
-    "dependencies": ["console"],
+    "dependencies": [
+      "console"
+    ],
     "exposure": "public",
     "reserved": true,
     "dynamic": true
@@ -90,7 +99,9 @@
     "default_host_port": 80,
     "protocol": "HTTP",
     "health_endpoint": null,
-    "dependencies": ["console"],
+    "dependencies": [
+      "console"
+    ],
     "exposure": "public",
     "reserved": true,
     "dynamic": true
@@ -102,7 +113,9 @@
     "default_host_port": 443,
     "protocol": "HTTP",
     "health_endpoint": null,
-    "dependencies": ["console"],
+    "dependencies": [
+      "console"
+    ],
     "exposure": "public",
     "reserved": true,
     "dynamic": true
@@ -126,7 +139,9 @@
     "default_host_port": 9001,
     "protocol": "HTTP",
     "health_endpoint": null,
-    "dependencies": ["minio"],
+    "dependencies": [
+      "minio"
+    ],
     "exposure": "private",
     "reserved": true,
     "dynamic": true
@@ -270,7 +285,9 @@
     "default_host_port": 8090,
     "protocol": "HTTP",
     "health_endpoint": "/health",
-    "dependencies": ["litellm"],
+    "dependencies": [
+      "litellm"
+    ],
     "exposure": "public",
     "reserved": true,
     "dynamic": true

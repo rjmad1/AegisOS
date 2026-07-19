@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { artifactRegistry } from "@/infrastructure/registry/artifact-registry";
+import { artifactRegistry } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(
   request: NextRequest,

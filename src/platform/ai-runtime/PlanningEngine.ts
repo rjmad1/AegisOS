@@ -1,4 +1,4 @@
-import { ExecutionPlan, PlanStep } from "./types";
+import { ExecutionPlan, SemanticPlanStep } from "./types";
 
 export class PlanningEngine {
   private static instance: PlanningEngine | null = null;
@@ -13,68 +13,59 @@ export class PlanningEngine {
   }
 
   /**
-   * Decomposes a target objective into structured plan steps with allocated tools.
+   * Stage 2: Decomposes a target objective (Intent) into structured, purely semantic plan steps.
+   * Does NOT resolve execution nodes, executors, or specific workflow implementation details.
    */
-  public async createPlan(goal: string, availableTools: string[]): Promise<ExecutionPlan> {
-    console.log(`[PlanningEngine] Generating execution plan for goal: "${goal}"`);
+  public async createPlan(objective: string, availableCapabilities: string[]): Promise<ExecutionPlan> {
+    console.log(`[PlanningEngine] Generating semantic execution plan for objective: "${objective}"`);
 
-    const steps: PlanStep[] = [
+    const steps: SemanticPlanStep[] = [
       {
-        id: "plan-step-1",
-        action: "Scan files and directory layout",
-        target: "fs:root",
+        task: "Scan files and directory layout",
         dependencies: [],
-        status: "pending",
+        requiredCapabilities: ["fs:read"],
+        expectedOutcome: "A complete map of the current workspace directory",
+        priority: "high"
       },
       {
-        id: "plan-step-2",
-        action: "Query architectural rules and metadata",
-        target: "know:adr:001",
-        dependencies: ["plan-step-1"],
-        status: "pending",
+        task: "Query architectural rules and metadata",
+        dependencies: ["Scan files and directory layout"],
+        requiredCapabilities: ["knowledge:query"],
+        expectedOutcome: "List of architectural constraints relevant to the directory layout"
       },
     ];
 
-    // Allocate tool if outbound network is available
-    if (availableTools.includes("tool:web:search")) {
+    if (availableCapabilities.includes("tool:web:search")) {
       steps.push({
-        id: "plan-step-3",
-        action: "Fetch external security vulnerabilities checklist",
-        target: "tool:web:search",
-        dependencies: ["plan-step-2"],
-        status: "pending",
+        task: "Fetch external security vulnerabilities checklist",
+        dependencies: ["Query architectural rules and metadata"],
+        requiredCapabilities: ["network:outbound", "tool:web:search"],
+        priority: "medium"
       });
     }
 
     return {
       id: `plan:${Date.now()}`,
-      goal,
+      objective,
       steps,
       confidence: 0.94,
     };
   }
 
   /**
-   * Self-Healing Planner:
-   * Generates a recovery plan when a step fails, injecting alternative routes.
+   * Generates a recovery plan when a step fails, injecting alternative semantic routes.
    */
-  public async planRecovery(failedStepId: string, originalPlan: ExecutionPlan): Promise<ExecutionPlan> {
-    console.log(`[PlanningEngine] FAILED STEP detected: "${failedStepId}". Generating healing plan...`);
+  public async planRecovery(failedTaskName: string, originalPlan: ExecutionPlan): Promise<ExecutionPlan> {
+    console.log(`[PlanningEngine] FAILED TASK detected: "${failedTaskName}". Generating healing plan...`);
 
-    const updatedSteps = originalPlan.steps.map((s) => {
-      if (s.id === failedStepId) {
-        return { ...s, status: "failed" as const };
-      }
-      return s;
-    });
+    const updatedSteps = originalPlan.steps.map(s => s); // shallow copy
 
     // Inject healing step
-    const recoveryStep: PlanStep = {
-      id: `plan-step-recovery-${Date.now()}`,
-      action: `Self-heal failure at ${failedStepId} by reverting cache and rerouting to backup model.`,
-      target: "system:self-heal",
-      dependencies: [failedStepId],
-      status: "pending",
+    const recoveryStep: SemanticPlanStep = {
+      task: `Self-heal failure at ${failedTaskName} by reverting cache and rerouting to backup capability.`,
+      dependencies: [failedTaskName],
+      expectedOutcome: "System restored to stable state, ready to retry",
+      priority: "critical"
     };
 
     updatedSteps.push(recoveryStep);

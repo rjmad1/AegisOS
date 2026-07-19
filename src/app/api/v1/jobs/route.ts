@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jobQueue } from "@/infrastructure/jobs/job-queue";
+import { jobQueue } from "@/infrastructure/sdk/platform-sdk";
 import { TaskStatus, Priority } from "@/api/types/background-processing";
 
 export async function GET(request: NextRequest) {

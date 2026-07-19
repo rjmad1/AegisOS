@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { codeGraphClient } from "@/infrastructure/codegraph/codegraph-client";
+import { codeGraphClient } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(request: NextRequest) {
   try {

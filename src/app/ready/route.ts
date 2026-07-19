@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { deploymentManager } from "@/infrastructure/sdk/platform-sdk";
 import * as fs from "fs";
 import * as path from "path";
 import { PortRegistry } from "@/platform/ports/PortRegistry";

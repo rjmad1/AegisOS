@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runtimeService } from "@/services/runtime.service";
 import { handleCaching } from "@/utils/api-helper";
-import { eventBus } from "@/infrastructure/events/event-bus";
+import { eventBus } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(request: NextRequest) {
   try {

@@ -5,6 +5,7 @@ import { Artifact, ArtifactType, ArtifactLifecycleState } from "@/types/artifact
 import { ProviderRegistry } from "../providers/registry";
 import { LocalArtifactStorageProvider } from "../providers/local-artifact-storage";
 import { centralConfig } from "../configuration/central-config";
+import { filesystemWatcherService } from "../watcher/watcher-service";
 // Side-effect import: ensures all providers are registered before first use
 import "@/infrastructure/factories/provider-factory";
 
@@ -22,7 +23,6 @@ export class ArtifactRegistry {
       const normalizedRoot = path.resolve(rootDir).replace(/\\/g, "/");
 
       try {
-        const { filesystemWatcherService } = require("../watcher/watcher-service");
         filesystemWatcherService.watchDirectory(normalizedRoot, async (event: any) => {
           console.log(`[ArtifactRegistry] Watcher event: ${event.type} for ${event.relativePath}`);
 

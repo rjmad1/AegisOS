@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { workflowRepository } from "@/repositories/workflow.repository";
+import { workflowService } from "@/services/workflow.service";
 
 export async function GET(request: NextRequest) {
   try {
-    const list = await workflowRepository.getHistories();
+    const list = await workflowService.getHistories();
     list.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     return Response.json(list);
   } catch (err: any) {

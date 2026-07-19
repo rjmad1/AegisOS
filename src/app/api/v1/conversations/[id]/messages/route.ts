@@ -4,7 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { missionRuntimeService } from "@/services/mission-runtime.service";
 import { executionRuntimeService } from "@/services/execution-runtime.service";
-import { eventBus } from "@/infrastructure/events/event-bus";
+import { eventBus } from "@/infrastructure/sdk/platform-sdk";
 import { AIWorkspaceMessage, InlineArtifact, SubagentNode } from "@/types/ai-workspace";
 
 export const dynamic = "force-dynamic";

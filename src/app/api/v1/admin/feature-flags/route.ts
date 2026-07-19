@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { featureFlagRepository } from '@/repositories/feature-flag.repository';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 
 export async function GET() {
   const admin = await getAdminUser();
@@ -9,7 +8,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const flags = await featureFlagRepository.getAllFlags();
+  const flags = await adminService.featureFlags.getAllFlags();
   return NextResponse.json(flags);
 }
 
@@ -26,12 +25,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing flag ID or enabled status' }, { status: 400 });
     }
 
-    const flag = await featureFlagRepository.toggleFlag(id, enabled);
+    const flag = await adminService.featureFlags.toggleFlag(id, enabled);
     if (!flag) {
       return NextResponse.json({ error: 'Feature flag not found' }, { status: 404 });
     }
 
-    await auditRepository.logEvent(
+    await adminService.audit.logEvent(
       admin.username,
       'Toggle Feature Flag',
       'configuration',

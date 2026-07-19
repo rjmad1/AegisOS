@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fitnessChecker } from "@/infrastructure/governance/fitness-checks";
+import { fitnessChecker } from "@/infrastructure/sdk/platform-sdk";
 import * as fs from "fs";
 import * as path from "path";
 

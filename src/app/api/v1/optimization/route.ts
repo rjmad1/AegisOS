@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { skillOptService } from "@/infrastructure/optimization/skillopt-service";
+import { skillOptService } from "@/infrastructure/sdk/platform-sdk";
 import { executionRuntimeService } from "@/services/execution-runtime.service";
 
 export async function GET() {

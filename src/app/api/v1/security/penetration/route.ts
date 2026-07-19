@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import prisma from "@/infrastructure/db/prisma";
-import { policyEnforcer } from "@/infrastructure/security/policy-enforcer";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
+import { policyEnforcer } from "@/infrastructure/sdk/platform-sdk";
 import fs from "fs/promises";
 import path from "path";
 import { executionRuntimeService } from "@/services/execution-runtime.service";

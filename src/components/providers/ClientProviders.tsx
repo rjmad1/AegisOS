@@ -5,12 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 import { realtimeSyncManager } from "@/platform/realtime/RealtimeSyncManager";
 import { EventBus } from "@/platform/event-bus/EventBus";
-import { allModules } from "@/platform/kernel/boot";
-import { ModuleRegistry } from "@/platform/module-registry/ModuleRegistry";
+import { clientPlatformSdk } from "@/platform/sdk/client-sdk";
 
 // Register modules synchronously on the client so that initial render of Navigation groups works
 if (typeof window !== 'undefined') {
-  allModules.forEach(mod => ModuleRegistry.register(mod));
+  clientPlatformSdk.bootModules();
 }
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {

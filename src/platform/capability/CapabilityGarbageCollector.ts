@@ -1,59 +1,22 @@
 // src/platform/capability/CapabilityGarbageCollector.ts
-// Continuous background resource collector for AegisOS Capabilities
+// Background resource collector for AegisOS Capabilities
 
-import { CapabilityRegistry } from "./CapabilityRegistry";
-import { CapabilityScheduler } from "./CapabilityScheduler";
+import { ICapabilityRegistry, ICapabilityScheduler } from "./types";
+import { TenantContext } from "../core/storage/types";
 
 export class CapabilityGarbageCollector {
-  private static instance: CapabilityGarbageCollector | null = null;
-  private registry: CapabilityRegistry;
-  private scheduler: CapabilityScheduler;
-  private timer: NodeJS.Timeout | null = null;
-
-  private constructor() {
-    this.registry = CapabilityRegistry.getInstance();
-    this.scheduler = CapabilityScheduler.getInstance();
-  }
-
-  public static getInstance(): CapabilityGarbageCollector {
-    if (!CapabilityGarbageCollector.instance) {
-      CapabilityGarbageCollector.instance = new CapabilityGarbageCollector();
-    }
-    return CapabilityGarbageCollector.instance;
-  }
-
-  /**
-   * Starts the continuous background GC loop.
-   */
-  public start(intervalMs: number = 30000): void {
-    if (this.timer) return;
-
-    console.log(`[CapabilityGC] Starting background garbage collector with interval ${intervalMs}ms...`);
-    this.timer = setInterval(() => {
-      this.reclaimIdleCapabilities().catch(err => {
-        console.error("[CapabilityGC] Error reclaiming capabilities:", err.message);
-      });
-    }, intervalMs);
-  }
-
-  /**
-   * Stops the background GC loop.
-   */
-  public stop(): void {
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = null;
-      console.log("[CapabilityGC] Background garbage collector stopped.");
-    }
-  }
+  constructor(
+    private registry: ICapabilityRegistry,
+    private scheduler: ICapabilityScheduler
+  ) {}
 
   /**
    * Identifies idle capabilities and unloads them from resident RAM/VRAM.
    */
-  public async reclaimIdleCapabilities(): Promise<void> {
+  public async reclaimIdleCapabilities(context: TenantContext): Promise<void> {
     console.log("[CapabilityGC] Reclaiming unused idle capabilities...");
 
-    const allCaps = await this.registry.listCapabilities();
+    const allCaps = await this.registry.listCapabilities(context);
     const now = Date.now();
 
     for (const cap of allCaps) {
@@ -82,15 +45,13 @@ export class CapabilityGarbageCollector {
           
           // Soft suspend first, then unload
           if (cap.status === "ACTIVE" || cap.status === "READY") {
-            await this.scheduler.transition(cap.id, "IDLE", "gc_idle_check");
+            await this.scheduler.transition(cap.id, "IDLE", "gc_idle_check", context);
           } else if (cap.status === "IDLE") {
-            await this.scheduler.transition(cap.id, "SUSPENDED", "gc_idle_check");
-            await this.scheduler.transition(cap.id, "UNLOADED", "gc_idle_check");
+            await this.scheduler.transition(cap.id, "SUSPENDED", "gc_idle_check", context);
+            await this.scheduler.transition(cap.id, "UNLOADED", "gc_idle_check", context);
           }
         }
       }
     }
   }
 }
-export const capabilityGarbageCollector = CapabilityGarbageCollector.getInstance();
-export default capabilityGarbageCollector;

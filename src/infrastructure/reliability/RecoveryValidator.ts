@@ -1,6 +1,6 @@
 import { deploymentManager } from "../deployment/deployment-manager";
 import { platformHealth } from "../../platform/health/PlatformHealth";
-import { PortRegistry } from "@/platform/ports/PortRegistry";
+import { PortRegistry } from "../../platform/ports/PortRegistry";
 
 export interface RecoveryValidationReport {
   targetComponent: string;
@@ -22,6 +22,16 @@ export class RecoveryValidator {
     return RecoveryValidator.instance;
   }
 
+  private async checkPortWithRetry(port: number, retries = 5, delayMs = 1000): Promise<boolean> {
+    for (let i = 0; i < retries; i++) {
+      const active = await deploymentManager.checkPort(port);
+      if (active) return true;
+      console.log(`[RecoveryValidator] Port ${port} not ready yet. Retrying in ${delayMs}ms (Attempt ${i + 1}/${retries})...`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+    return false;
+  }
+
   public async validateRecovery(
     componentId: string,
     remediation: string
@@ -32,7 +42,7 @@ export class RecoveryValidator {
     // 1. Validate based on component type
     if (componentId === "ollama" || componentId === "Ollama API") {
       const port = PortRegistry.getHostPort("ollama");
-      const portActive = await deploymentManager.checkPort(port);
+      const portActive = await this.checkPortWithRetry(port);
       checks.push({
         name: `Socket listener verification on Port ${port}`,
         passed: portActive,
@@ -41,7 +51,7 @@ export class RecoveryValidator {
       if (!portActive) overallPassed = false;
     } else if (componentId === "litellm" || componentId === "LiteLLM Router Proxy") {
       const port = PortRegistry.getHostPort("litellm");
-      const portActive = await deploymentManager.checkPort(port);
+      const portActive = await this.checkPortWithRetry(port);
       checks.push({
         name: `Socket listener verification on Port ${port}`,
         passed: portActive,
@@ -50,7 +60,7 @@ export class RecoveryValidator {
       if (!portActive) overallPassed = false;
     } else if (componentId === "aegisos" || componentId === "AegisOS Gateway") {
       const port = PortRegistry.getHostPort("aegisos");
-      const portActive = await deploymentManager.checkPort(port);
+      const portActive = await this.checkPortWithRetry(port);
       checks.push({
         name: `Socket listener verification on Port ${port}`,
         passed: portActive,

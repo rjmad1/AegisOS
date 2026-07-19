@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { runtimeService } from "@/services/runtime.service";
-import { workflowRepository } from "@/repositories/workflow.repository";
+import { workflowService } from "@/services/workflow.service";
 import { handleCaching, formatErrorResponse } from "@/utils/api-helper";
 import { ValidationError } from "@/utils/errors";
 
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date().toISOString()
     };
 
-    await workflowRepository.saveWorkflow(newWf);
+    await workflowService.saveWorkflow(newWf);
     return Response.json({ success: true, workflow: newWf }, { status: 201 });
   } catch (err: any) {
     return formatErrorResponse(err);

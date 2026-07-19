@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/infrastructure/db/prisma";
+import { prisma } from "@/infrastructure/sdk/platform-sdk";
 import { getAuthenticatedUser } from "../../commands/route";
 import { commandBus } from "@/platform/control/CommandBus";
 import { ExecutionPlan } from "@/platform/assistant/types";

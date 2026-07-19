@@ -24,9 +24,13 @@ import { architectureValidator } from '../governance/ArchitectureValidator';
 import { platformDiagnostics } from '../diagnostics/PlatformDiagnostics';
 import { platformHealth } from '../health/PlatformHealth';
 
+import { executionContextService } from './ExecutionContextService';
+import { resourceManager } from './ResourceManager';
+import { policyService } from './PolicyService';
+import { optimizationService } from './OptimizationService';
 class PlatformKernelImpl {
   // ---- State ----
-  private phase: LifecyclePhase = 'created';
+  private phase: LifecyclePhase = 'registered';
   private bootTime = 0;
   private modules: Map<string, PlatformModule> = new Map();
   private singletons: Map<string, unknown> = new Map();
@@ -43,7 +47,7 @@ class PlatformKernelImpl {
    * Boot the platform with the given modules, supporting retries and healing recovery.
    */
   async boot(modules: PlatformModule[]): Promise<void> {
-    if (this.phase !== 'created' && this.phase !== 'stopped' && this.phase !== 'error') {
+    if (this.phase !== 'registered' && this.phase !== 'stopped') {
       console.warn(`[Kernel] Already in phase "${this.phase}", skipping boot.`);
       return;
     }
@@ -58,7 +62,7 @@ class PlatformKernelImpl {
       } catch (err: any) {
         retryCount++;
         console.error(`[Kernel] Boot sequence failed (Attempt ${retryCount}/${maxRetries}): ${err.message}`);
-        this.phase = 'degraded';
+        // Recovery is orthogonal to lifecycle. State remains unchanged or stopped if we abort.
 
         // Run recovery heuristics
         platformDiagnostics.reportError();
@@ -66,7 +70,7 @@ class PlatformKernelImpl {
         console.log(`[Kernel:Recovery] Executed diagnostics:`, diagnosis.remediationsApplied);
 
         if (retryCount >= maxRetries) {
-          this.phase = 'error';
+          this.phase = 'stopped';
           console.error('[Kernel] Unrecoverable platform bootstrap failure.');
           this.emit('platform:error', { error: err.message, timestamp: Date.now() });
           throw err;
@@ -85,9 +89,9 @@ class PlatformKernelImpl {
   private async executeBootSequence(modules: PlatformModule[]): Promise<void> {
     this.bootTime = Date.now();
 
-    // 1. Stage: bootstrapping
-    this.phase = 'bootstrapping';
-    console.log('[Kernel] Boot sequence: bootstrapping...');
+    // 1. Stage: registered
+    this.phase = 'registered';
+    console.log('[Kernel] Boot sequence: registering modules...');
 
     // Load initial configurations
     configurationPlatform.reload();
@@ -96,6 +100,12 @@ class PlatformKernelImpl {
     for (const mod of modules) {
       this.registerModule(mod);
     }
+
+    // Register built-in Kernel Services
+    serviceRegistry.registerValue('PECS', executionContextService);
+    serviceRegistry.registerValue('PRM', resourceManager);
+    serviceRegistry.registerValue('PPS', policyService);
+    serviceRegistry.registerValue('PAOS', optimizationService);
 
     // Register all services from modules in ServiceRegistry
     for (const mod of modules) {
@@ -112,8 +122,8 @@ class PlatformKernelImpl {
       }
     }
 
-    // 2. Stage: initializing
-    this.phase = 'initializing';
+    // 2. Stage: initialized
+    this.phase = 'initialized';
     console.log('[Kernel] Boot sequence: initializing...');
 
     // Load DB overrides for configuration
@@ -132,9 +142,9 @@ class PlatformKernelImpl {
     // Initialize registered services
     await serviceRegistry.initializeServices();
 
-    // 3. Stage: resolving
-    this.phase = 'resolving';
-    console.log('[Kernel] Boot sequence: resolving capabilities...');
+    // 3. Stage: started
+    this.phase = 'started';
+    console.log('[Kernel] Boot sequence: starting capabilities...');
     // Capabilities resolution is completed (dynamic registries binding)
 
     // 4. Stage: ready
@@ -158,9 +168,7 @@ class PlatformKernelImpl {
 
     this.emit('platform:ready', { timestamp: Date.now() });
 
-    // 5. Stage: running
-    this.phase = 'running';
-    console.log('[Kernel] Boot sequence: triggering ready hooks...');
+    // Hooks executed in Ready state
 
     // Execute onReady module lifecycle hooks
     for (const mod of this.modules.values()) {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/platform/auth/adminAuth';
-import { auditRepository } from '@/repositories/audit.repository';
+import { adminService } from "@/services/admin.service";
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
     backups.unshift(newBackup);
     await saveBackupList(backups);
 
-    await auditRepository.logEvent(
+    await adminService.audit.logEvent(
       admin.username,
       'Create Backup',
       'deployment',

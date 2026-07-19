@@ -1,0 +1,47 @@
+# AegisOS Non-Functional Requirements (NFR) Registry
+# Version: 1.0.0
+# Description: This registry defines the measurable performance, reliability, and security 
+#              contracts for AegisOS. All releases must satisfy these contracts.
+
+nfr:
+  startup:
+    cold_boot: "<= 2s"
+    warm_boot: "<= 500ms"
+
+  kernel:
+    service_resolution:
+      p99: "<= 1ms"
+    policy_latency:
+      p95: "<= 5ms"
+
+  workflow:
+    compile_latency:
+      p95: "<= 20ms"
+    startup_latency:
+      p95: "<= 50ms"
+
+  capability:
+    acquisition:
+      p95: "<= 100ms"
+    execution_overhead:
+      p99: "<= 10ms"
+
+  reasoning:
+    planning_latency:
+      p95: "<= 500ms"
+    reflection_latency:
+      p95: "<= 200ms"
+
+  memory:
+    working_memory:
+      max: "2 GB"
+    memory_leak_threshold:
+      max_growth_per_hour: "50 MB"
+
+  reliability:
+    availability: "99.9%"
+    workflow_recovery_time: "<= 5s"
+
+  security:
+    constitution_loaded: true
+    policy_enforcement: strict

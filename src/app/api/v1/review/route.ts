@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { llmCouncilService } from "@/infrastructure/review/llm-council-service";
+import { llmCouncilService } from "@/infrastructure/sdk/platform-sdk";
 
 export async function GET(request: NextRequest) {
   try {

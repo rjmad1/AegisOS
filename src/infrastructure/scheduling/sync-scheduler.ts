@@ -7,7 +7,7 @@ import * as path from 'path';
 import { eventBus } from '../events/event-bus';
 import { runtimeService } from '../../services/runtime.service';
 import { providerFactory } from '../factories/provider-factory';
-import { ProviderRegistry } from '../providers/registry';
+import { filesystemWatcherService } from '../watcher/watcher-service';
 
 export interface SyncCheckpoint {
   lastSyncTime: number;
@@ -98,7 +98,7 @@ export class SyncScheduler {
     return {
       isRunning: this.isRunning,
       lastSyncTime: this.state.lastSyncTime,
-      activeWatcherCount: require('../watcher/watcher-service').filesystemWatcherService.getActiveWatchers().length,
+      activeWatcherCount: filesystemWatcherService.getActiveWatchers().length,
       checkpointPath: this.checkpointPath,
     };
   }

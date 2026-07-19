@@ -7,7 +7,7 @@ import { KnowledgeRuntime } from "./KnowledgeRuntime";
 import { ToolRuntime } from "./ToolRuntime";
 import { WorkflowRuntime } from "./WorkflowRuntime";
 import { AgentRuntime } from "./AgentRuntime";
-import { MultiAgentOrchestrator } from "./MultiAgentOrchestrator";
+import { DelegationManager } from "./DelegationManager";
 import { ReasoningEngine } from "./ReasoningEngine";
 import { PlanningEngine } from "./PlanningEngine";
 import { EvaluationPlatform } from "./EvaluationPlatform";
@@ -20,6 +20,7 @@ import { recoveryEngine } from "../../infrastructure/reliability/RecoveryEngine"
 import { PromptGuardrail } from "./PromptGuardrail";
 import { ToolSandbox } from "./ToolSandbox";
 import { telemetryTracker } from "../../infrastructure/observability/telemetry";
+import { CapabilityLifecycleManager } from "../capability/CapabilityLifecycleManager";
 
 export class AIRuntimeKernel {
   private static instance: AIRuntimeKernel | null = null;
@@ -32,7 +33,7 @@ export class AIRuntimeKernel {
   public readonly tools = ToolRuntime.getInstance();
   public readonly workflows = WorkflowRuntime.getInstance();
   public readonly agents = AgentRuntime.getInstance();
-  public readonly orchestrator = MultiAgentOrchestrator.getInstance();
+  public readonly delegation = DelegationManager.getInstance();
   public readonly reasoning = ReasoningEngine.getInstance();
   public readonly planning = PlanningEngine.getInstance();
   public readonly evaluation = EvaluationPlatform.getInstance();
@@ -100,7 +101,7 @@ export class AIRuntimeKernel {
 
     // Adaptive Capability Lifecycle Assessment
     const requiredCapId = request.agentId ? "cap:skill:code-generation" : "cap:mcp:filesystem";
-    const clm = require("../capability/CapabilityLifecycleManager").CapabilityLifecycleManager.getInstance();
+    const clm = CapabilityLifecycleManager.getInstance();
     await clm.assessAndAcquire(request.agentId || request.workflowId || "direct", [requiredCapId]);
 
     let success = false;
@@ -162,7 +163,8 @@ export class AIRuntimeKernel {
         routedModelId = routedModel.id;
 
         const primaryQuery = async () => {
-          return await this.agents.executeAgentTask(request.agentId!, finalPrompt, ctx);
+          await this.agents.startAgent(request.agentId!, finalPrompt);
+          return `[AgentRuntime] Autonomous cognitive loop started for agent ${request.agentId}. Check logs for asynchronous execution graph submissions.`;
         };
         const fallbackQuery = async () => {
           return `[Degraded Fallback]: Downstream agent service overloaded. Task executed under recovery protocol.`;

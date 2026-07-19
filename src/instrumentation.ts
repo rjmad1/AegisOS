@@ -8,6 +8,16 @@ export async function register() {
       // 0. Enforce authoritative port registry validation
       const { PortValidator } = await import("@/platform/ports/PortValidator");
       PortValidator.validate();
+
+      // 0.5. Initialize Constitution Engine (Architecture Governance)
+      const { constitutionEngine } = await import("@/platform/governance/ConstitutionEngine");
+      await constitutionEngine.loadConstitution();
+      const constitution = constitutionEngine.getConstitution();
+      if (!constitution || constitution.principles.length === 0) {
+        throw new Error("FATAL: Constitution Engine failed to load or constitution is empty. Architecture governance degraded.");
+      }
+      console.log(`[Instrumentation] Constitution Engine initialized with ${constitution.principles.length} principles.`);
+
       // 1. Enforce secure credentials and fail boot on insecure keys or defaults
       const authSecret = process.env.AUTH_SECRET;
       const opsJwtSecret = process.env.OPS_JWT_SECRET;

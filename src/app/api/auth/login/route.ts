@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAuthProvider } from '../../../../platform/auth/providers/AuthProvider';
-import { userRepository } from '../../../../repositories/user.repository';
+import { adminService } from "@/services/admin.service";
 import { sessionService } from '../../../../platform/auth/session.service';
 import { auditService } from '../../../../platform/audit/audit.service';
 import { Role, Permission, AuthorizedUser } from '../../../../platform/auth/authorization';
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     const profile = await credentialsProvider.authenticate(username, password);
     
     // Validate user in repository
-    let user = await userRepository.getUserByEmail(profile.email);
+    let user = await adminService.users.getUserByEmail(profile.email);
     if (!user) {
       // Auto-create a Viewer user for authenticated LDAP users if not in registry
       const newUser: AuthorizedUser = {
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         allowedNetworks: [],
         notes: 'Auto-provisioned via LDAP bind authentication'
       };
-      await userRepository.saveUser(newUser);
+      await adminService.users.saveUser(newUser);
       user = newUser;
     }
 
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     }
 
     user.lastLogin = new Date().toISOString();
-    await userRepository.saveUser(user);
+    await adminService.users.saveUser(user);
 
     // Create session
     await sessionService.createSession(user.id, user.role);
