@@ -18,6 +18,12 @@ export class SQLiteCapabilityStore implements ICapabilityStore {
   }
 
   public async initialize(): Promise<void> {
+    const stateDir = process.env.AEGISOS_STATE_DIR || "D:/AegisOS";
+    this.baseDir = path.join(stateDir, "Data", "capabilities");
+
+    // Close existing handles first to prevent leaks and locks
+    await this.close();
+
     // 1. Ensure directory exists
     if (!fs.existsSync(this.baseDir)) {
       fs.mkdirSync(this.baseDir, { recursive: true });
@@ -105,6 +111,13 @@ export class SQLiteCapabilityStore implements ICapabilityStore {
     this.registryDb = null;
     this.eventsDb = null;
     this.cacheDb = null;
+  }
+
+  public async clearTables(): Promise<void> {
+    if (!this.registryDb) await this.initialize();
+    this.registryDb.exec("DELETE FROM capabilities;");
+    this.eventsDb.exec("DELETE FROM events;");
+    this.cacheDb.exec("DELETE FROM cache;");
   }
 
   // --- Registry operations ---

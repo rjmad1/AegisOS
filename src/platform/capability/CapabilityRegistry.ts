@@ -21,7 +21,6 @@ export class CapabilityRegistry {
   }
 
   public async init(seedDefault = true): Promise<void> {
-    if (this.isInitialized) return;
     await this.store.initialize();
     this.isInitialized = true;
 

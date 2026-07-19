@@ -1,5 +1,5 @@
 // src/platform/capability/__tests__/run-tests.ts
-// Custom test runner to execute CapabilitySubsystem tests directly via tsx, bypassing native vite/rolldown binding errors.
+// Custom test runner to execute CapabilitySubsystem tests sequentially, avoiding database lock concurrency.
 
 import * as fs from "fs";
 import * as path from "path";
@@ -7,11 +7,12 @@ import * as path from "path";
 // Mocks for Vitest imports
 const beforeEaches: Array<() => Promise<void> | void> = [];
 const afterEaches: Array<() => Promise<void> | void> = [];
+const tests: Array<{ name: string; fn: () => Promise<void> | void }> = [];
 
 const globalAny = globalThis as any;
 
 globalAny.describe = (name: string, fn: () => void) => {
-  console.log(`\n=== Running Suite: ${name} ===`);
+  console.log(`\n=== Registering Suite: ${name} ===`);
   fn();
 };
 
@@ -23,22 +24,8 @@ globalAny.afterEach = (fn: () => Promise<void> | void) => {
   afterEaches.push(fn);
 };
 
-globalAny.it = async (name: string, fn: () => Promise<void> | void) => {
-  for (const setup of beforeEaches) {
-    await setup();
-  }
-  
-  try {
-    await fn();
-    console.log(`  ✓ PASS: ${name}`);
-  } catch (err: any) {
-    console.error(`  ✗ FAIL: ${name}\n  Error: ${err.message}\n${err.stack}`);
-    process.exitCode = 1;
-  } finally {
-    for (const teardown of afterEaches) {
-      await teardown();
-    }
-  }
+globalAny.it = (name: string, fn: () => Promise<void> | void) => {
+  tests.push({ name, fn });
 };
 
 globalAny.expect = (actual: any) => {
@@ -98,13 +85,39 @@ globalAny.vi = {
   }
 };
 
-// Trigger mock environment
+// Trigger mock environment BEFORE imports happen
 process.env.NODE_ENV = "test";
+process.env.AEGISOS_STATE_DIR = path.resolve(__dirname, "../../../../../test-state");
 
-// Load the tests
+// Load the tests and run them sequentially
 import("./CapabilitySubsystem.test")
-  .then(() => {
-    // Tests are registered dynamically by the import
+  .then(async () => {
+    console.log(`\nFound ${tests.length} tests. Running sequentially...`);
+    
+    for (const test of tests) {
+      console.log(`\n[Test:Start] ${test.name}`);
+      
+      // Run setups
+      for (const setup of beforeEaches) {
+        await setup();
+      }
+
+      try {
+        await test.fn();
+        console.log(`  ✓ PASS: ${test.name}`);
+      } catch (err: any) {
+        console.error(`  ✗ FAIL: ${test.name}\n  Error: ${err.message}\n${err.stack}`);
+        process.exitCode = 1;
+      } finally {
+        // Run teardowns
+        for (const teardown of afterEaches) {
+          await teardown();
+        }
+      }
+    }
+    
+    console.log("\n=== Test Execution Completed ===");
+    process.exit(process.exitCode || 0);
   })
   .catch(err => {
     console.error("Failed to run tests:", err);

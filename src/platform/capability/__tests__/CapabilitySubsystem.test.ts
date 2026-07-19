@@ -14,27 +14,18 @@ describe("Capability Subsystem Lifecycle Integration", () => {
   const dbPath = path.join(stateDir, "Data", "capabilities");
 
   beforeEach(async () => {
-    // Force a fresh environment path for testing
-    process.env.AEGISOS_STATE_DIR = path.resolve(__dirname, "../../../../../test-state");
-    const testDbDir = path.join(process.env.AEGISOS_STATE_DIR, "Data", "capabilities");
-    
-    // Clean up test DB directory if exists
-    if (fs.existsSync(testDbDir)) {
-      fs.rmSync(testDbDir, { recursive: true, force: true });
-    }
-
     clm = CapabilityLifecycleManager.getInstance();
-    // Restart manager with fresh test files
     (clm as any).isStarted = false;
+    (clm.registry as any).isInitialized = false; 
     await clm.start();
+
+    // Clear tables to prevent test leakage
+    await clm.registry.getStore().clearTables();
+    await (clm.registry as any).seedDefaultCapabilities();
   });
 
   afterEach(async () => {
     await clm.shutdown();
-    const testDbDir = path.join(process.env.AEGISOS_STATE_DIR || "", "Data", "capabilities");
-    if (fs.existsSync(testDbDir)) {
-      fs.rmSync(testDbDir, { recursive: true, force: true });
-    }
   });
 
   it("should initialize capability registry and seed default capabilities", async () => {
@@ -102,13 +93,13 @@ describe("Capability Subsystem Lifecycle Integration", () => {
       successRate: 0.2
     };
 
-    const validation = await clm.trustManager.validate(unsignedCap);
+    const validation = await clm.trust.validate(unsignedCap);
     expect(validation.valid).toBe(false);
     expect(validation.reason).toContain("signature is missing");
 
     // Check with signature but low score
     unsignedCap.signature = "a".repeat(64);
-    const validation2 = await clm.trustManager.validate(unsignedCap);
+    const validation2 = await clm.trust.validate(unsignedCap);
     expect(validation2.valid).toBe(false);
     expect(validation2.reason).toContain("Trust score");
   });
