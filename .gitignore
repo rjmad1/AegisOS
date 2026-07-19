@@ -65,5 +65,4 @@ databases/
 /playwright-report/
 /test-results/
 /artifacts_storage/
-
-
+/node_modules_backup/

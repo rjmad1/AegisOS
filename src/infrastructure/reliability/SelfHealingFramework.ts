@@ -3,6 +3,7 @@ import { recoveryEngine } from "./RecoveryEngine";
 import { recoveryValidator } from "./RecoveryValidator";
 import { reliabilityStore } from "./store";
 import { evaluationPipeline } from "../evaluation/evaluation-pipeline";
+import { deploymentManager } from "../deployment/deployment-manager";
 
 export interface SelfHealingResult {
   timestamp: string;
@@ -38,7 +39,6 @@ export class SelfHealingFramework {
     const hasOllamaIssue = baseReport.issues.some(i => i.toLowerCase().includes("ollama"));
     const filteredIssues = baseReport.issues.filter(issue => {
       if (hasOllamaIssue) {
-        // If Ollama is down, skip attempting recovery on dependent services LiteLLM and AegisOS
         if (issue.toLowerCase().includes("litellm") || issue.toLowerCase().includes("aegisos")) {
           console.log(`[SelfHealingFramework] Skipping recovery of dependent service because upstream service Ollama is offline: ${issue}`);
           return false;
@@ -68,6 +68,51 @@ export class SelfHealingFramework {
     for (const issue of filteredIssues) {
       let component = "general";
       let serviceId = "";
+
+      // WSL / Docker Host Recovery
+      if (issue.toLowerCase().includes("docker") || issue.toLowerCase().includes("wsl")) {
+        component = "Host Runtime";
+        console.log(`[SelfHealingFramework] Triggering aggressive SCM restart for WSL and Docker...`);
+        const success = await deploymentManager.restartWslAndDocker();
+        remediations.push({
+          component,
+          remediation: "Triggered host WSL and Docker SCM restarts",
+          status: success ? "verified" : "failed"
+        });
+        if (!success) {
+          this.escalateIncident(component, issue, "Failed to restart WSL or Docker services.");
+        } else {
+          this.logResolvedIncident(component, issue, "WSL and Docker restarted");
+        }
+        continue;
+      }
+
+      // Database Folder and Prisma Schema Recovery
+      if (issue.toLowerCase().includes("database") || issue.toLowerCase().includes("prisma")) {
+        component = "Database Engine";
+        console.log(`[SelfHealingFramework] Triggering SQLite schema rebuild...`);
+        let dbOk = false;
+        try {
+          const { exec } = require("child_process");
+          const util = require("util");
+          const execPromise = util.promisify(exec);
+          await execPromise("npx prisma db push");
+          dbOk = true;
+        } catch (dbErr: any) {
+          console.error("[SelfHealingFramework] SQLite schema recovery failed:", dbErr.message);
+        }
+        remediations.push({
+          component,
+          remediation: "Executed npx prisma db push to repair database schema",
+          status: dbOk ? "verified" : "failed"
+        });
+        if (!dbOk) {
+          this.escalateIncident(component, issue, "Failed to repair SQLite database schema.");
+        } else {
+          this.logResolvedIncident(component, issue, "SQLite schema rebuilt");
+        }
+        continue;
+      }
       
       if (issue.includes("Ollama")) {
         component = "Ollama API";

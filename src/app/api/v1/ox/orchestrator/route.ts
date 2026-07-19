@@ -3,18 +3,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { platformLifecycleOrchestrator } from "@/platform/control-plane/PlatformLifecycleOrchestrator";
 import { platformServiceManager } from "@/platform/control-plane/PlatformServiceManager";
 import { deploymentManager } from "@/infrastructure/deployment/deployment-manager";
+import { dependencyManager } from "@/platform/control-plane/DependencyManager";
+import { modelLifecycleManager } from "@/platform/control-plane/ModelLifecycleManager";
 
 export async function GET() {
   try {
     const services = await deploymentManager.getServicesStatus();
     const mode = platformLifecycleOrchestrator.getPlatformMode();
     const dependencyGraph = platformLifecycleOrchestrator.getDependencyGraph();
+    const compMatrix = await dependencyManager.getCompatibilityMatrix();
+    const modelStatuses = await modelLifecycleManager.getModelStatuses();
+    const driftReport = await dependencyManager.detectDrift();
 
     return NextResponse.json({
       success: true,
       mode,
       services,
-      dependencyGraph
+      dependencyGraph,
+      compatibility: compMatrix,
+      models: modelStatuses,
+      drift: driftReport
     });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
