@@ -9,6 +9,7 @@ volumes:
   ollama_data:
   prometheus_data:
   grafana_data:
+  open_webui_data:
 
 services:
   # 1. Database Persistence
@@ -222,3 +223,41 @@ services:
       - aegisos-net
     depends_on:
       - console
+
+  # 13. Client-facing Web UI (Open WebUI portal)
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: aegisos-open-webui
+    restart: always
+    environment:
+      - PORT=8090
+      - DATA_DIR=/app/backend/data
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY:?Set WEBUI_SECRET_KEY in .env}
+      - WEBUI_AUTH=True
+      - WEBUI_NAME=AegisOS
+      - SCARF_NO_ANALYTICS=True
+      - DO_NOT_TRACK=True
+      - ANONYMIZED_TELEMETRY=False
+      - ENABLE_OLLAMA_API=False
+      - ENABLE_OPENAI_API=True
+      - OPENAI_API_BASE_URLS=http://host.docker.internal:18789/v1
+      - OPENAI_API_KEYS=${OPS_JWT_SECRET:?Set OPS_JWT_SECRET in .env}
+      - ENABLE_RAG=False
+      - ENABLE_RAG_WEB_SEARCH=False
+      - ENABLE_CODE_INTERPRETER=False
+      - ENABLE_CODE_EXECUTION=False
+      - WEBUI_ADMIN_EMAIL=${OPS_ADMIN_USERNAME:?Set OPS_ADMIN_USERNAME in .env}
+      - WEBUI_ADMIN_PASSWORD=${OPS_ADMIN_PASSWORD:?Set OPS_ADMIN_PASSWORD in .env}
+      - WEBUI_ADMIN_NAME=Administrator
+      - WEBUI_BANNERS=[{"content":"Managed Workstation Environment — Orchestration by AegisOS","type":"info"}]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${HOST_PORT_OPEN_WEBUI:-8090}:8090"
+    volumes:
+      - open_webui_data:/app/backend/data
+      - ./artifacts_storage:/app/backend/data/uploads:rw
+    networks:
+      - aegisos-net
+    depends_on:
+      - litellm

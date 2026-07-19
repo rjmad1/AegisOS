@@ -98,6 +98,12 @@ export class AIRuntimeKernel {
       throw new Error("AIRuntimeKernel: Request blocked due to prompt injection warning.");
     }
 
+    // Adaptive Capability Lifecycle Assessment
+    const requiredCapId = request.agentId ? "cap:skill:code-generation" : "cap:mcp:filesystem";
+    const clm = require("../capability/CapabilityLifecycleManager").CapabilityLifecycleManager.getInstance();
+    await clm.assessAndAcquire(request.agentId || request.workflowId || "direct", [requiredCapId]);
+
+    let success = false;
     try {
       let finalContent = "";
       let routedModelId = "unknown";
@@ -222,6 +228,7 @@ export class AIRuntimeKernel {
       this.dashboard.recordCall(tokensCount, cost, elapsed, false);
       this.dashboard.addRoutingTrace(`Request completed successfully in ${elapsed}ms.`);
 
+      success = true;
       return {
         content: finalContent,
         model: routedModelId,
@@ -236,6 +243,7 @@ export class AIRuntimeKernel {
         correlationId: ctx.correlationId,
       };
     } catch (err) {
+      success = false;
       const errMsg = err instanceof Error ? err.message : String(err);
       console.error(`[AIRuntimeKernel:Error] execution failed:`, errMsg);
       
@@ -246,6 +254,8 @@ export class AIRuntimeKernel {
       this.dashboard.addRoutingTrace(`Request failed: ${errMsg}`);
 
       throw err;
+    } finally {
+      await clm.releaseCapability(requiredCapId, success, Date.now() - start);
     }
   }
 

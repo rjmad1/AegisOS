@@ -647,64 +647,71 @@ export class ExecutionRuntimeService {
       return execution;
     }
 
-    execution.status = "RUNNING";
-    execution.startedAt = execution.startedAt || new Date().toISOString();
+    const requiredCapId = execution.workflowReference?.workflowId ? "cap:mcp:filesystem" : "cap:skill:code-generation";
+    const clm = require("../platform/capability/CapabilityLifecycleManager").CapabilityLifecycleManager.getInstance();
+    await clm.assessAndAcquire(executionId, [requiredCapId]);
 
-    const hasRunningStep = execution.steps.some((s) => s.id === `${executionId}-running`);
-    if (!hasRunningStep) {
-      execution.steps.push({
-        id: `${executionId}-running`,
-        executionId,
-        name: "Execution Started",
-        status: "running",
-        timestamp: execution.startedAt,
-        message: "Runtime executor processing tasks...",
-      });
-    }
-
-    const timeline = execution.timeline || [];
-    const prevTimestamp = timeline.length > 0 ? timeline[timeline.length - 1].timestamp : execution.createdAt;
-    const entry = this.createTimelineEntry(executionId, "Started", "system:executor", "execution-runtime", undefined, prevTimestamp);
-    timeline.push(entry);
-    execution.timeline = timeline;
-
-    await this.repository.save(execution);
-    await executionEventPublisher.publishStarted(execution);
-
-    // Timeout Promise Wrapper
-    const timeoutSeconds = execution.metadata.timeoutSeconds || 30;
-    const executionPromise = (async () => {
-      const { executionGraphService } = await import("./execution-graph.service");
-      let graph = execution.metadata?.executionGraph;
-      if (!graph) {
-        graph = executionGraphService.buildGraph(execution);
-      }
-      await executionGraphService.schedule(executionId);
-
-      // Poll until execution reaches a terminal or waiting state
-      await new Promise<void>((resolve) => {
-        const check = async () => {
-          const fresh = await this.repository.get(executionId);
-          if (fresh && (
-            fresh.status === "COMPLETED" ||
-            fresh.status === "FAILED" ||
-            fresh.status === "CANCELLED" ||
-            fresh.status === "WAITING"
-          )) {
-            resolve();
-          } else {
-            setTimeout(check, 50);
-          }
-        };
-        check();
-      });
-    })();
-
-    const timeoutPromise = new Promise<void>((_, reject) => {
-      setTimeout(() => reject(new Error(`Execution timed out after ${timeoutSeconds} seconds`)), timeoutSeconds * 1000);
-    });
+    const start = Date.now();
+    let success = false;
 
     try {
+      execution.status = "RUNNING";
+      execution.startedAt = execution.startedAt || new Date().toISOString();
+
+      const hasRunningStep = execution.steps.some((s) => s.id === `${executionId}-running`);
+      if (!hasRunningStep) {
+        execution.steps.push({
+          id: `${executionId}-running`,
+          executionId,
+          name: "Execution Started",
+          status: "running",
+          timestamp: execution.startedAt,
+          message: "Runtime executor processing tasks...",
+        });
+      }
+
+      const timeline = execution.timeline || [];
+      const prevTimestamp = timeline.length > 0 ? timeline[timeline.length - 1].timestamp : execution.createdAt;
+      const entry = this.createTimelineEntry(executionId, "Started", "system:executor", "execution-runtime", undefined, prevTimestamp);
+      timeline.push(entry);
+      execution.timeline = timeline;
+
+      await this.repository.save(execution);
+      await executionEventPublisher.publishStarted(execution);
+
+      // Timeout Promise Wrapper
+      const timeoutSeconds = execution.metadata.timeoutSeconds || 30;
+      const executionPromise = (async () => {
+        const { executionGraphService } = await import("./execution-graph.service");
+        let graph = execution.metadata?.executionGraph;
+        if (!graph) {
+          graph = executionGraphService.buildGraph(execution);
+        }
+        await executionGraphService.schedule(executionId);
+
+        // Poll until execution reaches a terminal or waiting state
+        await new Promise<void>((resolve) => {
+          const check = async () => {
+            const fresh = await this.repository.get(executionId);
+            if (fresh && (
+              fresh.status === "COMPLETED" ||
+              fresh.status === "FAILED" ||
+              fresh.status === "CANCELLED" ||
+              fresh.status === "WAITING"
+            )) {
+              resolve();
+            } else {
+              setTimeout(check, 50);
+            }
+          };
+          check();
+        });
+      })();
+
+      const timeoutPromise = new Promise<void>((_, reject) => {
+        setTimeout(() => reject(new Error(`Execution timed out after ${timeoutSeconds} seconds`)), timeoutSeconds * 1000);
+      });
+
       await Promise.race([executionPromise, timeoutPromise]);
       const freshExec = await this.repository.get(executionId);
       if (
@@ -713,15 +720,21 @@ export class ExecutionRuntimeService {
         freshExec?.status === "CANCELLED" ||
         freshExec?.status === "COMPLETED"
       ) {
+        success = freshExec?.status === "COMPLETED";
         return freshExec;
       }
-      return await this.completeExecution(executionId);
+      const finalExec = await this.completeExecution(executionId);
+      success = true;
+      return finalExec;
     } catch (err: any) {
+      success = false;
       if (err.message === "WAITING_FOR_APPROVAL") {
         const freshWaiting = await this.repository.get(executionId);
         return freshWaiting || execution;
       }
       return await this.failExecution(executionId, err.message);
+    } finally {
+      await clm.releaseCapability(requiredCapId, success, Date.now() - start);
     }
   }
 

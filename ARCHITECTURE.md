@@ -4,40 +4,53 @@
 
 ## Context (C4 Level 1)
 
-AegisOS is a local-first, privacy-preserving AI Workstation platform. It routes AI inference through local models (Ollama) via a proxy gateway (LiteLLM), managed through a Next.js administration console.
+AegisOS is a multi-user, enterprise-grade AI Work Operating System. In this architecture, **Open WebUI** serves strictly as the presentation/operator experience layer (thin client), while **AegisOS** acts as the authoritative orchestration, policy, identity, memory, and execution layer, routing verified requests through **LiteLLM** to local (Ollama) and cloud inference providers.
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    AegisOS Platform                      │
-│                                                          │
-│  ┌──────────┐   ┌──────────┐   ┌──────────────────────┐ │
-│  │ Console  │──▶│ Gateway  │──▶│ Inference Engine     │ │
-│  │ (Next.js)│   │ (LiteLLM)│   │ (Ollama + GPU)       │ │
-│  └──────────┘   └──────────┘   └──────────────────────┘ │
-│       │              │                                    │
-│       ▼              ▼                                    │
-│  ┌──────────┐   ┌──────────┐                             │
-│  │ Database │   │ Context  │                             │
-│  │ (Prisma) │   │ (MCP)    │                             │
-│  └──────────┘   └──────────┘                             │
-└─────────────────────────────────────────────────────────┘
+                    Users
+                      │
+              Open WebUI (Presentation)
+                      │
+                      ▼
+            AegisOS API Gateway
+                      │
+          ┌───────────┼────────────┐
+          │           │            │
+     Identity      Policy      Audit
+          │           │            │
+          └───────────┼────────────┘
+                      │
+             Agent Orchestrator
+                      │
+       ┌──────────────┼──────────────┐
+       │              │              │
+     Memory       Knowledge      Developer
+    Service        Service         Agent
+       │              │              │
+       └──────────────┼──────────────┘
+                      │
+               LiteLLM Gateway
+                      │
+             Ollama / Cloud Models
 ```
 
 ## Key Architectural Principles
 
 | Principle | Implementation |
 |-----------|---------------|
-| **Local-First** | All inference resolved on localhost; no data leaves the workstation |
+| **Local-First** | All local inference resolved on localhost; no data leaves the workstation |
 | **Privacy by Design** | No telemetry to external services; all observability is self-hosted |
 | **Zero Trust** | Every API request authenticated and authorized via JWT + RBAC |
 | **Configuration over Code** | Environment-driven configuration with feature flags |
 | **Hexagonal Architecture** | Infrastructure adapters (DB, secrets, storage) are swappable |
+| **Presentation Decoupling** | The UI is a stateless thin client; all business logic lives in AegisOS |
 
 ## System Decomposition
 
 | System | Purpose | Port |
 |--------|---------|------|
-| Console | Next.js admin dashboard | 3000 |
+| Open WebUI | Operator Experience UI Portal (Thin Client) | 8090 |
+| Console / Gateway | Next.js admin dashboard & AegisOS API Gateway | 3000 / 18789 |
 | LiteLLM | AI routing proxy | 4000 |
 | Ollama | Local inference engine | 11434 |
 | PostgreSQL | Relational persistence | 5432 |

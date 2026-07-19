@@ -262,5 +262,17 @@
     "exposure": "private",
     "reserved": true,
     "dynamic": true
+  },
+  "open-webui": {
+    "name": "open-webui",
+    "purpose": "Open WebUI chat and interaction portal",
+    "internal_port": 8090,
+    "default_host_port": 8090,
+    "protocol": "HTTP",
+    "health_endpoint": "/health",
+    "dependencies": ["litellm"],
+    "exposure": "public",
+    "reserved": true,
+    "dynamic": true
   }
 }

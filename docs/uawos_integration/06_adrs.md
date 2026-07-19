@@ -100,3 +100,12 @@ This document records the design decisions and trade-offs made during the UAWOS 
 * **Status**: Approved
 * **Decision**: Store all system prompt files inside a git-tracked directory (`/configs/prompts`).
 * **Consequences**: Enables tracking prompt revisions and rolling back changes using standard Git workflows.
+
+### ADR-12: Open WebUI as Presentation-Only Operator Experience Layer
+* **Status**: Approved
+* **Decision**: Align Open WebUI strictly as a stateless presentation thin client. Centralize model routing, user profiles, authentication verification (JWT/SSO), code execution boundaries, conversation logs, and hierarchical knowledge organization inside the AegisOS core gateway.
+* **Consequences**: 
+  - Prevents security exposure from direct model/executor access.
+  - Ensures multi-user isolation and access audits.
+  - Formally documented in global decision registry as [ADR-014](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-014-Open-WebUI-Thin-Client-Integration.md).
+

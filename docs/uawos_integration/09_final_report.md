@@ -65,13 +65,15 @@ We outline the next engineering phases based on business value, implementation c
 graph TD
     %% Roadmap Workflow
     PH1[Phase 1: Deploy Headroom & Ponytail] -->|Establishes Token Savings| PH2[Phase 2: Enable CodeGraph MCP Server]
-    PH2 -->|Provides Code Context| PH3[Phase 3: Integrate Spec Kit & LLM Council]
-    PH3 -->|Enables Structured Reviews| PH4[Phase 4: Orchestrate Background AutoResearch]
+    PH2 -->|Provides Code Context| PH3[Phase 3: Deploy Multi-User Thin Client Gateway]
+    PH3 -->|Enables Multi-Tenant Security| PH4[Phase 4: Integrate Spec Kit & LLM Council]
+    PH4 -->|Enables Structured Reviews| PH5[Phase 5: Orchestrate Background AutoResearch]
 
     style PH1 fill:#1a73e8,stroke:#333,stroke-width:1px,color:#fff
     style PH2 fill:#34a853,stroke:#333,stroke-width:1px,color:#fff
-    style PH3 fill:#fbbc05,stroke:#333,stroke-width:1px,color:#fff
-    style PH4 fill:#ea4335,stroke:#333,stroke-width:1px,color:#fff
+    style PH3 fill:#7b1fa2,stroke:#333,stroke-width:1px,color:#fff
+    style PH4 fill:#fbbc05,stroke:#333,stroke-width:1px,color:#fff
+    style PH5 fill:#ea4335,stroke:#333,stroke-width:1px,color:#fff
 ```
 
 ### Phase 1 — Prompt & Context Optimization (VRAM Protection)
@@ -84,12 +86,23 @@ graph TD
 - **Strategic Value**: Upgrades agent coding capabilities from simple text-grep to graph-aware intelligence.
 - **Actions**: Deploy the CodeGraph parser, index the codebase, and register the CodeGraph MCP server.
 
-### Phase 3 — Architectural Governance (Structured Planning & Review)
+### Phase 3 — Multi-User Thin Client Gateway
+- **Priority**: High
+- **Strategic Value**: Secures the multi-user environment, locks down model access, and manages knowledge governance.
+- **Actions**:
+  - Enforce AegisOS API Gateway (`:18789`) as the single endpoint for Open WebUI.
+  - Implement native auth policies (one account per user) and SSO/JWT token validation.
+  - Set up the central AegisOS ingestion pipeline for uploads and disable direct mounting.
+  - Restrict code execution and plugins to the AegisOS Developer Agent.
+  - Enforce hierarchical scoping (Org, Projects, Users, Sessions) in the knowledge service.
+
+### Phase 4 — Architectural Governance (Structured Planning & Review)
 - **Priority**: Medium
 - **Strategic Value**: Eliminates code drift and controls logic bugs.
 - **Actions**: Integrate Spec Kit CLI checks into the Planner Agent and expose LLM Council for git pre-commit reviews.
 
-### Phase 4 — Background Knowledge Ingestion
+### Phase 5 — Background Knowledge Ingestion
 - **Priority**: Low
 - **Strategic Value**: Provides autonomous tech-radar and documentation generation.
 - **Actions**: Configure sandbox runtime permissions and deploy AutoResearch scheduler.
+

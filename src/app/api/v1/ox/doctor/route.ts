@@ -306,13 +306,14 @@ export async function GET() {
     autoFixAvailable: true
   });
 
-  // 6. Docker Containers
+  // Open WebUI container check (on port 8090)
+  const openwebuiActive = await deploymentManager.checkPort(8090);
   checks.push({
     id: "docker:openwebui",
     name: "Docker Container open-webui",
     category: "docker",
-    status: chromaActive ? "healthy" : "warning",
-    details: "Container running state aligned with docker-compose.",
+    status: openwebuiActive ? "healthy" : "warning",
+    details: openwebuiActive ? "Open WebUI container is active and listening on port 8090." : "Open WebUI container is unreachable on port 8090.",
     autoFixAvailable: true
   });
 
@@ -331,7 +332,8 @@ export async function GET() {
     { port: 11434, name: "Ollama Port" },
     { port: 4000, name: "LiteLLM Port" },
     { port: 18789, name: "AegisOS Gateway Port" },
-    { port: 20128, name: "OmniRoute Port" }
+    { port: 20128, name: "OmniRoute Port" },
+    { port: 8090, name: "Open WebUI Port" }
   ];
   for (const p of ports) {
     const active = await deploymentManager.checkPort(p.port);
