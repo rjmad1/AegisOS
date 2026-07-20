@@ -1,6 +1,6 @@
 import { LiveOperationalTwin } from './LiveOperationalTwin';
 import { HistoricalAnalyticsStore } from './HistoricalAnalyticsStore';
-import { eventBus } from '../../event-bus/EventPlatform';
+import eventBus from '../../event-bus/EventPlatform';
 
 export class PlatformDigitalTwin {
   private static instance: PlatformDigitalTwin | null = null;

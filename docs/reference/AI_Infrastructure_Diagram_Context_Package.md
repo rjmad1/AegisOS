@@ -1,4 +1,4 @@
-﻿# AI Infrastructure â€” Diagram Generation Context Package
+# AI Infrastructure â€” Diagram Generation Context Package
 
 > Prompt enhanced by Raja Jeevan Kumar Maduri (https://www.linkedin.com/in/rajajeevankumar/)
 
@@ -544,12 +544,12 @@ Phase 4: Docker/Open-WebUI â†’ Independent UI container lifecycle
 | [Architecture_Handbook.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Architecture_Handbook.md) | `docs/` | âœ… Active | Authoritative blueprint mapping system topology, boundaries, and storage partitioning |
 | [Platform_Handbook.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Platform_Handbook.md) | `docs/` | âœ… Active | Index of system dependencies, models inventory, and active MCP servers |
 | [Operations_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md) | `docs/` | âœ… Active | Administrative operations guide for service logging, maintenance, and health checks |
-| [Deployment_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Deployment_Guide.md) | `docs/` | âœ… Active | Standardized bootstrapping steps, prerequisite installations, and migration procedures |
+| [Deployment_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/DEPLOYMENT.md) | `docs/` | âœ… Active | Standardized bootstrapping steps, prerequisite installations, and migration procedures |
 | [Developer_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Developer_Guide.md) | `docs/` | âœ… Active | Development guidelines for Console App layouts and versioned API contracts |
 | [Disaster_Recovery_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Disaster_Recovery_Guide.md) | `docs/` | âœ… Active | Recovery guides details backup payloads, recovery modes, and DPAPI re-keys |
 | [Administrator_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Administrator_Guide.md) | `docs/` | âœ… Active | Administrative settings, service wrapping parameters, and user guides |
 | [Optimization_Roadmap.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Optimization_Roadmap.md) | `docs/` | âœ… Active | VRAM limits, memory offloads, and software acceleration settings |
-| [CHANGELOG.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/CHANGELOG.md) | `docs/` | âœ… Active | Platform change tracking history |
+| [CHANGELOG.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/CHANGELOG.md) | `docs/` | âœ… Active | Platform change tracking history |
 | [ValidationReport.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ValidationReport.md) | `docs/` | âœ… Active | Automated validation checks and system compliance matrix |
 | [Walkthrough.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Walkthrough.md) | `docs/` | âœ… Active | Step-by-step developer verification log |
 | [ADR-001-Contract-First-Versioned-API-Boundaries.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md) | `adr/` | âœ… Approved | Contract-first REST specifications |

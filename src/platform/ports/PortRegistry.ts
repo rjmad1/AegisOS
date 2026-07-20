@@ -52,6 +52,11 @@ export class PortRegistry {
     return this.registry?.[serviceName];
   }
 
+  /** Clear cached registry so next access reloads from file. Test-only. */
+  public static reset(): void {
+    this.registry = null;
+  }
+
   public static getHostPort(serviceName: string): number {
     const service = this.get(serviceName);
     if (!service) return 0;

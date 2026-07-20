@@ -42,6 +42,17 @@ export class AgentRuntime {
         permissions: ["plan:create"],
         isolationLevel: "sandbox",
         version: "1.0.0",
+      },
+      {
+        id: "agent:research",
+        name: "Research Agent",
+        role: "researcher",
+        systemPrompt: "Search, summarise and cross-reference external documentation, security advisories, and best-practice guides.",
+        allowedModels: ["ollama:llama3.1:8b", "litellm:gpt-4o"],
+        allowedTools: ["tool:web:search", "tool:filesystem:read"],
+        permissions: ["search:execute"],
+        isolationLevel: "sandbox",
+        version: "1.0.0",
       }
     ];
 

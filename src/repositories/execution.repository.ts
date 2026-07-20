@@ -48,35 +48,59 @@ export function serializeExecution(execution: UniversalExecution): any {
 }
 
 export function deserializeExecution(dbRecord: any): UniversalExecution {
+  const safeParse = (str: string | null, fallback: any) => {
+    if (!str) return fallback;
+    try {
+      return JSON.parse(str);
+    } catch {
+      return fallback;
+    }
+  };
+
+  // Special fallback for intent if it's a raw string
+  let intentObj = { intentId: dbRecord.id, confidence: 1.0, rawPrompt: "" };
+  if (dbRecord.intent) {
+    try {
+      const parsed = JSON.parse(dbRecord.intent);
+      if (typeof parsed === "object" && parsed !== null) {
+        intentObj = parsed;
+      } else {
+        intentObj.rawPrompt = String(parsed);
+      }
+    } catch {
+      intentObj.rawPrompt = dbRecord.intent;
+    }
+  }
+
   return {
     id: dbRecord.id,
     executionId: dbRecord.executionId,
     correlationId: dbRecord.correlationId,
     parentExecutionId: dbRecord.parentExecutionId || null,
-    childExecutions: dbRecord.childExecutions ? JSON.parse(dbRecord.childExecutions) : [],
+    childExecutions: safeParse(dbRecord.childExecutions, []),
     status: dbRecord.status as any,
-    userContext: dbRecord.userContext ? JSON.parse(dbRecord.userContext) : {},
-    workspaceContext: dbRecord.workspaceContext ? JSON.parse(dbRecord.workspaceContext) : undefined,
-    projectContext: dbRecord.projectContext ? JSON.parse(dbRecord.projectContext) : undefined,
-    intent: dbRecord.intent ? JSON.parse(dbRecord.intent) : {},
-    capability: dbRecord.capability ? JSON.parse(dbRecord.capability) : {},
-    executionPlan: dbRecord.executionPlan ? JSON.parse(dbRecord.executionPlan) : null,
-    workflowReference: dbRecord.workflowReference ? JSON.parse(dbRecord.workflowReference) : null,
+    userContext: safeParse(dbRecord.userContext, {}),
+    workspaceContext: safeParse(dbRecord.workspaceContext, undefined),
+    projectContext: safeParse(dbRecord.projectContext, undefined),
+    intent: intentObj,
+    capability: safeParse(dbRecord.capability, {}),
+    executionPlan: safeParse(dbRecord.executionPlan, null),
+    workflowReference: safeParse(dbRecord.workflowReference, null),
     priority: dbRecord.priority as any,
     createdAt: dbRecord.createdAt,
     startedAt: dbRecord.startedAt || null,
     endedAt: dbRecord.endedAt || null,
     durationMs: dbRecord.durationMs || null,
     error: dbRecord.error || null,
-    steps: dbRecord.steps ? JSON.parse(dbRecord.steps) : [],
-    artifacts: dbRecord.artifacts ? JSON.parse(dbRecord.artifacts) : [],
-    toolsUsed: dbRecord.toolsUsed ? JSON.parse(dbRecord.toolsUsed) : [],
+    steps: safeParse(dbRecord.steps, []),
+    artifacts: safeParse(dbRecord.artifacts, []),
+    toolsUsed: safeParse(dbRecord.toolsUsed, []),
     retryCount: dbRecord.retryCount,
     maxRetries: dbRecord.maxRetries,
-    metadata: dbRecord.metadata ? JSON.parse(dbRecord.metadata) : {},
-    telemetry: dbRecord.telemetry ? JSON.parse(dbRecord.telemetry) : {},
-    costMetrics: dbRecord.costMetrics ? JSON.parse(dbRecord.costMetrics) : {},
-    timeline: dbRecord.timeline ? JSON.parse(dbRecord.timeline) : [],
+    metadata: safeParse(dbRecord.metadata, {}),
+    telemetry: safeParse(dbRecord.telemetry, {}),
+    costMetrics: safeParse(dbRecord.costMetrics, {}),
+    timeline: safeParse(dbRecord.timeline, []),
   } as any;
 }
 

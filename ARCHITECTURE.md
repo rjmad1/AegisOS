@@ -1,95 +1,80 @@
 # AegisOS Architecture
 
-> This document provides a C4-level summary. For the full architectural handbook with sequence diagrams and data flows, see [docs/Architecture_Handbook.md](docs/Architecture_Handbook.md).
+> This document provides a C4-level architectural summary. For the full handbook with sequence diagrams and data flows, see [docs/Architecture_Handbook.md](docs/Architecture_Handbook.md).
 
-## Context (C4 Level 1)
+---
 
-AegisOS is a multi-user, enterprise-grade AI Work Operating System. In this architecture, **Open WebUI** serves strictly as the presentation/operator experience layer (thin client), while **AegisOS** acts as the authoritative orchestration, policy, identity, memory, and execution layer, routing verified requests through **LiteLLM** to local (Ollama) and cloud inference providers.
+## 1. Context (C4 Level 1)
 
-```
-                    Users
-                      │
-              Open WebUI (Presentation)
-                      │
-                      ▼
-            AegisOS API Gateway
-                      │
-          ┌───────────┼────────────┐
-          │           │            │
-     Identity      Policy      Audit
-          │           │            │
-          └───────────┼────────────┘
-                      │
-             Agent Orchestrator
-                      │
-       ┌──────────────┼──────────────┐
-       │              │              │
-     Memory       Knowledge      Developer
-    Service        Service         Agent
-       │              │              │
-       └──────────────┼──────────────┘
-                      │
-               LiteLLM Gateway
-                      │
-             Ollama / Cloud Models
-```
-
-## Key Architectural Principles
-
-| Principle | Implementation |
-|-----------|---------------|
-| **Local-First** | All local inference resolved on localhost; no data leaves the workstation |
-| **Privacy by Design** | No telemetry to external services; all observability is self-hosted |
-| **Zero Trust** | Every API request authenticated and authorized via JWT + RBAC |
-| **Configuration over Code** | Environment-driven configuration with feature flags |
-| **Hexagonal Architecture** | Infrastructure adapters (DB, secrets, storage) are swappable |
-| **Presentation Decoupling** | The UI is a stateless thin client; all business logic lives in AegisOS |
-
-## System Decomposition
-
-| System | Purpose | Port |
-|--------|---------|------|
-| Open WebUI | Operator Experience UI Portal (Thin Client) | 8090 |
-| Console / Gateway | Next.js admin dashboard & AegisOS API Gateway | 3000 / 18789 |
-| LiteLLM | AI routing proxy | 4000 |
-| Ollama | Local inference engine | 11434 |
-| PostgreSQL | Relational persistence | 5432 |
-| Redis | Caching and job queue | 6379 |
-| MinIO | Object storage | 9000 |
-| Prometheus | Metrics collection | 9090 |
-| Grafana | Observability dashboards | 3001 |
-| Jaeger | Distributed tracing | 16686 |
-
-## Source Code Organization
+AegisOS operates as a local-first, privacy-preserving Autonomic AI Workstation Operating System. Open WebUI (or IDE companion extensions) serves as the thin-client presentation layer. AegisOS intercepts ingress, enforces security/governance policies, retrieves local context via MCP, and dispatches optimized inference requests to local (Ollama) or cloud models.
 
 ```
-src/
-├── app/           # Next.js routes (pages and API endpoints)
-├── api/           # API client, DTOs, interceptors, repositories
-├── components/    # React UI components
-├── enterprise/    # Multi-tenant SaaS features
-├── hooks/         # React hooks
-├── infrastructure/# Core infrastructure (DB, security, events, jobs, etc.)
-├── modules/       # Feature modules (AI runtime, workflows, knowledge, etc.)
-├── platform/      # Platform services (auth, search, plugins, etc.)
-├── repositories/  # Data access layer
-├── services/      # Business logic services
-├── store/         # Zustand state management
-├── types/         # TypeScript type definitions
-└── utils/         # Shared utilities
+                    [ Ingress Clients ]
+                 (Console / Open WebUI / IDE)
+                            │
+                            ▼
+              [ Layer 6: Executive Plane ]
+                 (AegisOS API Gateway / Console)
+                            │
+                            ▼
+               [ Layer 5: Control Plane ]
+              (Executive Control Plane / ECP) ◄───► [ Convergence Engine ]
+                            │                              (Digital Twin)
+                            ▼
+            [ Layer 4: Orchestration Plane ]
+               (Workflows / Scheduling / Jobs)
+                            │
+                            ▼
+              [ Layer 3: Capability Plane ]
+              (Model / Tool / RAG Registries)
+                            │
+                            ▼
+               [ Layer 2: Runtime Layer ]
+                (LiteLLM Router / Ollama)
+                            │
+                            ▼
+            [ Layer 1: Infrastructure Layer ]
+               (OS Processes / VPN / Storage)
+                            │
+                            ▼
+               [ Layer 0: Hardware Layer ]
+                  (GPU VRAM / CUDA Cores)
 ```
 
-## Architecture Decision Records
+---
 
-All significant architectural decisions are documented in [adr/](adr/).
+## 2. Key Architectural Principles
 
-| ADR | Decision |
-|-----|----------|
-| [ADR-001](adr/ADR-001-Contract-First-Versioned-API-Boundaries.md) | Contract-First Versioned API Boundaries |
-| [ADR-002](adr/ADR-002-Server-Side-Decoupled-Authentication.md) | Server-Side Decoupled Authentication |
-| [ADR-003](adr/ADR-003-Unified-Event-Driven-Registry.md) | Unified Event-Driven Registry |
-| [ADR-004](adr/ADR-004-Pipeline-Worker-Processing-Architecture.md) | Pipeline Worker Processing Architecture |
-| [ADR-005](adr/ADR-005-Repository-Information-Architecture-Rationalization.md) | Repository Information Architecture |
-| [ADR-006](adr/ADR-006-Script-Engineering-Standards.md) | Script Engineering Standards |
-| [ADR-007](adr/ADR-007-Portable-Configuration-Architecture.md) | Portable Configuration Architecture |
-| [ADR-008](adr/ADR-008-Platform-Asset-Catalog-Design.md) | Platform Asset Catalog Design |
+| Principle | Description | Implementation |
+|---|---|---|
+| **Local-First** | Data sovereignty is guaranteed by running all inference and storage locally. | Ollama + PostgreSQL/SQLite bound to localhost loopback interfaces. |
+| **Privacy by Design** | No telemetry or usage statistics are transmitted to external services. | Self-hosted observability (OTel Collector, Prometheus, Grafana, Loki). |
+| **Zero Trust** | Cryptographically enforce least privilege access at every trust boundary. | ECP checks signature validation, JWT authorization, and RBAC policies. |
+| **Autonomic Control** | The system automatically heals faults and aligns states without human intervention. | Convergence Engine synchronizing discovery states with canonical digital twin. |
+| **Layer Isolation** | Higher architectural planes consume services from lower planes; reverse imports are prohibited. | strict ESLint import boundary rules and vitest compilation checks. |
+
+---
+
+## 3. System Decomposition
+
+| System / Service | Default Port | Internal Role |
+|---|---|---|
+| **Console Portal** | `3000` | Next.js administration UI dashboard. |
+| **AegisOS Gateway** | `18789` | Ingress REST/WebSocket endpoint and MCP Tool Host. |
+| **LiteLLM Routing** | `4000` | Load balancer and model routing proxy. |
+| **Ollama Inference** | `11434` | Local model serving weight manager. |
+| **PostgreSQL / SQLite**| `5432` / local | Persistence layer for credentials, twin topology, and audit logs. |
+| **Redis** | `6379` | Background job queues and caching. |
+| **OTel Collector** | `4317` / `4318` | Central telemetry processing hub. |
+| **Prometheus / Grafana**| `9090` / `3002` | Metrics indexing and diagnostic dashboards. |
+
+---
+
+## 4. Architecture Decision Records
+
+All architectural designs are recorded in [adr/](adr/). Key decisions include:
+
+*   [ADR-001: Contract-First API](adr/ADR-001-Contract-First-Versioned-API-Boundaries.md) — Enforces versioned `/api/v1/` routes.
+*   [ADR-009: 7-Layered Stack](adr/ADR-009-Autonomic-Operating-System-Architecture.md) — Establishes strict hierarchical layering.
+*   [ADR-010: Executive Control Plane](adr/ADR-010-Executive-Control-Plane.md) — Outlines Layer 5 stateless policy enforcers.
+*   [ADR-013: Command & Control Subsystem](adr/ADR-013-Command-And-Control-Subsystem.md) — Defines signed mobile/remote approvals.

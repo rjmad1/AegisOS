@@ -4,19 +4,19 @@
 |---|---|
 | **Document ID** | EED-2026-001 |
 | **Version** | 1.0.0 |
-| **Last Updated** | 2026-07-17 20:04:54 |
+| **Last Updated** | 2026-07-20 05:45:54 |
 | **Status** | **DEGRADED** |
 | **Compliance** | COMPLIANT |
-| **TypeScript** | PASS |
-| **Lint Violations**| 544 |
+| **TypeScript** | FAIL |
+| **Lint Violations**| 530 |
 
 ## Executive Summary
 This dashboard represents the live operational and architectural governance baseline of the AegisOS Autonomic AI Operating System. 
 
 ## High-Level Domain Health Indices
 * **System Overview & Health**: **WARNING** (4/5 active ports)
-* **Architecture Fitness**: **PASS** (Type boundaries and circular dependencies enforced)
-* **Operational Readiness**: **HEALTHY** (Backups active, DB size at 0.59 MB)
+* **Architecture Fitness**: **FAIL** (Type boundaries and circular dependencies enforced)
+* **Operational Readiness**: **HEALTHY** (Backups active, DB size at 1.61 MB)
 * **AI Quality Evaluation**: **PASSED** (Grounding scores > 85%, prompt injections blocked)
 * **Knowledge Health**: **ACTIVE** (0 knowledge base assets indexed)
 * **Agent Governance**: **COMPLIANT** (Execution limits & sandbox directories enforced)

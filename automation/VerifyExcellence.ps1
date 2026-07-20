@@ -81,6 +81,7 @@ Log-PlatformInfo "ESLint completed with $lintViolations total violations/warning
 
 # 5. Type Checking
 Log-PlatformInfo "[STEP 5/7] Running TypeScript type verification..."
+$env:NODE_OPTIONS = "--max-old-space-size=8192"
 npx tsc --noEmit
 $typeCheckStatus = $LASTEXITCODE
 $typeCheckPassed = ($typeCheckStatus -eq 0)

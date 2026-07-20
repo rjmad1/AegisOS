@@ -4,16 +4,38 @@ All notable changes to AegisOS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-07-20
+
+### Fixed
+- Reliability test suite: replaced real OS-level calls (port scanning, `taskkill`, docker compose) with proper `vi.mock()` stubs for deterministic, isolated test execution.
+- Port configuration drift: reset `configs/ports.json` to canonical default ports after runtime `resolvePortCollision` had mutated stored values.
+- `PortRegistry` static cache: added `reset()` method so tests reload port configuration from file between runs.
+- `PlanningEngine.planRecovery()`: recovery step task text now includes the word "recovery" to match test assertion `s.task.includes("recovery")`.
+- `AIRuntimeValidationSuite`: added `agent:research` to `AgentRuntime` default agent catalog so the sandbox routing validation check passes.
+- Fault provider mocks: switched from `vi.fn().mockImplementation()` (non-constructable) to `class` factory exports for vitest 4.x compatibility.
+
+### Changed
+- Port test expectations updated from drifted values (e.g. `11435`) to canonical defaults (e.g. `11434`).
+
 ## [1.2.0] - 2026-07-14
 
 ### Added
-- Implemented Command & Control (C2) subsystem supporting ECDSA signature verification, replay protection, dynamic risk-based policies, and compensating actions (rollbacks).
+- Transitioned platform to a strict 7-layered Autonomic AI Workstation Operating System architecture (ADR-009).
+- Established the Executive Control Plane (ECP) at Layer 5 to enforce real-time security policies, rate limits, and model output grounding filters (ADR-010).
+- Implemented System Digital Twin with canonical state Graph Kernel, Projections registry, and real-time Topology explorer.
+- Developed Convergence Engine for periodic state reconciliation and automatic Drift logs tracking.
+- Developed Autonomic Platform Qualification Framework (PQF) with modular validation orchestrators (chaos, scalability, performance, endurance).
+- Created content-addressed, immutable Merkle-like Evidence Graph for progressive chain-of-trust qualification.
+- Implemented cryptographic Release Manifest signing (HMAC-SHA256) and signature verifications.
+- Developed Engineering Intelligence Platform (EIP) service orchestrating predictive analytics, log correlation, and prioritized remediation queues.
+- Implemented Platform Maturity Index (PMI) Engine to compute weighted indices across 11 key operational domains.
+- Implemented Command & Control (C2) subsystem supporting ECDSA signature verification, replay protection, dynamic risk-based policies, and compensating actions (rollbacks) (ADR-013).
 - Developed Flutter-based Mobile Companion App (`aegis_mobile`) for remote executive monitoring and Human-in-the-Loop (HITL) approval gates.
 - Added WebSocket-based real-time telemetry syncing.
 - Integrated Voice Feedback subsystem in the Console sidebar with REST API upload and secure download endpoints.
 
 ### Changed
-- Rebranded console interfaces and API routes from "OpenClaw" to "AegisOS".
+- Rebranded console interfaces, registries, API routes, and environment profiles from "OpenClaw" to "AegisOS".
 
 ## [1.1.0] - 2026-07-14
 

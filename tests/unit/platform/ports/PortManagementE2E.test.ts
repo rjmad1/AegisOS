@@ -10,6 +10,7 @@ describe("Port Management System — End-to-End Integration & Hardening Suite", 
 
   beforeEach(() => {
     vi.resetModules();
+    PortRegistry.reset();
     // Reset process.env properties
     for (const key of Object.keys(process.env)) {
       if (key.startsWith("HOST_PORT_") || key.startsWith("NEXT_PUBLIC_") || key.includes("OLLAMA") || key.includes("LITELLM") || key.includes("AEGISOS")) {

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { OptimizationRecommendation, RiskLevels } from '../pial/types';
+import { OptimizationRecommendation, RiskLevels } from '../pik/types';
 
 export interface ConstitutionalPrinciple {
   id: string;

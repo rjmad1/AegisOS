@@ -8,6 +8,7 @@ import { PortValidator } from "@/platform/ports/PortValidator";
 describe("PortRegistry and PortValidator", () => {
   beforeEach(() => {
     vi.resetModules();
+    PortRegistry.reset();
   });
 
   afterEach(() => {

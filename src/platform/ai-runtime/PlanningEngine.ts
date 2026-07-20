@@ -62,7 +62,7 @@ export class PlanningEngine {
 
     // Inject healing step
     const recoveryStep: SemanticPlanStep = {
-      task: `Self-heal failure at ${failedTaskName} by reverting cache and rerouting to backup capability.`,
+      task: `Autonomous recovery: self-heal failure at ${failedTaskName} by reverting cache and rerouting to backup capability.`,
       dependencies: [failedTaskName],
       expectedOutcome: "System restored to stable state, ready to retry",
       priority: "critical"

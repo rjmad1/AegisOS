@@ -1,4 +1,4 @@
-﻿# Bidirectional Traceability Matrix
+# Bidirectional Traceability Matrix
 
 | Field | Value |
 |---|---|
@@ -38,5 +38,5 @@ We map the primary platform capabilities across all product, architecture, verif
 | **Incident Runbook ID** | Runbook: `Compromised Credentials` | Runbook: `Saga Checkpoint Out of Sync` | Runbook: `Ollama Service Unreachable` | Runbook: `Console Render Crash` | Runbook: `Secret Decryption Error` |
 | **Release Gate** | Code Coverage > 95% | Code Coverage > 85% | Clean Compilation Check | Accessibility a11y pass | Security SAST pass |
 | **Associated Risk ID** | AIR-003: Data Leak | AIR-002: Hallucination | REF-FMEA-003: Service Down | USA-001: WCAG compliance | AIR-003: Secret Exposure |
-| **Documentation Guide** | [SECURITY.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/SECURITY.md) | [Operations Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md) | [Troubleshooting Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Troubleshooting_Guide.md) | [Developer Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Developer_Guide.md) | [Administrator Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Administrator_Guide.md) |
+| **Documentation Guide** | [SECURITY.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/SECURITY.md) | [Operations Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md) | [Troubleshooting Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Troubleshooting_Guide.md) | [Developer Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Developer_Guide.md) | [Administrator Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Administrator_Guide.md) |
 

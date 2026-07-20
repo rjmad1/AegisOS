@@ -4,7 +4,7 @@
 |---|---|
 | **Document ID** | ESC-2026-001 |
 | **Version** | 1.0.0 |
-| **Scorecard Date**| 2026-07-17 20:04:54 |
+| **Scorecard Date**| 2026-07-20 05:45:54 |
 
 ## Overall Average Maturity
 * **Before Maturity Transformation**: 2.83 / 5

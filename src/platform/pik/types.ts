@@ -1,5 +1,5 @@
 // ============================================================================
-// PIAL Types — Platform Intelligence & Autonomy Layer
+// PIK Types — Platform Intelligence Kernel
 // ============================================================================
 
 export type RiskLevel = 0 | 1 | 2 | 3 | 4;
@@ -62,3 +62,58 @@ export interface OptimizationExecutionResult {
   message?: string;
   timestamp: number;
 }
+
+// ============================================================================
+// Platform Intelligence Kernel (PIK) Evolution Types
+// ============================================================================
+
+export interface EngineeringRequest {
+  id: string;
+  type: 'file_modification' | 'intent' | 'configuration' | 'migration';
+  intent: string;
+  origin: 'user' | 'agent' | 'system';
+  entities: string[]; // Resolved EKG entity IDs
+  riskProfile: {
+    architectural: number;
+    operational: number;
+    security: number;
+    governance: number;
+    performance: number;
+    overall: number;
+  };
+  executionPlan: {
+    tasks: string[];
+    requiredTests: string[];
+    requiredDocs: string[];
+    rollbackPayload: string;
+  };
+  status: 'PENDING' | 'SIMULATING' | 'APPROVED' | 'EXECUTED' | 'FAILED';
+  createdAt: string;
+}
+
+export interface TechnicalDebtItem {
+  id: string;
+  category: 'circular_dependency' | 'dead_code' | 'layer_violation' | 'duplication' | 'eroded_architecture' | 'doc_drift';
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  probableRootCause: string;
+  estimatedEffortMinutes: number;
+  confidenceScore: number;
+  status: 'OPEN' | 'RESOLVED' | 'IGNORED';
+  remediationSteps: string[];
+  evidence: string[];
+}
+
+export interface ArchitecturalMemory {
+  id: string;
+  title: string;
+  category: 'decision' | 'lesson' | 'experiment';
+  status: 'Draft' | 'Accepted' | 'Implemented' | 'Deprecated';
+  decision: string;
+  context: string;
+  tradeOffs: string;
+  consequences: string;
+  relatedArtifacts: string[]; // IDs of related artifacts or capabilities
+  introducedVersion: string;
+  timestamp: string;
+}
+

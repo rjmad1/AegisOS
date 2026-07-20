@@ -4,8 +4,8 @@
 |---|---|
 | **Document ID** | AFR-2026-001 |
 | **Version** | 1.0.0 |
-| **Last Checked** | 2026-07-17 20:04:54 |
-| **Status** | **PASS** |
+| **Last Checked** | 2026-07-20 05:45:54 |
+| **Status** | **FAIL** |
 
 ## Conformance Verification
 * **7-Layer Stack Boundaries**: Passed (lower planes contain zero imports of higher planes).

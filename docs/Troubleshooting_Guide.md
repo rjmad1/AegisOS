@@ -1,126 +1,101 @@
 # Troubleshooting Guide
 
-This guide provides structured diagnostic procedures and troubleshooting flowcharts to resolve issues with platform services, GPU acceleration, secure credentials, and Tailscale mesh networking.
+| Metadata | Value |
+|---|---|
+| **Document ID** | TG-2026-001 |
+| **Version** | 1.2.0 (Active) |
+| **Last Synced** | 2026-07-20 05:40:00 |
+| **Classification** | Public — Diagnostic Runbook |
+| **Authority** | Platform Support Board |
+
+This guide provides diagnostic procedures to resolve issues with platform services, GPU VRAM exhaustion, DPAPI credentials, and Digital Twin state drift.
 
 ---
 
 ## 1. Service Startup & SCM Diagnostics
 
-When one or more platform services (Ollama, LiteLLM, AegisOS, OmniRoute) fail to start or halt unexpectedly, follow this diagnostic path:
+When services fail to initialize, check the SCM registry parameters.
 
 ### Service Startup Failure Diagnostic Flow
 
 ```mermaid
 flowchart TD
-    Start[Service fails to start] --> CheckSCM[Run: Get-Service in PowerShell]
-    CheckSCM -->|Stopped| StartService[Run: Start-Service]
+    Start[Service fails to start] --> CheckSCM[Run Get-Service in PowerShell]
+    CheckSCM -->|Stopped| StartService[Run Start-Service]
     StartService -->{Starts successfully?}
     
     StartService -->|No| CheckLogs[Check service logs in logs folder]
-    CheckLogs --> CheckPortConflict{Check for port conflicts: netstat -ano}
+    CheckLogs --> CheckPortConflict{Check for port conflicts: netstat}
     CheckPortConflict -->|Port in Use| KillProcess[Identify and kill process using port]
-    CheckPortConflict -->|Port Free| CheckConfig[Verify configuration syntax: JSON/YAML]
+    CheckPortConflict -->|Port Free| CheckConfig[Verify configuration JSON/YAML]
     
     CheckConfig -->|Syntax Error| FixConfig[Correct config file syntax]
-    CheckConfig -->|Valid Config| CheckPerms[Verify SCM Account privileges: LocalSystem]
+    CheckConfig -->|Valid Config| CheckPerms[Verify SCM account privileges]
 ```
 
-### Common Service Errors & Resolutions
-- **Port Conflict (Error: EADDRINUSE):**
-  - **Issue:** Another process is listening on the service's configured port (e.g. port `11434` for Ollama, `4000` for LiteLLM, or `18789` for AegisOS).
-  - **Resolution:** Identify the conflicting process and terminate it:
-    ```powershell
-    # Find process ID using port 11434
-    Get-NetTCPConnection -LocalPort 11434 | Select-Object OwningProcess
-    # Kill the process
-    Stop-Process -Id <PID> -Force
-    ```
-- **NSSM Execution Failure (Error: "Paused or Stopped"):**
-  - **Issue:** The executable target path is incorrect or missing.
-  - **Resolution:** Verify service parameters in the registry:
-    `HKLM\SYSTEM\CurrentControlSet\Services\<ServiceName>\Parameters`
+### Port Conflicts (EADDRINUSE)
+AegisOS Gateway uses port `18789`, LiteLLM uses `4000`, and Ollama uses `11434`. Identify the process holding the port:
+```powershell
+# Get the process ID using the port
+Get-NetTCPConnection -LocalPort 18789 -ErrorAction SilentlyContinue | Select-Object OwningProcess
+# Kill the process holding port 18789
+Stop-Process -Id <PID> -Force
+```
 
 ---
 
-## 2. GPU & CUDA Acceleration Diagnostics
+## 2. Digital Twin State Drift & Self-Healing
 
-If model inference falls back to CPU execution or crashes during generation, verify your GPU configuration.
+The Convergence Engine checks system states against the physical environment every 30 seconds.
 
-### CUDA / GPU Memory Out-of-Memory Diagnostic Flow
+### Resolving Drift Alarms
+If the console displays state mismatch alerts or logs entries in `DigitalTwinDriftLog`:
+1. Check the drift details in the database:
+   ```bash
+   sqlite3 D:\AIPlatform\databases\dev.db "SELECT driftDetails, reconciledAt FROM DigitalTwinDriftLog ORDER BY timestamp DESC LIMIT 5;"
+   ```
+2. The Self-Healing framework automatically triggers SCM restarts for stopped services. If self-healing fails, check if the service executables are missing or if the service user lacks local file privileges.
+3. Manually trigger a full state reconciliation via the Console API or PowerShell:
+   ```powershell
+   Invoke-RestMethod -Uri "http://localhost:3000/api/v1/control-plane/reconcile" -Method Post
+   ```
+
+---
+
+## 3. GPU VRAM Exhaustion & Latency
+
+If models run slowly or exit with memory allocation errors, GPU VRAM may be exhausted.
+
+### CUDA memory allocation failure (OOM)
 
 ```mermaid
 flowchart TD
-    Start[Inference failure or high latency] --> CheckGPU[Run: nvidia-smi in terminal]
+    Start[Inference failure or high latency] --> CheckGPU[Run nvidia-smi in terminal]
     CheckGPU -->|No GPU Found| CheckDriver[Verify NVIDIA Driver & CUDA version]
     CheckGPU -->|VRAM Exhausted| IdentifyActiveModels[Check active models in memory]
     
     IdentifyActiveModels --> ExceedsLimit{Models VRAM size > GPU VRAM?}
-    ExceedsLimit -->|Yes| UnloadModels[Unload unused models / Use smaller GGUF quant]
+    ExceedsLimit -->|Yes| UnloadModels[Unload unused models]
     ExceedsLimit -->|No| CheckFragment[Restart Ollama service to clear memory fragmentation]
 ```
 
-### Resolving GPU Memory Limitations
-1.  **VRAM Exhaustion (OOM):**
-    - Running multiple large models concurrently (e.g., Llama-3-70B and Codestral) can exceed your GPU VRAM (e.g., 16 GB).
-    - **Resolution:** Use quantized models (e.g., Q4_K_M quants) or unload models from memory before starting new sessions:
-      ```bash
-      # Force Ollama to unload models
-      curl http://127.0.0.1:11434/api/generate -d '{"model": "qwen2.5-coder:7b", "keep_alive": 0}'
-      ```
-2.  **Missing CUDA Acceleration:**
-    - If Ollama runs slowly on CPU, ensure the CUDA toolkit version matches the installed NVIDIA graphics driver. Run `nvidia-smi` to verify.
+### Unloading Models from GPU
+If multiple large models remain loaded, force Ollama to release the active context:
+```bash
+curl http://127.0.0.1:11434/api/generate -d "{\"model\": \"deepseek-r1:32b\", \"keep_alive\": 0}"
+```
 
 ---
 
-## 3. Secure Token & DPAPI Diagnostics
+## 4. ECP Safety Firewall & Prompt Injection Blocks
 
-Decryption errors occur when the secure configuration is corrupted or migrated to a different machine.
+The Executive Control Plane (ECP) at Layer 5 intercepts incoming prompts to protect the system.
 
-### DPAPI Secrets Recovery Flow
-
-```mermaid
-flowchart TD
-    Start[Service fails to decrypt credentials] --> CheckFile[Verify AegisOS_secrets.enc exists]
-    CheckFile -->|Missing| RunBootstrap[Run: Bootstrap.ps1 to generate new keys]
-    CheckFile -->|Present| VerifyHost{Physical machine changed?}
-    
-    VerifyHost -->|Yes| RunRestore[Run: Restore.ps1 and re-enter tokens]
-    VerifyHost -->|No| CheckPermissions[Check if script is running as Administrator]
-    
-    CheckPermissions -->|Not Admin| RerunElevated[Open Elevated PowerShell and retry]
-    CheckPermissions -->|Is Admin| RegKeyCorrupted[Secrets file corrupted - Delete and recreate]
-```
-
-### Steps to Reset Credentials
-If the secrets payload is corrupted:
-1.  Navigate to the secrets directory: `$PlatformRoot\secrets\`
-2.  Delete the file `AegisOS_secrets.enc`.
-3.  Open an elevated PowerShell session and execute `.\Bootstrap.ps1` to re-enter and securely encrypt your credentials.
-
----
-
-## 4. Tailscale & Mesh VPN Diagnostics
-
-When remote developers cannot access the Next.js Web Console or API endpoints over the Tailscale network:
-
-### Tailscale Access Failure Diagnostic Flow
-
-```mermaid
-flowchart TD
-    Start[Remote access to console fails] --> CheckTailscale[Run: tailscale status]
-    CheckTailscale -->|Offline| ConnectTailscale[Run: tailscale up]
-    CheckTailscale -->|Online| PingHost[Ping host Tailscale IP from remote machine]
-    
-    PingHost -->|Ping Fails| VerifyACLs[Verify Tailscale ACL rules in Admin Console]
-    PingHost -->|Ping Succeeds| VerifyWindowsFirewall[Check Windows Defender Firewall Rules]
-    
-    VerifyWindowsFirewall -->|Blocked| AllowPorts[Allow inbound traffic on ports 3000/8090]
-    VerifyWindowsFirewall -->|Allowed| VerifyListenIP[Ensure Next.js Console binds to 0.0.0.0 or Tailscale IP]
-```
-
-### Resolving Firewall Blocks
-Ensure that Windows Defender Firewall allows ingress traffic on Tailscale network adapters:
-```powershell
-# Allow inbound TCP port 3000 (Next Console) on Tailscale adapter profile
-New-NetFirewallRule -DisplayName "Allow Next.js Console Ingress" -Direction Inbound -LocalPort 3000 -Protocol TCP -Action Allow -Profile Public
-```
+### Troubleshooting Blocked Prompts
+1. **PII Redaction**: ECP blocks or redacts variables matching patterns for credit cards, SSNs, or API keys. Verify if your prompt inputs contain test keys that look like secrets.
+2. **Hallucination Flags**: If the grounding score falls below `0.80`, ECP marks the request with a warning scorecard. Re-index the RAG search directory to resolve stale context:
+   ```powershell
+   # Trigger re-indexing job
+   Invoke-RestMethod -Uri "http://localhost:3000/api/v1/knowledge/reindex" -Method Post
+   ```
+3. **Security Guardrail Overrides**: System administrators can view security incidents under the Console's Security Audit tab. Overrides can be executed via elevated credentials signed by the C2 Mobile Companion.

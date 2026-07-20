@@ -215,7 +215,7 @@ We certify that the AegisOS Platform Operations Control Plane meets all quality,
 | **SCM Services Control** | `PlatformServiceManager.ts` | Host service starts/stops via SCM execution | [Operations Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md) |
 | **Watchdog Heartbeat** | `SelfHealingFramework.ts` | Port probes checking active pids in watchdog | [Troubleshooting Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Troubleshooting_Guide.md) |
 | **GPU Telemetry** | `GpuProvider` | Dynamic nvidia-smi queries in `infrastructure-providers.ts` | [Observability Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/OBSERVABILITY.md) |
-| **Zero-Trust Auth** | `authorization.ts` | Role validation testing in `EnterpriseReadiness.test.ts` | [Security Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/SECURITY.md) |
+| **Zero-Trust Auth** | `authorization.ts` | Role validation testing in `EnterpriseReadiness.test.ts` | [Security Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/SECURITY.md) |
 | **Backup-Restore RTO** | `BackupRecoveryCoordinator.ts` | Vitest RTO metric tests under 1.5 seconds | [Disaster Recovery Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Disaster_Recovery_Guide.md) |
 | **Docker Containers** | `ContainerProvider` | Dynamic `docker ps` scanning in `infrastructure-providers.ts` | [Deployment Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/DEPLOYMENT.md) |
 | **WSL distributions** | `InfrastructureDiscoveryEngine.ts` | `wsl -l -v` command verification during discovery | [Administrator Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Administrator_Guide.md) |

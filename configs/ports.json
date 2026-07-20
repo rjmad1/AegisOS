@@ -32,7 +32,7 @@
     "name": "ollama",
     "purpose": "Ollama local inference engine",
     "internal_port": 11434,
-    "default_host_port": 11435,
+    "default_host_port": 11434,
     "protocol": "HTTP",
     "health_endpoint": "/api/tags",
     "dependencies": [],

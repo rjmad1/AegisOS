@@ -210,6 +210,14 @@ export class WorkflowService {
     console.log("[WorkflowService] Stopped Workflow Engine background loop.");
   }
 
+  public async getExecutions(): Promise<WorkflowExecution[]> {
+    return workflowRepository.getExecutions();
+  }
+
+  public async getExecution(id: string): Promise<WorkflowExecution | null> {
+    return workflowRepository.getExecution(id);
+  }
+
   // --- Trigger & Execution Entry ---
 
   public async triggerWorkflow(

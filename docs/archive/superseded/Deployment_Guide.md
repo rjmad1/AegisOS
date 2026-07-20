@@ -3,7 +3,7 @@
 This guide details the deployment, configuration, and migration processes for the AegisOS AI Workstation platform.
 
 > [!IMPORTANT]
-> For standard installation, setup, and first-time onboarding instructions, please refer directly to the canonical **[AegisOS Installation & Getting Started Guide](../wiki/Install-Guide.md)**. Do not replicate standard installation steps in this document.
+> For standard installation, setup, and first-time onboarding instructions, please refer directly to the canonical **[AegisOS Installation & Getting Started Guide](../../../wiki/Install-Guide.md)**. Do not replicate standard installation steps in this document.
 
 ---
 
