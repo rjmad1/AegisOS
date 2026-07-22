@@ -32,7 +32,7 @@
   {
     "name": "test-prompt-template",
     "purpose": "Unit testing prompt template loading",
-    "activeVersion": 9,
+    "activeVersion": 10,
     "versions": [
       {
         "version": 1,
@@ -105,6 +105,14 @@
         "author": "Quality Assurance",
         "changeDescription": "Dynamic registration by extension Test Unit Extension",
         "commitHash": "local-0bb1cb2"
+      },
+      {
+        "version": 10,
+        "content": "Hello World testing.",
+        "timestamp": "2026-07-22T23:40:12.081Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-8584e3a"
       }
     ]
   }

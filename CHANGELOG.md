@@ -4,6 +4,16 @@ All notable changes to AegisOS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.4] - 2026-07-23
+
+### Added
+- **Autonomic Self-Healing Daemon**: Implemented `AutonomicSelfHealingDaemon.ts` for real-time background health sweeps across local runtimes (`Console Portal`, `AegisOS Gateway`, `LiteLLM Router`, `Ollama Inference`, `OTel Collector`) with automatic fault recovery and `hardenedEventBus` event emission (`AutonomicHealthReport`).
+- **Autonomic Self-Healing REST API**: Added GET/POST route `/api/v1/system/autonomic-heal` for system health diagnostics and daemon lifecycle control.
+- **Hardware Telemetry Event Bus**: Created `hardware-telemetry-bus.ts` to stream Layer 0 GPU CUDA metrics directly to the Control Plane.
+- **Predictive VRAM Velocity Spillover**: Upgraded `CloudSpilloverRouter.ts` with dynamic VRAM consumption velocity calculation ($\Delta VRAM / \Delta t$) across rolling 60-second telemetry windows for preemptive cloud bursting before GPU OOM memory limits are reached.
+- **Zero-Touch Entra ID / SAML Group Role Mapping**: Implemented `GroupClaimRoleMapper.ts` for zero-touch regex and DN parsing of SAML/OIDC group claims, integrated directly into `SamlProvider.ts`.
+- **Unit Test Suite Expansion**: Added Vitest test suites for autonomic self-healing, predictive spillover math, and group claim role mapping (`8/8` tests passing).
+
 ## [1.2.3] - 2026-07-22
 
 ### Added

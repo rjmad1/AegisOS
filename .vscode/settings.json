@@ -1,11 +1,19 @@
 {
   "files.exclude": {
-    "**/node_modules_backup": true,
-    "**/.next": true
+    "**/.next": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/playwright-report": true,
+    "**/test-results": true,
+    "**/trace_dir": true
   },
   "search.exclude": {
-    "**/node_modules_backup": true,
-    "**/.next": true
+    "**/.next": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/playwright-report": true,
+    "**/test-results": true,
+    "**/trace_dir": true
   },
   "git.ignoreLimitWarning": true
 }

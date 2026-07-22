@@ -1,5 +1,6 @@
 import { AuthProvider, AuthUserProfile } from './AuthProvider';
 import { SAML } from '@node-saml/node-saml';
+import { groupClaimRoleMapper } from '../GroupClaimRoleMapper';
 
 export class SamlProvider implements AuthProvider {
   private entryPointUrl: string;
@@ -34,8 +35,6 @@ export class SamlProvider implements AuthProvider {
     console.log('[SamlProvider] handleCallback parsing SAML Response:', url.href);
     
     try {
-      // In a real flow, the raw body contains the SAMLResponse POST data
-      // For this implementation, we extract it from the URL or assume it was passed through
       const samlResponse = url.searchParams.get('SAMLResponse') || '';
       
       const { profile } = await this.saml.validatePostResponseAsync({ SAMLResponse: samlResponse });
@@ -65,47 +64,17 @@ export class SamlProvider implements AuthProvider {
         }
       }
 
-      // Map corporate Entra ID / IdP groups to AegisOS Roles
-      const mappedRoles = new Set<string>();
-      
-      // Default mapping configuration with optional dynamic JSON override
-      let roleMappings: Record<string, string[]> = {
-        'Domain Admins': ['SRE', 'Admin'],
-        'AegisOS-SRE': ['SRE'],
-        'AegisOS-Admin': ['Admin'],
-        'Developers': ['User', 'Developer'],
-        'AegisOS-Users': ['User']
-      };
-
-      if (process.env.SAML_ROLE_MAPPINGS_JSON) {
-        try {
-          const customMappings = JSON.parse(process.env.SAML_ROLE_MAPPINGS_JSON);
-          roleMappings = { ...roleMappings, ...customMappings };
-        } catch (e) {
-          console.error('[SamlProvider] Invalid SAML_ROLE_MAPPINGS_JSON configuration:', e);
-        }
-      }
-
-      for (const group of rawGroups) {
-        if (roleMappings[group]) {
-          roleMappings[group].forEach(role => mappedRoles.add(role));
-        }
-      }
-      
-      // If no explicit mapping matched, default to basic 'User' if they authenticated successfully
-      if (mappedRoles.size === 0) {
-        mappedRoles.add('User');
-      }
+      // Zero-touch group to role mapping via GroupClaimRoleMapper
+      const mappedRoles = groupClaimRoleMapper.mapGroupsToRoles(rawGroups);
 
       return {
         id: String(profile.nameID || profile.sub || `saml_sub_${Date.now()}`),
         email: String(profile.email || profile.nameID || 'unknown@domain.com'),
         name: String(profile.displayName || profile.givenName || profile.nameID || 'SAML User'),
-        roles: Array.from(mappedRoles)
+        roles: mappedRoles
       };
     } catch (e: any) {
       console.error('[SamlProvider] SAML Validation Error:', e.message);
-      // Fallback for demonstration/dev if strictly needed and strict mode is off
       if (process.env.NODE_ENV === 'development' && process.env.SAML_STRICT_MODE !== 'true') {
         console.warn('[SamlProvider] Falling back to mock user due to development mode (SAML_STRICT_MODE is false).');
         return {

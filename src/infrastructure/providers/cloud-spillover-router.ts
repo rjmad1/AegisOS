@@ -1,22 +1,32 @@
 import { hardenedEventBus } from "@/infrastructure/events/event-bus";
-import { telemetryTracker } from "@/infrastructure/observability/telemetry";
+import { hardwareTelemetryBus, HardwareTelemetryPayload } from "@/infrastructure/events/hardware-telemetry-bus";
 import { GpuProvider } from "./infrastructure-providers";
 
 export interface SpilloverConfig {
   maxVramUsage: number;
   maxContextTokens: number;
   defaultCloudProvider: "anthropic" | "azure-openai";
+  maxVramVelocityRatioPerSec?: number; // Maximum allowed VRAM growth velocity before preemptive spillover
+}
+
+export interface TelemetrySample {
+  timestampMs: number;
+  vramUsedBytes: number;
+  vramTotalBytes: number;
+  usageRatio: number;
 }
 
 export class CloudSpilloverRouter {
   private config: SpilloverConfig;
   private lastVramMetrics: { free: number; total: number; usageRatio: number } | null = null;
+  private telemetryHistory: TelemetrySample[] = [];
 
   constructor(config?: Partial<SpilloverConfig>) {
     this.config = {
       maxVramUsage: 0.9, // 90%
       maxContextTokens: 32000,
       defaultCloudProvider: "azure-openai",
+      maxVramVelocityRatioPerSec: 0.15, // 15% VRAM growth rate per second triggers predictive spillover
       ...config
     };
 
@@ -29,17 +39,65 @@ export class CloudSpilloverRouter {
         if (evt.payload && evt.payload.vram) {
           const { free, total } = evt.payload.vram;
           const usageRatio = (total - free) / (total || 1);
-          this.lastVramMetrics = { free, total, usageRatio };
+          this.recordTelemetrySample({
+            timestampMs: Date.now(),
+            vramUsedBytes: total - free,
+            vramTotalBytes: total,
+            usageRatio
+          });
         }
       });
+
+      hardwareTelemetryBus.subscribe((payload: HardwareTelemetryPayload) => {
+        const usageRatio = payload.vramTotalBytes > 0 
+          ? payload.vramUsedBytes / payload.vramTotalBytes 
+          : 0;
+        this.recordTelemetrySample({
+          timestampMs: payload.timestampMs || Date.now(),
+          vramUsedBytes: payload.vramUsedBytes,
+          vramTotalBytes: payload.vramTotalBytes,
+          usageRatio
+        });
+      });
     } catch (e) {
-      console.warn("[CloudSpilloverRouter] Could not attach to hardenedEventBus telemetry feed.");
+      console.warn("[CloudSpilloverRouter] Could not attach to telemetry feed.");
     }
+  }
+
+  public recordTelemetrySample(sample: TelemetrySample): void {
+    this.lastVramMetrics = {
+      free: sample.vramTotalBytes - sample.vramUsedBytes,
+      total: sample.vramTotalBytes,
+      usageRatio: sample.usageRatio
+    };
+
+    this.telemetryHistory.push(sample);
+    // Keep last 60 seconds of telemetry
+    const cutoff = Date.now() - 60000;
+    this.telemetryHistory = this.telemetryHistory.filter(s => s.timestampMs >= cutoff);
+  }
+
+  /**
+   * Calculates current VRAM consumption velocity (ratio change per second).
+   */
+  public calculateVramVelocityRatioPerSec(): number {
+    if (this.telemetryHistory.length < 2) {
+      return 0;
+    }
+
+    const first = this.telemetryHistory[0];
+    const last = this.telemetryHistory[this.telemetryHistory.length - 1];
+    const timeDeltaSec = (last.timestampMs - first.timestampMs) / 1000;
+
+    if (timeDeltaSec <= 0) return 0;
+
+    const ratioDelta = last.usageRatio - first.usageRatio;
+    return ratioDelta / timeDeltaSec;
   }
 
   /**
    * Determines if a request should bypass local inference and spill over to a cloud provider
-   * based on context window size and available system resources.
+   * based on context window size, resource thresholds, and predictive VRAM consumption velocity.
    */
   public async shouldSpillover(model: any, promptTokens: number): Promise<boolean> {
     // 1. Check if prompt tokens exceed local maximum threshold
@@ -48,7 +106,15 @@ export class CloudSpilloverRouter {
       return true;
     }
 
-    // 2. Check if model size or current VRAM utilization exceeds thresholds using Real-Time Telemetry
+    // 2. Predictive Check: VRAM Consumption Velocity (Prevent OOM before it happens)
+    const velocity = this.calculateVramVelocityRatioPerSec();
+    const maxVelocity = this.config.maxVramVelocityRatioPerSec || 0.15;
+    if (velocity > maxVelocity) {
+      console.log(`[CloudSpilloverRouter] Predictive Spillover triggered: VRAM growth rate (${(velocity * 100).toFixed(1)}%/sec) exceeds safety threshold (${(maxVelocity * 100).toFixed(1)}%/sec).`);
+      return true;
+    }
+
+    // 3. Check live VRAM utilization and available memory
     try {
       const gpuProvider = new GpuProvider();
       const gpuData = await gpuProvider.getGpu();
@@ -99,10 +165,8 @@ export class CloudSpilloverRouter {
     console.log(`[CloudSpilloverRouter] Routing inference request to ${provider}...`);
 
     if (provider === "azure-openai") {
-      // Simulate Azure OpenAI routing
       return this.simulateAzureCall(prompt);
     } else {
-      // Simulate Anthropic routing
       return this.simulateAnthropicCall(prompt);
     }
   }

@@ -94,9 +94,10 @@ graph TD
 ## Active & Upcoming Roadmap Horizons
 
 ### NOW Horizon (Current Engineering Focus)
-1. **Real-Time Hardware Telemetry Event Bus**: Wiring Layer 0 CUDA telemetry directly into `CloudSpilloverRouter.ts` for precision VRAM failover thresholds.
-2. **SAML Group Claim Role Parsing**: Automating zero-touch RBAC mapping from Azure Entra ID group claims.
-3. **Legacy Code Cleanup**: Purging custom vector database (Raja RAG) remnants in favor of standard PgVector / MCP endpoints.
+1. **Real-Time Hardware Telemetry Event Bus**: ✅ Delivered — Piped Layer 0 CUDA telemetry directly into `CloudSpilloverRouter.ts` for predictive VRAM velocity spillover thresholds.
+2. **SAML Group Claim Role Parsing**: ✅ Delivered — `GroupClaimRoleMapper.ts` operationalized for zero-touch RBAC mapping from Azure Entra ID / IdP group claims.
+3. **Autonomic Self-Healing Daemon**: ✅ Delivered — Background runtime probe (`AutonomicSelfHealingDaemon.ts`) and REST control API (`/api/v1/system/autonomic-heal`).
+4. **Legacy Code Cleanup**: Purging custom vector database (Raja RAG) remnants in favor of standard PgVector / MCP endpoints.
 
 ### NEXT Horizon (Upcoming Milestone)
 1. **Conversa Multi-Agent Debate Topology**: Parallel consensus voting steps within `WorkflowService.ts` execution graphs.
