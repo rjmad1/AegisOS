@@ -1,4 +1,4 @@
-# ADR-011: Event-Driven System Decoupling
+# ADR-017: Event-Driven System Decoupling
 
 ## Status
 Approved

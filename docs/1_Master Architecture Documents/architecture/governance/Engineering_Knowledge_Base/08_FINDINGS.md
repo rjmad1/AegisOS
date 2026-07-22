@@ -12,7 +12,7 @@ This document tracks all audited review findings, their description, status, evi
 * **Source:** Final Architectural Certification Review (2026-07-21)
 * **Description:** Parallel workflow execution modules (`WorkflowRuntime` and `WorkflowService`) exist in the codebase, causing state synchronization drift.
 * **Status:** 🔴 **Open**
-* **Evidence:** Duplicate loops found in [WorkflowRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/WorkflowRuntime.ts) and [workflow.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts).
+* **Evidence:** Duplicate loops found in [WorkflowRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts) and [workflow.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts).
 * **Resolution:** Open backlog item to deprecate `WorkflowRuntime.ts`.
 
 #### F-02: Host Remote Code Execution via Extensions

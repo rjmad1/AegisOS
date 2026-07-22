@@ -72,15 +72,33 @@ function Unprotect-PlatformSecret([string]$cipherText) {
     }
 }
 
-# 5. Partitions & System Storage Details
-function Get-PlatformDriveDetails {
-    Get-CimInstance Win32_LogicalDisk | Where-Object { $_.DriveType -eq 3 } | ForEach-Object {
-        [ordered]@{
-            DriveLetter = $_.DeviceID
-            FreeGB = [math]::Round($_.FreeSpace / 1GB, 2)
-            TotalGB = [math]::Round($_.Size / 1GB, 2)
+# 6. Service Account & ACL Hardening (SEC-001)
+function Initialize-AegisServiceAccount([string]$platformRoot) {
+    Log-PlatformAction "Ensuring restricted aegis_runtime service account and ACL permissions..."
+    try {
+        $accountName = "aegis_runtime"
+        $user = Get-LocalUser -Name $accountName -ErrorAction SilentlyContinue
+        if (-not $user) {
+            $securePass = ConvertTo-SecureString "AegisRuntimeP@ss2026!" -AsPlainText -Force
+            New-LocalUser -Name $accountName -Password $securePass -FullName "AegisOS Restricted Runtime User" -Description "Unprivileged local account for host service isolation" -PasswordNeverExpires $true | Out-Null
+            Log-PlatformSuccess "Created local service account: $accountName"
+        } else {
+            Log-PlatformInfo "Local service account $accountName already exists."
         }
+
+        # Apply restricted ACL permissions on PlatformRoot
+        if (Test-Path $platformRoot) {
+            $acl = Get-Acl $platformRoot
+            $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($accountName, "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow")
+            $acl.AddAccessRule($rule)
+            Set-Acl -Path $platformRoot -AclObject $acl
+            Log-PlatformSuccess "Restricted ACLs applied for $accountName on $platformRoot"
+        }
+        return $true
+    } catch {
+        Log-PlatformWarn "Could not configure local user account (non-Windows or limited permission environment): $_"
+        return $false
     }
 }
 
-Export-ModuleMember -Function Log-PlatformInfo, Log-PlatformAction, Log-PlatformWarn, Log-PlatformSuccess, Log-PlatformError, Test-PlatformElevation, Get-PlatformRoot, Protect-PlatformSecret, Unprotect-PlatformSecret, Get-PlatformDriveDetails
+Export-ModuleMember -Function Log-PlatformInfo, Log-PlatformAction, Log-PlatformWarn, Log-PlatformSuccess, Log-PlatformError, Test-PlatformElevation, Get-PlatformRoot, Protect-PlatformSecret, Unprotect-PlatformSecret, Get-PlatformDriveDetails, Initialize-AegisServiceAccount

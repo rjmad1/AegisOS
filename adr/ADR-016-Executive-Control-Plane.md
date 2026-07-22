@@ -1,4 +1,4 @@
-# ADR-010: Executive Control Plane
+# ADR-016: Executive Control Plane
 
 ## Status
 Approved

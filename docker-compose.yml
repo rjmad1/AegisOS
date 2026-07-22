@@ -84,7 +84,7 @@ services:
     container_name: aegisos-ollama
     restart: always
     ports:
-      - "${HOST_PORT_OLLAMA:-11434}:11434"
+      - "127.0.0.1:${HOST_PORT_OLLAMA:-11434}:11434"
     volumes:
       - ollama_data:/root/.ollama
     networks:
@@ -100,7 +100,7 @@ services:
     environment:
       - OLLAMA_API_BASE=http://ollama:11434
     ports:
-      - "${HOST_PORT_LITELLM:-4000}:4000"
+      - "127.0.0.1:${HOST_PORT_LITELLM:-4000}:4000"
     volumes:
       - ./configs/litellm:/app/configs
     networks:

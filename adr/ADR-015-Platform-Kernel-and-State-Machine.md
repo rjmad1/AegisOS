@@ -1,4 +1,4 @@
-# ADR-009: Platform Kernel and State Machine
+# ADR-015: Platform Kernel and State Machine
 
 ## Status
 Accepted

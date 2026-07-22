@@ -120,12 +120,12 @@ cat icon.svg | grep -E '<(path|g|rect|circle|ellipse|line|polyline)' | head -30
 
 | Strategy | Best For | Technique | Reference |
 |---|---|---|---|
-| **Draw On** | Stroke icons, signatures | Trim Path | [references/shape-modifiers.md](references/shape-modifiers.md) |
+| **Draw On** | Stroke icons, signatures | Trim Path | [#shape-modifiers](#shape-modifiers) |
 | **Pop In** | Logos, buttons | Scale + Opacity | [references/disney-principles.md](references/disney-principles.md) |
 | **Morph** | Icon transitions (hamburger→X) | Path keyframes | [references/professional-techniques.md](references/professional-techniques.md) |
 | **Stagger** | Multiple elements | Delayed start times | [references/disney-principles.md](references/disney-principles.md) |
 | **Character** | People, mascots | Parenting + bone hierarchy | [references/professional-techniques.md](references/professional-techniques.md) |
-| **Loader** | Progress, spinners | Rotation + Trim Path | [references/shape-modifiers.md](references/shape-modifiers.md) |
+| **Loader** | Progress, spinners | Rotation + Trim Path | [#shape-modifiers](#shape-modifiers) |
 | **Frame-by-Frame** | Walk/run cycles, complex characters | `ip`/`op` layer switching | [references/professional-techniques.md](references/professional-techniques.md) |
 
 ---
@@ -182,7 +182,7 @@ echo "Open in: https://lottiefiles.com/preview"
 
 ## Shape Modifiers
 
-See: [references/shape-modifiers.md](references/shape-modifiers.md)
+See: [#shape-modifiers](#shape-modifiers)
 
 ### Trim Path (Icon Drawing Animation)
 

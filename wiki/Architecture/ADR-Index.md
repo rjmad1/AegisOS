@@ -25,8 +25,8 @@
 | [ADR-007](../../adr/ADR-007-Portable-Configuration-Architecture.md) | Portable Configuration Architecture | Accepted |
 | [ADR-008](../../adr/ADR-008-Platform-Asset-Catalog-Design.md) | Platform Asset Catalog Design | Accepted |
 | [ADR-009](../../adr/ADR-009-Autonomic-Operating-System-Architecture.md) | Autonomic Operating System Architecture | Approved |
-| [ADR-010](../../adr/ADR-010-Executive-Control-Plane.md) | Executive Control Plane | Accepted |
-| [ADR-011](../../adr/ADR-011-Event-Driven-System-Decoupling.md) | Event-Driven System Decoupling | Accepted |
+| [ADR-010](../../adr/ADR-016-Executive-Control-Plane.md) | Executive Control Plane | Accepted |
+| [ADR-011](../../adr/ADR-017-Event-Driven-System-Decoupling.md) | Event-Driven System Decoupling | Accepted |
 | [ADR-012](../../adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md) | Cognitive Observability & Continuous Evaluation | Accepted |
 | [ADR-013](../../adr/ADR-013-Command-And-Control-Subsystem.md) | Command & Control Subsystem Architecture | Accepted |
 

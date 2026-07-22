@@ -38,7 +38,7 @@ Staged and committed changes are organized into the following logical boundaries
   - [event-bus.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/events/event-bus.ts) â€” mTLS signature checks.
 - **AI Runtime & Workflows**:
   - [AIRuntimeKernel.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/AIRuntimeKernel.ts) â€” Circuit breaking, grounding, and budgets checking.
-  - [WorkflowRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/WorkflowRuntime.ts) â€” DB workflow persistence and saga checkpoints.
+  - [WorkflowRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts) â€” DB workflow persistence and saga checkpoints.
 - **Release Engineering & Installers**:
   - [generate-release-assets.js](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/generate-release-assets.js) â€” Release bundler.
   - [install-windows.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/install-windows.ps1) â€” Windows fleet installer.

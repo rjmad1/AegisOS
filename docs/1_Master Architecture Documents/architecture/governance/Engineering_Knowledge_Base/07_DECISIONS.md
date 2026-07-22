@@ -45,7 +45,7 @@ All architectural designs are recorded as markdown specifications in the [adr/](
 * **Status:** 🟢 Active
 * **Context:** Establishes the 7-layer stack, preventing higher planes from leaking into or depending on lower layers.
 
-#### [ADR-009 (Kernel): Platform Kernel and State Machine](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Platform-Kernel-and-State-Machine.md)
+#### [ADR-009 (Kernel): Platform Kernel and State Machine](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-015-Platform-Kernel-and-State-Machine.md)
 * **Status:** 🟢 Active
 * **Context:** Outlines FSM lifecycle transitions (`starting`, `running`, `healing`, `stopped`, `failed`) for component nodes.
 
@@ -53,7 +53,7 @@ All architectural designs are recorded as markdown specifications in the [adr/](
 * **Status:** 🟢 Active
 * **Context:** Limits CPU, memory, and model tokens allocated per workspace, user session, and execution node.
 
-#### [ADR-010 (ECP): Executive Control Plane](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-010-Executive-Control-Plane.md)
+#### [ADR-010 (ECP): Executive Control Plane](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-016-Executive-Control-Plane.md)
 * **Status:** 🟢 Active
 * **Context:** Implements stateless policy enforcers to intercept, sanitize, and validate prompt-response chains.
 
@@ -61,7 +61,7 @@ All architectural designs are recorded as markdown specifications in the [adr/](
 * **Status:** 🟢 Active
 * **Context:** Standardizes system RBAC rules and scopes mapping users to actions.
 
-#### [ADR-011 (Event): Event-Driven System Decoupling](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-011-Event-Driven-System-Decoupling.md)
+#### [ADR-011 (Event): Event-Driven System Decoupling](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-017-Event-Driven-System-Decoupling.md)
 * **Status:** 🟢 Active
 * **Context:** Declares a centralized Event Bus separating kernel operations from SRE auditing and dashboard updates.
 
@@ -69,7 +69,7 @@ All architectural designs are recorded as markdown specifications in the [adr/](
 * **Status:** 🟢 Active
 * **Context:** Measures model output accuracy and grounding to auto-calculate quality scorecards.
 
-#### [ADR-012 (Context): Immutable Execution Context Fabric](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-012-Immutable-Execution-Context-Fabric.md)
+#### [ADR-012 (Context): Immutable Execution Context Fabric](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-018-Immutable-Execution-Context-Fabric.md)
 * **Status:** 🟢 Active
 * **Context:** Propagates request metadata, correlation IDs, and trace contexts down the execution stack.
 

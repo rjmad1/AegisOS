@@ -16,6 +16,6 @@
 7. **[ADR-007: Portable Config](file:///D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-007-Portable-Configuration-Architecture.md)** - Accepted
 8. **[ADR-008: Asset Catalog](file:///D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-008-Platform-Asset-Catalog-Design.md)** - Accepted
 9. **[ADR-009: 7-Layered Stack](file:///D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md)** - Accepted
-10. **[ADR-010: Executive Control Plane](file:///D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-010-Executive-Control-Plane.md)** - Accepted
-11. **[ADR-011: Event Decoupling](file:///D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-011-Event-Driven-System-Decoupling.md)** - Accepted
+10. **[ADR-010: Executive Control Plane](file:///D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-016-Executive-Control-Plane.md)** - Accepted
+11. **[ADR-011: Event Decoupling](file:///D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-017-Event-Driven-System-Decoupling.md)** - Accepted
 12. **[ADR-012: Cognitive Telemetry](file:///D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md)** - Accepted

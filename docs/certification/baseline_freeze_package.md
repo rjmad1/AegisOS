@@ -21,8 +21,8 @@ These SHA-256 checksums lock down the core specifications, configurations, schem
 | **schema.prisma** | [schema.prisma](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/prisma/schema.prisma) | `566B1B8B7F88AA4D0065547C1E13C4E97A191716BD6DB445E09697D4C232248B` |
 | **package.json** | [package.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/package.json) | `7F376C7C57A3457CC4E61AAFF5E81E613F6CBF823F7E7E24F80E9F315F743466` |
 | **ADR-009** | [ADR-009-Autonomic-Operating-System-Architecture.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md) | `8FF748CEF256375A8C75C84BB7C647509FE4539296CFE7F11C0D50F5A7BF1E58` |
-| **ADR-010** | [ADR-010-Executive-Control-Plane.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-010-Executive-Control-Plane.md) | `A74F5F69CB78A0C5478C24DCB593CBB4A6F753C68DF403AB2BB96AD74DBBB596` |
-| **ADR-011** | [ADR-011-Event-Driven-System-Decoupling.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-011-Event-Driven-System-Decoupling.md) | `89A3CCD7B238A514FE58AA5E8A89574C4806157FCA31AF77A9BC9CE373A499B0` |
+| **ADR-010** | [ADR-016-Executive-Control-Plane.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-016-Executive-Control-Plane.md) | `A74F5F69CB78A0C5478C24DCB593CBB4A6F753C68DF403AB2BB96AD74DBBB596` |
+| **ADR-011** | [ADR-017-Event-Driven-System-Decoupling.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-017-Event-Driven-System-Decoupling.md) | `89A3CCD7B238A514FE58AA5E8A89574C4806157FCA31AF77A9BC9CE373A499B0` |
 | **ADR-012** | [ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md) | `276972EC6516847D97FBA47CAB006C12A8EA60453BFDA30B5375478FC8F081B5` |
 | **MASTER_DELIVERABLES.md** | [MASTER_DELIVERABLES.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/autonomic_transformation/MASTER_DELIVERABLES.md) | `713722A5690DFFC0ACFDE302B457D1767FFD57A941D9ADF2D3FBCD14A1243618` |
 

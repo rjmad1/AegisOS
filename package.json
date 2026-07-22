@@ -21,9 +21,9 @@
     "validate:architecture": "npm run test:architecture",
     "validate:qualification": "npm run pvp",
     "test:e2e": "npx playwright test",
-    "validate:docs": "echo 'Docs validation passed'",
+    "validate:docs": "node scripts/validate-docs.js",
     "validate:marketplace": "node scripts/verify-supply-chain.js",
-    "validate:sdks": "echo 'SDK validation passed'",
+    "validate:sdks": "node scripts/validate-sdks.js",
     "generate:sdks": "bash ./scripts/generate-sdks.sh",
     "build:cli": "node ./scripts/platform-cli.js build"
   },

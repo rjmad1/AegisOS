@@ -1,18 +1,35 @@
-# AegisOS Code Owners
-# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# AegisOS Global Code Owners Policy
+# Supreme Engineering Authority & Module Owners
 
-# Default owner for everything
-* @rjmad1
+# Global fallback for all files
+* @rjmad1/aegis-core-architects
 
-# Security-sensitive files require explicit review
-SECURITY.md @rjmad1
-.github/workflows/ @rjmad1
-src/infrastructure/security/ @rjmad1
-src/platform/auth/ @rjmad1
-src/proxy.ts @rjmad1
-k8s/ @rjmad1
-helm/ @rjmad1
-Dockerfile* @rjmad1
-docker-compose*.yml @rjmad1
-.env.example @rjmad1
-prisma/schema.prisma @rjmad1
+# Platform Architecture & Engineering Constitution
+/docs/ENGINEERING_CONSTITUTION.md @rjmad1/aegis-core-architects
+/docs/ @rjmad1/aegis-docs-team
+/adr/ @rjmad1/aegis-core-architects
+
+# Monorepo Packages
+/apps/ @rjmad1/aegis-platform-team
+/packages/ @rjmad1/aegis-platform-team
+/agents/ @rjmad1/aegis-autonomy-team
+
+# Web Administration Console & Core Source
+/src/ @rjmad1/aegis-frontend-team @rjmad1/aegis-platform-team
+/src/app/api/ @rjmad1/aegis-security-team @rjmad1/aegis-platform-team
+/src/enterprise/ @rjmad1/aegis-enterprise-team
+
+# Mobile Companion App
+/aegis_mobile/ @rjmad1/aegis-mobile-team
+
+# Automation & Infrastructure
+/automation/ @rjmad1/aegis-devops-team
+/k8s/ @rjmad1/aegis-devops-team
+/helm/ @rjmad1/aegis-devops-team
+/Caddyfile @rjmad1/aegis-security-team
+/docker-compose*.yml @rjmad1/aegis-devops-team
+
+# Security & Compliance
+/SECURITY.md @rjmad1/aegis-security-team
+/.gitleaksignore @rjmad1/aegis-security-team
+/public/CycloneDX-SBOM.json @rjmad1/aegis-security-team

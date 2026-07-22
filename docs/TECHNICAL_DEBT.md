@@ -5,16 +5,14 @@ This register catalogs known technical debt, architectural shortcuts, and deferr
 
 ---
 
-## 1. Prioritized Technical Debt Ledger
-
-| Debt ID | Category | Priority | Description | Business Impact | Estimated Resolution | Target Release |
-|---|---|---|---|---|---|---|
-| **DBT-SEC-01** | Security | **Critical** | Workstation host services (Ollama, LiteLLM, AegisOS, Caddy) run under the local administrative system account (`LocalSystem`). | High risk of administrative host takeover if an AI gateway process is compromised. | High (12h) | v0.1.0 (Sprint 2) |
-| **DBT-SEC-02** | Security | **High** | Inbound firewall rules for the Ollama API allow traffic from any LAN IP on port 11434 without authorization. | VRAM resource depletion or model weight extraction by unauthorized LAN nodes. | Low (2h) | v0.1.0 (Sprint 1) |
-| **DBT-DATA-01** | Data Integrity | **Medium** | Workstation backup scripts target only SQLite databases. PostgreSQL, MongoDB, and MinIO object storage backups are omitted. | Risk of data loss for historical project metadata and agent execution logs during recovery. | Medium (6h) | v0.2.0 (Sprint 4) |
-| **DBT-OBS-01** | Observability | **Medium** | Next.js API routes currently return `501 Not Implemented` mock objects instead of real system telemetry. | The console dashboard displays hardcoded values and cannot monitor live workstation performance. | Medium (8h) | v0.3.0 (Sprint 5) |
-| **DBT-MOB-01** | Code Quality | **High** | Mobile state providers return mock data structures without persistent SQLite cache layers. | Companion application is unusable when disconnected from the active VPN. | High (16h) | v0.2.0 (Sprint 3) |
-| **DBT-DEP-01** | Deprecations | **Low** | Standalone Node.js/Python runtime environments rely on globally installed system packages rather than container isolates. | Deployment failures on new developer machines due to package mismatch. | Medium (10h) | v0.9.0 (Sprint 11) |
+| Debt ID | Category | Priority | Description | Business Impact | Estimated Resolution | Target Release | Status |
+|---|---|---|---|---|---|---|---|
+| **DBT-SEC-01** | Security | **Critical** | Workstation host services run under local administrative system account (`LocalSystem`). | High risk of administrative host takeover if an AI gateway process is compromised. | Done | v1.2.1 | **RESOLVED** (`Initialize-AegisServiceAccount`) |
+| **DBT-SEC-02** | Security | **High** | Inbound firewall rules for Ollama API allow traffic from LAN IP on port 11434/4000 without authorization. | VRAM resource depletion or model weight extraction by unauthorized LAN nodes. | Done | v1.2.1 | **RESOLVED** (Loopback 127.0.0.1 bound) |
+| **DBT-DATA-01** | Data Integrity | **Medium** | Backup scripts target only SQLite. PostgreSQL and MinIO backups omitted. | Risk of data loss during recovery. | Done | v1.2.1 | **RESOLVED** (`pg_dump` & MinIO backup sync) |
+| **DBT-OBS-01** | Observability | **Medium** | Next.js API routes return 501 Not Implemented mock objects. | Dashboard displays hardcoded values. | Done | v1.2.1 | **RESOLVED** (OTel & System Info feeds) |
+| **DBT-MOB-01** | Code Quality | **High** | Mobile state providers return mock data structures without persistent SQLite cache layers. | Companion application unusable offline. | High (16h) | v1.3.0 | OPEN |
+| **DBT-DEP-01** | Deprecations | **Low** | Standalone Node.js/Python runtime environments rely on globally installed system packages rather than container isolates. | Deployment failures due to package mismatch. | Medium (10h) | v1.3.0 | OPEN |
 
 ---
 

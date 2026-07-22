@@ -76,5 +76,5 @@ All architectural designs are recorded in [adr/](adr/). Key decisions include:
 
 *   [ADR-001: Contract-First API](adr/ADR-001-Contract-First-Versioned-API-Boundaries.md) — Enforces versioned `/api/v1/` routes.
 *   [ADR-009: 7-Layered Stack](adr/ADR-009-Autonomic-Operating-System-Architecture.md) — Establishes strict hierarchical layering.
-*   [ADR-010: Executive Control Plane](adr/ADR-010-Executive-Control-Plane.md) — Outlines Layer 5 stateless policy enforcers.
+*   [ADR-010: Executive Control Plane](adr/ADR-016-Executive-Control-Plane.md) — Outlines Layer 5 stateless policy enforcers.
 *   [ADR-013: Command & Control Subsystem](adr/ADR-013-Command-And-Control-Subsystem.md) — Defines signed mobile/remote approvals.

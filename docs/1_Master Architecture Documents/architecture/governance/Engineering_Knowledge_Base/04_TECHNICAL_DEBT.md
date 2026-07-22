@@ -30,7 +30,7 @@ This register tracks structural, security, implementation, and architectural tec
 * **Severity:** Medium | **Priority:** High
 * **Status:** 🟡 **Active (Under Engineering Focus - Sprint 1)**
 * **Opened:** 2026-07-21 | **Owner:** Infrastructure Engineering
-* **Evidence:** [CloudSpilloverRouter.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/CloudSpilloverRouter.ts)
+* **Evidence:** [CloudSpilloverRouter.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/cloud-spillover-router.ts)
 * **Mitigation Plan:** Wire Layer 0 CUDA telemetry event bus directly into the router for precision free VRAM failover evaluation.
 
 #### [TD-07] Manual SAML Assertion Group Claim Role Assignment

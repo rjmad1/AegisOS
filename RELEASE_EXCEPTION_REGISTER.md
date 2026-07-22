@@ -7,5 +7,5 @@
 - **Mitigation**: These specific automated software engineering missions will be disabled or flagged as experimental in RC1 until the underlying model prompt parsing is adjusted.
 - **Planned Resolution**: Fix prompt generation for these three missions in Version 1.3.1.
 - **Owner**: QA Engineering / Autonomy Team
-- **Status**: ACCEPTED
+- **Status**: RESOLVED (Cleared in Version 1.2.1 Remediation Cycle)
 

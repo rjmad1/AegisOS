@@ -405,6 +405,6 @@ The main index has been updated to reference these master transformation deliver
 
 Refer to the newly created ADR records in the repository's adr/ directory:
 * **[ADR-009: 7-Layered Autonomic Stack](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md)**
-* **[ADR-010: Control Plane Middleware](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-010-Executive-Control-Plane.md)**
-* **[ADR-011: Event Bus Integration](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-011-Event-Driven-System-Decoupling.md)**
+* **[ADR-010: Control Plane Middleware](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-016-Executive-Control-Plane.md)**
+* **[ADR-011: Event Bus Integration](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-017-Event-Driven-System-Decoupling.md)**
 * **[ADR-012: Cognitive Telemetry Scorecards](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md)**
