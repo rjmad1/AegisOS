@@ -20,15 +20,17 @@ describe('AegisOS Platform Validation Engines', () => {
 
     // Register mock providers for testing to avoid actual docker/service calls
     faultProviderRegistry.register({
-      id: 'service-fault-provider',
+      providerId: 'service-fault-provider',
+      supportedCategories: [],
       inject: async () => true,
       recover: async () => true
-    });
+    } as any);
     faultProviderRegistry.register({
-      id: 'latency-fault-provider',
+      providerId: 'latency-fault-provider',
+      supportedCategories: [],
       inject: async () => true,
       recover: async () => true
-    });
+    } as any);
   });
 
   describe('Chaos Experiment Engine', () => {
@@ -56,7 +58,7 @@ describe('AegisOS Platform Validation Engines', () => {
 
     it('should execute Quick endurance validation soak', async () => {
       // Set test environment variable so duration is scaled down to 2s
-      process.env.NODE_ENV = 'test';
+      Object.assign(process.env, { NODE_ENV: 'test' });
       const result = await enduranceOrchestrator.execute('quick');
       expect(result.domain).toBe('endurance');
       expect(result.status).toBe('PASS');

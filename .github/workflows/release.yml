@@ -1,0 +1,73 @@
+name: AegisOS Release Automation
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  release:
+    name: Automated Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Quality Gates (Tests & Lint)
+        run: |
+          npm run test
+          npm run lint
+
+      - name: Architecture Validation
+        run: npm run validate:architecture
+
+      - name: Generate Changelog
+        id: changelog
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dry_run: true
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          file: package.json
+          output-file: aegis-sbom.spdx.json
+          format: spdx-json
+
+      - name: Generate SDKs
+        run: npm run generate:sdks
+
+      - name: Package Signed CLI Binaries
+        run: |
+          npm run build:cli
+          # Placeholder for Cosign/Sigstore signing logic
+          echo "Signing binaries..." > signature.pub
+
+      - name: Create Release Bundles
+        run: |
+          tar -czvf aegis-release-bundle.tar.gz ./dist ./aegis-sbom.spdx.json ./docs
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            aegis-release-bundle.tar.gz
+            aegis-sbom.spdx.json
+          body: ${{ steps.changelog.outputs.changelog }}
+          generate_release_notes: true

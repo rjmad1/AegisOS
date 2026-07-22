@@ -8,6 +8,7 @@
 import { createHash } from 'crypto';
 import type { ExtendedReleaseManifest } from './release-manifest';
 import { EvidenceGraph } from './evidence-graph';
+import { trustAuthorityService } from './TrustAuthorityService';
 
 export interface VerificationReport {
   isValid: boolean;
@@ -37,28 +38,22 @@ export class ReleaseVerifier {
       errors.push('Manifest is missing critical identification fields (version, gitSha, or evidenceGraphRootHash)');
     }
 
-    // 2. Signature verification
+    // 2. Signature verification utilizing TrustAuthorityService
     if (manifest.signature) {
-      const sig = manifest.signature;
-      if (sig.signatureAlgorithm === 'HMAC-SHA256') {
-        const payload = JSON.stringify({
-          version: manifest.version,
-          gitSha: manifest.gitSha,
-          evidenceGraphRootHash: manifest.evidenceGraphRootHash,
-          qualificationDecision: manifest.qualificationDecision,
-          timestamp: manifest.timestamp,
-          salt: 'aegisos-trust-anchor' // matching Sha256Signer default salt
-        });
-        const expectedHash = createHash('sha256').update(payload).digest('hex');
-        if (sig.signedHash !== expectedHash) {
+      try {
+        const sig = manifest.signature;
+        const trustManifest = trustAuthorityService.verifyArtifactTrust(
+          manifest.version,
+          manifest,
+          sig.signedHash
+        );
+        if (trustManifest.trustLevel < 50) {
           signatureVerified = false;
-          errors.push(`Signature hash mismatch. Expected ${expectedHash}, found ${sig.signedHash}`);
+          errors.push(`Artifact trust level too low: ${trustManifest.trustLevel}`);
         }
-      } else if (sig.signatureAlgorithm === 'NONE') {
-        // Warning or error depending on mode. Let's flag as warning-only but valid signature for dev.
-      } else {
+      } catch (err: any) {
         signatureVerified = false;
-        errors.push(`Unsupported signature algorithm: ${sig.signatureAlgorithm}`);
+        errors.push(`Signature verification failed: ${err.message}`);
       }
     } else {
       signatureVerified = false;
@@ -102,3 +97,4 @@ export class ReleaseVerifier {
     };
   }
 }
+

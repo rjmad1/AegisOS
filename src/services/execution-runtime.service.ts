@@ -409,9 +409,14 @@ export class ExecutionRuntimeService {
 
     if (execution.workflowReference?.workflowId) {
       try {
-        const { default: WorkflowRuntime } = await import("../platform/ai-runtime/WorkflowRuntime");
-        const runtime = WorkflowRuntime.getInstance();
-        await runtime.compensateSaga(executionId, 0);
+        const { workflowService } = await import("./workflow.service");
+        if (execution.workflowReference.runId) {
+          const wfExec = await workflowService.getExecution(execution.workflowReference.runId);
+          if (wfExec) {
+            wfExec.status = "cancelled";
+            await workflowService.saveExecution(wfExec);
+          }
+        }
       } catch (err: any) {
         console.error(`[ExecutionRuntimeService] Compensation execution failed:`, err.message);
       }

@@ -1,7 +1,5 @@
 import { OperationsMetrics } from "./types";
 import { AgentRuntime } from "./AgentRuntime";
-import { WorkflowRuntime } from "./WorkflowRuntime";
-
 export class AIOperationsDashboard {
   private static instance: AIOperationsDashboard | null = null;
 

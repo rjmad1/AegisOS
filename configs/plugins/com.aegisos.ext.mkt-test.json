@@ -1,0 +1,18 @@
+{
+  "id": "com.aegisos.ext.mkt-test",
+  "name": "Marketplace Install Extension",
+  "version": "1.0.0",
+  "manifestVersion": "1.0",
+  "capabilities": [
+    "mkt-install-cap"
+  ],
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "configSchema": {
+    "type": "object"
+  },
+  "permissions": [
+    "*"
+  ]
+}

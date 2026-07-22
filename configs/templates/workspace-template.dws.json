@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "workspaceName": "aegisos-developer-sandbox",
+  "requiredVersion": "1.0.0",
+  "releaseChannel": "developer",
+  "runtimes": {
+    "node": "^18.0.0 || ^20.0.0 || ^22.0.0",
+    "python": ">=3.10.0"
+  },
+  "packages": [
+    { "name": "@aegisos/sdk", "version": "latest" },
+    { "name": "@aegisos/cli", "version": "latest" }
+  ],
+  "mockServices": {
+    "ollama": { "port": 11434, "mockModels": ["gemma2:9b", "qwen2.5:14b"] },
+    "litellm": { "port": 4000 },
+    "federation": { "enabled": true, "mockPeers": 3 }
+  },
+  "qualificationGates": [
+    "unit-tests",
+    "lint-rules",
+    "security-audit"
+  ]
+}

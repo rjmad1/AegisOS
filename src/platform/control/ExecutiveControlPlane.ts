@@ -11,14 +11,14 @@ import { AgentRuntime } from "../ai-runtime/AgentRuntime";
 import { EvaluationPlatform } from "../ai-runtime/EvaluationPlatform";
 import { KnowledgeRuntime } from "../ai-runtime/KnowledgeRuntime";
 import { MemoryPlatform } from "../ai-runtime/MemoryPlatform";
-import { WorkflowRuntime } from "../ai-runtime/WorkflowRuntime";
+import { workflowService } from "../../services/workflow.service";
 import { RuntimeHealthFramework } from "../ai-runtime/RuntimeHealthFramework";
 
 export class ExecutiveControlPlane {
   private static instance: ExecutiveControlPlane | null = null;
   private readonly models = ModelRuntime.getInstance();
   private readonly agents = AgentRuntime.getInstance();
-  private readonly workflows = WorkflowRuntime.getInstance();
+  private readonly workflows = workflowService;
   private readonly knowledge = KnowledgeRuntime.getInstance();
   private readonly memories = MemoryPlatform.getInstance();
   private readonly evaluation = EvaluationPlatform.getInstance();
@@ -133,7 +133,7 @@ export class ExecutiveControlPlane {
     }
 
     if (request.workflowId) {
-      const workflow = this.workflows.getWorkflow(request.workflowId);
+      const workflow = await this.workflows.getWorkflow(request.workflowId);
       if (!workflow) {
         throw new Error(`ExecutiveControlPlane: Selected workflow "${request.workflowId}" is not registered.`);
       }

@@ -2,11 +2,11 @@ import { IQualificationProvider, QualificationRequest } from '../core/types';
 import { chaosOrchestrator } from '../../validation/chaos/orchestrator';
 import { enduranceOrchestrator } from '../../validation/endurance/orchestrator';
 import { scalabilityOrchestrator } from '../../validation/scalability/orchestrator';
-import type { ValidationResult } from '../../validation/types';
+import type { ValidationResult, ValidationDomain } from '../../validation/types';
 
 export class ChaosQualificationProvider implements IQualificationProvider {
   public readonly providerId = 'chaos';
-  public readonly supportedDomains = ['chaos'];
+  public readonly supportedDomains: ValidationDomain[] = ['chaos'];
   public readonly dependencies = [];
 
   public async execute(request: QualificationRequest): Promise<ValidationResult> {
@@ -17,7 +17,7 @@ export class ChaosQualificationProvider implements IQualificationProvider {
 
 export class EnduranceQualificationProvider implements IQualificationProvider {
   public readonly providerId = 'endurance';
-  public readonly supportedDomains = ['endurance'];
+  public readonly supportedDomains: ValidationDomain[] = ['endurance'];
   public readonly dependencies = [];
 
   public async execute(request: QualificationRequest): Promise<ValidationResult> {
@@ -28,7 +28,7 @@ export class EnduranceQualificationProvider implements IQualificationProvider {
 
 export class ScalabilityQualificationProvider implements IQualificationProvider {
   public readonly providerId = 'scalability';
-  public readonly supportedDomains = ['scalability'];
+  public readonly supportedDomains: ValidationDomain[] = ['scalability'];
   public readonly dependencies = [];
 
   public async execute(request: QualificationRequest): Promise<ValidationResult> {

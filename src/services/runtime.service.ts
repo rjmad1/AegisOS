@@ -36,7 +36,9 @@ export const DEFAULT_MCP_SERVERS = [
   { name: "git", enabled: true, command: "npx @modelcontextprotocol/server-git" },
   { name: "sqlite", enabled: true, command: "npx @modelcontextprotocol/server-sqlite" },
   { name: "puppeteer", enabled: true, command: "npx @modelcontextprotocol/server-puppeteer" },
-  { name: "raja-knowledge-repository", enabled: true, command: "python mcp_server.py" },
+  { name: "sharepoint", enabled: true, command: "npx @modelcontextprotocol/server-sharepoint" },
+  { name: "onedrive", enabled: true, command: "npx @modelcontextprotocol/server-onedrive" },
+  { name: "outlook", enabled: true, command: "npx @modelcontextprotocol/server-outlook" },
   
   // 34 Unique New MCP Servers
   { name: "confluence", enabled: true, command: "npx @modelcontextprotocol/server-confluence" },

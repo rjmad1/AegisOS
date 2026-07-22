@@ -1,13 +1,12 @@
 import { NextRequest } from "next/server";
 import { workflowService } from "@/services/workflow.service";
-import { workflowService } from "@/services/workflow.service";
 import { formatErrorResponse } from "@/utils/api-helper";
 import { ValidationError, NotFoundError } from "@/utils/errors";
 
 export async function GET(request: NextRequest) {
   try {
     const list = await workflowService.getApprovals();
-    list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    list.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return Response.json(list);
   } catch (err: any) {
     return formatErrorResponse(err);

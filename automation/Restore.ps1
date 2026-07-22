@@ -60,7 +60,17 @@ if ($BackupPath.EndsWith(".zip", [System.StringComparison]::OrdinalIgnoreCase)) 
 
 try {
     # 3. Phase: Prerequisites
-    Log-PlatformAction "[Phase 1/9] Verifying Prerequisites..."
+    Log-PlatformAction "[Phase 1/9] Verifying Prerequisites & Policies..."
+    
+    # Load Compliance Policies
+    $policiesPath = Join-Path $PSScriptRoot "..\configs\enterprise-policies.json"
+    if (Test-Path $policiesPath) {
+        $policies = Get-Content $policiesPath -Raw | ConvertFrom-Json
+        if ($null -ne $policies.policies.compliance -and $policies.policies.compliance.policyEnforcement -eq "active") {
+            Log-PlatformInfo "Compliance Policy Enforcement is ACTIVE. Verifying recovery bundle..."
+        }
+    }
+
     $installScript = Join-Path $PSScriptRoot "Install.ps1"
     if (Test-Path $installScript) {
         $installArgs = @("-PlatformRoot", $PlatformRoot)

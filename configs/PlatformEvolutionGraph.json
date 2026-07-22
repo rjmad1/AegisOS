@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "versions": {
+    "1.0.0": {
+      "releaseChannel": "stable",
+      "architectureVersion": "1.0.0",
+      "schemaVersion": "1",
+      "allowedUpgradePaths": ["1.1.0", "1.2.0"],
+      "rollbackPath": null
+    },
+    "1.1.0": {
+      "releaseChannel": "stable",
+      "architectureVersion": "1.0.0",
+      "schemaVersion": "2",
+      "allowedUpgradePaths": ["1.2.0"],
+      "rollbackPath": "1.0.0"
+    },
+    "1.2.0": {
+      "releaseChannel": "stable",
+      "architectureVersion": "1.0.0",
+      "schemaVersion": "3",
+      "allowedUpgradePaths": [],
+      "rollbackPath": "1.1.0"
+    }
+  },
+  "compatibilityRules": {
+    "minNodeVersion": "v18.0.0",
+    "minPythonVersion": "3.10.0",
+    "minDockerVersion": "20.10.0"
+  }
+}

@@ -9,13 +9,14 @@ export interface SystemNotification {
   read: boolean;
 }
 
-export type PersonaPerspective =
-  | "developer"
-  | "research"
-  | "product"
-  | "operations"
-  | "executive"
-  | "personal";
+export type AdaptiveMode =
+  | "explore"
+  | "build"
+  | "operate"
+  | "govern"
+  | "manage"
+  | "analyze"
+  | "automate";
 
 interface AppState {
   sidebarCollapsed: boolean;
@@ -23,12 +24,16 @@ interface AppState {
   notifications: SystemNotification[];
   systemStatus: "healthy" | "degraded" | "failed";
   activeNavId: string;
-  activePerspective: PersonaPerspective;
+  activeMode: AdaptiveMode;
+  contextPacks: Record<string, boolean>;
+  activePerspective: string;
   setSidebarCollapsed: (collapsed: boolean) => void;
   toggleSidebar: () => void;
+  setActivePerspective: (perspective: string) => void;
   setTheme: (theme: "light" | "dark" | "high-contrast") => void;
   setActiveNavId: (id: string) => void;
-  setActivePerspective: (perspective: PersonaPerspective) => void;
+  setActiveMode: (mode: AdaptiveMode) => void;
+  setContextPack: (pack: string, enabled: boolean) => void;
   addNotification: (notification: Omit<SystemNotification, "id" | "timestamp" | "read">) => void;
   markAllNotificationsRead: () => void;
   clearNotifications: () => void;
@@ -39,7 +44,9 @@ export const useAppStore = create<AppState>((set) => ({
   theme: "dark",
   systemStatus: "healthy",
   activeNavId: "dashboard",
-  activePerspective: "developer",
+  activeMode: "operate",
+  activePerspective: "default",
+  contextPacks: { "debug-tools": false, "high-density": true },
   notifications: [
     {
       id: "nt-01",
@@ -79,7 +86,11 @@ export const useAppStore = create<AppState>((set) => ({
     set({ theme });
   },
   setActiveNavId: (activeNavId) => set({ activeNavId }),
+  setActiveMode: (activeMode) => set({ activeMode }),
   setActivePerspective: (activePerspective) => set({ activePerspective }),
+  setContextPack: (pack, enabled) => set((state) => ({ 
+    contextPacks: { ...state.contextPacks, [pack]: enabled } 
+  })),
   addNotification: (notification) =>
     set((state) => ({
       notifications: [

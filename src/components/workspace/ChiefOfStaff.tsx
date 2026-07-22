@@ -9,6 +9,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { Button } from "@/components/ui/Button";
+import { ConsoleActionDispatcher } from "@/platform/console/ActionDispatcher";
+import { CommandRegistry } from "@/platform/commands/CommandRegistry";
 
 export function ChiefOfStaff() {
   const { missions, triggerKnowledgeBuild, isIndexing } = useWorkspaceStore();
@@ -50,24 +52,57 @@ export function ChiefOfStaff() {
           [actionKey]: "Knowledge index rebuild triggered successfully. Syncing vectors."
         }));
       } else {
-        const res = await fetch("/api/v1/oil/recommendations", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: actionKey })
-        });
-        const data = await res.json();
-        if (data.success) {
-          setRemediationLogs(prev => ({
-            ...prev,
-            [actionKey]: data.result.log || `Execution successful for: ${actionKey}`
-          }));
-          fetchBriefing();
-        } else {
-          setRemediationLogs(prev => ({
-            ...prev,
-            [actionKey]: `Execution failed: ${data.error}`
-          }));
+        // Execute through the Governed Action Execution Architecture
+        const commandId = `oil.recommendation.${actionKey}`;
+        
+        // Dynamically register the command if it doesn't exist yet (scaffold)
+        if (!CommandRegistry.getCommand(commandId)) {
+          CommandRegistry.register({
+            id: commandId,
+            name: `Execute ${actionKey}`,
+            title: `Execute ${actionKey}`,
+            category: "Operations",
+            description: `Auto-generated command for OIL remediation: ${actionKey}`,
+            auditClassification: 'SENSITIVE',
+            validate: async () => true,
+            execute: async (payload: any) => {
+              const res = await fetch("/api/v1/oil/recommendations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: actionKey, ...payload })
+              });
+              
+              if (!res.ok) {
+                const errorData = await res.json().catch(() => null);
+                throw new Error(errorData?.error || "Execution failed");
+              }
+              
+              const data = await res.json();
+              if (!data.success) {
+                throw new Error(data.error || "Execution failed");
+              }
+              
+              return {
+                outcome: 'SUCCESS',
+                data: data.result,
+                correlationId: '',
+                executionDurationMs: 0
+              };
+            }
+          });
         }
+        
+        const result = await ConsoleActionDispatcher.dispatch(
+          commandId, 
+          {}, 
+          { userId: "system", tenantId: "default" }
+        );
+        
+        setRemediationLogs(prev => ({
+          ...prev,
+          [actionKey]: result.data?.log || `Execution successful for: ${actionKey} (Command: ${commandId})`
+        }));
+        fetchBriefing();
       }
     } catch (e: any) {
       setRemediationLogs(prev => ({

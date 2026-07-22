@@ -15,6 +15,7 @@ export default async function UnauthorizedPage() {
           If you believe this is an error, please contact the Administrator.
         </p>
         <div className="flex gap-4 mt-4 w-full">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a 
             href="/api/auth/logout"
             className="flex flex-1 items-center justify-center gap-2 rounded-md bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-white transition-colors"

@@ -1,10 +1,9 @@
-import { WorkflowRuntime } from "../../ai-runtime/WorkflowRuntime";
+import { workflowService } from "../../../services/workflow.service";
 import prisma from "../../../infrastructure/db/prisma";
 import { rollbackEngine } from "../RollbackEngine";
 
 export class WorkflowHandler {
   public async execute(type: string, payload: Record<string, any>, commandId: string): Promise<any> {
-    const runtime = WorkflowRuntime.getInstance();
     const workflowId = payload.workflowId;
     const executionId = payload.executionId;
 
@@ -13,7 +12,7 @@ export class WorkflowHandler {
         if (!workflowId) throw new Error("workflowId is required for workflow execution.");
         const variables = payload.variables || {};
         
-        const state = await runtime.startExecution(workflowId, variables);
+        const state = await workflowService.triggerWorkflow(workflowId, variables, "workflow-handler");
         
         // Register rollback: Mark execution as cancelled/failed
         rollbackEngine.registerInMemoryRollback(commandId, async () => {

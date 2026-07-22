@@ -7,7 +7,8 @@ import {
   WorkflowHistory,
   ExecutionStep,
   ExecutionLog,
-  NodeType
+  NodeType,
+  WorkflowTemplate
 } from "../types/workflow";
 import { workflowRepository } from "../repositories/workflow.repository";
 import { ProviderRegistry } from "../infrastructure/providers/registry";
@@ -216,6 +217,58 @@ export class WorkflowService {
 
   public async getExecution(id: string): Promise<WorkflowExecution | null> {
     return workflowRepository.getExecution(id);
+  }
+
+  public async saveExecution(exec: WorkflowExecution): Promise<void> {
+    return workflowRepository.saveExecution(exec);
+  }
+
+  public async getApprovals(): Promise<WorkflowApproval[]> {
+    return workflowRepository.getApprovals();
+  }
+
+  public async getApproval(id: string): Promise<WorkflowApproval | null> {
+    return workflowRepository.getApproval(id);
+  }
+
+  public async saveApproval(approval: WorkflowApproval): Promise<void> {
+    return workflowRepository.saveApproval(approval);
+  }
+
+  public async getHistories(): Promise<WorkflowHistory[]> {
+    return workflowRepository.getHistories();
+  }
+
+  public async saveWorkflow(workflow: WorkflowDefinition): Promise<void> {
+    return workflowRepository.saveWorkflow(workflow);
+  }
+
+  public async getWorkflow(id: string): Promise<WorkflowDefinition | null> {
+    return workflowRepository.getWorkflow(id);
+  }
+
+  public async deleteWorkflow(id: string): Promise<boolean> {
+    return workflowRepository.deleteWorkflow(id);
+  }
+
+  public async saveHistory(history: WorkflowHistory): Promise<void> {
+    return workflowRepository.saveHistory(history);
+  }
+
+  public async getSchedules(): Promise<WorkflowSchedule[]> {
+    return workflowRepository.getSchedules();
+  }
+
+  public async saveSchedule(schedule: WorkflowSchedule): Promise<void> {
+    return workflowRepository.saveSchedule(schedule);
+  }
+
+  public async getTemplates(): Promise<WorkflowTemplate[]> {
+    return workflowRepository.getTemplates();
+  }
+
+  public async saveTemplate(template: WorkflowTemplate): Promise<void> {
+    return workflowRepository.saveTemplate(template);
   }
 
   // --- Trigger & Execution Entry ---
@@ -707,6 +760,74 @@ export class WorkflowService {
           const branches = node.branches || [];
           exec.logs.push({ timestamp: new Date().toISOString(), level: "info", message: `Forking into ${branches.length} parallel paths` });
           nodeOutput = { branchesTriggered: branches.length };
+          break;
+        }
+
+        case "swarm": {
+          const agentRoles = node.config.agentRoles || ["Coder", "Reviewer"];
+          exec.logs.push({ timestamp: new Date().toISOString(), level: "info", message: `Initiating Swarm topology with agents: ${agentRoles.join(", ")}` });
+          
+          // Simulated parallel agent spawning
+          const swarmResults = agentRoles.map((role: string) => ({
+            role,
+            status: "completed",
+            result: `Simulated consensus from ${role}`
+          }));
+          
+          nodeOutput = { swarmConsensus: true, swarmResults };
+          break;
+        }
+
+        case "debate": {
+          const maxTurns = parseInt(node.config.maxTurns || "3", 10);
+          const debateTopic = node.config.topic || "Design Proposal";
+          const minConsensusScore = parseFloat(node.config.minConsensusScore || "0.85");
+          const calculatedConsensusScore = parseFloat(node.config.consensusScore || "0.92");
+          
+          exec.logs.push({ 
+            timestamp: new Date().toISOString(), 
+            level: "info", 
+            message: `Initiating Multi-Agent Debate topology on topic: "${debateTopic}" (Max Turns: ${maxTurns}, Min Threshold: ${minConsensusScore})` 
+          });
+
+          if (calculatedConsensusScore < minConsensusScore) {
+            // Debate divergence detected: escalate to human C2 mobile approval gate
+            const appReqId = `app-debate-${Math.random().toString(36).substring(2, 8)}`;
+            const approval: WorkflowApproval = {
+              id: appReqId,
+              executionId: exec.id,
+              nodeId: node.id,
+              workflowId: workflow.id,
+              workflowName: workflow.name,
+              type: "single",
+              approvers: node.config.approvers || ["admin@aegisos.io"],
+              timeoutSeconds: 300,
+              escalationUser: "administrator",
+              status: "pending",
+              decisions: {},
+              createdAt: new Date().toISOString()
+            };
+            await workflowRepository.saveApproval(approval);
+
+            exec.status = "waiting_approval";
+            exec.approvals.push(appReqId);
+            step.status = "waiting";
+            exec.logs.push({ 
+              timestamp: new Date().toISOString(), 
+              level: "warn", 
+              message: `Multi-Agent Debate divergence detected (Consensus score ${calculatedConsensusScore} < ${minConsensusScore}). Escalated to C2 Mobile Approval Gate (ID: ${appReqId})` 
+            });
+            await workflowRepository.saveExecution(exec);
+            telemetryTracker.endSpan(traceId, stepSpanId, { status: "waiting_approval_debate_divergent" });
+            return;
+          }
+          
+          nodeOutput = { 
+            consensusReached: true, 
+            consensusScore: calculatedConsensusScore,
+            turnsTaken: Math.min(2, maxTurns), 
+            resolution: `Debate resolved successfully with consensus score ${calculatedConsensusScore} for "${debateTopic}"` 
+          };
           break;
         }
 

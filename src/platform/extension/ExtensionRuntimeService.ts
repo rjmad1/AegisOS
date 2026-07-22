@@ -4,7 +4,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { ExtensionManifest, ExtensionContext, IExtension } from "./ExtensionSDK";
-import { capabilityRegistry } from "../../infrastructure/registry/capability-registry";
+import { CapabilityLifecycleManager } from "../capability/CapabilityLifecycleManager";
 import { agentVersioning } from "../../infrastructure/registry/agent-versioning";
 import { promptVersioning } from "../../infrastructure/registry/prompt-versioning";
 import { workflowRepository } from "../../repositories/workflow.repository";
@@ -14,6 +14,9 @@ import { PlatformModule, PlatformDomain } from "../kernel/types";
 import { certificationSuite } from "../developer/governance/CertificationSuite";
 import { eventBus } from "../../infrastructure/events/event-bus";
 import { logger } from "../../infrastructure/observability/structured-logger";
+import { runtimeManager, RuntimeTier } from "./RuntimeManager";
+import { trustAuthorityService } from "../certification/TrustAuthorityService";
+import { WorkerExtensionProxy } from "./WorkerExtensionProxy";
 
 export interface ExtensionState {
   id: string;
@@ -24,6 +27,8 @@ export interface ExtensionState {
   installedPath: string;
   activatedAt?: string;
   virtualModuleId?: string;
+  runtimeTier?: RuntimeTier;
+  sandboxConstraints?: any;
 }
 
 export class ExtensionRuntimeService {
@@ -83,6 +88,18 @@ export class ExtensionRuntimeService {
           state.errorMessage = `Certification scan failed: ${cert.issues.join("; ")}`;
           continue;
         }
+
+        // Verify cryptographic trust and resolve runtime isolation tier
+        const trustManifest = trustAuthorityService.verifyArtifactTrust(
+          state.manifest.id,
+          state.manifest,
+          state.manifest.signature || ""
+        );
+        const resolvedTier = runtimeManager.resolveRuntimeTier(state.manifest, trustManifest.trustLevel);
+        const constraints = runtimeManager.getSandboxConstraints(resolvedTier);
+        
+        state.runtimeTier = resolvedTier;
+        state.sandboxConstraints = constraints;
 
         // Verify dependencies
         this.resolveDependencies(state.manifest);
@@ -179,7 +196,7 @@ export class ExtensionRuntimeService {
 
     // 1. Register Capabilities in CapabilityRegistry
     if (manifest.capabilities && manifest.capabilities.length > 0) {
-      capabilityRegistry.registerPlugin({
+      CapabilityLifecycleManager.getInstance().getRegistry().registerPlugin({
         id: manifest.id,
         name: manifest.name,
         version: manifest.version,
@@ -308,14 +325,12 @@ export class ExtensionRuntimeService {
       if (state.manifest.entryPoints?.main) {
         const scriptPath = path.resolve(state.installedPath, state.manifest.entryPoints.main);
         
-        // Wrap execution in a mock/safe loader
+        // Wrap execution in a secure worker sandbox
         if (fs.existsSync(scriptPath)) {
-          // Dynamic load
-          const extModule = require(scriptPath);
-          const extensionClass = extModule.default || extModule;
+          const extensionClass = WorkerExtensionProxy;
           
           if (typeof extensionClass === "function") {
-            const instance = new extensionClass() as IExtension;
+            const instance = new extensionClass(scriptPath) as IExtension;
             const context: ExtensionContext = this.createContext(state);
             await instance.initialize(context);
             this.instances.set(id, instance);
@@ -446,6 +461,18 @@ export class ExtensionRuntimeService {
         return state;
       }
 
+      // Verify cryptographic trust and resolve runtime isolation tier
+      const trustManifest = trustAuthorityService.verifyArtifactTrust(
+        manifest.id,
+        manifest,
+        manifest.signature || ""
+      );
+      const resolvedTier = runtimeManager.resolveRuntimeTier(manifest, trustManifest.trustLevel);
+      const constraints = runtimeManager.getSandboxConstraints(resolvedTier);
+      
+      state.runtimeTier = resolvedTier;
+      state.sandboxConstraints = constraints;
+
       this.resolveDependencies(manifest);
       state.status = "validated";
 
@@ -544,6 +571,18 @@ export class ExtensionRuntimeService {
       state.errorMessage = `Update failed certification scan: ${cert.issues.join("; ")}`;
       return state;
     }
+
+    // Verify cryptographic trust and resolve runtime isolation tier
+    const trustManifest = trustAuthorityService.verifyArtifactTrust(
+      manifest.id,
+      manifest,
+      manifest.signature || ""
+    );
+    const resolvedTier = runtimeManager.resolveRuntimeTier(manifest, trustManifest.trustLevel);
+    const constraints = runtimeManager.getSandboxConstraints(resolvedTier);
+    
+    state.runtimeTier = resolvedTier;
+    state.sandboxConstraints = constraints;
 
     this.resolveDependencies(manifest);
     state.status = "validated";

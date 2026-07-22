@@ -1,5 +1,45 @@
 constitution:
   principles:
+    - id: single-authoritative-runtime
+      severity: critical
+      description: Platform intelligence must not be duplicated outside the Runtime Manager and Platform Intelligence Kernel.
+
+    - id: architecture-freeze
+      severity: critical
+      description: New foundational primitives require an approved ADR.
+
+    - id: contracts-before-implementations
+      severity: critical
+      description: Public contracts are defined before code.
+
+    - id: extension-first
+      severity: warning
+      description: New capabilities are delivered through providers, missions, packages, deployment profiles, or extensions whenever possible.
+
+    - id: evidence-based-engineering
+      severity: critical
+      description: Every significant platform action produces verifiable evidence.
+
+    - id: local-first-by-default
+      severity: warning
+      description: A single workstation remains a fully functional deployment target.
+
+    - id: one-architecture-many-deployment-models
+      severity: critical
+      description: Deployment differences are expressed through profiles, not forks.
+
+    - id: secure-by-default
+      severity: critical
+      description: All distributable artifacts are signed, qualified, and traceable.
+
+    - id: backward-compatibility
+      severity: critical
+      description: Public APIs, SDKs, and package contracts follow semantic versioning and compatibility guarantees.
+
+    - id: observability-cross-cutting
+      severity: warning
+      description: Operational insight is derived from the Platform Intelligence & Observability Fabric rather than isolated monitoring components.
+
     - id: kernel-single-responsibility
       severity: critical
       description: Kernel components must have exactly one responsibility.
@@ -16,22 +56,6 @@ constitution:
       severity: critical
       description: Platform execution should be entirely deterministic based on its inputs and state.
 
-    - id: local-first
-      severity: warning
-      description: Platform components should default to running locally where possible.
-
     - id: capability-least-privilege
       severity: critical
       description: Capabilities should be granted the minimum necessary permissions.
-
-    - id: no-duplicate-platform-logic
-      severity: critical
-      description: Every capability must reuse existing platform services if they exist.
-
-    - id: immutable-execution-context
-      severity: critical
-      description: Execution contexts must not be mutated directly by executing nodes.
-
-    - id: derived-analytical-models
-      severity: critical
-      description: Every analytical model is derived; every operational decision comes from authoritative platform services.

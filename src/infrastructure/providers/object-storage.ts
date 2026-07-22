@@ -49,12 +49,18 @@ export class ObjectStoragePlatformProvider implements IArtifactProviderAdapter {
   }
 
   async initialize(config: Record<string, any>): Promise<void> {
-    await this.localFallback.initialize(config);
-    await this.activeProvider.initialize(config);
+    if (this.localFallback.initialize) {
+      await this.localFallback.initialize(config);
+    }
+    if (this.activeProvider.initialize) {
+      await this.activeProvider.initialize(config);
+    }
   }
 
   async shutdown(): Promise<void> {
-    await this.activeProvider.shutdown();
+    if (this.activeProvider.shutdown) {
+      await this.activeProvider.shutdown();
+    }
   }
 
   async checkHealth(): Promise<HealthCheckResult> {

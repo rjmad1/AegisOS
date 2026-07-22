@@ -1,0 +1,33 @@
+{
+  "profileName": "edge",
+  "platformRoot": "C:\\AegisOS\\EdgePlatform",
+  "networkMode": "LAN",
+  "isolationLevel": "shared",
+  "ports": {
+    "ollama": 11434,
+    "litellm": 4000,
+    "aegisos": 18789,
+    "omniroute": 20128,
+    "openwebui": 8090
+  },
+  "logRotation": true,
+  "resourceLimits": {
+    "cpu": "4",
+    "memory": "16GB",
+    "storage": "100GB"
+  },
+  "securityPolicies": {
+    "firewallMode": "StandardLAN",
+    "rateLimitingEnabled": true,
+    "encryptionEnabled": false
+  },
+  "supportLevel": "community",
+  "modelsToPull": [
+    "smollm:135m",
+    "all-minilm:latest"
+  ],
+  "bundledExtensions": [
+    "com.aegisos.ext.logger",
+    "com.aegisos.provider.ollama"
+  ]
+}

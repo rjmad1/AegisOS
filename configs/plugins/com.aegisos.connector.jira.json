@@ -1,0 +1,21 @@
+{
+  "id": "com.aegisos.connector.jira",
+  "name": "Jira Enterprise Connector",
+  "version": "1.0.0",
+  "manifestVersion": "1.0",
+  "capabilities": [
+    "jira-connector",
+    "issue-tracking"
+  ],
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "configSchema": {
+    "type": "object"
+  },
+  "permissions": [
+    "event-publish",
+    "event-subscribe",
+    "*"
+  ]
+}

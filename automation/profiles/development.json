@@ -2,6 +2,7 @@
   "profileName": "development",
   "platformRoot": "C:\\AIPlatformDev",
   "networkMode": "loopback",
+  "isolationLevel": "dedicated",
   "ports": {
     "ollama": 11434,
     "litellm": 4000,
@@ -10,9 +11,24 @@
     "openwebui": 8090
   },
   "logRotation": false,
+  "resourceLimits": {
+    "cpu": "8",
+    "memory": "16GB",
+    "storage": "100GB"
+  },
+  "securityPolicies": {
+    "firewallMode": "StandardLoopback",
+    "rateLimitingEnabled": false,
+    "encryptionEnabled": false
+  },
+  "supportLevel": "community",
   "modelsToPull": [
     "smollm:135m",
     "all-minilm:latest",
     "gemma2:9b"
+  ],
+  "bundledExtensions": [
+    "com.aegisos.ext.logger",
+    "com.aegisos.provider.ollama"
   ]
 }

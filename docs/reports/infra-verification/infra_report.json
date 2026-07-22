@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-07-20T12:34:31.111Z",
+  "overallStatus": "PASS",
+  "results": {
+    "CPU": {
+      "status": "PASS",
+      "message": "32 cores available (Required: 4+)"
+    },
+    "Memory": {
+      "status": "PASS",
+      "message": "61.6 GB RAM available (Required: 16GB+)"
+    },
+    "Docker": {
+      "status": "PASS",
+      "message": "Docker daemon is running",
+      "details": "Client:\n Version:    29.6.1\n Context:    desktop-linux\n Debug Mode: false\n Plugins:\n  agent: Docker AI Agent Runner (Docker Inc.)\n    Version:  v1.98.0\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-agent.exe\n  ai: Docker AI Agent - Ask Gordon (Docker Inc.)\n    Version:  v1.27.0\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-ai.exe\n  buildx: Docker Buildx (Docker Inc.)\n    Version:  v0.35.0-desktop.2\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-buildx.exe\n  compose: Docker Compose (Docker Inc.)\n    Version:  v5.3.0\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-compose.exe\n  debug: Get a shell into any image or container (Docker Inc.)\n    Version:  0.0.47\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-debug.exe\n  desktop: Docker Desktop commands (Docker Inc.)\n    Version:  v0.4.1\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-desktop.exe\n  dhi: CLI for managing Docker Hardened Images (Docker Inc.)\n    Version:  v0.0.5\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-dhi.exe\n  extension: Manages Docker extensions (Docker Inc.)\n    Version:  v0.2.31\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-extension.exe\n  init: Creates Docker-related starter files for your project (Docker Inc.)\n    Version:  v1.4.0\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-init.exe\n  mcp: Docker MCP Plugin (Docker Inc.)\n    Version:  v0.43.1\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-mcp.exe\n  model: Docker Model Runner (Docker Inc.)\n    Version:  v1.2.5\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-model.exe\n  offload: Docker Offload (Docker Inc.)\n    Version:  v0.6.7\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-offload.exe\n  pass: Docker Pass Secrets Manager Plugin (beta) (Docker Inc.)\n    Version:  v0.2.0\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-pass.exe\n  sandbox: \"docker sandbox\" is deprecated, use Docker Sandboxes instead (Docker Inc.)\n    Version:  v0.13.0\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-sandbox.exe\n  scout: Docker Scout (Docker Inc.)\n    Version:  v1.23.1\n    Path:     C:\\Program Files\\Docker\\cli-plugins\\docker-scout.exe\n\nServer:\n Containers: 3\n  Running: 2\n  Paused: 0\n  Stopped: 1\n Images: 12\n Server Version: 29.6.1\n Storage Driver: overlayfs\n  driver-type: io.containerd.snapshotter.v1\n Logging Driver: json-file\n Cgroup Driver: cgroupfs\n Cgroup Version: 2\n Plugins:\n  Volume: local\n  Network: bridge host ipvlan macvlan null overlay\n  Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog\n CDI spec directories:\n  /etc/cdi\n  /var/run/cdi\n Discovered Devices:\n  cdi: docker.com/gpu=webgpu\n Swarm: inactive\n Runtimes: io.containerd.runc.v2 nvidia runc\n Default Runtime: runc\n Init Binary: docker-init\n containerd version: e53c7c1516c3b2bff98eb76f1f4117477e6f4e66\n runc version: v1.3.6-0-g491b69ba\n init version: de40ad0\n Security Options:\n  seccomp\n   Profile: builtin\n  cgroupns\n Kernel Version: 6.18.33.2-microsoft-standard-WSL2\n Operating System: Docker Desktop\n OSType: linux\n Architecture: x86_64\n CPUs: 8\n Total Memory: 31.35GiB\n Name: docker-desktop\n ID: df8b784d-cde0-484e-b77e-ab64f960e969\n Docker Root Dir: /var/lib/docker\n Debug Mode: false\n HTTP Proxy: http.docker.internal:3128\n HTTPS Proxy: http.docker.internal:3128\n No Proxy: hubproxy.docker.internal\n Labels:\n  com.docker.desktop.address=npipe://\\\\.\\pipe\\docker_cli\n Experimental: false\n Insecure Registries:\n  hubproxy.docker.internal:5555\n  ::1/128\n  127.0.0.0/8\n Live Restore Enabled: false\n Firewall Backend: iptables"
+    },
+    "Ollama": {
+      "status": "PASS",
+      "message": "Ollama is installed",
+      "details": "ollama version is 0.31.1"
+    },
+    "Port_8080": {
+      "status": "WARN",
+      "message": "Port 8080 is already in use by another process.",
+      "details": "TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING"
+    },
+    "Port_5432": {
+      "status": "WARN",
+      "message": "Port 5432 is already in use by another process.",
+      "details": "TCP    0.0.0.0:5432           0.0.0.0:0              LISTENING\r\n  TCP    0.0.0.0:15432          0.0.0.0:0              LISTENING\r\n  TCP    [::]:5432              [::]:0                 LISTENING\r\n  TCP    [::]:15432             [::]:0                 LISTENING\r\n  TCP    [::1]:5432             [::1]:49671            ESTABLISHED\r\n  TCP    [::1]:15432            [::]:0                 LISTENING\r\n  TCP    [::1]:49671            [::1]:5432             ESTABLISHED"
+    },
+    "Port_6379": {
+      "status": "WARN",
+      "message": "Port 6379 is already in use by another process.",
+      "details": "TCP    0.0.0.0:6379           0.0.0.0:0              LISTENING\r\n  TCP    [::]:6379              [::]:0                 LISTENING"
+    }
+  }
+}

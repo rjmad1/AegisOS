@@ -122,15 +122,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         />
 
         {/* Dynamic Page Target Content */}
-        <main className="flex-1 overflow-y-auto p-5 md:p-6 bg-background">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="h-full w-full max-w-7xl mx-auto"
-          >
-            {children}
-          </motion.div>
+        <main className="flex-1 overflow-y-auto p-5 md:p-6 bg-background relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="h-full w-full max-w-7xl mx-auto"
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </main>
 
         {/* Diagnostic Footer */}

@@ -33,7 +33,6 @@ export class RuntimeHealthFramework {
         agentRegistry: "online",
         memoryStore: "online",
         knowledgeGraph: "online",
-        workflowRuntime: "online",
         securitySandbox: "online",
       },
       timestamp: new Date().toISOString(),

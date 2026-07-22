@@ -7,6 +7,7 @@ import type { NavigationEntry, NavigationGroup, Breadcrumb } from './types';
 import { ModuleRegistry } from '../module-registry/ModuleRegistry';
 import { EventBus } from '../event-bus/EventBus';
 import { useAppStore } from '@/store/appStore';
+import { MetadataEngine } from '../console/MetadataEngine';
 const STORAGE_FAVORITES_KEY = 'platform:navigation-favorites';
 const STORAGE_RECENT_KEY = 'platform:navigation-recent';
 
@@ -111,11 +112,30 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     const navItems = ModuleRegistry.getNavItems();
     const groupsMap: Record<string, NavigationEntry[]> = {};
 
-    const { activePerspective } = useAppStore.getState();
-    const activeRoles = [activePerspective]; // Map perspective to roles, or just use it directly.
+    const { activeMode } = useAppStore.getState();
+    const activeRoles = [activeMode]; // Adaptive mode serves as primary context filter
+
+    // Process MetadataEngine Domains
+    const schemas = MetadataEngine.getAllSchemas();
+    schemas.forEach(schema => {
+      if (!groupsMap[schema.label]) groupsMap[schema.label] = [];
+      
+      // We will only map the domains to the sidebar for now, or entities?
+      // Typically, domains are the group (e.g. Administration) and entities are the items (e.g. Users, Secrets)
+      Object.values(schema.entities).forEach(entity => {
+         groupsMap[schema.label].push({
+           id: entity.id,
+           label: entity.labelPlural,
+           href: `/${schema.domain}/${entity.id}`,
+           group: schema.label,
+           order: 50,
+         });
+      });
+    });
+
     navItems.forEach((item) => {
-      // Role-aware filtering
       if (item.roles && item.roles.length > 0) {
+        // Simplified check, real implementation would evaluate full context pack
         const hasAccess = item.roles.some((role) => (activeRoles as string[]).includes(role));
         if (!hasAccess) return;
       }
@@ -124,26 +144,33 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
       if (!groupsMap[groupName]) {
         groupsMap[groupName] = [];
       }
-      groupsMap[groupName].push({
-        id: item.id,
-        label: item.label,
-        href: item.href,
-        icon: item.icon,
-        group: item.group,
-        order: item.order,
-        badge: get().badges[item.id] ?? item.badge,
-        hidden: item.hidden,
-        roles: item.roles
-      });
+      
+      // Avoid duplicates if metadata already provided it
+      if (!groupsMap[groupName].find(e => e.id === item.id)) {
+        groupsMap[groupName].push({
+          id: item.id,
+          label: item.label,
+          href: item.href,
+          icon: item.icon,
+          group: item.group,
+          order: item.order,
+          badge: get().badges[item.id] ?? item.badge,
+          hidden: item.hidden,
+          roles: item.roles
+        });
+      }
     });
 
     const groups: NavigationGroup[] = Object.entries(groupsMap).map(([name, items]) => {
       const sortedItems = items.sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
       let order = 99;
-      if (name === 'Platform') order = 1;
-      else if (name === 'Operations') order = 2;
-      else if (name === 'Administration') order = 3;
-      else if (name === 'Settings') order = 4;
+      // Map domain order according to Adaptive Engine rules
+      const domainMap: Record<string, number> = {
+        'Workspace': 1, 'AI': 2, 'Knowledge': 3, 'Platform': 4,
+        'Operations': 5, 'Governance': 6, 'Administration': 7, 
+        'Developer': 8, 'Settings': 9
+      };
+      order = domainMap[name] || order;
       
       return {
         id: name.toLowerCase(),

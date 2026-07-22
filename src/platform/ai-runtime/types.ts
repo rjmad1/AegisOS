@@ -137,6 +137,9 @@ export type AgentLifecycleState =
   | "created"
   | "initialized"
   | "ready"
+  | "idle"
+  | "running"
+  | "suspended"
   | "thinking"
   | "planning"
   | "waiting_for_workflow"
@@ -387,7 +390,6 @@ export interface SystemHealthReport {
     agentRegistry: "online" | "offline";
     memoryStore: "online" | "offline";
     knowledgeGraph: "online" | "offline";
-    workflowRuntime: "online" | "offline";
     securitySandbox: "online" | "offline";
   };
   timestamp: string;

@@ -1,0 +1,21 @@
+{
+  "name": "@platform/worker-node",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@platform/browser-engine": "1.0.0",
+    "@platform/evidence-pipeline": "1.0.0",
+    "@platform/shared-contracts": "1.0.0",
+    "@platform/state-manager": "1.0.0",
+    "@platform/validation-engine": "1.0.0",
+    "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

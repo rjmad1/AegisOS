@@ -15,6 +15,7 @@ import { AgentPanel } from "./AgentPanel";
 import { KnowledgePanel } from "./KnowledgePanel";
 import { ArtifactPanel } from "./ArtifactPanel";
 import { ContextMentionInput } from "./ContextMentionInput";
+import { ExecutionExplorer } from "./ExecutionExplorer";
 import type { AIWorkspaceMessage, InlineArtifact, ReasoningStep, ToolCallItem, PanelType } from "@/types/ai-workspace";
 
 // ── Quick-Action Chips ──────────────────────────────────────────────────
@@ -31,6 +32,7 @@ const PANEL_TABS: { key: PanelType; label: string; icon: React.ElementType }[] =
   { key: "agent", label: "Agent", icon: Cpu },
   { key: "knowledge", label: "Knowledge", icon: BookOpen },
   { key: "artifact", label: "Artifacts", icon: FileText },
+  { key: "execution", label: "Execution", icon: Wrench },
 ];
 
 // ── Inline Reasoning Accordion ──────────────────────────────────────────
@@ -396,6 +398,11 @@ export const AIWorkspace: React.FC<{ threadId?: string }> = ({ threadId }) => {
             {activePanel === "agent" && <AgentPanel />}
             {activePanel === "knowledge" && <KnowledgePanel />}
             {activePanel === "artifact" && <ArtifactPanel />}
+            {activePanel === "execution" && (
+              <div className="p-4">
+                <ExecutionExplorer />
+              </div>
+            )}
           </div>
         </div>
       )}

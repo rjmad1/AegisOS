@@ -1,0 +1,13 @@
+{
+  "name": "provider-openai",
+  "version": "1.0.0",
+  "type": "provider_pack",
+  "certified": true,
+  "description": "Official OpenAI provider integration for AegisOS.",
+  "contracts": ["llm.inference.v1", "llm.embedding.v1"],
+  "entrypoint": "dist/index.js",
+  "capabilities": {
+    "telemetry": true,
+    "qualification": true
+  }
+}

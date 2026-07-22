@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AegisOSBootstrapManifest",
+  "description": "Schema for AegisOS Bootstrap Manifest (.aegis) files used by the Platform Bootstrap & Provisioning System.",
+  "type": "object",
+  "properties": {
+    "bootstrapVersion": {
+      "type": "string"
+    },
+    "architectureVersion": {
+      "type": "string"
+    },
+    "deploymentProfile": {
+      "type": "string",
+      "enum": ["development", "personal", "enterprise", "offline", "edge", "federation"]
+    },
+    "runtimeProfile": {
+      "type": "object",
+      "properties": {
+        "nodeVersion": { "type": "string" },
+        "pythonVersion": { "type": "string" },
+        "dockerRequired": { "type": "boolean" },
+        "ollamaRequired": { "type": "boolean" },
+        "liteLlmRequired": { "type": "boolean" }
+      },
+      "required": ["nodeVersion", "pythonVersion", "dockerRequired", "ollamaRequired", "liteLlmRequired"]
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "source": { "type": "string" },
+          "signature": { "type": "string" }
+        },
+        "required": ["name", "version"]
+      }
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "endpoint": { "type": "string" }
+        },
+        "required": ["id", "type"]
+      }
+    },
+    "missions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "templateId": { "type": "string" },
+          "autoStart": { "type": "boolean" }
+        },
+        "required": ["id", "templateId"]
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "ports": {
+          "type": "object",
+          "properties": {
+            "console": { "type": "integer" },
+            "litellm": { "type": "integer" },
+            "ollama": { "type": "integer" },
+            "postgres": { "type": "integer" },
+            "redis": { "type": "integer" }
+          }
+        },
+        "directories": {
+          "type": "object",
+          "properties": {
+            "platformRoot": { "type": "string" },
+            "modelsDir": { "type": "string" },
+            "logsDir": { "type": "string" }
+          }
+        }
+      }
+    },
+    "qualification": {
+      "type": "object",
+      "properties": {
+        "minMaturityScore": { "type": "number" },
+        "requiredGates": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "trust": {
+      "type": "object",
+      "properties": {
+        "requireSignedPackages": { "type": "boolean" },
+        "authorizedKeys": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "certificateFingerprint": { "type": "string" }
+      }
+    },
+    "verification": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "checkId": { "type": "string" },
+          "type": { "type": "string" },
+          "expected": { "type": "string" }
+        },
+        "required": ["checkId", "type"]
+      }
+    }
+  },
+  "required": ["bootstrapVersion", "architectureVersion", "deploymentProfile", "runtimeProfile"]
+}

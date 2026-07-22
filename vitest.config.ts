@@ -4,7 +4,7 @@ import path from 'path';
 export default defineConfig({
   test: {
     fileParallelism: false,
-    exclude: ['tests/e2e/**/*', 'node_modules/**/*', 'node_modules_backup/**/*', '.next/**/*', 'dist/**/*'],
+    exclude: ['tests/e2e/**/*', '**/node_modules/**', 'node_modules_backup/**/*', '.next/**/*', 'dist/**/*', 'conversa_repo/**/*'],
     alias: {
       '@': path.resolve(__dirname, './src')
     },

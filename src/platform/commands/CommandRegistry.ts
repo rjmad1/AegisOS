@@ -2,7 +2,7 @@
 // Command Registry — Registration, execution, history
 // ============================================================================
 
-import type { PlatformCommand } from './types';
+import type { PlatformCommand, CommandContext, ExecutionResult } from './types';
 import { EventBus } from '../event-bus/EventBus';
 
 const RECENT_COMMANDS_KEY = 'platform:recent-commands';
@@ -69,11 +69,83 @@ class CommandRegistryImpl {
     }
 
     try {
-      await command.action();
+      if (command.action) await command.action();
       this.addRecentCommand(id);
       EventBus.publish('command:executed', { commandId: id, timestamp: Date.now() });
     } catch (err) {
       console.error(`[CommandRegistry] Command "${id}" failed:`, err);
+    }
+  }
+
+  // ---- Governed Execution ----
+  
+  async executeCommand(id: string, payload: any, context: CommandContext): Promise<ExecutionResult> {
+    const start = performance.now();
+    const correlationId = `cmd_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    
+    const command = this.getCommand(id);
+    if (!command) {
+      return {
+        outcome: 'FAILURE',
+        error: `Command '${id}' not found in registry.`,
+        correlationId,
+        executionDurationMs: performance.now() - start
+      };
+    }
+
+    if (command.when && !command.when()) {
+      return {
+        outcome: 'FAILURE',
+        error: `Command '${id}' condition not met.`,
+        correlationId,
+        executionDurationMs: performance.now() - start
+      };
+    }
+
+    try {
+      if (command.validate) {
+        const validationResult = await command.validate(payload, context);
+        if (validationResult !== true) {
+          return {
+            outcome: 'FAILURE',
+            error: typeof validationResult === 'string' ? validationResult : 'Validation failed.',
+            correlationId,
+            executionDurationMs: performance.now() - start
+          };
+        }
+      }
+
+      let result: ExecutionResult;
+      if (command.execute) {
+        result = await command.execute(payload, context);
+      } else if (command.action) {
+        await command.action();
+        result = {
+          outcome: 'SUCCESS',
+          correlationId,
+          executionDurationMs: performance.now() - start
+        };
+      } else {
+        throw new Error(`Command '${id}' has no execution logic.`);
+      }
+      
+      console.log(`[Audit] Executed ${command.id} [${command.auditClassification || 'ROUTINE'}] - Outcome: ${result.outcome} - CorrelationId: ${correlationId}`);
+      
+      this.addRecentCommand(id);
+      EventBus.publish('command:executed', { commandId: id, timestamp: Date.now() });
+
+      return {
+        ...result,
+        correlationId,
+        executionDurationMs: performance.now() - start
+      };
+    } catch (err: any) {
+      return {
+        outcome: 'FAILURE',
+        error: err.message || 'Unknown execution error',
+        correlationId,
+        executionDurationMs: performance.now() - start
+      };
     }
   }
 

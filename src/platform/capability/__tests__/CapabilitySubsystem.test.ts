@@ -14,11 +14,11 @@ describe("Capability Subsystem Lifecycle Integration", () => {
   let scheduler: CapabilityScheduler;
   let gc: CapabilityGarbageCollector;
   
-  const mockStorage: ICapabilityStorageProvider = {
+  const mockStorage = {
     getCapability: vi.fn(),
     saveCapability: vi.fn(),
     listCapabilities: vi.fn()
-  };
+  } as unknown as ICapabilityStorageProvider;
 
   const mockPublisher: IEventPublisher = {
     publish: vi.fn()
@@ -93,7 +93,7 @@ describe("Capability Subsystem Lifecycle Integration", () => {
     const id = "cap:mcp:filesystem";
     const cap: any = { id, status: "UNLOADED", usageCount: 10, successRate: 0.9, failureRate: 0.1, averageLatencyMs: 50, sandboxPolicy: { ramBudgetMb: 100, vramBudgetMb: 0 } };
     
-    const utility = scheduler.calculateUtility(cap);
+    const utility = scheduler.calculateUtility(cap, mockContext);
     expect(utility.score).toBeDefined();
     expect(utility.score).toBeGreaterThan(0);
   });

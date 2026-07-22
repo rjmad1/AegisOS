@@ -1,0 +1,49 @@
+name: AegisOS Complete Quality Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install
+        run: npm ci
+
+      - name: Architecture Validation
+        run: npm run validate:architecture
+
+      - name: Qualification (PQF)
+        run: npm run validate:qualification
+
+      - name: Unit & Integration Tests
+        run: npm run test
+
+      - name: E2E Tests
+        run: npm run test:e2e
+
+      - name: Security & Dependency Scan
+        run: npm audit
+
+      - name: Documentation Validation
+        run: npm run validate:docs
+
+      - name: Marketplace Certification
+        run: npm run validate:marketplace
+
+      - name: SDK Validation
+        run: npm run validate:sdks
+
+      - name: Deployment Validation
+        run: ./scripts/deploy.sh dev
+
+      - name: Performance Benchmarks
+        run: node scripts/run-benchmarks.js

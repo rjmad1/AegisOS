@@ -59,6 +59,7 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/static/") ||
+    pathname.startsWith("/schemas/") ||
     pathname.startsWith("/favicon.ico") ||
     pathname === "/globals.css"
   ) {
@@ -146,6 +147,7 @@ async function executeProxySecurityAndRouting(request: NextRequest): Promise<Nex
     pathname === "/live" ||
     pathname === "/ready" ||
     pathname === "/health" ||
+    pathname === "/api/health" ||
     pathname === "/status" ||
     pathname === "/login" ||
     pathname === "/unauthorized";
@@ -229,7 +231,8 @@ async function executeProxySecurityAndRouting(request: NextRequest): Promise<Nex
       });
 
       if (!verifyRes.ok) {
-        throw new Error("Introspection service failed");
+        const text = await verifyRes.text().catch(() => "");
+        throw new Error(`Introspection service failed with status ${verifyRes.status}: ${text}`);
       }
 
       const check = await verifyRes.json();

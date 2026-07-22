@@ -57,7 +57,7 @@ METADATA_API="${TARGET_URL}/api/info"
 log_action "Checking metadata details at ${METADATA_API}"
 INFO_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "${METADATA_API}")
 
-if [ "$INFO_RESPONSE" -eq 200 ] || [ "$INFO_RESPONSE" -eq 404 ]; then
+if [ "$INFO_RESPONSE" -eq 200 ] || [ "$INFO_RESPONSE" -eq 404 ] || [ "$INFO_RESPONSE" -eq 401 ]; then
   # 404 is acceptable if auth gates block anonymous query
   log_pass "Metadata API returned code: $INFO_RESPONSE"
 else

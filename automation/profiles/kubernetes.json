@@ -1,0 +1,36 @@
+{
+  "profileName": "kubernetes",
+  "platformRoot": "/usr/share/aegisos",
+  "networkMode": "WAN",
+  "isolationLevel": "shared",
+  "ports": {
+    "ollama": 11434,
+    "litellm": 4000,
+    "aegisos": 18789,
+    "omniroute": 20128,
+    "openwebui": 80
+  },
+  "logRotation": true,
+  "resourceLimits": {
+    "cpu": "16",
+    "memory": "64Gi",
+    "storage": "500Gi"
+  },
+  "securityPolicies": {
+    "firewallMode": "KubernetesNetworkPolicy",
+    "rateLimitingEnabled": true,
+    "encryptionEnabled": true
+  },
+  "supportLevel": "premium",
+  "modelsToPull": [
+    "smollm:135m",
+    "all-minilm:latest",
+    "gemma2:9b",
+    "llama3.1:8b"
+  ],
+  "bundledExtensions": [
+    "com.aegisos.ext.logger",
+    "com.aegisos.provider.ollama",
+    "com.aegisos.connector.github"
+  ]
+}

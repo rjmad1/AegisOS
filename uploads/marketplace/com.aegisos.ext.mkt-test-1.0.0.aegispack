@@ -1,0 +1,13 @@
+{
+  "id": "com.aegisos.ext.mkt-test",
+  "name": "Marketplace Install Extension",
+  "version": "1.0.0",
+  "type": "plugin",
+  "description": "Unit testing for marketplace installer",
+  "capabilities": [
+    "mkt-install-cap"
+  ],
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  }
+}

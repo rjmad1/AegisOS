@@ -9,7 +9,25 @@ import type { TenantContextData, TenantTier, RegionCode, IsolationLevel, Resourc
 // without passing tenant through every function signature.
 // ============================================================================
 
-const tenantStorage = new AsyncLocalStorage<TenantContextData>();
+const StorageClass = (typeof AsyncLocalStorage === 'function')
+  ? AsyncLocalStorage
+  : class DummyLocalStorage<T> {
+      private store: T | undefined;
+      run<R>(store: T, callback: () => R): R {
+        const prev = this.store;
+        this.store = store;
+        try {
+          return callback();
+        } finally {
+          this.store = prev;
+        }
+      }
+      getStore(): T | undefined {
+        return this.store;
+      }
+    };
+
+const tenantStorage = new StorageClass<TenantContextData>();
 
 // ============================================================================
 // System Tenant — Used for platform-level operations not scoped to any tenant

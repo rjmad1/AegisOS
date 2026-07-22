@@ -1,4 +1,3 @@
-import { performance } from 'perf_hooks';
 import type { IPolicyService, PolicyDecision, IExecutionContext } from './types';
 import { executionContextService } from './ExecutionContextService';
 

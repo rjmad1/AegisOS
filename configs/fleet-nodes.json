@@ -1,0 +1,50 @@
+[
+  {
+    "nodeId": "local-workstation",
+    "name": "Default Local Workstation",
+    "roles": [
+      "runtime",
+      "knowledge"
+    ],
+    "capabilities": [
+      "mission-planning",
+      "mission-execution",
+      "knowledge-query"
+    ],
+    "trustLevel": 100,
+    "health": "healthy",
+    "latencyMs": 0,
+    "apiEndpoint": "http://localhost:18789",
+    "lastSeen": "2026-07-20T11:51:53.529Z"
+  },
+  {
+    "nodeId": "remote-node-1",
+    "name": "Remote Worker Node",
+    "roles": [
+      "runtime"
+    ],
+    "capabilities": [
+      "mission-execution"
+    ],
+    "trustLevel": 80,
+    "health": "healthy",
+    "latencyMs": 20,
+    "apiEndpoint": "http://remote-1:18789",
+    "lastSeen": "2026-07-22T12:11:10.800Z"
+  },
+  {
+    "nodeId": "remote-node-2",
+    "name": "Remote Node 2",
+    "roles": [
+      "runtime"
+    ],
+    "capabilities": [
+      "mission-execution"
+    ],
+    "trustLevel": 85,
+    "health": "healthy",
+    "latencyMs": 15,
+    "apiEndpoint": "http://remote-node:18789",
+    "lastSeen": "2026-07-22T12:11:10.800Z"
+  }
+]

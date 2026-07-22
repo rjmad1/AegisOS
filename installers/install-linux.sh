@@ -1,115 +1,28 @@
 #!/bin/bash
 # installers/install-linux.sh
-# Enterprise Installation, Repair and Upgrade script for Linux platforms.
+# Native Linux Installer wrapper. Delegates installation execution to PlatformBootstrapEngine.ps1.
 
-SILENT=false
-REPAIR=false
-UPGRADE=false
 INSTALL_DIR="/opt/aiplatform"
 
-# Parse arguments
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        --silent) SILENT=true ;;
-        --repair) REPAIR=true ;;
-        --upgrade) UPGRADE=true ;;
-        --dir) INSTALL_DIR="$2"; shift ;;
-        *) echo "Unknown parameter: $1"; exit 1 ;;
-    esac
-    shift
-done
-
-log() {
-    if [ "$SILENT" = false ]; then
-        echo -e "\e[36m[Installer]\e[0m $1"
-    fi
-}
-
-log_warn() {
-    if [ "$SILENT" = false ]; then
-        echo -e "\e[33m[Installer] WARNING: $1\e[0m"
-    fi
-}
-
-log_error() {
-    echo -e "\e[31m[Installer] ERROR: $1\e[0m" >&2
-}
-
-log "Starting AegisOS Console Linux Installer..."
-
-# Enforce root or sudo check
-if [ "$EUID" -ne 0 ]; then
-    log_error "Installation requires root/sudo privileges!"
-    exit 1
-fi
-
-# 1. Handle Repair
-if [ "$REPAIR" = true ]; then
-    log "Running repair verification..."
-    mkdir -p "$INSTALL_DIR"/{databases,artifacts_storage,configs,logs}
-    chmod -R 750 "$INSTALL_DIR"
-    log "Folders verified. Permissions set."
-    exit 0
-fi
-
-# 2. Handle Upgrade
-if [ "$UPGRADE" = true ]; then
-    log "Beginning upgrade sequence..."
-    if [ -f "$INSTALL_DIR/databases/dev.db" ]; then
-        cp "$INSTALL_DIR/databases/dev.db" "$INSTALL_DIR/databases/dev_db_backup_pre_upgrade.db"
-        log "Database snapshot backup written."
-    fi
-
-    # Run Prisma migration sync safely
-    cd "$INSTALL_DIR" || exit 1
-    DATABASE_URL="file:./databases/dev.db" npx prisma migrate deploy
-    MIGRATE_STATUS=$?
-    if [ $MIGRATE_STATUS -ne 0 ]; then
-        log_warn "No migrations found or deploy failed. Falling back to schema push..."
-        DATABASE_URL="file:./databases/dev.db" npx prisma db push --skip-generate
-        MIGRATE_STATUS=$?
-    fi
-
-    if [ $MIGRATE_STATUS -eq 0 ]; then
-        log "Database schema migration successful."
+# Ensure pwsh (PowerShell Core) is available
+if ! command -v pwsh &> /dev/null; then
+    echo "[Installer] Installing PowerShell Core for cross-platform bootstrap..."
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update && sudo apt-get install -y powershell
+    elif command -v dnf &> /dev/null; then
+        sudo dnf install -y powershell
     else
-        log_error "Schema migration failed! Rolling back database..."
-        if [ -f "$INSTALL_DIR/databases/dev_db_backup_pre_upgrade.db" ]; then
-            cp "$INSTALL_DIR/databases/dev_db_backup_pre_upgrade.db" "$INSTALL_DIR/databases/dev.db"
-            log_warn "Database state restored to pre-upgrade snapshot."
-        fi
+        echo "[Installer] ERROR: pwsh not found. Please install PowerShell Core manually."
         exit 1
     fi
-    exit 0
 fi
 
-# 3. Fresh Install Flow
-log "Creating installation directory: $INSTALL_DIR"
-mkdir -p "$INSTALL_DIR"/{databases,artifacts_storage,configs,logs}
-
-# Create dedicated non-root user for security compliance
-if ! id -u aiuser >/dev/null 2>&1; then
-    log "Creating system user 'aiuser' for runtime execution..."
-    useradd -r -s /bin/false aiuser
+# Locate the bootstrap engine script
+SCRIPT_PATH="$(dirname "$0")/../automation/libs/PlatformBootstrapEngine.ps1"
+if [ ! -f "$SCRIPT_PATH" ]; then
+    SCRIPT_PATH="$(dirname "$0")/PlatformBootstrapEngine.ps1"
 fi
 
-# Copy app files
-cp -r package.json prisma "$INSTALL_DIR/"
-
-log "Installing production node modules..."
-cd "$INSTALL_DIR" || exit 1
-npm install --production
-
-# DB sync safely
-DATABASE_URL="file:./databases/dev.db" npx prisma migrate deploy
-if [ $? -ne 0 ]; then
-    log_warn "Falling back to non-destructive database schema push..."
-    DATABASE_URL="file:./databases/dev.db" npx prisma db push --skip-generate
-fi
-
-# Owner permissions
-chown -R aiuser:aiuser "$INSTALL_DIR"
-chmod -R 750 "$INSTALL_DIR"
-
-log "AegisOS Platform Installation Complete."
-exit 0
+echo "[Installer] Invoking AegisOS Platform Bootstrap Engine via PowerShell Core..."
+pwsh -File "$SCRIPT_PATH" -PlatformRoot "$INSTALL_DIR"
+exit $?

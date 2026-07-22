@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mobileAuthService from '@/platform/auth/mobile-auth.service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,22 +14,17 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Simulate validation of the one-time pairing token (e.g., checks database registry)
-    const isValidToken = pairingToken.startsWith('PAIR-');
-    if (!isValidToken) {
-      return NextResponse.json({
-        code: 'ERR_PAIR_INVALID',
-        message: 'The pairing token is invalid or has expired.'
-      }, { status: 403 });
-    }
-
-    // Scaffold Mock Client Certificate signed by the Workstation CA
-    const mockClientCert = `-----BEGIN CERTIFICATE-----\nMIIBtzCCAVWgAwIBAgIIdeviceCertFor${deviceId.substring(0, 8)}...\n-----END CERTIFICATE-----`;
-    const mockCaCert = `-----BEGIN CERTIFICATE-----\nMIIBszCCATqgAwIBAgIIworkstationCaCert...\n-----END CERTIFICATE-----`;
+    const result = await mobileAuthService.pairDevice({
+      pairingToken,
+      publicKey: devicePublicKey,
+      deviceName: deviceName || `Device-${deviceId.substring(0, 8)}`,
+      metadata: { deviceId }
+    });
 
     return NextResponse.json({
-      clientCertificate: mockClientCert,
-      caCertificate: mockCaCert
+      success: true,
+      deviceId: result.deviceId,
+      status: result.status,
     }, {
       headers: {
         'Cache-Control': 'no-store'

@@ -60,6 +60,12 @@ export interface IExecutionContext {
   roles: string[];
   securityLabels: string[];
   operatingMode: 'performance' | 'balanced' | 'efficiency' | 'safe';
+  logger: {
+    info: (msg: string) => void;
+    warn: (msg: string) => void;
+    error: (msg: string) => void;
+    debug?: (msg: string) => void;
+  };
   [key: string]: unknown; // Extensible for telemetry
 }
 
@@ -92,6 +98,10 @@ export interface IPlatformResourceManager {
   acquireAsync(request: ResourceRequest, timeoutMs?: number): Promise<ResourceToken | null>;
   getUtilization(): Record<string, number>;
   getBudgets(): Record<string, number>;
+  allocateVram(modelName: string): { allowed: boolean; reason: string };
+  isThrottled(): boolean;
+  getMetrics(): any;
+  setMemoryThreshold(threshold: number): void;
 }
 
 /** Platform Policy Service (PPS) */
@@ -267,4 +277,5 @@ export type PlatformDomain =
   | 'knowledge'
   | 'artifacts'
   | 'administration'
-  | 'settings';
+  | 'settings'
+  | (string & {});

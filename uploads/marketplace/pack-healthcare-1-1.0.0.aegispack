@@ -1,0 +1,57 @@
+{
+  "id": "pack-healthcare-1",
+  "name": "Healthcare Solution Pack",
+  "version": "1.0.0",
+  "domain": "Healthcare",
+  "description": "Provides healthcare ontologies, missions, and knowledge packs.",
+  "author": "AegisOS Health",
+  "signature": "mock-signature-123",
+  "ontologies": [
+    {
+      "id": "ont-health-1",
+      "concepts": [
+        "Patient",
+        "Provider",
+        "Diagnosis"
+      ],
+      "relationships": {
+        "Patient": [
+          "hasDiagnosis"
+        ],
+        "Provider": [
+          "treatsPatient"
+        ]
+      }
+    }
+  ],
+  "knowledgeGraphs": [
+    {
+      "id": "kg-health-1",
+      "prompts": [
+        "Analyze patient symptoms"
+      ],
+      "nodes": []
+    }
+  ],
+  "missions": [
+    {
+      "id": "mission-triage-1",
+      "name": "Patient Triage Optimization",
+      "description": "Optimizes ER triage flow.",
+      "template": {}
+    }
+  ],
+  "reports": [
+    {
+      "id": "report-er-flow",
+      "title": "ER Flow Efficiency",
+      "type": "dashboard",
+      "data": {}
+    }
+  ],
+  "type": "solution-pack",
+  "capabilities": [
+    "domain-awareness",
+    "Healthcare"
+  ]
+}

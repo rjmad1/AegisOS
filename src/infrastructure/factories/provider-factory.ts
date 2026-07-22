@@ -171,7 +171,9 @@ export class ProviderFactory {
     }
 
     // Resolve configuration setup
-    provider.initialize(providerConfig);
+    if (provider.initialize) {
+      provider.initialize(providerConfig);
+    }
 
     this.registry.registerProvider(provider);
     return provider;

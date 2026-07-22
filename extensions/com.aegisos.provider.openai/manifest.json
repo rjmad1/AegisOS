@@ -1,0 +1,23 @@
+{
+  "id": "com.aegisos.provider.openai",
+  "name": "OpenAI Cloud Provider Pack",
+  "version": "1.0.0",
+  "author": "AegisOS Ecosystem Team",
+  "description": "Provider Pack for OpenAI secure API routing and model capabilities integration.",
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "capabilities": [
+    "openai-provider",
+    "cloud-inference"
+  ],
+  "permissions": [
+    "event-publish",
+    "event-subscribe",
+    "*"
+  ],
+  "entryPoints": {
+    "main": "index.js"
+  },
+  "signature": "3333333333333333333333333333333333333333333333333333333333333333"
+}

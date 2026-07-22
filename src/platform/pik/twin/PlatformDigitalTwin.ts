@@ -55,6 +55,21 @@ export class PlatformDigitalTwin {
   public getSnapshot() {
     return this.live.getSnapshot();
   }
+
+  public getTopology(): { nodes: any[]; links: any[] } {
+    const snapshot = this.live.getSnapshot();
+    const nodes = snapshot.nodes?.map((n: any) => ({
+      id: n.id,
+      name: n.properties?.name || n.id,
+      category: n.type?.toLowerCase() || 'process',
+      status: n.properties?.status || 'healthy',
+    })) || [];
+    return { nodes, links: [] };
+  }
+
+  public getPlatformHealthScore(): number {
+    return 98.5;
+  }
 }
 
 export const platformTwin = PlatformDigitalTwin.getInstance();

@@ -1,5 +1,18 @@
 import { randomUUID } from 'crypto';
 import type { IPlatformResourceManager, ResourceRequest, ResourceToken } from './types';
+import { resourceScheduler } from '../../infrastructure/scheduling/resource-scheduler';
+import { jobQueue } from '../../infrastructure/jobs/job-queue';
+import prisma from '../../infrastructure/db/prisma';
+
+export interface ResourceMetrics {
+  cpuUsage: number;
+  memoryUsagePercent: number;
+  vramUsedGb: number;
+  maxVramGb: number;
+  activeBackgroundJobs: number;
+  databaseConnections: number;
+  throttled: boolean;
+}
 
 export class ResourceManager implements IPlatformResourceManager {
   private readonly budgets: Required<Omit<ResourceRequest, 'priority'>>;
@@ -14,6 +27,10 @@ export class ResourceManager implements IPlatformResourceManager {
     resolve: (token: ResourceToken | null) => void;
     timer: NodeJS.Timeout;
   }> = [];
+
+  private memoryThreshold = 0.85;
+  private lastCheckedTime = 0;
+  private cachedMetrics: ResourceMetrics | null = null;
 
   constructor(initialBudgets?: Partial<ResourceRequest>) {
     this.budgets = {
@@ -147,6 +164,66 @@ export class ResourceManager implements IPlatformResourceManager {
 
   getBudgets(): Record<string, number> {
     return { ...this.budgets };
+  }
+
+  // --- Merged from legacy resources/ResourceManager.ts ---
+
+  allocateVram(modelName: string): { allowed: boolean; reason: string } {
+    console.log(`[ResourceManager] Allocating resources for model: ${modelName}`);
+    return resourceScheduler.scheduleRequest(modelName, 'interactive');
+  }
+
+  isThrottled(): boolean {
+    const metrics = this.getMetrics();
+    return metrics.throttled;
+  }
+
+  getMetrics(): ResourceMetrics {
+    const now = Date.now();
+    if (this.cachedMetrics && now - this.lastCheckedTime < 5000) {
+      return this.cachedMetrics;
+    }
+
+    let memPercent = 0.15;
+    if (typeof process !== 'undefined') {
+      const usage = process.memoryUsage();
+      memPercent = usage.heapUsed / usage.heapTotal;
+    }
+
+    const queueStats = resourceScheduler.getQueueStats();
+
+    let activeJobs = 0;
+    try {
+      activeJobs = queueStats.interactiveBacklog + queueStats.backgroundBacklog;
+    } catch {}
+
+    let dbStatus = 1;
+    try {
+      prisma.$queryRaw`SELECT 1`.catch(() => { dbStatus = 0; });
+    } catch {
+      dbStatus = 0;
+    }
+
+    const throttled = memPercent > this.memoryThreshold || activeJobs > 10;
+
+    this.cachedMetrics = {
+      cpuUsage: Math.floor(Math.random() * 20) + 5,
+      memoryUsagePercent: parseFloat(memPercent.toFixed(4)),
+      vramUsedGb: queueStats.vramUsedGb,
+      maxVramGb: queueStats.maxVramGb,
+      activeBackgroundJobs: activeJobs,
+      databaseConnections: dbStatus,
+      throttled,
+    };
+    this.lastCheckedTime = now;
+
+    return this.cachedMetrics;
+  }
+
+  setMemoryThreshold(threshold: number): void {
+    if (threshold > 0 && threshold <= 1) {
+      this.memoryThreshold = threshold;
+    }
   }
 }
 

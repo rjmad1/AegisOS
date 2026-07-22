@@ -61,11 +61,11 @@ describe('Platform Policy Service (PPS)', () => {
 
     const adminCtx: IExecutionContext = {
       id: '1', correlationId: '1', roles: ['admin'], securityLabels: [], operatingMode: 'balanced'
-    };
+    } as unknown as IExecutionContext;
     
     const userCtx: IExecutionContext = {
       id: '2', correlationId: '2', roles: ['user'], securityLabels: [], operatingMode: 'balanced'
-    };
+    } as unknown as IExecutionContext;
 
     expect(pps.evaluate('admin_action', undefined, adminCtx).action).toBe('permit');
     expect(pps.evaluate('admin_action', undefined, userCtx).action).toBe('deny');

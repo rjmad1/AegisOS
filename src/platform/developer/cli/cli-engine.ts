@@ -24,19 +24,46 @@ export class CliEngine {
   /**
    * Diagnostic Doctor checks the health, environment, and dependencies of the workspace.
    */
-  public doctor(): CliResult {
+  public async doctor(isOffline?: boolean): Promise<CliResult> {
     const checks: string[] = [];
     let healthy = true;
+    const isOfflineMode = isOffline || false;
 
-    // 1. Env check
+    if (!isOfflineMode) {
+      try {
+        // Try contacting the local running daemon
+        const res = await fetch("http://localhost:3000/api/v1/ox/doctor");
+        if (res.ok) {
+          const apiData = await res.json() as any;
+          const apiChecks = apiData.checks || [];
+          const daemonHealthy = apiChecks.every((c: any) => c.status === "healthy" || c.status === "warning");
+          const detailsList = apiChecks.map((c: any) => `[${c.status.toUpperCase()}] ${c.name}: ${c.details}`);
+          
+          this.generateSupportBundle(apiChecks, daemonHealthy);
+
+          return {
+            success: daemonHealthy,
+            message: daemonHealthy ? "All Daemon Diagnostic checks passed." : "Daemon diagnostics reported errors.",
+            data: detailsList
+          };
+        } else {
+          checks.push("Platform API returned non-200 status. Falling back to offline checks.");
+        }
+      } catch (err: any) {
+        checks.push(`Platform daemon is not running (error: ${err.message}). Falling back to offline checks.`);
+      }
+    } else {
+      checks.push("Offline mode selected. Running local host and workspace validations...");
+    }
+
+    // --- Offline Checks ---
     if (process.env.DATABASE_URL) {
       checks.push("Environment: DATABASE_URL variable is resolved.");
     } else {
       checks.push("Environment: DATABASE_URL variable is missing (using fallback SQLite).");
     }
 
-    // 2. Prisma Client Check
-    const prismaDir = path.resolve(process.cwd(), 'prisma', 'schema.prisma');
+    const prismaDir = path.resolve(process.cwd(), "prisma", "schema.prisma");
     if (fs.existsSync(prismaDir)) {
       checks.push("Prisma: Schema file found at " + prismaDir);
     } else {
@@ -44,10 +71,9 @@ export class CliEngine {
       healthy = false;
     }
 
-    // 3. Dependencies check
-    const pkgJsonPath = path.resolve(process.cwd(), 'package.json');
+    const pkgJsonPath = path.resolve(process.cwd(), "package.json");
     if (fs.existsSync(pkgJsonPath)) {
-      const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+      const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
       checks.push(`Package: AegisOS workspace is registered as "${pkg.name}" v${pkg.version}`);
       if (pkg.dependencies && pkg.dependencies.next) {
         checks.push(`NextJS: Version ${pkg.dependencies.next} resolved.`);
@@ -57,14 +83,54 @@ export class CliEngine {
       healthy = false;
     }
 
-    // 4. Ports connectivity mock checks
-    checks.push("Ports: Connected successfully to loopback on 18789 (AegisOS Service).");
+    const dbPath = path.resolve(process.cwd(), "databases", "dev.db");
+    if (fs.existsSync(dbPath)) {
+      checks.push(`Database: SQLite file found at ${dbPath}`);
+    } else {
+      checks.push("Database: Warning - SQLite database file not found at " + dbPath);
+    }
+
+    const formattedChecks = checks.map(c => ({
+      id: c.split(":")[0].toLowerCase().replace(/\s/g, "_"),
+      name: c.split(":")[0],
+      category: "runtime" as const,
+      status: c.includes("Warning") || c.includes("missing") ? "warning" as const : "healthy" as const,
+      details: c,
+      autoFixAvailable: false
+    }));
+    this.generateSupportBundle(formattedChecks, healthy);
 
     return {
       success: healthy,
-      message: healthy ? "All Platform Diagnostic Checks Passed!" : "Platform Doctor found issues in workspace.",
+      message: healthy ? "All Platform Offline Diagnostic Checks Passed!" : "Platform Doctor found offline configuration issues.",
       data: checks
     };
+  }
+
+  private generateSupportBundle(checks: any[], healthy: boolean) {
+    try {
+      const bundlePath = path.resolve(process.cwd(), "databases", "support-bundle.json");
+      const bundle = {
+        timestamp: new Date().toISOString(),
+        healthy,
+        version: "1.0.0",
+        checks,
+        environment: {
+          platform: process.platform,
+          arch: process.arch,
+          nodeVersion: process.version,
+          envVariables: {
+            DATABASE_URL: process.env.DATABASE_URL || "not set",
+            AEGISOS_STATE_DIR: process.env.AEGISOS_STATE_DIR || "not set",
+            AEGISOS_CONFIG_PATH: process.env.AEGISOS_CONFIG_PATH || "not set"
+          }
+        }
+      };
+      fs.mkdirSync(path.dirname(bundlePath), { recursive: true });
+      fs.writeFileSync(bundlePath, JSON.stringify(bundle, null, 2), "utf-8");
+    } catch (err: any) {
+      console.error("[Doctor] Failed to write support bundle: " + err.message);
+    }
   }
 
   /**

@@ -4,7 +4,9 @@ import * as React from "react";
 import { Code2, BookOpen, LayoutGrid, Activity, BarChart3, Sparkles, Check } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { DropdownMenu } from "@/components/ui/DropdownMenu";
-import { useAppStore, PersonaPerspective } from "@/store/appStore";
+import { useAppStore } from "@/store/appStore";
+
+export type PersonaPerspective = "developer" | "research" | "product" | "operations" | "executive" | "personal";
 
 const PERSPECTIVE_CONFIGS: Record<
   PersonaPerspective,
@@ -21,7 +23,7 @@ const PERSPECTIVE_CONFIGS: Record<
 export const PerspectiveSwitcher: React.FC = () => {
   const { activePerspective, setActivePerspective } = useAppStore();
 
-  const currentConfig = PERSPECTIVE_CONFIGS[activePerspective] || PERSPECTIVE_CONFIGS.developer;
+  const currentConfig = PERSPECTIVE_CONFIGS[activePerspective as PersonaPerspective] || PERSPECTIVE_CONFIGS.developer;
   const ActiveIcon = currentConfig.icon;
 
   const dropdownItems = (Object.keys(PERSPECTIVE_CONFIGS) as PersonaPerspective[]).map((key) => {

@@ -34,6 +34,13 @@ export default function DeveloperPortalPage() {
   const [doctorResult, setDoctorResult] = React.useState<any>(null);
   const [runningDoctor, setRunningDoctor] = React.useState(false);
 
+  // Workspace management state
+  const [scaffoldType, setScaffoldType] = React.useState('scaffold-provider');
+  const [scaffoldId, setScaffoldId] = React.useState('com.aegisos.provider.custom-vllm');
+  const [scaffoldName, setScaffoldName] = React.useState('Custom vLLM Provider Pack');
+  const [workspaceResult, setWorkspaceResult] = React.useState<any>(null);
+  const [runningWorkspace, setRunningWorkspace] = React.useState(false);
+
   // Analytics state
   const [analytics, setAnalytics] = React.useState<any>({
     apiCalls: 124800,
@@ -42,6 +49,46 @@ export default function DeveloperPortalPage() {
     activeExtensions: 6,
     licensingCharges: 29.00
   });
+
+  const handleWorkspaceAction = async (action: 'init' | 'qualify') => {
+    setRunningWorkspace(true);
+    setWorkspaceResult(null);
+    try {
+      const res = await fetch('/api/v1/developer/workspace', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action })
+      });
+      const data = await res.json();
+      setWorkspaceResult(data);
+    } catch (err: any) {
+      setWorkspaceResult({ error: err.message });
+    } finally {
+      setRunningWorkspace(false);
+    }
+  };
+
+  const handleScaffoldAction = async () => {
+    setRunningWorkspace(true);
+    setWorkspaceResult(null);
+    try {
+      const res = await fetch('/api/v1/developer/generator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: scaffoldType,
+          id: scaffoldId,
+          name: scaffoldName
+        })
+      });
+      const data = await res.json();
+      setWorkspaceResult(data);
+    } catch (err: any) {
+      setWorkspaceResult({ error: err.message });
+    } finally {
+      setRunningWorkspace(false);
+    }
+  };
 
   const runApiQuery = async () => {
     setLoadingQuery(true);
@@ -174,6 +221,7 @@ export default function DeveloperPortalPage() {
           <TabsTrigger value="playground" className="px-4 py-2 text-sm">API Explorer</TabsTrigger>
           <TabsTrigger value="sdks" className="px-4 py-2 text-sm">Download SDKs</TabsTrigger>
           <TabsTrigger value="certification" className="px-4 py-2 text-sm">Certification Scanner</TabsTrigger>
+          <TabsTrigger value="workspace" className="px-4 py-2 text-sm">Workspace Manager</TabsTrigger>
           <TabsTrigger value="doctor" className="px-4 py-2 text-sm">System Doctor</TabsTrigger>
         </TabsList>
 
@@ -415,6 +463,103 @@ export default function DeveloperPortalPage() {
                     Configure the manifest parameters on the left and run verification.
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Workspace Manager Tab */}
+        <TabsContent value="workspace" className="space-y-6 outline-none">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Card className="lg:col-span-1 bg-slate-900/40 border-slate-800 backdrop-blur-md">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <Terminal className="h-5 w-5 text-cyan-400" />
+                  Developer Sandbox & Generators
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-400">
+                  Provision workspaces or scaffold new provider/connector extensions.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => handleWorkspaceAction('init')}
+                    disabled={runningWorkspace}
+                    className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-slate-950 font-semibold"
+                  >
+                    Init Sandbox
+                  </Button>
+                  <Button 
+                    onClick={() => handleWorkspaceAction('qualify')}
+                    disabled={runningWorkspace}
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-slate-100 font-semibold"
+                  >
+                    Run Qualification
+                  </Button>
+                </div>
+
+                <div className="border-t border-slate-800 my-4"></div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-400">Generator Type</label>
+                  <select
+                    value={scaffoldType}
+                    onChange={(e) => setScaffoldType(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-300 focus:outline-none"
+                  >
+                    <option value="scaffold-provider">AI Provider Pack Template</option>
+                    <option value="scaffold-connector">Enterprise Connector Template</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-400">Extension ID</label>
+                  <input
+                    type="text"
+                    value={scaffoldId}
+                    onChange={(e) => setScaffoldId(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-sm text-slate-300 focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-400">Extension Name</label>
+                  <input
+                    type="text"
+                    value={scaffoldName}
+                    onChange={(e) => setScaffoldName(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-sm text-slate-300 focus:outline-none"
+                  />
+                </div>
+
+                <Button
+                  onClick={handleScaffoldAction}
+                  disabled={runningWorkspace}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-slate-100 font-semibold"
+                >
+                  Generate Template
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="lg:col-span-2 bg-slate-900/40 border-slate-800 backdrop-blur-md">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold">Action Output & Logs</CardTitle>
+                <CardDescription className="text-xs text-slate-400">
+                  Shell output execution response of developer actions.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 min-h-[300px] overflow-auto font-mono text-xs text-cyan-400/90 shadow-inner">
+                  {workspaceResult ? (
+                    <pre>{JSON.stringify(workspaceResult, null, 2)}</pre>
+                  ) : (
+                    <div className="flex items-center justify-center h-64 text-slate-500 text-sm">
+                      Run an action or generator on the left to see stdout logs.
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </div>

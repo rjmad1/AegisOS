@@ -25,6 +25,13 @@ export class MissionOrchestrator {
   public static getInstance(): MissionOrchestrator {
     if (!MissionOrchestrator.instance) {
       MissionOrchestrator.instance = new MissionOrchestrator();
+      try {
+        const { missionRegistry } = require('./registry');
+        const { enterpriseAutomationPlugin } = require('./plugins/EnterpriseAutomationPlugin');
+        missionRegistry.registerPlugin(enterpriseAutomationPlugin);
+      } catch (e: any) {
+        console.warn('[MissionOrchestrator] Failed registering automation plugin:', e.message);
+      }
     }
     return MissionOrchestrator.instance;
   }
@@ -158,7 +165,7 @@ export class MissionOrchestrator {
     this.syncWithEKGAndTwin(mission);
 
     // Publish to Event Bus
-    eventBus.publish('mission:transitioned', { missionId: mission.id, fromState: mission.lifecycleState, toState: nextState });
+    eventBus.publish({ name: 'mission:transitioned', source: 'MissionOrchestrator', payload: { missionId: mission.id, fromState: mission.lifecycleState, toState: nextState } });
 
     return mission;
   }
@@ -322,8 +329,9 @@ export class MissionOrchestrator {
     const report = await qualificationOrchestrator.executeRequest({
       id: `emo-qual-${Date.now()}`,
       reason: `EMO qualification for mission: ${mission.id}`,
-      scope: 'PLATFORM',
+      scope: ['PLATFORM'],
       triggerSource: 'LIFECYCLE',
+      timestamp: new Date().toISOString(),
       correlationId: `git-sha-${mission.id}`
     });
 
@@ -442,12 +450,14 @@ export class MissionOrchestrator {
     // Add edges to EKG for affected assets
     mission.affectedAssets.forEach(assetId => {
       knowledgeGraphEngine.addRelationship({
+        id: crypto.randomUUID(),
         sourceId: `mission:${mission.id}`,
         targetId: assetId,
         type: 'affects',
         weight: 1.0,
         trustScore: 1.0,
-        metadata: { stage: mission.lifecycleState }
+        metadata: { stage: mission.lifecycleState },
+        provenance: JSON.stringify({ source: 'emo', timestamp: Date.now() })
       });
     });
 

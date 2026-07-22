@@ -1,0 +1,35 @@
+{
+  "profileName": "knowledge-worker",
+  "platformRoot": "C:\\AegisOS\\WorkstationPlatform",
+  "networkMode": "LAN",
+  "isolationLevel": "dedicated",
+  "ports": {
+    "ollama": 11434,
+    "litellm": 4000,
+    "aegisos": 18789,
+    "omniroute": 20128,
+    "openwebui": 8090
+  },
+  "logRotation": true,
+  "resourceLimits": {
+    "cpu": "8",
+    "memory": "24GB",
+    "storage": "200GB"
+  },
+  "securityPolicies": {
+    "firewallMode": "StandardLAN",
+    "rateLimitingEnabled": true,
+    "encryptionEnabled": true
+  },
+  "supportLevel": "basic",
+  "modelsToPull": [
+    "smollm:135m",
+    "all-minilm:latest",
+    "gemma2:9b"
+  ],
+  "bundledExtensions": [
+    "com.aegisos.ext.logger",
+    "com.aegisos.provider.ollama",
+    "com.aegisos.connector.jira"
+  ]
+}

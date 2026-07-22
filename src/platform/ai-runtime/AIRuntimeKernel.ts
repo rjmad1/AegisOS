@@ -5,7 +5,7 @@ import { PromptRuntime } from "./PromptRuntime";
 import { MemoryPlatform } from "./MemoryPlatform";
 import { KnowledgeRuntime } from "./KnowledgeRuntime";
 import { ToolRuntime } from "./ToolRuntime";
-import { WorkflowRuntime } from "./WorkflowRuntime";
+import { workflowService } from "../../services/workflow.service";
 import { AgentRuntime } from "./AgentRuntime";
 import { DelegationManager } from "./DelegationManager";
 import { ReasoningEngine } from "./ReasoningEngine";
@@ -21,9 +21,11 @@ import { PromptGuardrail } from "./PromptGuardrail";
 import { ToolSandbox } from "./ToolSandbox";
 import { telemetryTracker } from "../../infrastructure/observability/telemetry";
 import { CapabilityLifecycleManager } from "../capability/CapabilityLifecycleManager";
+import { CloudSpilloverRouter } from "../../infrastructure/providers/cloud-spillover-router";
 
 export class AIRuntimeKernel {
   private static instance: AIRuntimeKernel | null = null;
+  private spilloverRouter: CloudSpilloverRouter;
 
   // Registry Accessors for the AI Operating System engines
   public readonly models = ModelRuntime.getInstance();
@@ -31,7 +33,7 @@ export class AIRuntimeKernel {
   public readonly memories = MemoryPlatform.getInstance();
   public readonly knowledge = KnowledgeRuntime.getInstance();
   public readonly tools = ToolRuntime.getInstance();
-  public readonly workflows = WorkflowRuntime.getInstance();
+  public readonly workflows = workflowService;
   public readonly agents = AgentRuntime.getInstance();
   public readonly delegation = DelegationManager.getInstance();
   public readonly reasoning = ReasoningEngine.getInstance();
@@ -42,7 +44,9 @@ export class AIRuntimeKernel {
   public readonly dashboard = AIOperationsDashboard.getInstance();
   public readonly health = RuntimeHealthFramework.getInstance();
 
-  private constructor() {}
+  private constructor() {
+    this.spilloverRouter = new CloudSpilloverRouter();
+  }
 
   public static getInstance(): AIRuntimeKernel {
     if (!AIRuntimeKernel.instance) {
@@ -130,6 +134,9 @@ export class AIRuntimeKernel {
 
       // Compose final context prompt
       const finalPrompt = `${sanitizedPrompt}${ragContext}${conversationHistory}`;
+      
+      const routedModel = await this.models.route(finalPrompt);
+      const promptTokensCount = Math.round(finalPrompt.length / 4);
 
       // Check Queue Saturation for Cloud Fallback (Auto-Scaling logic)
       const currentTaskCount = this.dashboard.getMetrics().activeCalls || 0;
@@ -151,15 +158,36 @@ export class AIRuntimeKernel {
 
          forceCloudFallback = true;
       }
+      
+      // Also check spillover config
+      if (!forceCloudFallback) {
+        forceCloudFallback = await this.spilloverRouter.shouldSpillover(routedModel, promptTokensCount);
+        if (forceCloudFallback) {
+          this.dashboard.addRoutingTrace(`Cloud spillover router triggered based on capacity/token limits.`);
+        }
+      }
 
       // 5. Routing and Execution plane
-      if (request.agentId && !forceCloudFallback) {
+      if (forceCloudFallback) {
+        // Execute via cloud provider
+        routedModelId = "cloud-provider-fallback";
+        const cloudResponse = await this.spilloverRouter.routeToCloud(finalPrompt);
+        
+        if (cloudResponse.choices) {
+          finalContent = cloudResponse.choices[0].message.content; // Azure/OpenAI format
+        } else if (cloudResponse.content) {
+          finalContent = cloudResponse.content[0].text; // Anthropic format
+        } else {
+          finalContent = "Failed to parse cloud spillover response.";
+        }
+        if (ragContext) {
+          finalContent += ` Grounded context: ${ragContext}`;
+        }
+      } else if (request.agentId) {
         // Route through Agent runtime
         const agent = this.agents.getAgent(request.agentId);
         if (!agent) throw new Error(`Agent ${request.agentId} not found`);
 
-        // Resolve model using Model Router
-        const routedModel = await this.models.route(finalPrompt);
         routedModelId = routedModel.id;
 
         const primaryQuery = async () => {
@@ -172,19 +200,18 @@ export class AIRuntimeKernel {
         finalContent = await recoveryEngine.executeModelQuery(primaryQuery, fallbackQuery, routedModelId);
       } else if (request.workflowId) {
         // Execute workflow
-        const exec = await this.workflows.startExecution(request.workflowId, request.options?.variables || {});
-        const finalState = await this.workflows.runWorkflow(exec.id);
+        const exec = await this.workflows.triggerWorkflow(request.workflowId, request.options?.variables || {}, "ai-runtime-kernel");
         
-        finalContent = `Workflow execution ${finalState.status.toUpperCase()}. Results: ${JSON.stringify(finalState.stepResults)}`;
-        routedModelId = "system:workflow-runtime";
+        finalContent = `Workflow execution initiated. Execution ID: ${exec.id}. Status: ${exec.status.toUpperCase()}.`;
+        routedModelId = "system:workflow-service";
       } else {
         // Direct model execution
-        const routedModel = await this.models.route(finalPrompt);
         routedModelId = routedModel.id;
 
         // Mock LLM invocation output protected by circuit breaker
         const primaryQuery = async () => {
-          return `[Response from ${routedModel.displayName}]: I processed your prompt: "${sanitizedPrompt.slice(0, 50)}". Everything looks valid.`;
+          const contextSnippet = ragContext ? ` Grounded context: ${ragContext}` : "";
+          return `[Response from ${routedModel.displayName}]: I processed your prompt: "${sanitizedPrompt.slice(0, 50)}".${contextSnippet} Everything looks valid.`;
         };
         const fallbackQuery = async () => {
           return `[Response from Fallback]: Primary model offline. Handled request via fallback routing.`;

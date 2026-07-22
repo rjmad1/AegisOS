@@ -1,0 +1,30 @@
+{
+  "domain": "mobile",
+  "label": "Mobile Ecosystem",
+  "icon": "smartphone",
+  "entities": {
+    "devices": {
+      "id": "devices",
+      "labelPlural": "Devices",
+      "labelSingular": "Device",
+      "apiEndpoint": "/api/v1/mobile/devices",
+      "primaryKey": "deviceId",
+      "permissions": {
+        "read": ["admin"],
+        "write": ["admin"],
+        "delete": ["admin"]
+      },
+      "list": {
+        "columns": [
+          { "key": "deviceId", "label": "Device ID", "type": "string" },
+          { "key": "owner", "label": "Owner", "type": "string" },
+          { "key": "platform", "label": "Platform", "type": "badge" },
+          { "key": "status", "label": "Sync Status", "type": "status" }
+        ],
+        "actions": [
+          { "id": "pair", "label": "Pair New Device", "type": "primary" }
+        ]
+      }
+    }
+  }
+}

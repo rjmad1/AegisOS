@@ -1,4 +1,5 @@
 export type ProviderType =
+  // Infrastructure Providers
   | "artifact-provider"
   | "model-provider"
   | "runtime-provider"
@@ -27,12 +28,28 @@ export type ProviderType =
   | "execution-provider"
   | "executor-provider"
   | "execution-stream-provider"
-  | "merge-provider";
+  | "merge-provider"
+  // Platform/Mission Providers
+  | "discovery"
+  | "simulation"
+  | "qualification"
+  | "reasoning"
+  | "planning"
+  | "governance"
+  | "memory"
+  | "optimization"
+  | "recommendation"
+  | "mission";
 
-export interface IInfrastructureProvider {
+export interface IProvider {
   id: string;
   name: string;
   type: ProviderType;
-  initialize(config: Record<string, any>): Promise<void>;
-  shutdown(): Promise<void>;
+  dependencies?: string[];
+  initialize?(config?: Record<string, any>): Promise<void>;
+  shutdown?(): Promise<void>;
 }
+
+// Keep backward compatibility for now
+export type IInfrastructureProvider = IProvider;
+export type IPlatformProvider = IProvider;

@@ -1,8 +1,8 @@
-import { IInfrastructureProvider, ProviderType } from "../contracts/provider";
+import { IProvider, ProviderType } from "../contracts/provider";
 
 export class ProviderRegistry {
   private static instance: ProviderRegistry | null = null;
-  private providers: Map<string, IInfrastructureProvider> = new Map();
+  private providers: Map<string, IProvider> = new Map();
 
   private constructor() {}
 
@@ -13,7 +13,7 @@ export class ProviderRegistry {
     return ProviderRegistry.instance;
   }
 
-  public registerProvider(provider: IInfrastructureProvider): void {
+  public registerProvider(provider: IProvider): void {
     if (this.providers.has(provider.id)) {
       console.warn(`[ProviderRegistry] Provider with ID "${provider.id}" is already registered. Overwriting.`);
     }
@@ -21,16 +21,16 @@ export class ProviderRegistry {
     console.log(`[ProviderRegistry] Registered provider: ${provider.name} (ID: ${provider.id}, Type: ${provider.type})`);
   }
 
-  public getProvider<T extends IInfrastructureProvider>(id: string): T | null {
+  public getProvider<T extends IProvider>(id: string): T | null {
     const provider = this.providers.get(id);
     return (provider as T) || null;
   }
 
-  public getAllProviders(): IInfrastructureProvider[] {
+  public getAllProviders(): IProvider[] {
     return Array.from(this.providers.values());
   }
 
-  public getProvidersByType<T extends IInfrastructureProvider>(type: ProviderType): T[] {
+  public getProvidersByType<T extends IProvider>(type: ProviderType): T[] {
     const list: T[] = [];
     this.providers.forEach((provider) => {
       if (provider.type === type) {

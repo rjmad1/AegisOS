@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { useAppStore, PersonaPerspective } from "@/store/appStore";
+import { useAppStore } from "@/store/appStore";
 import { useAuthStore } from "@/store/authStore";
 
 describe("AegisOS Studio Delivery Program (SDP) - Sprint 1 Verification", () => {
@@ -20,7 +20,7 @@ describe("AegisOS Studio Delivery Program (SDP) - Sprint 1 Verification", () => 
 
   describe("Studio Shell & Persona Navigation System", () => {
     it("should support switching across all 6 persona perspectives", () => {
-      const perspectives: PersonaPerspective[] = [
+      const perspectives: string[] = [
         "developer",
         "research",
         "product",

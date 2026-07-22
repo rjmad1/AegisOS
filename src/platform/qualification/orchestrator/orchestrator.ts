@@ -2,7 +2,7 @@ import { IQualificationProvider, QualificationRequest, QualificationReport, Trig
 import { qualificationProviderRegistry } from '../core/registry';
 import { EvidenceGraph } from '../../certification/evidence-graph';
 import { ExecutionHost } from '../../commands/execution-host';
-import { pmiEngine } from '../maturity/pmi-engine';
+import { assessmentEngine } from '../maturity/pmi-engine';
 import { engineeringIntelligenceEngine } from '../remediation/eie';
 import { historicalIntel } from '../reporting/historical-intel';
 import type { ValidationResult } from '../../validation/types';
@@ -10,7 +10,12 @@ import type { ValidationResult } from '../../validation/types';
 export class QualificationOrchestrator {
   public async executeRequest(request: QualificationRequest): Promise<QualificationReport> {
     const startTime = Date.now();
-    console.log(`🚀 [QualificationOrchestrator] Starting qualification request: "${request.reason}" (ID: ${request.id})`);
+    
+    // Generate OEID if not provided
+    const oeid = request.oeid || `OE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`;
+    request.oeid = oeid;
+    
+    console.log(`🚀 [QualificationOrchestrator] Starting qualification request: "${request.reason}" (ID: ${request.id}, OEID: ${oeid})`);
 
     // 1. Discover and filter providers based on request selection or scope
     let selectedProviders = request.providerSelection
@@ -62,8 +67,8 @@ export class QualificationOrchestrator {
     }
     const rootHash = graph.computeRootHash();
 
-    // 5. Evaluate Platform Maturity Index (PMI)
-    const maturity = pmiEngine.evaluateMaturity(results);
+    // 5. Evaluate Platform Assessment
+    const assessment = assessmentEngine.evaluateAssessment(results);
 
     // 6. Diagnose failed gates & generate Autonomous Remediation Recommendations via EIE
     const failedResults = Object.values(results).filter((r) => r.status === 'FAIL');
@@ -85,14 +90,16 @@ export class QualificationOrchestrator {
       timestamp: new Date().toISOString(),
       request,
       decision,
-      overallScore: maturity.overall,
+      overallScore: assessment.maturity.overall,
+      maturity: assessment.maturity,
       durationMs,
       gitSha: hostMeta.gitSha,
+      oeid,
       platformVersion: '1.0.0',
       environment: hostMeta.hostType === 'github_actions' ? 'ENTERPRISE_PRODUCTION' : 'DEVELOPMENT',
       evidenceGraphRootHash: rootHash,
       results,
-      maturity,
+      assessment,
       remediations,
       warnings
     };
@@ -100,7 +107,7 @@ export class QualificationOrchestrator {
     // 7. Persist (Dual-Persistence: file registry + SQLite analytics DB)
     await historicalIntel.persistReport(report, graph);
 
-    console.log(`[QualificationOrchestrator] Qualification finished. Decision: ${decision}. Overall Maturity Score: ${maturity.overall}%`);
+    console.log(`[QualificationOrchestrator] Qualification finished. Decision: ${decision}. Overall Maturity Score: ${assessment.maturity.overall}%`);
     return report;
   }
 

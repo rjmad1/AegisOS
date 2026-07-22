@@ -1,0 +1,52 @@
+{
+  "domain": "admin",
+  "label": "Administration",
+  "icon": "shield",
+  "entities": {
+    "users": {
+      "id": "users",
+      "labelPlural": "Users",
+      "labelSingular": "User",
+      "apiEndpoint": "/api/v1/admin/users",
+      "primaryKey": "id",
+      "permissions": {
+        "read": ["admin"],
+        "write": ["admin"],
+        "delete": ["admin"]
+      },
+      "list": {
+        "columns": [
+          { "key": "id", "label": "ID", "type": "string" },
+          { "key": "email", "label": "Email", "type": "string" },
+          { "key": "role", "label": "Role", "type": "badge" },
+          { "key": "status", "label": "Status", "type": "status" }
+        ],
+        "actions": [
+          { "id": "create", "label": "Add User", "type": "primary" }
+        ]
+      }
+    },
+    "secrets": {
+      "id": "secrets",
+      "labelPlural": "Secrets",
+      "labelSingular": "Secret",
+      "apiEndpoint": "/api/v1/admin/secrets",
+      "primaryKey": "key",
+      "permissions": {
+        "read": ["admin"],
+        "write": ["admin"],
+        "delete": ["admin"]
+      },
+      "list": {
+        "columns": [
+          { "key": "key", "label": "Secret Key", "type": "code" },
+          { "key": "provider", "label": "Provider", "type": "badge" },
+          { "key": "lastRotated", "label": "Last Rotated", "type": "date" }
+        ],
+        "actions": [
+          { "id": "rotate", "label": "Rotate All", "type": "secondary" }
+        ]
+      }
+    }
+  }
+}

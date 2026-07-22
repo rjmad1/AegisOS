@@ -8,6 +8,11 @@
 
 import { PlatformKernel } from './PlatformKernel';
 import type { PlatformModule } from './types';
+import { MetadataRegistry } from '../metadata/MetadataRegistry';
+
+// Initialize the metadata registry
+// Synchronously loads from localStorage, and asynchronously fetches fresh from remote.
+MetadataRegistry.boot().catch(e => console.error("[Boot] Metadata failed to load:", e));
 
 // --- Static module imports (added as modules are created) ---
 import { platformModule } from '@/modules/platform/platform.module';

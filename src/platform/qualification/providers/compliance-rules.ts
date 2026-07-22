@@ -1,12 +1,12 @@
 import { IQualificationProvider, QualificationRequest } from '../core/types';
-import type { ValidationResult } from '../../validation/types';
+import type { ValidationResult, ValidationDomain } from '../../validation/types';
 import { computeContentHash } from '../../certification/evidence-graph';
 import * as fs from 'fs';
 import * as path from 'path';
 
 export class ComplianceRulesProvider implements IQualificationProvider {
   public readonly providerId = 'compliance-rules';
-  public readonly supportedDomains = ['governance'];
+  public readonly supportedDomains: ValidationDomain[] = ['governance'];
   public readonly dependencies = [];
 
   public async execute(request: QualificationRequest): Promise<ValidationResult> {

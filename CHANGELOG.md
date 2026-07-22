@@ -4,7 +4,32 @@ All notable changes to AegisOS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-07-22
+
+### Added
+- Universal Release Readiness: Completed 12-phase engineering readiness review, quality gate verification, and repository synchronization.
+- Thin-Edge Ingestion: Added `aegis-webhook` integration to `conversa_repo` for raw transcript handoff to AegisOS.
+
+### Fixed
+- ESLint configuration: Extended `globalIgnores` in `eslint.config.mjs` to include `.agents/**`, `.aegisos/**`, and `dist/**` to prevent generated artifacts and agent skills from triggering lint failures.
+- Vitest workspace configuration: Updated `exclude` patterns in `vitest.config.ts` to `**/node_modules/**` ensuring nested package test suites are excluded from main root unit test runner.
+
+## [1.2.2] - 2026-07-21
+
+### Fixed
+- Fixed ESLint errors across the codebase including Next.js `<a>` link violations in auth pages, missing display names for dynamically generated components, and type definition warnings in capability runtime.
+- Resolved unescaped quote syntax errors in `LocalCapabilityProvider`.
+- Addressed C4 Architecture Fitness Violation by abstracting database `workflowRepository` calls in API layer via the `workflowService`.
+
 ## [1.2.1] - 2026-07-20
+
+### Added
+- Phase 7 Ecosystem & Productization: Delivered dynamic Provider Packs (Ollama, LiteLLM, OpenAI, Gemini) and Enterprise Connectors (GitHub, Jira) as dynamically loadable platforms extensions.
+- Marketplace & Packaging Lifecycle: Implemented `MarketplaceService` to handle package publishing, signing verification, sandbox installations, and catalog queries inside the existing `Artifact` model.
+- Declarative Deployment Blueprints: Defined the DBS schema and created blueprints for Kubernetes, Air-Gapped, Edge, GPU-Workstation, Team, and Knowledge-Worker editions.
+- Developer Experience Toolkit: Created `Developer.ps1` and Next.js APIs under `/api/v1/developer` for one-command workspace initialization, scaffolding generators, and qualification checks.
+- Unified Governance & Quality Cockpit: Extended `pmiEngine` to calculate Platform Readiness Index (PRI), Knowledge Maturity Model (KMM), Governance Compliance Matrix (GCM), and CER exceptions.
+- Formulated extensive governance guides: Contribution Guide, Maintainer Guide, Plugin Certification Guide, and SDK specifications.
 
 ### Fixed
 - Reliability test suite: replaced real OS-level calls (port scanning, `taskkill`, docker compose) with proper `vi.mock()` stubs for deterministic, isolated test execution.

@@ -146,6 +146,64 @@ export class EvaluationPlatform {
             details: JSON.stringify(result)
           }
         });
+
+        // Register Prompt and Model lineage in EKG and Digital Twin (Program 8.7)
+        try {
+          const { knowledgeGraphEngine } = require("../knowledge/KnowledgeGraphEngine");
+          const { platformTwin } = require("../pik/twin/PlatformDigitalTwin");
+
+          knowledgeGraphEngine.addNode({
+            id: `prompt:${result.promptId}`,
+            label: `Prompt: ${result.promptId}`,
+            type: 'data',
+            properties: { promptId: result.promptId },
+            lineageId: `prompt:${result.promptId}`,
+            version: '1.0.0',
+            owner: 'system',
+            confidence: 1.0,
+            trustScore: 1.0,
+            sourceReferences: []
+          });
+
+          knowledgeGraphEngine.addNode({
+            id: `model:${result.modelId}`,
+            label: `Model: ${result.modelId}`,
+            type: 'model',
+            properties: { modelId: result.modelId },
+            lineageId: `model:${result.modelId}`,
+            version: '1.0.0',
+            owner: 'system',
+            confidence: 1.0,
+            trustScore: 1.0,
+            sourceReferences: []
+          });
+
+          knowledgeGraphEngine.addRelationship({
+            sourceId: `prompt:${result.promptId}`,
+            targetId: `model:${result.modelId}`,
+            type: 'evaluated_on',
+            weight: result.qualityRating / 5.0,
+            trustScore: result.safetyViolation ? 0.0 : 1.0,
+            metadata: {
+              timestamp: result.timestamp,
+              cost: result.costUsd,
+              latency: result.latencyMs,
+              correctness: result.groundingScore,
+              safetyViolation: result.safetyViolation
+            }
+          });
+
+          platformTwin.live.upsertNode(`prompt:${result.promptId}`, 'Prompt', {
+            name: `Prompt: ${result.promptId}`,
+            status: result.safetyViolation ? 'degraded' : 'healthy'
+          });
+          platformTwin.live.upsertNode(`model:${result.modelId}`, 'Model', {
+            name: `Model: ${result.modelId}`,
+            status: 'healthy'
+          });
+        } catch (lErr: any) {
+          console.warn("[EvaluationPlatform] EKG/Twin lineage sync failed:", lErr.message);
+        }
       }
     } catch (err: any) {
       console.warn("[EvaluationPlatform] Failed to write scorecard to database:", err.message);

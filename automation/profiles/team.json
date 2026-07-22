@@ -1,0 +1,36 @@
+{
+  "profileName": "team",
+  "platformRoot": "D:\\AegisOS\\TeamPlatform",
+  "networkMode": "LAN",
+  "isolationLevel": "shared",
+  "ports": {
+    "ollama": 11434,
+    "litellm": 4000,
+    "aegisos": 18789,
+    "omniroute": 20128,
+    "openwebui": 8090
+  },
+  "logRotation": true,
+  "resourceLimits": {
+    "cpu": "12",
+    "memory": "48GB",
+    "storage": "500GB"
+  },
+  "securityPolicies": {
+    "firewallMode": "StandardLAN",
+    "rateLimitingEnabled": true,
+    "encryptionEnabled": true
+  },
+  "supportLevel": "basic",
+  "modelsToPull": [
+    "smollm:135m",
+    "all-minilm:latest",
+    "gemma2:9b",
+    "llama3.1:8b"
+  ],
+  "bundledExtensions": [
+    "com.aegisos.ext.logger",
+    "com.aegisos.provider.ollama",
+    "com.aegisos.connector.github"
+  ]
+}

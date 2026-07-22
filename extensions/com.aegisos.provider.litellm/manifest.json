@@ -1,0 +1,23 @@
+{
+  "id": "com.aegisos.provider.litellm",
+  "name": "LiteLLM Provider Pack",
+  "version": "1.0.0",
+  "author": "AegisOS Ecosystem Team",
+  "description": "Provider Pack for managing LiteLLM proxy routers, load-balancing configurations, and multi-model fallbacks.",
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "capabilities": [
+    "litellm-provider",
+    "cloud-routing"
+  ],
+  "permissions": [
+    "event-publish",
+    "event-subscribe",
+    "*"
+  ],
+  "entryPoints": {
+    "main": "index.js"
+  },
+  "signature": "2222222222222222222222222222222222222222222222222222222222222222"
+}

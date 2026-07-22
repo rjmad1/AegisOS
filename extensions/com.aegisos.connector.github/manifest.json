@@ -1,0 +1,23 @@
+{
+  "id": "com.aegisos.connector.github",
+  "name": "GitHub Enterprise Connector",
+  "version": "1.0.0",
+  "author": "AegisOS Ecosystem Team",
+  "description": "Enterprise Connector integrating GitHub repositories, issues, workflows, and PR sync operations.",
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "capabilities": [
+    "github-connector",
+    "git-sync"
+  ],
+  "permissions": [
+    "event-publish",
+    "event-subscribe",
+    "*"
+  ],
+  "entryPoints": {
+    "main": "index.js"
+  },
+  "signature": "5555555555555555555555555555555555555555555555555555555555555555"
+}

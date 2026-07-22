@@ -1,0 +1,23 @@
+{
+  "id": "com.aegisos.provider.ollama",
+  "name": "Ollama Provider Pack",
+  "version": "1.0.0",
+  "author": "AegisOS Ecosystem Team",
+  "description": "Provider Pack for local Ollama model integration and VRAM weight scheduling.",
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "capabilities": [
+    "ollama-provider",
+    "local-inference"
+  ],
+  "permissions": [
+    "event-publish",
+    "event-subscribe",
+    "*"
+  ],
+  "entryPoints": {
+    "main": "index.js"
+  },
+  "signature": "1111111111111111111111111111111111111111111111111111111111111111"
+}

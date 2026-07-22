@@ -1,7 +1,10 @@
 // src/platform/mission/registry.ts
 // EMO Extensibility and Plugin Framework Registry
 
-import { IPlatformProvider, emoProviderRegistry } from './providers';
+import { IPlatformProvider } from '../../infrastructure/contracts/provider';
+import { ProviderRegistry } from '../../infrastructure/providers/registry';
+
+const emoProviderRegistry = ProviderRegistry.getInstance();
 
 export interface IMissionPolicy {
   policyId: string;

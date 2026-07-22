@@ -1,0 +1,49 @@
+{
+  "domain": "workspace",
+  "label": "Workspace",
+  "icon": "briefcase",
+  "entities": {
+    "artifacts": {
+      "id": "artifacts",
+      "labelPlural": "Artifacts",
+      "labelSingular": "Artifact",
+      "apiEndpoint": "/api/v1/artifacts",
+      "primaryKey": "id",
+      "permissions": {
+        "read": ["developer", "research", "admin"],
+        "write": ["developer", "research", "admin"],
+        "delete": ["developer", "admin"]
+      },
+      "list": {
+        "columns": [
+          { "key": "id", "label": "Artifact ID", "type": "string" },
+          { "key": "type", "label": "Type", "type": "badge" },
+          { "key": "createdAt", "label": "Created", "type": "date" }
+        ],
+        "actions": []
+      }
+    },
+    "conversations": {
+      "id": "conversations",
+      "labelPlural": "Conversations",
+      "labelSingular": "Conversation",
+      "apiEndpoint": "/api/v1/conversations",
+      "primaryKey": "id",
+      "permissions": {
+        "read": ["developer", "research", "admin"],
+        "write": ["developer", "research", "admin"],
+        "delete": ["developer", "admin"]
+      },
+      "list": {
+        "columns": [
+          { "key": "id", "label": "Session ID", "type": "string" },
+          { "key": "turns", "label": "Turns", "type": "number" },
+          { "key": "status", "label": "Status", "type": "status" }
+        ],
+        "actions": [
+          { "id": "new", "label": "New Conversation", "type": "primary" }
+        ]
+      }
+    }
+  }
+}

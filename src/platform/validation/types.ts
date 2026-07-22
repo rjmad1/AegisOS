@@ -77,6 +77,7 @@ export type ValidationDomain =
   | 'security'
   | 'governance'
   | 'architecture'
+  | 'engineering'
   | 'replay';
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,24 @@
+{
+  "policies": {
+    "backups": {
+      "retentionCount": 10,
+      "schedule": "0 2 * * *",
+      "compressionEnabled": true,
+      "encryptionEnabled": true,
+      "backupLocation": "backups"
+    },
+    "certificates": {
+      "autoRotationDays": 90,
+      "signatureAlgorithm": "RS256",
+      "keyBitSize": 2048
+    },
+    "secrets": {
+      "keyRotationDays": 30,
+      "secretProvider": "local-dpapi"
+    },
+    "compliance": {
+      "requireSignedPackages": true,
+      "policyEnforcement": "active"
+    }
+  }
+}

@@ -2,6 +2,7 @@ export interface AuthUserProfile {
   id: string;
   email: string;
   name: string;
+  roles?: string[];
 }
 
 export interface AuthProvider {
@@ -24,6 +25,9 @@ export interface AuthProvider {
 import { GoogleProvider } from './GoogleProvider';
 import { EntraProvider } from './EntraProvider';
 import { LdapProvider } from './LdapProvider';
+import { OktaProvider } from './OktaProvider';
+import { KeycloakProvider } from './KeycloakProvider';
+import { SamlProvider } from './SamlProvider';
 
 export function getAuthProvider(): AuthProvider {
   const providerType = process.env.AUTH_PROVIDER || 'google';
@@ -32,6 +36,15 @@ export function getAuthProvider(): AuthProvider {
   }
   if (providerType === 'ldap') {
     return new LdapProvider();
+  }
+  if (providerType === 'okta') {
+    return new OktaProvider();
+  }
+  if (providerType === 'keycloak') {
+    return new KeycloakProvider();
+  }
+  if (providerType === 'saml') {
+    return new SamlProvider();
   }
   return new GoogleProvider();
 }

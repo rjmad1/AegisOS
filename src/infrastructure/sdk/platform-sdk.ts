@@ -3,7 +3,8 @@
 import { hardenedEventBus, HardenedEvent } from "../events/event-bus";
 import { jobQueue } from "../jobs/job-queue";
 import { memoryArchitecture, MemoryDomain, MemoryObject } from "../memory/memory-architecture";
-import { capabilityRegistry, CapabilityPluginManifest } from "../registry/capability-registry";
+import { CapabilityLifecycleManager } from "../../platform/capability/CapabilityLifecycleManager";
+import { CapabilityPluginManifest } from "../../platform/capability/CapabilityRegistry";
 import { policyEnforcer } from "../security/policy-enforcer";
 import { telemetryTracker } from "../observability/telemetry";
 import { metricsPlatform } from "../observability/metrics-platform";
@@ -153,8 +154,8 @@ export const platformSdk: IPlatformSdk = {
     query: (domain) => memoryArchitecture.queryMemoryByDomain(domain)
   },
   capabilities: {
-    register: (manifest) => capabilityRegistry.registerPlugin(manifest),
-    query: (name) => capabilityRegistry.queryCapability(name)
+    register: (manifest) => CapabilityLifecycleManager.getInstance().getRegistry().registerPlugin(manifest),
+    query: (name) => CapabilityLifecycleManager.getInstance().getRegistry().queryCapability(name)
   },
   security: {
     verifyRole: (userId, role) => policyEnforcer.authorizeRole(userId, role),
@@ -174,11 +175,11 @@ export const platformSdk: IPlatformSdk = {
   // ---- Extension & Plugin Platform ----
   extension: {
     registerPoint: (pointId, name, description) => {
-      const devPlat = require("../developer/DeveloperPlatform").developerPlatform;
+      const devPlat = require("../../platform/developer/DeveloperPlatform").developerPlatform;
       devPlat.declareExtensionPoint({ id: pointId, name, description, version: "1.0.0" });
     },
     register: (pointId, extensionId, version, implementation, priority) => {
-      const devPlat = require("../developer/DeveloperPlatform").developerPlatform;
+      const devPlat = require("../../platform/developer/DeveloperPlatform").developerPlatform;
       devPlat.registerExtension({
         pointId,
         extensionId,
@@ -189,11 +190,11 @@ export const platformSdk: IPlatformSdk = {
       });
     },
     listPoints: () => {
-      const devPlat = require("../developer/DeveloperPlatform").developerPlatform;
+      const devPlat = require("../../platform/developer/DeveloperPlatform").developerPlatform;
       return devPlat.getExtensionPoints();
     },
     listExtensions: (pointId) => {
-      const devPlat = require("../developer/DeveloperPlatform").developerPlatform;
+      const devPlat = require("../../platform/developer/DeveloperPlatform").developerPlatform;
       return devPlat.getExtensions(pointId);
     }
   },
@@ -207,7 +208,7 @@ export const platformSdk: IPlatformSdk = {
       await manager.unloadPlugin(pluginId);
     },
     list: () => {
-      const devPlat = require("../developer/DeveloperPlatform").developerPlatform;
+      const devPlat = require("../../platform/developer/DeveloperPlatform").developerPlatform;
       return devPlat.getPlugins();
     }
   },
@@ -297,7 +298,7 @@ export const platformSdk: IPlatformSdk = {
   },
   infrastructure: {
     getHealthStatus: async () => {
-      const health = require("../health/PlatformHealth").platformHealth;
+      const health = require("../../platform/health/PlatformHealth").platformHealth;
       return health.getHealthReport();
     },
     getSystemLoad: () => {
@@ -327,7 +328,8 @@ export { default as prisma } from "../db/prisma";
 export { default as LockoutManager } from "../security/lockout-manager";
 export { codeGraphClient } from "../codegraph/codegraph-client";
 export { complianceEngine } from "../security/compliance-engine";
-export { ponytailCompressor, ChatMessage } from "../compression/ponytail";
+export { ponytailCompressor } from "../compression/ponytail";
+export type { ChatMessage } from "../compression/ponytail";
 export { headroomCompressor } from "../compression/headroom";
 export { centralConfig } from "../configuration/central-config";
 export { eventBus } from "../events/event-bus";
@@ -335,7 +337,7 @@ export { deploymentManager } from "../deployment/deployment-manager";
 export { selfHealer } from "../diagnostics/self-healer";
 export { economicsManager } from "../economics/economics-manager";
 export { recommendationEngine } from "../intelligence/recommendation-engine";
-export { IFileProviderAdapter } from "../contracts/file";
+export type { IFileProviderAdapter } from "../contracts/file";
 export { fitnessChecker } from "../governance/fitness-checks";
 export { jobQueue } from "../jobs/job-queue";
 export { metricsPlatform } from "../observability/metrics-platform";

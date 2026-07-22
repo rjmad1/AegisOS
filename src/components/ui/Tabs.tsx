@@ -1,4 +1,5 @@
 import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/utils/cn";
 
 interface TabsContextProps {
@@ -42,7 +43,7 @@ export function TabsList({ className, ...props }: TabsListProps) {
   return (
     <div
       className={cn(
-        "inline-flex h-11 items-center justify-start rounded-lg bg-secondary/30 p-1 text-muted-foreground border border-border/20 backdrop-blur-sm",
+        "inline-flex h-9 items-center justify-start rounded-lg bg-secondary/40 p-1 text-muted-foreground border border-border/40",
         className
       )}
       {...props}
@@ -61,19 +62,26 @@ export function TabsTrigger({ value, className, children, ...props }: TabsTrigge
   const isActive = context.value === value;
 
   return (
-    <button
+      <button
       type="button"
       onClick={() => context.onValueChange(value)}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+        "relative inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary/20 disabled:pointer-events-none disabled:opacity-50",
         isActive
-          ? "bg-card text-foreground shadow-sm font-semibold border border-border/30"
-          : "hover:bg-accent/40 hover:text-foreground",
+          ? "text-foreground font-semibold"
+          : "hover:text-foreground",
         className
       )}
       {...props}
     >
-      {children}
+      {isActive && (
+        <motion.div
+          layoutId="tab-active-indicator"
+          className="absolute inset-0 bg-background rounded-md shadow-[0_1px_2px_rgba(0,0,0,0.05),0_1px_3px_rgba(0,0,0,0.02)] border border-border/50"
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+        />
+      )}
+      <span className="relative z-10">{children}</span>
     </button>
   );
 }

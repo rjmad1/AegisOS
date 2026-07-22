@@ -2,41 +2,20 @@
 
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, ChevronDown, Cpu } from "lucide-react";
+import { ChevronLeft, ChevronRight, Cpu } from "lucide-react";
+import { motion, AnimateSharedLayout } from "framer-motion";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useAppStore } from "@/store/appStore";
 import { cn } from "@/utils/cn";
 import { Badge } from "@/components/ui/Badge";
+import { ModeSwitcher } from "./ModeSwitcher";
 
 export const Sidebar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { sidebarCollapsed, toggleSidebar } = useAppStore();
   const { getNavigationGroups } = useNavigation();
-
   const groups = getNavigationGroups();
-
-  const [collapsedGroups, setCollapsedGroups] = React.useState<Record<string, boolean>>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem("sidebar:collapsed-groups");
-        return saved ? JSON.parse(saved) : {};
-      } catch {
-        return {};
-      }
-    }
-    return {};
-  });
-
-  const toggleGroup = (groupId: string) => {
-    setCollapsedGroups((prev) => {
-      const next = { ...prev, [groupId]: !prev[groupId] };
-      if (typeof window !== "undefined") {
-        localStorage.setItem("sidebar:collapsed-groups", JSON.stringify(next));
-      }
-      return next;
-    });
-  };
 
   return (
     <aside
@@ -60,76 +39,81 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Navigation Groups */}
-      <div className="flex-1 space-y-4 p-2 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 space-y-6 p-3 overflow-y-auto custom-scrollbar">
         {groups.map((group) => {
-          const isCollapsed = !sidebarCollapsed && !!collapsedGroups[group.id];
-          return (
-            <div key={group.id} className="space-y-1">
-              {!sidebarCollapsed && (
-                <button
-                  onClick={() => toggleGroup(group.id)}
-                  className="flex w-full items-center justify-between px-3 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors group text-left"
-                >
-                  <span>{group.label}</span>
-                  {isCollapsed ? (
-                    <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
-                  ) : (
-                    <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
-                  )}
-                </button>
-              )}
-              {!isCollapsed && (
-                <div className="space-y-0.5">
-                  {group.items.map((item) => {
-                    if (item.hidden) return null;
-                    const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-                    const Icon = item.icon;
-                    
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => router.push(item.href)}
-                        className={cn(
-                          "flex w-full items-center rounded-lg p-2.5 text-sm font-semibold transition-all duration-200 relative group text-left active:scale-[0.98] cursor-pointer",
-                          isActive
-                            ? "text-primary bg-primary/10 border border-primary/20 shadow-sm"
-                            : "text-muted-foreground hover:bg-accent/40 hover:text-foreground border border-transparent"
-                        )}
-                      >
-                        {Icon && (
-                          <div className="flex-shrink-0">
-                            <Icon className="h-5 w-5" />
-                          </div>
-                        )}
-                        {!sidebarCollapsed && (
-                          <span className="ml-3 truncate">{item.label}</span>
-                        )}
-                        {item.badge !== undefined && item.badge !== null && item.badge !== "" && !sidebarCollapsed && (
-                          <Badge variant="secondary" className="ml-auto text-[9px] font-extrabold px-1.5 py-0">
-                            {item.badge}
-                          </Badge>
-                        )}
-                        
-                        {/* Collapsed Tooltip */}
-                        {sidebarCollapsed && (
-                          <div className="absolute left-16 z-30 hidden rounded-md bg-popover border border-border px-2.5 py-1.5 text-xs text-popover-foreground shadow-lg group-hover:block whitespace-nowrap">
-                            {item.label}
-                          </div>
-                        )}
+          // If no items, don't show group
+          if (group.items.filter(i => !i.hidden).length === 0) return null;
 
-                        {/* Active dot indicator */}
-                        {isActive && !sidebarCollapsed && (
-                          <div className="absolute right-2.5 h-1.5 w-1.5 rounded-full bg-primary" />
-                        )}
-                      </button>
-                    );
-                  })}
+          return (
+            <div key={group.id} className="space-y-1 relative">
+              {!sidebarCollapsed && (
+                <div className="px-3 py-1 text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest select-none">
+                  {group.label}
                 </div>
               )}
+              
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  if (item.hidden) return null;
+                  const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                  const Icon = item.icon;
+                  
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => router.push(item.href)}
+                      className={cn(
+                        "relative flex w-full items-center rounded-md p-2 text-sm font-medium transition-colors duration-200 group text-left cursor-pointer",
+                        isActive
+                          ? "text-primary"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="sidebar-active-indicator"
+                          className="absolute inset-0 bg-primary/10 rounded-md -z-10 border border-primary/20"
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      
+                      {Icon && (
+                        <div className="flex-shrink-0 z-10">
+                          <Icon className={cn("h-4.5 w-4.5 transition-colors", isActive ? "text-primary" : "text-muted-foreground/70 group-hover:text-foreground/80")} />
+                        </div>
+                      )}
+                      
+                      {!sidebarCollapsed && (
+                        <span className="ml-3 truncate z-10">{item.label}</span>
+                      )}
+                      
+                      {item.badge !== undefined && item.badge !== null && item.badge !== "" && !sidebarCollapsed && (
+                        <Badge variant="secondary" className="ml-auto z-10 text-[9px] font-extrabold px-1.5 py-0">
+                          {item.badge}
+                        </Badge>
+                      )}
+                      
+                      {/* Collapsed Tooltip */}
+                      {sidebarCollapsed && (
+                        <div className="absolute left-16 z-30 hidden rounded-md bg-popover border border-border px-2.5 py-1.5 text-xs text-popover-foreground shadow-lg group-hover:block whitespace-nowrap">
+                          {item.label}
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           );
         })}
       </div>
+
+      {/* Adaptive Mode Switcher */}
+      {!sidebarCollapsed && (
+        <div className="border-t border-border/20 pt-2 pb-2">
+          <ModeSwitcher />
+        </div>
+      )}
 
       {/* Collapse/Expand Sidebar Toggle */}
       <div className="border-t border-border/20 p-2">

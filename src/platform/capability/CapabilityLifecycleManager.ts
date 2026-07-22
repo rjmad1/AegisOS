@@ -14,12 +14,15 @@ import { CapabilityRegistry } from "./CapabilityRegistry";
 import { CapabilityScheduler } from "./CapabilityScheduler";
 import { CapabilityDiscoveryService } from "./CapabilityDiscoveryService";
 import { CapabilitySandboxManager } from "./CapabilitySandboxManager";
+import { LocalCapabilityProvider } from "./providers/LocalCapabilityProvider";
 import { PlatformEventFabric } from "../core/events/PlatformEventFabric";
 import { InMemoryTransport } from "../core/events/transports/InMemoryTransport";
 import { TenantStorageManager } from "../core/storage/TenantStorageManager";
 
 export class CapabilityLifecycleManager implements ICapabilityLifecycle {
   private static instance: CapabilityLifecycleManager | null = null;
+
+  public readonly localProvider: LocalCapabilityProvider;
 
   constructor(
     private registry: ICapabilityRegistry,
@@ -28,6 +31,7 @@ export class CapabilityLifecycleManager implements ICapabilityLifecycle {
     private scheduler: ICapabilityScheduler,
     private eventPublisher: IEventPublisher
   ) {
+    this.localProvider = new LocalCapabilityProvider();
     CapabilityLifecycleManager.instance = this;
   }
   public static getInstance(): CapabilityLifecycleManager {
@@ -61,7 +65,7 @@ export class CapabilityLifecycleManager implements ICapabilityLifecycle {
         { applyPolicy: async () => {} } as any,
         eventFabric
       );
-      const discovery = new CapabilityDiscoveryService();
+      const discovery = new CapabilityDiscoveryService(registry, { validateTrust: async () => true });
       const sandbox = new CapabilitySandboxManager();
       
       CapabilityLifecycleManager.instance = new CapabilityLifecycleManager(
@@ -73,6 +77,10 @@ export class CapabilityLifecycleManager implements ICapabilityLifecycle {
       );
     }
     return CapabilityLifecycleManager.instance;
+  }
+
+  public getRegistry(): CapabilityRegistry {
+    return this.registry as CapabilityRegistry;
   }
 
   public async assessCapability(intent: string, context: TenantContext): Promise<AssessmentResult> {

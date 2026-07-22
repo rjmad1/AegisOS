@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Sun, Moon, Bell, User, Power, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigation } from "@/hooks/useNavigation";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useAppStore } from "@/store/appStore";
 import { useAuthStore } from "@/store/authStore";
@@ -13,6 +12,7 @@ import { SearchBar } from "./SearchBar";
 import { CommandBar } from "./CommandBar";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { PerspectiveSwitcher } from "./PerspectiveSwitcher";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { cn } from "@/utils/cn";
 
 interface HeaderProps {
@@ -27,15 +27,12 @@ export const Header: React.FC<HeaderProps> = ({
   onNotifOpen,
 }) => {
   const router = useRouter();
-  const pathname = usePathname();
   const { theme, setTheme } = useAppStore();
-  const { getBreadcrumbs } = useNavigation();
   const { notifications } = useNotifications();
   const { user, logout } = useAuthStore();
 
   const [profileOpen, setProfileOpen] = React.useState(false);
 
-  const breadcrumbs = getBreadcrumbs(pathname);
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
@@ -52,23 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Breadcrumb links */}
-        <div className="hidden sm:flex items-center space-x-1.5 text-sm text-muted-foreground">
-          {breadcrumbs.map((bc, idx) => (
-            <React.Fragment key={idx}>
-              {idx > 0 && <span>/</span>}
-              <button
-                onClick={() => !bc.isLast && router.push(bc.href)}
-                disabled={bc.isLast}
-                className={cn(
-                  "transition-colors duration-150 cursor-pointer",
-                  bc.isLast ? "text-foreground font-bold cursor-default" : "hover:text-foreground"
-                )}
-              >
-                {bc.label}
-              </button>
-            </React.Fragment>
-          ))}
-        </div>
+        <Breadcrumbs />
       </div>
 
       {/* Right: Quick actions, Theme, Profile */}

@@ -1,0 +1,27 @@
+{
+  "domain": "settings",
+  "label": "Settings",
+  "icon": "settings",
+  "entities": {
+    "preferences": {
+      "id": "preferences",
+      "labelPlural": "Preferences",
+      "labelSingular": "Preference",
+      "apiEndpoint": "/api/v1/admin/configuration",
+      "primaryKey": "key",
+      "permissions": {
+        "read": ["admin", "developer", "operations"],
+        "write": ["admin"],
+        "delete": ["admin"]
+      },
+      "list": {
+        "columns": [
+          { "key": "key", "label": "Configuration Key", "type": "string" },
+          { "key": "value", "label": "Value", "type": "code" },
+          { "key": "overridden", "label": "Overridden", "type": "boolean" }
+        ],
+        "actions": []
+      }
+    }
+  }
+}

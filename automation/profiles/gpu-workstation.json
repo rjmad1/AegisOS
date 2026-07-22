@@ -1,0 +1,38 @@
+{
+  "profileName": "gpu-workstation",
+  "platformRoot": "D:\\AegisOS\\GPUPlatform",
+  "networkMode": "LAN",
+  "isolationLevel": "dedicated",
+  "ports": {
+    "ollama": 11434,
+    "litellm": 4000,
+    "aegisos": 18789,
+    "omniroute": 20128,
+    "openwebui": 8090
+  },
+  "logRotation": true,
+  "resourceLimits": {
+    "cpu": "32",
+    "memory": "128GB",
+    "storage": "2TB"
+  },
+  "securityPolicies": {
+    "firewallMode": "StandardLAN",
+    "rateLimitingEnabled": true,
+    "encryptionEnabled": true
+  },
+  "supportLevel": "basic",
+  "modelsToPull": [
+    "smollm:135m",
+    "all-minilm:latest",
+    "gemma2:9b",
+    "llama3.1:8b",
+    "qwen2.5:14b",
+    "deepseek-r1:32b"
+  ],
+  "bundledExtensions": [
+    "com.aegisos.ext.logger",
+    "com.aegisos.provider.ollama",
+    "com.aegisos.provider.litellm"
+  ]
+}

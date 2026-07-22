@@ -4,7 +4,7 @@
 import { Mission, MissionStatus } from "./mission";
 import { ExecutionStep } from "./runtime";
 
-export type PanelType = "mission" | "agent" | "knowledge" | "artifact" | null;
+export type PanelType = "mission" | "agent" | "knowledge" | "artifact" | "execution" | null;
 
 export interface ContextMention {
   id: string;

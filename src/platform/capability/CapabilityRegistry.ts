@@ -1,8 +1,60 @@
 import { ICapabilityRegistry, CapabilityMetadata, CapabilityType } from "./types";
 import { ICapabilityStorageProvider, TenantContext } from "../core/storage/types";
+import * as fs from "fs";
+import * as path from "path";
+
+export interface CapabilityPluginManifest {
+  id: string;
+  name: string;
+  version: string;
+  manifestVersion: string;
+  capabilities: string[];
+  dependencies: Record<string, string>;
+  configSchema: any;
+  permissions: string[];
+  lifecycleHooks?: {
+    onInitialize?: string;
+    onShutdown?: string;
+  };
+}
 
 export class CapabilityRegistry implements ICapabilityRegistry {
-  constructor(private storageProvider: ICapabilityStorageProvider) {}
+  private plugins: Map<string, CapabilityPluginManifest> = new Map();
+  private manifestDir: string;
+
+  constructor(private storageProvider: ICapabilityStorageProvider) {
+    this.manifestDir = path.resolve(process.cwd(), "configs", "plugins");
+    this.ensureDirs();
+  }
+
+  private ensureDirs() {
+    if (!fs.existsSync(this.manifestDir)) {
+      fs.mkdirSync(this.manifestDir, { recursive: true });
+    }
+  }
+
+  public registerPlugin(manifest: CapabilityPluginManifest): void {
+    this.plugins.set(manifest.id, manifest);
+    const targetPath = path.join(this.manifestDir, `${manifest.id}.json`);
+    try {
+      fs.writeFileSync(targetPath, JSON.stringify(manifest, null, 2), "utf-8");
+      console.log(`[CapabilityRegistry] Registered discoverable plugin: ${manifest.name} (${manifest.id})`);
+    } catch (err) {
+      console.error(`[CapabilityRegistry] Failed to save manifest for ${manifest.id}:`, err);
+    }
+  }
+
+  public getPlugin(id: string): CapabilityPluginManifest | null {
+    return this.plugins.get(id) || null;
+  }
+
+  public listPlugins(): CapabilityPluginManifest[] {
+    return Array.from(this.plugins.values());
+  }
+
+  public queryCapability(capabilityName: string): CapabilityPluginManifest[] {
+    return this.listPlugins().filter((p) => p.capabilities.includes(capabilityName));
+  }
 
   public async getCapability(id: string, context: TenantContext): Promise<CapabilityMetadata | null> {
     return this.storageProvider.getCapability(id, context);

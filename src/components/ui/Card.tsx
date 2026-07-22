@@ -13,7 +13,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         className={cn(
           "rounded-xl overflow-hidden transition-all duration-300",
-          glass ? "glass-panel" : "bg-card border border-border/80 text-card-foreground shadow-sm",
+          glass ? "glass-panel" : "bg-card border border-border/60 text-card-foreground shadow-[0_2px_10px_-2px_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.02)]",
           glow && "glass-panel-glow hover-glow",
           className
         )}
@@ -26,14 +26,14 @@ Card.displayName = "Card";
 
 export const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-5 md:p-6 flex flex-col space-y-1.5 border-b border-border/10 bg-muted/5", className)} {...props} />
+    <div ref={ref} className={cn("p-5 md:p-6 flex flex-col space-y-1.5 border-b border-border/5 bg-muted/30", className)} {...props} />
   )
 );
 CardHeader.displayName = "CardHeader";
 
 export const CardTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight", className)} {...props} />
+    <h3 ref={ref} className={cn("text-base font-semibold leading-none tracking-tight text-foreground/90", className)} {...props} />
   )
 );
 CardTitle.displayName = "CardTitle";

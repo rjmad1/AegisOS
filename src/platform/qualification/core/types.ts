@@ -1,5 +1,5 @@
 import type { ValidationDomain, ValidationResult, ValidationStatus } from '../../validation/types';
-import type { PlatformHealthIndex, ReleaseManifest } from '../types';
+import type { PlatformHealthIndex, ReleaseManifest } from '../../certification/types';
 
 export type TriggerSource = 'EVENT' | 'SCHEDULE' | 'LIFECYCLE' | 'MANUAL';
 
@@ -12,6 +12,7 @@ export interface QualificationRequest {
   priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   correlationId: string;
   providerSelection?: string[]; // IDs of specific providers to execute
+  oeid?: string;
 }
 
 export interface PlatformMaturityIndex {
@@ -27,6 +28,23 @@ export interface PlatformMaturityIndex {
   extensibility: number;
   aiReadiness: number;
   overall: number;
+  pri?: number;
+  kmm?: number;
+  gcm?: number;
+  cerExceptionsCount?: number;
+}
+
+export interface ReleaseReadinessIndex {
+  ori: number;
+  confidenceScore: number;
+  releaseCandidate: boolean;
+  evidenceScore: number;
+  certificationStatus: string;
+}
+
+export interface PlatformAssessment {
+  maturity: PlatformMaturityIndex;
+  releaseReadiness: ReleaseReadinessIndex;
 }
 
 export interface RemediationRecommendation {
@@ -41,6 +59,21 @@ export interface RemediationRecommendation {
   status: 'OPEN' | 'RESOLVED' | 'IGNORED';
 }
 
+export interface PlatformMaturity {
+  overall: number;
+  architecture: number;
+  engineering: number;
+  reliability: number;
+  scalability: number;
+  security: number;
+  governance: number;
+  observability: number;
+  performance: number;
+  maintainability: number;
+  extensibility: number;
+  aiReadiness: number;
+}
+
 export interface QualificationReport {
   id: string;
   timestamp: string;
@@ -49,14 +82,16 @@ export interface QualificationReport {
   overallScore: number;
   durationMs: number;
   gitSha: string;
+  oeid?: string;
   platformVersion: string;
   environment: string;
   evidenceGraphRootHash: string;
   results: Record<string, ValidationResult>;
-  maturity: PlatformMaturityIndex;
+  assessment: PlatformAssessment;
   remediations: RemediationRecommendation[];
   warnings: string[];
   manifest?: ReleaseManifest;
+  maturity: PlatformMaturity;
 }
 
 export interface IQualificationProvider {

@@ -1,0 +1,23 @@
+{
+  "id": "com.aegisos.provider.gemini",
+  "name": "Google Gemini Provider Pack",
+  "version": "1.0.0",
+  "author": "AegisOS Ecosystem Team",
+  "description": "Provider Pack for Google Gemini models integration.",
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "capabilities": [
+    "gemini-provider",
+    "cloud-inference"
+  ],
+  "permissions": [
+    "event-publish",
+    "event-subscribe",
+    "*"
+  ],
+  "entryPoints": {
+    "main": "index.js"
+  },
+  "signature": "4444444444444444444444444444444444444444444444444444444444444444"
+}

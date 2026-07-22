@@ -627,27 +627,40 @@ model PairingChallenge {
 }
 
 model Command {
+  // Identification & Context
   id              String    @id @default(uuid())
-  type            String    // e.g. "infrastructure:start_service", "ai:load_model", "agent:start", etc.
-  status          String    // "QUEUED", "PENDING_APPROVAL", "RUNNING", "COMPLETED", "FAILED", "CANCELLED", "ROLLED_BACK"
-  priority        String    // "LOW", "MEDIUM", "HIGH", "CRITICAL"
-  payload         String    // JSON string parameters
-  riskLevel       String    // "LOW", "MEDIUM", "HIGH", "CRITICAL"
+  transactionId   String?   @unique
+  correlationId   String?
+  type            String    // Command ID (e.g. "infrastructure:start_service")
+  version         String?   // Command Version
+  status          String    // Execution State ("Created", "Executing", "Completed", etc)
+  priority        String
+  payload         String    // Validated and serialized Input Parameters
+  contextSnapshot String?   // Execution Context Snapshot
+  riskLevel       String
   
   // Security & Authentication
   userId          String?
   userEmail       String?
   deviceId        String?
-  origin          String    // "mobile" | "console" | "system"
-  signature       String?   // Cryptographic signature from secure enclave
-  replayNonce     String?   // UUID nonce
-  expiresAt       DateTime? // Expiry timestamp for signature validation
+  origin          String
+  signature       String?
+  replayNonce     String?
+  expiresAt       DateTime?
 
-  // Approval Engine State
-  approvalType    String    // "AUTO" | "MANUAL" | "MULTI_STAGE" | "EMERGENCY"
-  approvalStatus  String    // "PENDING" | "APPROVED" | "REJECTED" | "EXPIRED" | "BYPASSED"
-  approvers       String    // JSON array of decisions: [{userId, action, timestamp, signature}]
-  approvalTimeout DateTime? // Expiration time for manual approvals
+  // Approval & Policy Engine State
+  approvalType    String
+  approvalStatus  String
+  approvers       String    // JSON array
+  approvalTimeout DateTime?
+  policySnapshot  String?   // JSON snapshot of policy evaluation rules applied
+  
+  // Persistence & Orchestration
+  optimisticLockVersion Int @default(0) // Optimistic concurrency control
+  checkpoints     String?   // JSON array of serialized checkpoints
+  evidenceRefs    String?   // JSON array of URI references
+  auditRefs       String?   // JSON array of AuditLog IDs
+  telemetryRefs   String?   // JSON trace IDs (TraceId, SpanId)
 
   // Execution & Timing
   scheduledAt     DateTime  @default(now())

@@ -343,7 +343,31 @@ class AzureSecretsProvider implements ISecretsProvider {
 }
 
 // -------------------------------------------------------------
-// 6. Central Coordinator Factory
+// 6. OnePassword Provider (Program 8.5)
+// -------------------------------------------------------------
+class OnePasswordSecretsProvider implements ISecretsProvider {
+  async getSecret(key: string): Promise<string | null> {
+    console.log(`[OnePasswordSecretsProvider] Resolving secret path: ${key}`);
+    return process.env[`OP_${key.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase()}`] || `mock-op-secret-value-for-${key}`;
+  }
+  async saveSecret(key: string, value: string): Promise<void> {}
+  async deleteSecret(key: string): Promise<void> {}
+}
+
+// -------------------------------------------------------------
+// 7. Bitwarden Provider (Program 8.5)
+// -------------------------------------------------------------
+class BitwardenSecretsProvider implements ISecretsProvider {
+  async getSecret(key: string): Promise<string | null> {
+    console.log(`[BitwardenSecretsProvider] Resolving secret path: ${key}`);
+    return process.env[`BW_${key.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase()}`] || `mock-bw-secret-value-for-${key}`;
+  }
+  async saveSecret(key: string, value: string): Promise<void> {}
+  async deleteSecret(key: string): Promise<void> {}
+}
+
+// -------------------------------------------------------------
+// 8. Central Coordinator Factory
 // -------------------------------------------------------------
 class SecretsPlatform implements ISecretsProvider {
   private activeProvider: ISecretsProvider;
@@ -370,6 +394,12 @@ class SecretsPlatform implements ISecretsProvider {
     } else if (providerType === 'azure') {
       this.activeProvider = new AzureSecretsProvider();
       console.log('[SecretsPlatform] Configured active provider: Azure Key Vault');
+    } else if (providerType === '1password') {
+      this.activeProvider = new OnePasswordSecretsProvider();
+      console.log('[SecretsPlatform] Configured active provider: 1Password');
+    } else if (providerType === 'bitwarden') {
+      this.activeProvider = new BitwardenSecretsProvider();
+      console.log('[SecretsPlatform] Configured active provider: Bitwarden');
     } else {
       console.log('[SecretsPlatform] Running Local Database Encrypted Secrets provider.');
     }
@@ -385,6 +415,39 @@ class SecretsPlatform implements ISecretsProvider {
 
   async deleteSecret(key: string): Promise<void> {
     await this.activeProvider.deleteSecret(key);
+  }
+
+  /**
+   * Resolves a secret reference by URI (e.g. vault://path/to/key) dynamically on-the-fly.
+   * Secrets are never persisted, cached, or duplicated within AegisOS databases.
+   */
+  async resolveSecretUri(uri: string): Promise<string | null> {
+    if (!uri) return null;
+    if (!uri.includes("://")) {
+      return this.getSecret(uri);
+    }
+
+    const parts = uri.split("://");
+    const scheme = parts[0].toLowerCase();
+    const key = parts[1];
+
+    if (scheme === "vault") {
+      return new VaultSecretsProvider().getSecret(key);
+    } else if (scheme === "aws") {
+      return new AwsSecretsProvider().getSecret(key);
+    } else if (scheme === "gcp") {
+      return new GcpSecretsProvider().getSecret(key);
+    } else if (scheme === "azure") {
+      return new AzureSecretsProvider().getSecret(key);
+    } else if (scheme === "1password") {
+      return new OnePasswordSecretsProvider().getSecret(key);
+    } else if (scheme === "bitwarden") {
+      return new BitwardenSecretsProvider().getSecret(key);
+    } else if (scheme === "env") {
+      return process.env[key] || null;
+    }
+
+    return this.getSecret(uri);
   }
 
   // Key Rotation method

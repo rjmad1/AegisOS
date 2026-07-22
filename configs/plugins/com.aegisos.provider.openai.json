@@ -1,0 +1,21 @@
+{
+  "id": "com.aegisos.provider.openai",
+  "name": "OpenAI Cloud Provider Pack",
+  "version": "1.0.0",
+  "manifestVersion": "1.0",
+  "capabilities": [
+    "openai-provider",
+    "cloud-inference"
+  ],
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "configSchema": {
+    "type": "object"
+  },
+  "permissions": [
+    "event-publish",
+    "event-subscribe",
+    "*"
+  ]
+}

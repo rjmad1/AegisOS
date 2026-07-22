@@ -1,0 +1,13 @@
+{
+  "id": "mock-worker-pack-1",
+  "name": "Optimus Worker Pack",
+  "version": "1.0.0",
+  "author": "AegisOS",
+  "description": "A mock workforce asset",
+  "assetType": "digital-worker",
+  "type": "workforce-asset",
+  "capabilities": [
+    "digital-workforce",
+    "digital-worker"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "profileName": "air-gapped",
+  "platformRoot": "D:\\AegisOS\\OfflinePlatform",
+  "networkMode": "None",
+  "isolationLevel": "airgapped",
+  "ports": {
+    "ollama": 11434,
+    "litellm": 4000,
+    "aegisos": 18789,
+    "omniroute": 20128,
+    "openwebui": 8090
+  },
+  "logRotation": true,
+  "resourceLimits": {
+    "cpu": "8",
+    "memory": "32GB",
+    "storage": "250GB"
+  },
+  "securityPolicies": {
+    "firewallMode": "BlockAllOutbound",
+    "rateLimitingEnabled": true,
+    "encryptionEnabled": true
+  },
+  "supportLevel": "basic",
+  "modelsToPull": [],
+  "bundledExtensions": [
+    "com.aegisos.ext.logger",
+    "com.aegisos.provider.ollama",
+    "com.aegisos.ext.translator"
+  ]
+}

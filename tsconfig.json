@@ -25,19 +25,64 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@platform/shared-contracts": [
+        "./packages/shared-contracts/src"
+      ],
+      "@platform/state-manager": [
+        "./packages/state-manager/src"
+      ],
+      "@platform/browser-engine": [
+        "./packages/browser-engine/src"
+      ],
+      "@platform/validation-engine": [
+        "./packages/validation-engine/src"
+      ],
+      "@platform/evidence-pipeline": [
+        "./packages/evidence-pipeline/src"
+      ],
+      "@platform/agents-core": [
+        "./agents/core/src"
+      ],
+      "@platform/agent-planner": [
+        "./agents/planner/src"
+      ],
+      "@platform/agent-explorer": [
+        "./agents/explorer/src"
+      ],
+      "@platform/agent-validator": [
+        "./agents/validator/src"
+      ],
+      "@platform/worker-node": [
+        "./apps/worker-node/src"
+      ],
+      "@platform/orchestrator": [
+        "./apps/orchestrator/src"
       ]
     }
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "scripts/**/*.ts",
+    "packages/**/*.ts",
+    "agents/**/*.ts",
+    "apps/**/*.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts",
     ".next/dev/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "node_modules_backup",
+    "node_modules_empty",
+    "coverage",
+    "release",
+    "aegis_mobile",
+    "playwright-report",
+    "test-results"
   ]
 }

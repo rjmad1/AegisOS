@@ -10,6 +10,8 @@ export type NodeType =
   | "provider_call"
   | "script"
   | "sub_workflow"
+  | "swarm"
+  | "debate"
   | "end";
 
 export interface WorkflowNode {

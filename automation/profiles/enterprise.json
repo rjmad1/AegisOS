@@ -2,6 +2,7 @@
   "profileName": "enterprise",
   "platformRoot": "D:\\AIPlatform",
   "networkMode": "LAN",
+  "isolationLevel": "airgapped",
   "ports": {
     "ollama": 11434,
     "litellm": 4000,
@@ -10,11 +11,29 @@
     "openwebui": 8090
   },
   "logRotation": true,
+  "resourceLimits": {
+    "cpu": "16",
+    "memory": "64GB",
+    "storage": "500GB"
+  },
+  "securityPolicies": {
+    "firewallMode": "StandardLAN",
+    "rateLimitingEnabled": true,
+    "encryptionEnabled": true
+  },
+  "supportLevel": "dedicated",
   "modelsToPull": [
     "smollm:135m",
     "all-minilm:latest",
     "gemma4:latest",
     "qwen2.5:14b",
     "deepseek-r1:32b"
+  ],
+  "bundledExtensions": [
+    "com.aegisos.ext.logger",
+    "com.aegisos.provider.ollama",
+    "com.aegisos.provider.litellm",
+    "com.aegisos.connector.github",
+    "com.aegisos.connector.jira"
   ]
 }

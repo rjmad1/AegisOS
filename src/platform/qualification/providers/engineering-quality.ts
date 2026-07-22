@@ -1,12 +1,12 @@
 import { IQualificationProvider, QualificationRequest } from '../core/types';
-import type { ValidationResult } from '../../validation/types';
+import type { ValidationResult, ValidationDomain } from '../../validation/types';
 import { computeContentHash } from '../../certification/evidence-graph';
 import * as fs from 'fs';
 import * as path from 'path';
 
 export class EngineeringQualityProvider implements IQualificationProvider {
   public readonly providerId = 'engineering-quality';
-  public readonly supportedDomains = ['engineering'];
+  public readonly supportedDomains: ValidationDomain[] = ['engineering'];
   public readonly dependencies = [];
 
   public async execute(request: QualificationRequest): Promise<ValidationResult> {

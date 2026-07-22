@@ -1,0 +1,23 @@
+{
+  "id": "com.aegisos.connector.jira",
+  "name": "Jira Enterprise Connector",
+  "version": "1.0.0",
+  "author": "AegisOS Ecosystem Team",
+  "description": "Enterprise Connector integrating Jira project issues, sprint boards, and tickets.",
+  "dependencies": {
+    "aegisos": ">=1.0.0"
+  },
+  "capabilities": [
+    "jira-connector",
+    "issue-tracking"
+  ],
+  "permissions": [
+    "event-publish",
+    "event-subscribe",
+    "*"
+  ],
+  "entryPoints": {
+    "main": "index.js"
+  },
+  "signature": "6666666666666666666666666666666666666666666666666666666666666666"
+}

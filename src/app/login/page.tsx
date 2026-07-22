@@ -23,6 +23,7 @@ export default async function LoginPage() {
           <LdapLoginForm />
         ) : (
           <div className="flex flex-col gap-3 w-full">
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a 
               href="/api/auth/login"
               className="flex items-center justify-center gap-2 rounded-lg bg-foreground text-background px-6 py-2.5 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all w-full select-none shadow-sm cursor-pointer"

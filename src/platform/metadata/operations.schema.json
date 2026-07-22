@@ -1,0 +1,49 @@
+{
+  "domain": "operations",
+  "label": "Operations",
+  "icon": "activity",
+  "entities": {
+    "missions": {
+      "id": "missions",
+      "labelPlural": "Missions",
+      "labelSingular": "Mission",
+      "apiEndpoint": "/api/v1/missions",
+      "primaryKey": "id",
+      "permissions": {
+        "read": ["operations", "admin"],
+        "write": ["operations", "admin"],
+        "delete": ["admin"]
+      },
+      "list": {
+        "columns": [
+          { "key": "id", "label": "Mission ID", "type": "string" },
+          { "key": "objective", "label": "Objective", "type": "string" },
+          { "key": "status", "label": "Status", "type": "status" }
+        ],
+        "actions": [
+          { "id": "launch", "label": "Launch Mission", "type": "primary" }
+        ]
+      }
+    },
+    "oil": {
+      "id": "oil",
+      "labelPlural": "OIL Diagnostics",
+      "labelSingular": "Diagnostic",
+      "apiEndpoint": "/api/v1/oil/diagnostics",
+      "primaryKey": "id",
+      "permissions": {
+        "read": ["operations", "admin"],
+        "write": ["operations", "admin"],
+        "delete": ["admin"]
+      },
+      "list": {
+        "columns": [
+          { "key": "id", "label": "Diagnostic ID", "type": "string" },
+          { "key": "score", "label": "Optimization Score", "type": "number" },
+          { "key": "status", "label": "Status", "type": "status" }
+        ],
+        "actions": []
+      }
+    }
+  }
+}

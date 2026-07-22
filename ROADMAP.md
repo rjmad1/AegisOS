@@ -1,51 +1,107 @@
-# AegisOS Roadmap
+# AegisOS Platform Evolution Roadmap
 
 ## Vision
-AegisOS aims to be the definitive enterprise-grade, local-first Autonomic AI Workstation Operating System — enabling organizations to run AI inference, agent orchestration, and system administration with full data sovereignty, cryptographic security, and automated self-healing.
+AegisOS is the definitive enterprise-grade, local-first Autonomic AI Workstation Operating System — enabling organizations to run AI inference, agent orchestration, and system administration with full data sovereignty, zero-trust cryptographic security, and automated self-healing.
 
 ---
 
-## Current Release: v1.2.0 (Active)
+## Version 1 Architecture Status
 
-### ✅ Delivered Capabilities
-
-#### 1. Autonomic OS Foundation (v1.0.0)
-- Strict 7-layered architecture stack (Layer 6 to 0).
-- Local-first inference routing (Ollama + LiteLLM integration).
-- Multi-provider secrets manager (Vault, AWS, GCP, Azure, Local DPAPI).
-- Structured schema-driven event bus and background job queues.
-- Local Model Context Protocol (MCP) host with filesystem/git/RAG tool integrations.
-
-#### 2. Security Hardening & Observability (v1.1.0)
-- Zero-trust authentication via HttpOnly JWT cookies and RBAC guards.
-- Security enforcement: brute-force lockout, rate limiting, and secure headers.
-- OpenTelemetry collector pipeline compiling traces, logs, and metrics (Prometheus, Grafana, Loki).
-- Standard compliance audits (SOC2 controls AC-1, CRYP-1, AUD-1, SUP-1).
-
-#### 3. Command, Control & Digital Twin (v1.2.0)
-- **Executive Control Plane (ECP)** at Layer 5 enforcing prompt/response policy checks and safety firewalls.
-- **System Digital Twin**: Canonical state graph (`GraphKernel`) representing active topologies and capabilities.
-- **Convergence Engine**: Incremental reconciliation of discovery states with automated drift repair (`DigitalTwinDriftLog`).
-- **Autonomic Platform Qualification Framework (PQF)**: Validation orchestrators (chaos, scalability, performance, endurance) compiling content-addressed Merkle evidence chains (`EvidenceGraph`).
-- **Release Manifest Signing**: Cryptographic HMAC-SHA256 signature verifications on release packages.
-- **Engineering Intelligence Platform (EIP)**: Sub-engines correlating logs, predicting anomalies, and prioritizing remediation queues.
-- **Mobile Companion App**: Flutter-based mobile dashboard supporting remote approvals and C2 signing keys.
+> [!IMPORTANT]
+> **Architecture Baseline: FROZEN (Stable at Version 1.0 GA / GA 1.2)**
+> 
+> AegisOS has reached full architectural completion. In accordance with the AegisOS Engineering Constitution, all core runtime layers, state engines, kernels, registries, and control planes are frozen. No new foundational primitives will be added to the platform core. Future development is focused entirely on ecosystem enablement, enterprise connectors, deployment profiles, and integrations.
 
 ---
 
-## v1.3.0 — Advanced Optimization & Horizontal Scaling (Next)
+## Delivered Core Capabilities (Version 1.0 - 1.2)
 
-- [ ] **Dynamic VRAM Scheduling**: Idle models auto-unloading and smart GPU memory paging thresholds.
-- [ ] **Filesystem Event Watcher**: Real-time file change monitoring for automated RAG vector re-indexing.
-- [ ] **Workflow Parallelism**: Concurrent step executions in the Layer 4 Workflow Engine.
-- [ ] **Distributed Rate Limiting**: Redis-backed limits for multi-user console ingress.
-- [ ] **OIDC Oauth2 Token Rotation**: Enhanced SSO client configuration panel.
+### 1. Autonomic OS Foundation (v1.0.0)
+- **7-Layer Stack Architecture**: Strict architectural separation from Hardware (Layer 0) to Executive Plane (Layer 6).
+- **Stateful Saga Workflow Engine**: Database-backed execution graph runner (`WorkflowService.ts`) with step checkpoints and rollbacks.
+- **Unified Event Bus**: Schema-driven event boundaries and background queues.
+- **Local MCP Host Client**: Dynamic Model Context Protocol (`@modelcontextprotocol/sdk`) stdio integration.
+
+### 2. Security Hardening & Observability (v1.1.0)
+- **Worker Thread VM Sandboxing**: Memory and CPU capped Node `worker_threads` sandboxing (`ExtensionRuntimeService.ts`).
+- **Zero-Trust Access Control**: HttpOnly JWT sessions, fine-grained RBAC, and rate-limiting gateway protection.
+- **OpenTelemetry Pipeline**: Unified Prometheus, Grafana, Loki, and OpenTelemetry logging fabric.
+
+### 3. Autonomic Control & Mobile C2 (v1.2.0)
+- **Executive Control Plane (ECP)**: Safety firewalls for prompt/response sanitization and grounding scorecards.
+- **System Digital Twin & Convergence Engine**: Canonical state graph (`GraphKernel`) auto-reconciling runtime state drift.
+- **Mobile C2 Cockpit**: Flutter app supporting remote approvals, WebSocket telemetry, and ECDSA cryptographic command signing.
+
+### 4. Enterprise Identity & Hybrid Cloud Spillover (v1.2.1)
+- **SAML 2.0 Enterprise Single Sign-On**: Integrated `SamlProvider.ts` bridging Azure Entra ID / Okta with local RBAC.
+- **VRAM-Aware Cloud Spillover**: `CloudSpilloverRouter.ts` offloading high-burst inference to Azure OpenAI when local VRAM is saturated.
 
 ---
 
-## v2.0.0 — Multi-Node Autonomic Clustering (Future)
+## AegisOS v2 — Ecosystem & Adoption Programs [DELIVERED Baseline - v1.2.1]
 
-- [ ] **Multi-Node Cluster Coordinator**: mTLS-secured control planes syncing state across separate physical workstations.
-- [ ] **Federated RAG & Model Mesh**: Distributed semantic search queries and shared GPU inference routing.
-- [ ] **Cryptographic Sandbox Workspaces**: Sandboxed container namespaces for guest agents.
-- [ ] **Continuous Reinforcement Tuning**: Local preference learning loops utilizing user feedback to fine-tune active quants.
+All ecosystem programs operate strictly within the frozen Version 1 Architecture baseline.
+
+```mermaid
+graph TD
+    A[AegisOS Frozen Core] --> B[Program 1: AI Provider Ecosystem]
+    A --> C[Program 2: Enterprise Connectors]
+    A --> D[Program 3: Operations Packs]
+    A --> E[Program 4: Industry Solutions]
+    A --> F[Program 5: Marketplace]
+    A --> G[Program 6: Community Governance]
+    A --> H[Program 7: Reference Deployments]
+    A --> I[Program 8: Commercial Readiness]
+```
+
+### Program 1 — AI Provider Ecosystem
+- **Local Runtimes**: Ollama (`localhost:11434`), LiteLLM Router (`localhost:4000`), vLLM, llama.cpp.
+- **Hybrid Cloud Providers**: Azure OpenAI Service, Anthropic Claude, Google Gemini, OpenRouter.
+- **Dynamic VRAM Router**: `CloudSpilloverRouter.ts` balancing local GPU compute with cloud endpoints.
+
+### Program 2 — Enterprise Connectors
+- **Code & CI/CD**: GitHub, GitLab, Azure DevOps.
+- **Knowledge & Collaboration**: Microsoft 365 (SharePoint/OneDrive), Google Workspace, Confluence, Jira.
+- **ITSM & Chatops**: ServiceNow, Slack, Microsoft Teams.
+
+### Program 3 — Operations Packs
+- **Security & Compliance**: Standardized compliance templates, encryption policies, and security baselines.
+- **SRE Playbooks**: Disaster recovery scripts, backup policy schedules, and capacity alerts.
+
+### Program 4 — Industry Solutions
+- **Core Domains**: Software Engineering, Product Management, System Administration.
+- **Regulated Domains**: Healthcare, Financial Services, Defense, Government.
+
+### Program 5 — Marketplace
+- **Trust & Verification**: Cryptographic package signing, developer certification workflows, and dependency resolvers.
+- **Discovery**: Semantic search, compatibility checklists, and automated package update agents.
+
+### Program 6 — Community Governance
+- **Processes**: Structured RFC workflows, ADR templates, and maintainer handbooks.
+- **Standards**: Contribution checklists, testing compliance matrices, and plugin certification rules.
+
+### Program 7 — Reference Deployments
+- **Individual**: Developer Edition (Workstation setup), Knowledge Worker Edition.
+- **Distributed & Team**: Team Edition, Enterprise Edition, Multi-Node Kubernetes Profile.
+- **Air-Gapped & Edge**: Air-Gapped Station Profile, Edge/IoT Profile.
+
+### Program 8 — Commercial Readiness
+- **Lifecycle Policies**: Long-Term Support (LTS) policies, SemVer enforcement, and upgrade guarantees.
+- **Assurance**: Compatibility matrices, enterprise licensing templates, and release audit gates.
+
+---
+
+## Active & Upcoming Roadmap Horizons
+
+### NOW Horizon (Current Engineering Focus)
+1. **Real-Time Hardware Telemetry Event Bus**: Wiring Layer 0 CUDA telemetry directly into `CloudSpilloverRouter.ts` for precision VRAM failover thresholds.
+2. **SAML Group Claim Role Parsing**: Automating zero-touch RBAC mapping from Azure Entra ID group claims.
+3. **Legacy Code Cleanup**: Purging custom vector database (Raja RAG) remnants in favor of standard PgVector / MCP endpoints.
+
+### NEXT Horizon (Upcoming Milestone)
+1. **Conversa Multi-Agent Debate Topology**: Parallel consensus voting steps within `WorkflowService.ts` execution graphs.
+2. **Enterprise M365 & Google Workspace MCP Pack**: Native MCP stdio tools for corporate cloud drives.
+
+### LATER & FUTURE Horizon (Long Term)
+1. **Marketplace Cryptographic Package Signing**: End-to-end package verification before extension loading.
+2. **Autonomous Host Self-Refactoring Loops**: Verified, sandbox-tested local script refactoring loops.

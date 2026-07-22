@@ -1,0 +1,8 @@
+{
+  "assetType": "digital-worker",
+  "type": "workforce-asset",
+  "capabilities": [
+    "digital-workforce",
+    "digital-worker"
+  ]
+}

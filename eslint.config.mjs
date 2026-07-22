@@ -14,7 +14,11 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "node_modules_backup/**",
     "node_modules/**",
-    "coverage/**"
+    "coverage/**",
+    "conversa_repo/**",
+    ".agents/**",
+    ".aegisos/**",
+    "dist/**"
   ]),
   {
     rules: {

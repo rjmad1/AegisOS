@@ -46,7 +46,7 @@ export class AgentRuntime {
       {
         id: "agent:research",
         name: "Research Agent",
-        role: "researcher",
+        role: "research",
         systemPrompt: "Search, summarise and cross-reference external documentation, security advisories, and best-practice guides.",
         allowedModels: ["ollama:llama3.1:8b", "litellm:gpt-4o"],
         allowedTools: ["tool:web:search", "tool:filesystem:read"],

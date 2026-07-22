@@ -60,7 +60,28 @@ export class OllamaProvider extends BaseProviderSkeleton implements IModelProvid
       console.log(`[OllamaProvider] Compressed prompt from ${targetPrompt.length} to ${compressedResult.compressed.length} chars.`);
       targetPrompt = compressedResult.compressed;
     }
-    const response = { text: `Simulated Ollama response for prompt: ${targetPrompt.slice(0, 30)}...` };
+
+    let text = "";
+    const url = "http://127.0.0.1:11434/api/generate";
+    const cleanModelId = modelId.includes(":") ? modelId.split(":").pop() : modelId;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: cleanModelId || "gemma2:9b",
+        prompt: targetPrompt,
+        stream: false,
+        options: options || {}
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      text = data.response;
+    } else {
+      throw new Error(`[OllamaProvider] Failed to fetch. Status: ${res.status}`);
+    }
+
+    const response = { text };
     
     const outputCheck = safetyFirewall.validateOutput(response.text, []);
     if (!outputCheck.grounded) {
@@ -110,7 +131,30 @@ export class LiteLLMProvider extends BaseProviderSkeleton implements IModelProvi
       console.log(`[LiteLLMProvider] Compressed prompt from ${targetPrompt.length} to ${compressedResult.compressed.length} chars.`);
       targetPrompt = compressedResult.compressed;
     }
-    const response = { text: `Simulated LiteLLM response for prompt: ${targetPrompt.slice(0, 30)}...` };
+
+    let text = "";
+    const url = "http://127.0.0.1:4000/v1/chat/completions";
+    const cleanModelId = modelId.includes(":") ? modelId.split(":").pop() : modelId;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": options?.apiKey ? `Bearer ${options.apiKey}` : "Bearer sk-1234"
+      },
+      body: JSON.stringify({
+        model: cleanModelId || "gpt-3.5-turbo",
+        messages: [{ role: "user", content: targetPrompt }],
+        stream: false
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      text = data.choices[0].message.content;
+    } else {
+      throw new Error(`[LiteLLMProvider] Failed to fetch. Status: ${res.status}`);
+    }
+
+    const response = { text };
 
     const outputCheck = safetyFirewall.validateOutput(response.text, []);
     if (!outputCheck.grounded) {
