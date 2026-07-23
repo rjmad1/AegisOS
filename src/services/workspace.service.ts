@@ -7,6 +7,7 @@ import prisma from "../infrastructure/db/prisma";
 import { artifactRegistry } from "../infrastructure/registry/artifact-registry";
 import { knowledgeService } from "./knowledge.service";
 import { runtimeService } from "./runtime.service";
+import { projectService } from "./project.service";
 import * as crypto from "crypto";
 
 export class WorkspaceService {
@@ -91,7 +92,6 @@ export class WorkspaceService {
       });
 
       // Seed Project 1 under Workspace 1
-      const { projectService } = require("./project.service");
       await projectService.createProject({
         tenantId: tenantId || "tnt-default",
         organizationId: "org-default",
