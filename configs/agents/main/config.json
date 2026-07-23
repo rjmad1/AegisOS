@@ -11,6 +11,8 @@
     "filesystem",
     "git",
     "sqlite",
+    "codegraph",
+    "markitdown",
     "github",
     "tavily",
     "notion",

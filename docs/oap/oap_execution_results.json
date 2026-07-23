@@ -1,27 +1,27 @@
 {
-  "timestamp": "2026-07-21T02:57:46.883Z",
+  "timestamp": "2026-07-23T00:44:23.626Z",
   "scorecard": {
     "totalMissionsExecuted": 42,
     "passedMissions": 36,
     "warningMissions": 5,
     "failedMissions": 1,
     "overallSuccessRatePercent": 95.2,
-    "avgCompletionDurationSeconds": 18.6,
+    "avgCompletionDurationSeconds": 17.5,
     "avgHitlInterventionsPerMission": 0.14,
     "avgReflectionCyclesPerMission": 1.17,
     "totalManualCorrections": 2,
-    "overallKnowledgeReusePercent": 86.1,
+    "overallKnowledgeReusePercent": 84.7,
     "avgArtifactQualityScore": 96,
     "executionRecoveryRatePercent": 100,
-    "operationalAdoptionIndex": 92,
+    "operationalAdoptionIndex": 91,
     "uxMetricAverages": {
-      "timeToCreateWorkspaceMs": 3203,
-      "timeToLaunchMissionMs": 1414,
-      "timeToFindArtifactsMs": 2136,
-      "timeToLocateKnowledgeMs": 1727,
-      "timeToApproveHitlMs": 4036,
-      "timeToRecoverExecutionMs": 6712,
-      "timeToOnboardProjectMs": 18564
+      "timeToCreateWorkspaceMs": 3128,
+      "timeToLaunchMissionMs": 1417,
+      "timeToFindArtifactsMs": 2121,
+      "timeToLocateKnowledgeMs": 1746,
+      "timeToApproveHitlMs": 3997,
+      "timeToRecoverExecutionMs": 6760,
+      "timeToOnboardProjectMs": 18387
     },
     "frictionCountBySeverity": {
       "CRITICAL": 1,
@@ -137,7 +137,7 @@
         "domain": "Coding",
         "timestamp": "2026-07-18T08:10:00.000Z",
         "status": "PASS",
-        "executionTimeMs": 13039,
+        "executionTimeMs": 19765,
         "reflectionCycles": 1,
         "userInterventionCount": 0,
         "manualCorrections": 0,
@@ -148,24 +148,24 @@
           "Governance Agent": 1
         },
         "toolUtilization": {
-          "view_file": 3,
-          "write_to_file": 1,
-          "grep_search": 3,
-          "run_command": 2
+          "view_file": 5,
+          "write_to_file": 2,
+          "grep_search": 2,
+          "run_command": 1
         },
-        "knowledgeReuseRatePercent": 89,
-        "executionGraphNodeCount": 6,
+        "knowledgeReuseRatePercent": 78,
+        "executionGraphNodeCount": 4,
         "artifactQualityScore": 98,
         "promptRevisionCount": 1,
         "recoveryCount": 0,
         "uxMetrics": {
-          "timeToCreateWorkspaceMs": 3287,
-          "timeToLaunchMissionMs": 1259,
-          "timeToFindArtifactsMs": 2190,
-          "timeToLocateKnowledgeMs": 1785,
-          "timeToApproveHitlMs": 3697,
-          "timeToRecoverExecutionMs": 6218,
-          "timeToOnboardProjectMs": 19503
+          "timeToCreateWorkspaceMs": 2979,
+          "timeToLaunchMissionMs": 1531,
+          "timeToFindArtifactsMs": 2140,
+          "timeToLocateKnowledgeMs": 1656,
+          "timeToApproveHitlMs": 4466,
+          "timeToRecoverExecutionMs": 6866,
+          "timeToOnboardProjectMs": 17746
         }
       },
       {
@@ -173,7 +173,7 @@
         "domain": "Research",
         "timestamp": "2026-07-18T08:20:00.000Z",
         "status": "PASS",
-        "executionTimeMs": 18818,
+        "executionTimeMs": 12031,
         "reflectionCycles": 1,
         "userInterventionCount": 0,
         "manualCorrections": 0,
@@ -184,24 +184,24 @@
           "Governance Agent": 1
         },
         "toolUtilization": {
-          "view_file": 4,
+          "view_file": 5,
           "write_to_file": 1,
           "grep_search": 1,
-          "run_command": 2
+          "run_command": 1
         },
-        "knowledgeReuseRatePercent": 92,
-        "executionGraphNodeCount": 4,
+        "knowledgeReuseRatePercent": 87,
+        "executionGraphNodeCount": 5,
         "artifactQualityScore": 98,
         "promptRevisionCount": 1,
         "recoveryCount": 0,
         "uxMetrics": {
-          "timeToCreateWorkspaceMs": 2861,
-          "timeToLaunchMissionMs": 1215,
-          "timeToFindArtifactsMs": 1900,
-          "timeToLocateKnowledgeMs": 1548,
-          "timeToApproveHitlMs": 3902,
-          "timeToRecoverExecutionMs": 7340,
-          "timeToOnboardProjectMs": 17308
+          "timeToCreateWorkspaceMs": 3342,
+          "timeToLaunchMissionMs": 1496,
+          "timeToFindArtifactsMs": 2179,
+          "timeToLocateKnowledgeMs": 1953,
+          "timeToApproveHitlMs": 3731,
+          "timeToRecoverExecutionMs": 6578,
+          "timeToOnboardProjectMs": 18989
         }
       },
       {
@@ -209,7 +209,7 @@
         "domain": "Architecture",
         "timestamp": "2026-07-18T08:30:00.000Z",
         "status": "PASS",
-        "executionTimeMs": 15155,
+        "executionTimeMs": 13289,
         "reflectionCycles": 1,
         "userInterventionCount": 0,
         "manualCorrections": 0,
@@ -220,24 +220,24 @@
           "Governance Agent": 1
         },
         "toolUtilization": {
-          "view_file": 4,
-          "write_to_file": 1,
+          "view_file": 3,
+          "write_to_file": 2,
           "grep_search": 3,
           "run_command": 2
         },
-        "knowledgeReuseRatePercent": 83,
-        "executionGraphNodeCount": 3,
+        "knowledgeReuseRatePercent": 78,
+        "executionGraphNodeCount": 6,
         "artifactQualityScore": 98,
         "promptRevisionCount": 1,
         "recoveryCount": 0,
         "uxMetrics": {
-          "timeToCreateWorkspaceMs": 3163,
-          "timeToLaunchMissionMs": 1360,
-          "timeToFindArtifactsMs": 2069,
-          "timeToLocateKnowledgeMs": 1920,
-          "timeToApproveHitlMs": 3795,
-          "timeToRecoverExecutionMs": 6763,
-          "timeToOnboardProjectMs": 18518
+          "timeToCreateWorkspaceMs": 2944,
+          "timeToLaunchMissionMs": 1326,
+          "timeToFindArtifactsMs": 1857,
+          "timeToLocateKnowledgeMs": 1606,
+          "timeToApproveHitlMs": 3599,
+          "timeToRecoverExecutionMs": 6038,
+          "timeToOnboardProjectMs": 17900
         }
       }
     ]

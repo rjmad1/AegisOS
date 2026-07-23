@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AegisOSConfig",
+  "type": "object",
+  "required": [
+    "environment",
+    "version",
+    "server",
+    "database",
+    "redis",
+    "storage",
+    "ai"
+  ],
+  "properties": {
+    "environment": {
+      "type": "string",
+      "enum": ["development", "testing", "qa", "staging", "production", "offline", "enterprise", "dr"]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "server": {
+      "type": "object",
+      "required": ["port", "hostname"],
+      "properties": {
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "hostname": { "type": "string" }
+      }
+    },
+    "database": {
+      "type": "object",
+      "required": ["provider"],
+      "properties": {
+        "provider": { "type": "string", "enum": ["sqlite", "postgres"] },
+        "url": { "type": "string" }
+      }
+    },
+    "redis": {
+      "type": "object",
+      "required": ["host", "port"],
+      "properties": {
+        "host": { "type": "string" },
+        "port": { "type": "integer" }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "required": ["provider"],
+      "properties": {
+        "provider": { "type": "string", "enum": ["local", "minio", "s3", "gcs", "azure"] },
+        "bucket": { "type": "string" }
+      }
+    },
+    "ai": {
+      "type": "object",
+      "required": ["ollamaBaseUrl", "liteLlmBaseUrl", "defaultModel"],
+      "properties": {
+        "ollamaBaseUrl": { "type": "string" },
+        "liteLlmBaseUrl": { "type": "string" },
+        "defaultModel": { "type": "string" },
+        "lazyModelLoading": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+# AegisOS Air-Gapped / Offline Environment Configuration
+environment: offline
+version: "1.0.0"
+
+server:
+  port: 3000
+  hostname: "127.0.0.1"
+  sslEnabled: false
+
+database:
+  provider: sqlite
+  url: "file:./databases/aegisos-offline.db"
+
+redis:
+  host: "localhost"
+  port: 6379
+
+storage:
+  provider: local
+  bucket: "./artifacts_storage"
+
+ai:
+  ollamaBaseUrl: "http://localhost:11434"
+  liteLlmBaseUrl: "http://localhost:4000"
+  defaultModel: "smollm:135m"
+  lazyModelLoading: true
+  airGappedMode: true
+  offlineModelCacheDir: "./models_cache"
+
+observability:
+  metricsEnabled: true
+  tracingEnabled: false

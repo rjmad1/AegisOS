@@ -8,6 +8,8 @@
   "version": "1.4",
   "mcpServers": [
     "raja-knowledge-repository",
+    "llm-council",
+    "codegraph",
     "figma",
     "minimax",
     "firecrawl",

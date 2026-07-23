@@ -1,0 +1,35 @@
+# AegisOS Enterprise Production Configuration
+environment: production
+version: "1.0.0"
+
+server:
+  port: 3000
+  hostname: "0.0.0.0"
+  sslEnabled: true
+
+database:
+  provider: postgres
+  poolMin: 5
+  poolMax: 20
+
+redis:
+  host: "aegisos-redis"
+  port: 6379
+  tlsEnabled: true
+
+storage:
+  provider: s3
+  bucket: "aegisos-production-artifacts"
+  region: "us-east-1"
+
+ai:
+  ollamaBaseUrl: "http://aegisos-ollama:11434"
+  liteLlmBaseUrl: "http://aegisos-litellm:4000"
+  defaultModel: "smollm:135m"
+  lazyModelLoading: true
+  gpuAccelerated: true
+
+observability:
+  otelEndpoint: "http://aegisos-otel-collector:4318"
+  metricsEnabled: true
+  tracingEnabled: true
