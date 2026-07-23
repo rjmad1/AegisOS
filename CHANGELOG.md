@@ -4,6 +4,15 @@ All notable changes to AegisOS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.6] - 2026-07-23
+
+### Added
+- **Universal Release Readiness Certification**: Completed comprehensive 12-phase engineering review, 10-gate quality verification, supply chain SBOM audit, and repository release synchronization.
+
+### Synchronized
+- **Fleet Nodes Topology State**: Synchronized active node heartbeats and latency metrics in `configs/fleet-nodes.json`.
+- **Dynamic Prompt Template Registry**: Registered active version 18 of prompt template registry in `configs/prompts/versions.json`.
+
 ## [1.2.5] - 2026-07-23
 
 ### Added

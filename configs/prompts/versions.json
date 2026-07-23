@@ -7,7 +7,7 @@
       {
         "version": 1,
         "content": "You are an expert coder. Write modular, commented code complying with version specifications. Exclude markdown preambles.",
-        "timestamp": "2026-07-21T07:54:41.927Z",
+        "timestamp": "2026-07-23T13:41:06.422Z",
         "author": "System Platform Admin",
         "changeDescription": "Initial seed prompt template from catalogs",
         "commitHash": "init-seed-001"
@@ -22,153 +22,10 @@
       {
         "version": 1,
         "content": "Analyze the following code change. Find potential edge-case crashes, memory consumption issues, and security leaks.",
-        "timestamp": "2026-07-21T07:54:41.927Z",
+        "timestamp": "2026-07-23T13:41:06.423Z",
         "author": "System Platform Admin",
         "changeDescription": "Initial seed prompt template from catalogs",
         "commitHash": "init-seed-001"
-      }
-    ]
-  },
-  {
-    "name": "test-prompt-template",
-    "purpose": "Unit testing prompt template loading",
-    "activeVersion": 17,
-    "versions": [
-      {
-        "version": 1,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-21T16:06:03.052Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-be64400"
-      },
-      {
-        "version": 2,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T00:09:31.660Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-25c268f"
-      },
-      {
-        "version": 3,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T11:53:03.776Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-66f5276"
-      },
-      {
-        "version": 4,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T11:55:06.066Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-2a6905a"
-      },
-      {
-        "version": 5,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T11:56:50.338Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-64f4d0c"
-      },
-      {
-        "version": 6,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T12:09:26.145Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-a017dd2"
-      },
-      {
-        "version": 7,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T12:11:16.049Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-37ce198"
-      },
-      {
-        "version": 8,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T12:16:11.725Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-0c506fe"
-      },
-      {
-        "version": 9,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T12:22:50.352Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-0bb1cb2"
-      },
-      {
-        "version": 10,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T23:40:12.081Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-8584e3a"
-      },
-      {
-        "version": 11,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T23:54:46.543Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-58959d8"
-      },
-      {
-        "version": 12,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-22T23:56:15.035Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-1b5dcda"
-      },
-      {
-        "version": 13,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-23T00:42:50.537Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-48ca26c"
-      },
-      {
-        "version": 14,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-23T12:37:25.400Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-02551c1"
-      },
-      {
-        "version": 15,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-23T12:40:41.991Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-c1f298e"
-      },
-      {
-        "version": 16,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-23T12:45:09.571Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-eeceb31"
-      },
-      {
-        "version": 17,
-        "content": "Hello World testing.",
-        "timestamp": "2026-07-23T12:59:35.456Z",
-        "author": "Quality Assurance",
-        "changeDescription": "Dynamic registration by extension Test Unit Extension",
-        "commitHash": "local-0315b6b"
       }
     ]
   }
