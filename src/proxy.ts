@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { telemetryTracker } from "@/infrastructure/observability/telemetry";
 import { metricsPlatform } from "@/infrastructure/observability/metrics-platform";
 import redisPlatform from "@/infrastructure/providers/redis-platform";
+import { introspectToken } from "@/platform/auth/token-introspector";
 
 // Note: AUTH_SECRET check is handled by downstream services (e.g. adminAuth/session.service) at runtime.
 
@@ -223,19 +224,8 @@ async function executeProxySecurityAndRouting(request: NextRequest): Promise<Nex
 
     try {
       const requiredPermission = getRequiredPermission(pathname, request.method);
-      const introspectUrl = new URL("/api/v1/auth/token/introspect", request.url);
-      const verifyRes = await fetch(introspectUrl.toString(), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, clientIp: ip, requiredPermission }),
-      });
+      const check = await introspectToken({ token, clientIp: ip, requiredPermission });
 
-      if (!verifyRes.ok) {
-        const text = await verifyRes.text().catch(() => "");
-        throw new Error(`Introspection service failed with status ${verifyRes.status}: ${text}`);
-      }
-
-      const check = await verifyRes.json();
       if (!check.active) {
         throw new Error(check.reason || "Session inactive or revoked");
       }

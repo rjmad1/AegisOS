@@ -30,7 +30,7 @@
     "health": "healthy",
     "latencyMs": 20,
     "apiEndpoint": "http://remote-1:18789",
-    "lastSeen": "2026-07-23T00:42:45.877Z"
+    "lastSeen": "2026-07-23T12:37:19.604Z"
   },
   {
     "nodeId": "remote-node-2",
@@ -45,6 +45,6 @@
     "health": "healthy",
     "latencyMs": 15,
     "apiEndpoint": "http://remote-node:18789",
-    "lastSeen": "2026-07-23T00:42:45.877Z"
+    "lastSeen": "2026-07-23T12:37:19.604Z"
   }
 ]

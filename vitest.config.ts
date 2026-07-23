@@ -23,23 +23,12 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: [
-        'src/platform/extension/ExtensionFramework.ts',
-        'src/platform/governance/ArchitectureValidator.ts',
-        'src/platform/health/PlatformHealth.ts',
-        'src/platform/developer/governance/CertificationSuite.ts',
-        'src/platform/developer/testing/TestingFramework.ts',
-        'src/platform/diagnostics/SystemDiagnostics.ts',
-        'src/platform/context/RuntimeContext.ts',
-        'src/platform/kernel/ServiceRegistry.ts',
-        'src/infrastructure/evaluation/evaluation-pipeline.ts',
-        'src/infrastructure/governance/readiness-checks.ts',
-        'src/infrastructure/reliability/CapacityEngine.ts',
-        'src/infrastructure/reliability/ChaosPlatform.ts',
-        'src/infrastructure/reliability/SREPlatform.ts',
-        'src/infrastructure/reliability/FailureAutomation.ts',
-        'src/enterprise/validation/PerformanceValidationSuite.ts',
-        'src/enterprise/validation/MultiTenantValidationSuite.ts',
-        'src/enterprise/validation/EnterprisePerformanceCertification.ts'
+        'src/**/*.ts',
+        'src/**/*.tsx'
+      ],
+      exclude: [
+        'src/**/*.d.ts',
+        'src/types/**/*'
       ]
     }
   }

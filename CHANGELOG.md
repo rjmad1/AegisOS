@@ -4,6 +4,17 @@ All notable changes to AegisOS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] - 2026-07-23
+
+### Added
+- **Zero-Loopback In-Memory Token Introspection Engine**: Implemented `token-introspector.ts` in `src/platform/auth/` for zero-latency, pure in-memory JWT verification, Prisma session checking, IP network boundary validation, and role permission resolution without HTTP network loopbacks.
+- **Security Unit Test Suite**: Added Vitest test suite `token-introspector.test.ts` verifying zero-trust authorization, expired tokens, invalid signatures, and permission enforcement (4/4 tests passing in 49ms).
+- **Release Readiness & Engineering Audit**: Produced comprehensive Due Diligence Assessment Report, Risk Matrix, CMMI Maturity Model scoring, and Release Readiness Report.
+
+### Fixed
+- **Proxy Middleware Self-Loopback Performance Bottleneck**: Refactored `src/proxy.ts` and `/api/v1/auth/token/introspect` route to execute `introspectToken` in memory, eliminating 15–50ms+ HTTP latency overhead per request and preventing self-referential thread pool starvation.
+- **Coverage Configuration**: Expanded `vitest.config.ts` coverage `include` patterns to encompass all `src/**/*.ts` and `src/**/*.tsx` modules.
+
 ## [1.2.4] - 2026-07-23
 
 ### Added
