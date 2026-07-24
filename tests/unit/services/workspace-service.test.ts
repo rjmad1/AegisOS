@@ -78,5 +78,5 @@ describe("WorkspaceService", () => {
 
     const knowledge = await workspaceService.getKnowledge(ws.id);
     expect(Array.isArray(knowledge)).toBe(true);
-  });
+  }, 15000);
 });

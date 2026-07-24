@@ -1,30 +1,32 @@
 import { Artifact, ArtifactFilter, ArtifactType } from "@/types/artifact";
+import { IHttpClient } from "@/infrastructure/contracts/http-client";
+import { HttpClientFactory } from "@/infrastructure/factories/http-client-factory";
 
 export class ArtifactService {
+  constructor(private http: IHttpClient = HttpClientFactory.getDefaultClient()) {}
+
   async getAll(filter?: ArtifactFilter & { sortField?: string; sortOrder?: string; limit?: number; offset?: number; folder?: string }): Promise<Artifact[]> {
     try {
-      const queryParams = new URLSearchParams();
+      const queryParams: Record<string, string | number | boolean> = {};
       if (filter) {
-        if (filter.search) queryParams.append("search", filter.search);
-        if (filter.type && filter.type !== "all" as any) queryParams.append("type", filter.type);
-        if (filter.lifecycleState) queryParams.append("lifecycleState", filter.lifecycleState);
-        if (filter.sortField) queryParams.append("sortField", filter.sortField);
-        if (filter.sortOrder) queryParams.append("sortOrder", filter.sortOrder);
-        if (filter.limit !== undefined) queryParams.append("limit", filter.limit.toString());
-        if (filter.offset !== undefined) queryParams.append("offset", filter.offset.toString());
-        if (filter.folder !== undefined) queryParams.append("folder", filter.folder);
+        if (filter.search) queryParams.search = filter.search;
+        if (filter.type && filter.type !== "all" as any) queryParams.type = filter.type;
+        if (filter.lifecycleState) queryParams.lifecycleState = filter.lifecycleState;
+        if (filter.sortField) queryParams.sortField = filter.sortField;
+        if (filter.sortOrder) queryParams.sortOrder = filter.sortOrder;
+        if (filter.limit !== undefined) queryParams.limit = filter.limit;
+        if (filter.offset !== undefined) queryParams.offset = filter.offset;
+        if (filter.folder !== undefined) queryParams.folder = filter.folder;
         if (filter.tags && filter.tags.length > 0) {
-          // Append the first tag or tag filter
-          queryParams.append("tag", filter.tags[0]);
+          queryParams.tag = filter.tags[0];
         }
       }
 
-      const res = await fetch(`/api/v1/artifacts?${queryParams.toString()}`);
+      const res = await this.http.get<any>("/api/v1/artifacts", { params: queryParams });
       if (!res.ok) {
         throw new Error(`Failed to fetch artifacts: ${res.statusText}`);
       }
-      const data = await res.json();
-      return data.items || [];
+      return res.data?.items || [];
     } catch (err) {
       console.error("[ArtifactService] getAll error:", err);
       return [];
@@ -33,12 +35,12 @@ export class ArtifactService {
 
   async getById(id: string): Promise<Artifact | null> {
     try {
-      const res = await fetch(`/api/v1/artifacts/${id}`);
+      const res = await this.http.get<Artifact>(`/api/v1/artifacts/${id}`);
       if (!res.ok) {
         if (res.status === 404) return null;
         throw new Error(`Failed to fetch artifact ${id}: ${res.statusText}`);
       }
-      return await res.json();
+      return res.data;
     } catch (err) {
       console.error("[ArtifactService] getById error:", err);
       return null;
@@ -47,11 +49,11 @@ export class ArtifactService {
 
   async getPreview(id: string): Promise<any> {
     try {
-      const res = await fetch(`/api/v1/artifacts/${id}/preview`);
+      const res = await this.http.get<any>(`/api/v1/artifacts/${id}/preview`);
       if (!res.ok) {
         throw new Error(`Failed to fetch preview for ${id}: ${res.statusText}`);
       }
-      return await res.json();
+      return res.data;
     } catch (err) {
       console.error("[ArtifactService] getPreview error:", err);
       return { previewSupported: false, error: "Failed to load preview content." };
@@ -60,11 +62,11 @@ export class ArtifactService {
 
   async getMetadata(id: string): Promise<any> {
     try {
-      const res = await fetch(`/api/v1/artifacts/${id}/metadata`);
+      const res = await this.http.get<any>(`/api/v1/artifacts/${id}/metadata`);
       if (!res.ok) {
         throw new Error(`Failed to fetch metadata for ${id}: ${res.statusText}`);
       }
-      return await res.json();
+      return res.data;
     } catch (err) {
       console.error("[ArtifactService] getMetadata error:", err);
       return {};
@@ -72,28 +74,20 @@ export class ArtifactService {
   }
 
   async createArtifact(artifact: { name: string; type: string; description?: string; content?: string; tags?: string[]; conversationId?: string; workflowId?: string }): Promise<Artifact> {
-    const res = await fetch("/api/v1/artifacts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(artifact)
-    });
+    const res = await this.http.post<Artifact>("/api/v1/artifacts", artifact);
     if (!res.ok) {
       throw new Error(`Failed to create artifact: ${res.statusText}`);
     }
-    return await res.json();
+    return res.data;
   }
 
   async updateArtifact(id: string, updates: { tags?: string[]; description?: string; favorites?: boolean; relationships?: any[] }): Promise<Artifact | null> {
     try {
-      const res = await fetch(`/api/v1/artifacts/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates)
-      });
+      const res = await this.http.patch<Artifact>(`/api/v1/artifacts/${id}`, updates);
       if (!res.ok) {
         throw new Error(`Failed to update artifact ${id}: ${res.statusText}`);
       }
-      return await res.json();
+      return res.data;
     } catch (err) {
       console.error("[ArtifactService] updateArtifact error:", err);
       return null;
@@ -102,9 +96,7 @@ export class ArtifactService {
 
   async deleteArtifact(id: string): Promise<boolean> {
     try {
-      const res = await fetch(`/api/v1/artifacts/${id}`, {
-        method: "DELETE"
-      });
+      const res = await this.http.delete(`/api/v1/artifacts/${id}`);
       return res.ok;
     } catch (err) {
       console.error("[ArtifactService] deleteArtifact error:", err);

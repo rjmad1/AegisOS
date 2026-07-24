@@ -28,5 +28,28 @@
         "commitHash": "init-seed-001"
       }
     ]
+  },
+  {
+    "name": "test-prompt-template",
+    "purpose": "Unit testing prompt template loading",
+    "activeVersion": 2,
+    "versions": [
+      {
+        "version": 1,
+        "content": "Hello World testing.",
+        "timestamp": "2026-07-24T00:45:17.988Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-67273d6"
+      },
+      {
+        "version": 2,
+        "content": "Hello World testing.",
+        "timestamp": "2026-07-24T00:47:15.553Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-f162eaa"
+      }
+    ]
   }
 ]
