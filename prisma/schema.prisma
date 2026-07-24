@@ -975,6 +975,23 @@ model SimulationSession {
   completedAt      DateTime?
 }
 
+model UserOAuthToken {
+  id           String    @id @default(uuid())
+  userId       String
+  providerId   String    // e.g. "google", "github", "m365"
+  accessToken  String    // Encrypted access token
+  refreshToken String?   // Encrypted refresh token
+  expiresAt    DateTime?
+  tokenType    String    @default("Bearer")
+  scopes       String    // JSON string array of granted scopes
+  metadata     String?   // JSON string metadata
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([userId, providerId])
+}
+
+
 
 
 
