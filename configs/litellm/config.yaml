@@ -1,4 +1,5 @@
 model_list:
+  # Existing Local Ollama Models (Preserved)
   - model_name: smollm:135m
     litellm_params:
       model: ollama/smollm:135m
@@ -24,8 +25,40 @@ model_list:
       model: ollama/gpt-oss:20b
       api_base: http://ollama:11434
 
+  # OmniRoute Upstream Provider Gateway Models (NEW)
+  - model_name: omniroute-auto
+    litellm_params:
+      model: openai/auto
+      api_base: http://omniroute:20128/v1
+      api_key: os.environ/OMNIROUTE_API_KEY
+
+  - model_name: gpt-4o
+    litellm_params:
+      model: openai/gpt-4o
+      api_base: http://omniroute:20128/v1
+      api_key: os.environ/OMNIROUTE_API_KEY
+
+  - model_name: claude-3-5-sonnet
+    litellm_params:
+      model: openai/claude-3-5-sonnet
+      api_base: http://omniroute:20128/v1
+      api_key: os.environ/OMNIROUTE_API_KEY
+
+  - model_name: deepseek-chat
+    litellm_params:
+      model: openai/deepseek-chat
+      api_base: http://omniroute:20128/v1
+      api_key: os.environ/OMNIROUTE_API_KEY
+
+router_settings:
+  routing_strategy: latency-based-routing
+  fallbacks:
+    - deepseek-r1:32b: ["omniroute-auto", "deepseek-chat"]
+    - gpt-oss:20b: ["omniroute-auto", "gpt-4o"]
+
 litellm_settings:
   drop_params: true
   set_verbose: false
   redact_messages_in_exceptions: true
   mask_pii: true
+

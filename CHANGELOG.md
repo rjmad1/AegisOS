@@ -4,6 +4,14 @@ All notable changes to AegisOS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.8] - 2026-07-25
+
+### Added
+- **OmniRoute Upstream AI Gateway Integration**: Added `omniroute` service configuration (`ghcr.io/diegosouzapw/omniroute:latest`) to `docker-compose.yml` bound to port 20128 for multi-provider upstream LLM routing.
+- **Port Registry Expansion**: Registered `omniroute` service on port 20128 in `src/platform/ports/PortRegistry.ts` with health probe endpoint `/ready`.
+- **LiteLLM Upstream Model Fallback Matrix**: Updated `configs/litellm/config.yaml` with model definitions for `omniroute-auto`, `gpt-4o`, `claude-3-5-sonnet`, and `deepseek-chat`, including fallbacks for local models.
+- **Environment & Telemetry Synchronization**: Synchronized `.env.example` with `OMNIROUTE_BASE_URL` and `OMNIROUTE_API_KEY`, updated `configs/fleet-nodes.json` timestamps, and updated prompt template version metadata.
+
 ## [1.2.7] - 2026-07-24
 
 ### Added

@@ -62,6 +62,7 @@ AegisOS operates as a local-first, privacy-preserving Autonomic AI Workstation O
 | **Console Portal** | `3000` | Next.js administration UI dashboard. |
 | **AegisOS Gateway** | `18789` | Ingress REST/WebSocket endpoint and MCP Tool Host. |
 | **LiteLLM Routing** | `4000` | Load balancer and model routing proxy. |
+| **OmniRoute Gateway** | `20128` | Multi-provider upstream model routing dashboard. |
 | **Ollama Inference** | `11434` | Local model serving weight manager. |
 | **PostgreSQL / SQLite**| `5432` / local | Persistence layer for credentials, twin topology, and audit logs. |
 | **Redis** | `6379` | Background job queues and caching. |

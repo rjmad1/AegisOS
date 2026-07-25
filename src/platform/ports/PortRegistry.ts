@@ -38,7 +38,8 @@ export class PortRegistry {
           postgres: { name: "postgres", purpose: "Postgres", internal_port: 5432, default_host_port: 5432, protocol: "TCP", health_endpoint: null, dependencies: [], exposure: "private", reserved: true, dynamic: true },
           redis: { name: "redis", purpose: "Redis", internal_port: 6379, default_host_port: 6379, protocol: "TCP", health_endpoint: null, dependencies: [], exposure: "private", reserved: true, dynamic: true },
           aegisos: { name: "aegisos", purpose: "AegisOS", internal_port: 18789, default_host_port: 18789, protocol: "HTTP", health_endpoint: null, dependencies: [], exposure: "private", reserved: true, dynamic: true },
-          telemetry: { name: "telemetry", purpose: "Telemetry", internal_port: 3001, default_host_port: 3001, protocol: "WS", health_endpoint: null, dependencies: [], exposure: "private", reserved: true, dynamic: true }
+          telemetry: { name: "telemetry", purpose: "Telemetry", internal_port: 3001, default_host_port: 3001, protocol: "WS", health_endpoint: null, dependencies: [], exposure: "private", reserved: true, dynamic: true },
+          omniroute: { name: "omniroute", purpose: "OmniRoute Dashboard Server", internal_port: 20128, default_host_port: 20128, protocol: "HTTP", health_endpoint: "/ready", dependencies: ["litellm"], exposure: "private", reserved: true, dynamic: true }
         };
       }
     } catch (e) {

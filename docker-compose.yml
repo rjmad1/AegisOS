@@ -10,6 +10,7 @@ volumes:
   prometheus_data:
   grafana_data:
   open_webui_data:
+  omniroute_data:
 
 services:
   # 1. Database Persistence
@@ -99,6 +100,7 @@ services:
     restart: always
     environment:
       - OLLAMA_API_BASE=http://ollama:11434
+      - OMNIROUTE_API_KEY=${OMNIROUTE_API_KEY:-sk-omniroute-aegisos-local-key}
     ports:
       - "127.0.0.1:${HOST_PORT_LITELLM:-4000}:4000"
     volumes:
@@ -107,6 +109,21 @@ services:
       - aegisos-net
     depends_on:
       - ollama
+
+  # 5b. OmniRoute Upstream Provider Router
+  omniroute:
+    image: ghcr.io/diegosouzapw/omniroute:latest
+    container_name: aegisos-omniroute
+    restart: always
+    environment:
+      - PORT=20128
+      - OMNIROUTE_API_KEY=${OMNIROUTE_API_KEY:-sk-omniroute-aegisos-local-key}
+    ports:
+      - "127.0.0.1:${HOST_PORT_OMNIROUTE:-20128}:20128"
+    volumes:
+      - omniroute_data:/app/data
+    networks:
+      - aegisos-net
 
   # 6. OpenTelemetry Collector
   otel-collector:
