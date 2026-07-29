@@ -120,7 +120,8 @@ export class DocumentProcessor {
       });
 
       chunkCount++;
-      index += wordsPerChunk - overlapWords;
+      const step = Math.max(1, wordsPerChunk - overlapWords);
+      index += step;
     }
 
     return chunks;

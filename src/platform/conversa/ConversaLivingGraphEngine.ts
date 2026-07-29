@@ -69,7 +69,7 @@ export class ConversaLivingGraphEngine {
    */
   private async detectCycle(startNodeId: string, targetNodeId: string): Promise<boolean> {
     const topology = await conversaRepository.getGraphTopology();
-    const visited = new Set<string>();
+    const visited = new Set<string>([targetNodeId]);
     const queue = [targetNodeId];
 
     while (queue.length > 0) {
@@ -77,7 +77,6 @@ export class ConversaLivingGraphEngine {
       if (current === startNodeId) {
         return true; // Cycle found
       }
-      visited.add(current);
 
       const outgoing = topology.edges.filter(
         (e: { sourceNodeId: string; relationship: string; targetNodeId: string }) =>
@@ -86,6 +85,7 @@ export class ConversaLivingGraphEngine {
 
       for (const edge of outgoing) {
         if (!visited.has(edge.targetNodeId)) {
+          visited.add(edge.targetNodeId);
           queue.push(edge.targetNodeId);
         }
       }

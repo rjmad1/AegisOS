@@ -103,9 +103,9 @@ export class SessionService {
       }
 
       // Token Rotation checking: if OIDC oauth token exists, verify rotation
-      const tokenAge = now - Number(session.lastActive);
+      const tokenAge = now - Number(session.createdAt);
       const ROTATION_THRESHOLD = 55 * 60; // 55 minutes in seconds
-      if (tokenAge > ROTATION_THRESHOLD && process.env.AUTH_PROVIDER !== 'ldap') {
+      if (tokenAge > ROTATION_THRESHOLD && process.env.AUTH_PROVIDER === 'oidc') {
         console.log(`[SessionService] Token age exceeded threshold. Triggering OIDC token rotation check.`);
         const rotated = await this.rotateOidcTokens(session.userId);
         if (!rotated) {
@@ -148,33 +148,35 @@ export class SessionService {
       const clientId = process.env.OIDC_CLIENT_ID;
       const clientSecret = process.env.OIDC_CLIENT_SECRET;
 
-      // If OIDC endpoints are configured, execute active token refresh against IdP
-      if (oidcIssuer && clientId && clientSecret) {
-        const tokenEndpoint = oidcIssuer.endsWith("/")
-          ? `${oidcIssuer}oauth/token`
-          : `${oidcIssuer}/oauth/token`;
+      if (!oidcIssuer || !clientId || !clientSecret) {
+        console.warn(`[SessionService] Missing OIDC configuration for token rotation.`);
+        return false;
+      }
 
-        const response = await fetch(tokenEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            client_id: clientId,
-            client_secret: clientSecret,
-            grant_type: "refresh_token",
-            refresh_token: process.env[`OIDC_REFRESH_TOKEN_${userId}`] || "session_refresh_token_vault",
-          }),
-        });
+      const tokenEndpoint = oidcIssuer.endsWith("/")
+        ? `${oidcIssuer}oauth/token`
+        : `${oidcIssuer}/oauth/token`;
 
-        if (!response.ok) {
-          console.warn(`[SessionService] OIDC token rotation endpoint HTTP ${response.status} for user ${userId}.`);
-          return false;
-        }
+      const response = await fetch(tokenEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: "refresh_token",
+          refresh_token: process.env[`OIDC_REFRESH_TOKEN_${userId}`] || "session_refresh_token_vault",
+        }),
+      });
 
-        const data = await response.json();
-        if (!data.access_token) {
-          console.warn(`[SessionService] OIDC token rotation returned no access_token for user ${userId}.`);
-          return false;
-        }
+      if (!response.ok) {
+        console.warn(`[SessionService] OIDC token rotation endpoint HTTP ${response.status} for user ${userId}.`);
+        return false;
+      }
+
+      const data = await response.json();
+      if (!data.access_token) {
+        console.warn(`[SessionService] OIDC token rotation returned no access_token for user ${userId}.`);
+        return false;
       }
 
       console.log(`[SessionService] OIDC token rotation successful for user: ${userId}`);

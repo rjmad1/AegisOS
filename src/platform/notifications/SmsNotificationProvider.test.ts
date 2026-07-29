@@ -21,13 +21,35 @@ describe('SmsNotificationProvider', () => {
     expect(res.error).toContain('Invalid phone number format');
   });
 
-  it('should successfully dispatch valid SMS messages', async () => {
+  it('should return error when Twilio credentials are not configured', async () => {
+    delete process.env.TWILIO_ACCOUNT_SID;
+    delete process.env.TWILIO_AUTH_TOKEN;
     const res = await provider.sendSms({
       toPhoneNumber: '+12025550123',
-      message: 'Critical AegisOS Security Alert',
+      message: 'Test alert',
     });
+    expect(res.success).toBe(false);
+    expect(res.error).toContain('Twilio API credentials');
+  });
 
-    expect(res.success).toBe(true);
-    expect(res.messageId).toContain('sms-');
+  it('should successfully dispatch valid SMS messages when configured', async () => {
+    (provider as any).twilioAccountSid = 'ACmock123';
+    (provider as any).twilioAuthToken = 'mocktoken123';
+
+    // Mock fetch for Twilio API
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async () => new Response(JSON.stringify({ sid: 'SM123' }), { status: 200 })) as any;
+
+    try {
+      const res = await provider.sendSms({
+        toPhoneNumber: '+12025550123',
+        message: 'Critical AegisOS Security Alert',
+      });
+
+      expect(res.success).toBe(true);
+      expect(res.messageId).toContain('sms-');
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 });

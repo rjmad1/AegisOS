@@ -29,4 +29,16 @@ describe('DocumentProcessor', () => {
     expect(doc.ocrResult?.confidence).toBeGreaterThan(0.8);
     expect(doc.extractedMetadata.hasOcr).toBe(true);
   });
+
+  it('should handle chunkOverlapTokens >= chunkSizeTokens without infinite loop', async () => {
+    const processor = new DocumentProcessor();
+    const content = 'Word '.repeat(50);
+
+    const doc = await processor.processDocument('doc-103', 'test.txt', content, {
+      chunkSizeTokens: 10,
+      chunkOverlapTokens: 20,
+    });
+
+    expect(doc.totalChunks).toBeGreaterThan(0);
+  });
 });

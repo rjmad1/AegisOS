@@ -95,15 +95,30 @@ export class SapEnterpriseAdapter {
     parameters: Record<string, unknown>
   ): Promise<SapResponse<T>> {
     const endpoint = `${functionName}`;
-    const csrfToken = await this.fetchCsrfToken();
+    let csrfToken = await this.fetchCsrfToken();
 
-    return this.executeRequest<T>(endpoint, {
+    let res = await this.executeRequest<T>(endpoint, {
       method: "POST",
       headers: {
         "x-csrf-token": csrfToken,
       },
       body: JSON.stringify(parameters),
     });
+
+    if (res.statusCode === 403) {
+      // Invalidate stale CSRF token and retry once with fresh token
+      this.csrfToken = null;
+      csrfToken = await this.fetchCsrfToken();
+      res = await this.executeRequest<T>(endpoint, {
+        method: "POST",
+        headers: {
+          "x-csrf-token": csrfToken,
+        },
+        body: JSON.stringify(parameters),
+      });
+    }
+
+    return res;
   }
 
   private async fetchCsrfToken(): Promise<string> {

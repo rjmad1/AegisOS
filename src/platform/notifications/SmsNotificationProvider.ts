@@ -73,29 +73,35 @@ export class SmsNotificationProvider {
         const awsAccessKey = process.env.AWS_ACCESS_KEY_ID;
         const awsSecretKey = process.env.AWS_SECRET_ACCESS_KEY;
 
-        if (awsAccessKey && awsSecretKey) {
-          console.log(`[SmsNotificationProvider] Dispatching AWS SNS Publish to ${toPhoneNumber} in ${awsRegion}`);
-          // AWS SNS REST API POST dispatch
-          const snsEndpoint = `https://sns.${awsRegion}.amazonaws.com/`;
-          const body = new URLSearchParams({
-            Action: "Publish",
-            PhoneNumber: toPhoneNumber,
-            Message: message,
-            Version: "2010-03-31",
-          });
-
-          const res = await fetch(snsEndpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body,
-          });
-
-          if (!res.ok) {
-            const errText = await res.text();
-            throw new Error(`AWS SNS HTTP ${res.status}: ${errText}`);
-          }
+        if (!awsAccessKey || !awsSecretKey) {
+          throw new Error("AWS SNS credentials (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY) are not configured.");
         }
-      } else if (this.twilioAccountSid && this.twilioAuthToken) {
+
+        console.log(`[SmsNotificationProvider] Dispatching AWS SNS Publish to ${toPhoneNumber} in ${awsRegion}`);
+        // AWS SNS REST API POST dispatch
+        const snsEndpoint = `https://sns.${awsRegion}.amazonaws.com/`;
+        const body = new URLSearchParams({
+          Action: "Publish",
+          PhoneNumber: toPhoneNumber,
+          Message: message,
+          Version: "2010-03-31",
+        });
+
+        const res = await fetch(snsEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body,
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`AWS SNS HTTP ${res.status}: ${errText}`);
+        }
+      } else {
+        if (!this.twilioAccountSid || !this.twilioAuthToken) {
+          throw new Error("Twilio API credentials (TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN) are not configured.");
+        }
+
         const auth = Buffer.from(`${this.twilioAccountSid}:${this.twilioAuthToken}`).toString("base64");
         const body = new URLSearchParams({
           To: toPhoneNumber,
