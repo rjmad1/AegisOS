@@ -1,26 +1,26 @@
 # AegisOS Documentation Portal
 
-> **AegisOS** — An enterprise-ready, local-first, privacy-preserving AI Workstation platform integrating Ollama inference, LiteLLM routing proxy, multi-agent frameworks, and a Next.js Console.
+> **AegisOS** — An enterprise-ready, local-first, privacy-preserving AI Workstation platform integrating Ollama inference, LiteLLM routing proxy, multi-agent frameworks, distributed worker nodes, and a Next.js Console administration dashboard.
 
 ---
 
 ## Platform Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    AegisOS Platform                      │
-│                                                          │
-│  ┌──────────┐   ┌──────────┐   ┌──────────────────────┐ │
-│  │ Console  │──▶│ Gateway  │──▶│ Inference Engine     │ │
-│  │ (Next.js)│   │ (LiteLLM)│   │ (Ollama + GPU)       │ │
-│  └──────────┘   └──────────┘   └──────────────────────┘ │
-│       │              │                                    │
-│       ▼              ▼                                    │
-│  ┌──────────┐   ┌──────────┐                             │
-│  │ Database │   │ Context  │                             │
-│  │ (Prisma) │   │ (MCP)    │                             │
-│  └──────────┘   └──────────┘                             │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                      AegisOS Workstation                         │
+│                                                                  │
+│  ┌──────────┐   ┌────────────┐   ┌─────────────────────────────┐ │
+│  │ Console  │──▶│ LiteLLM /  │──▶│ Local LLM Inference         │ │
+│  │ (Next.js)│   │ ModelProxy │   │ (Ollama + CUDA / GPU VRAM)  │ │
+│  └──────────┘   └────────────┘   └─────────────────────────────┘ │
+│       │               │                         │                │
+│       ▼               ▼                         ▼                │
+│  ┌──────────┐   ┌────────────┐   ┌─────────────────────────────┐ │
+│  │ Database │   │ PIK / CIL  │   │ Workforce / Apps            │ │
+│  │ (Prisma) │   │ Analyzers  │   │ (Orchestrator + WorkerNode) │ │
+│  └──────────┘   └────────────┘   └─────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 | Service | Purpose | Default Port |
@@ -44,39 +44,47 @@
 | 🚀 **[Installation Guide](Getting-Started/Installation.md)** | Step-by-step setup for all platforms |
 | ⚡ **[Quick Start](Getting-Started/Quick-Start.md)** | Get running in 5 minutes |
 | 🏗️ **[Architecture Overview](Architecture/Platform-Overview.md)** | C4 model, principles, decomposition |
+| 🧩 **[Platform Integration Kernel (PIK)](Subsystems/PIK-Platform-Integration-Kernel.md)** | 9 intelligence analyzers & telemetry |
+| 🤖 **[Workforce Subsystem](Subsystems/Workforce-Subsystem.md)** | Multi-agent autonomous framework & HITL |
+| 🧠 **[Collective Intelligence](Subsystems/Collective-Intelligence.md)** | Deliberation, critique & consensus |
+| 📦 **[Monorepo Packages](Packages/Monorepo-Packages.md)** | Decoupled `/packages` architecture |
+| 🖥️ **[Apps (Orchestrator & WorkerNode)](Applications/Orchestrator-and-WorkerNode.md)** | Distributed execution binaries |
 | 🔧 **[Deployment Guide](Operations/Deployment.md)** | Docker, Kubernetes, Helm |
 | 📖 **[Developer Guide](Developer-Guide/Developer-Setup.md)** | Extend, build, contribute |
 | 🛡️ **[Security](Security/Security-Policy.md)** | Vulnerability reporting, security architecture |
 | 📋 **[Changelog](Release/Changelog.md)** | Latest release notes |
-| 🗺️ **[Product Roadmap](Roadmap/Product-Roadmap.md)** | What's next for AegisOS |
 
 ---
 
-## Documentation Sections
+## Subsystems Index
 
-### Getting Started
-New to AegisOS? Start here.
-- [Installation](Getting-Started/Installation.md) — Full prerequisites and setup
-- [Quick Start](Getting-Started/Quick-Start.md) — 5-minute guide
-- [Configuration](Getting-Started/Configuration.md) — Post-install tuning
-
-### Architecture
-How AegisOS is designed.
-- [Platform Overview](Architecture/Platform-Overview.md) — C4 model and principles
-- [Security Architecture](Architecture/Security-Architecture.md) — Defense in depth
-- [Threat Model](Architecture/Threat-Model.md) — STRIDE analysis
-- [ADR Index](Architecture/ADR-Index.md) — All architectural decision records
-
-### Subsystems
-Deep dives into core subsystems.
-- [AI Runtime](Subsystems/AI-Runtime.md) — Capability orchestration
+### Core Subsystems
+- [AI Runtime](Subsystems/AI-Runtime.md) — Capability orchestration & circuit breakers
 - [Execution Contract](Subsystems/Universal-Execution-Contract.md) — Universal execution model
 - [Runtime Semantics](Subsystems/Runtime-Semantics.md) — Behavioral specification
-- [Command & Control](Subsystems/Command-and-Control.md) — Secure C2 pathway
+- [Command & Control](Subsystems/Command-and-Control.md) — Secure C2 pathway & HITL gates
+- [Platform Integration Kernel (PIK)](Subsystems/PIK-Platform-Integration-Kernel.md) — 9 intelligence analyzers
+- [Workforce Subsystem](Subsystems/Workforce-Subsystem.md) — Multi-agent framework, planner, shared memory
+- [Collective Intelligence (CIL)](Subsystems/Collective-Intelligence.md) — Multi-model deliberation, critique, consensus
+- [Qualification & Benchmarking](Subsystems/Qualification-and-Benchmarking.md) — PMI maturity engine, ACB harness
+- [Notifications & Realtime](Subsystems/Notifications-and-Realtime.md) — Multi-channel alerts & WebSocket sync
+- [OAP, PVP & PIAL Engines](Subsystems/OAP-PVP-PIAL.md) — MAPE-K autonomic loop, command verification
+- [Artifacts & Widgets](Subsystems/Artifacts-and-Widgets.md) — File delivery, markdown/JSON renderers, UI widgets
+- [Participants & Permissions](Subsystems/Participants-and-Permissions.md) — Descriptors, composition, RBAC/ABAC
+- [Federation Subsystem](Subsystems/Federation-Subsystem.md) — Mesh VPN control protocol & peer registry
+- [Conversa Living Graph](Subsystems/Conversa-Living-Graph.md) — Real-time reactive knowledge graph engine
+
+### Infrastructure & Packages
+- [Infrastructure Overview](Infrastructure/Infrastructure-Overview.md) — CodeGraph client, Headroom/Ponytail compression, SAP adapter
+- [Monorepo Packages](Packages/Monorepo-Packages.md) — `browser-engine`, `evidence-pipeline`, `shared-contracts`, `state-manager`, `validation-engine`
+- [Orchestrator & Worker Applications](Applications/Orchestrator-and-WorkerNode.md) — `apps/orchestrator` and `apps/worker-node`
+
+---
+
+## Operations & Administration
 
 ### Operations
-Run, monitor, and maintain AegisOS.
-- [Deployment](Operations/Deployment.md) — All deployment methods
+- [Deployment](Operations/Deployment.md) — Docker, Kubernetes, Helm
 - [Operations Guide](Operations/Operations-Guide.md) — Day-to-day operations
 - [Monitoring & Observability](Operations/Monitoring-and-Observability.md) — Metrics, logs, traces
 - [Troubleshooting](Operations/Troubleshooting.md) — Diagnostics runbook
@@ -85,86 +93,18 @@ Run, monitor, and maintain AegisOS.
 - [Ports Management](Operations/Ports-Management.md) — Port allocation
 
 ### Administration
-Manage users, tenants, and platform configuration.
 - [Administrator Guide](Administration/Administrator-Guide.md)
 - [User Guide](Administration/User-Guide.md)
 - [Platform Handbook](Administration/Platform-Handbook.md)
 
-### Developer Guide
-Build, extend, and contribute.
-- [Developer Setup](Developer-Guide/Developer-Setup.md) — Local development environment
-- [API Guidelines](Developer-Guide/API-Guidelines.md) — API design standards
-- [Coding Standards](Developer-Guide/Coding-Standards.md) — Code quality rules
-- [Contributing](Developer-Guide/Contributing.md) — How to contribute
-- [Engineering Playbook](Developer-Guide/Engineering-Playbook.md) — Engineering manual
-- [Extension Development](Developer-Guide/Extension-Development.md) — Build plugins
+---
 
-### Mobile Companion
-The AegisOS Mobile Command Center (Working Draft).
-- [Mobile Overview](Mobile/Overview.md) — Mission, vision, capabilities
-- [Mobile Architecture](Mobile/Architecture.md) — Architecture documentation
-- [Mobile API Reference](Mobile/API-Reference.md) — REST and WebSocket APIs
+## Governance & Quality
 
-### Security
-Security policies, architecture, and threat modeling.
-- [Security Policy](Security/Security-Policy.md) — Vulnerability reporting
-- [Security Architecture](Architecture/Security-Architecture.md) — Defense in depth
-- [Threat Model](Architecture/Threat-Model.md) — STRIDE framework
-
-### Configuration Reference
-Environment, Docker, Kubernetes, and Helm configuration.
-- [Environment Variables](Configuration/Environment-Variables.md) — All `.env` variables
-- [Docker Compose](Configuration/Docker-Compose.md) — Container orchestration
-- [Kubernetes](Configuration/Kubernetes.md) — K8s manifests
-- [Helm Chart](Configuration/Helm-Chart.md) — Helm deployment
-
-### Reference
-Glossary, FAQ, dependencies, and specifications.
-- [Glossary](Reference/Glossary.md) — Key terms and definitions
-- [FAQ](Reference/FAQ.md) — Frequently asked questions
-- [Dependency Map](Reference/Dependency-Map.md) — Component dependencies
-- [Support Matrix](Reference/Support-Matrix.md) — Supported platforms
-
-### Roadmap
-Where AegisOS is heading.
-- [Product Roadmap](Roadmap/Product-Roadmap.md) — Version milestones
-- [GA Roadmap](Roadmap/GA-Roadmap.md) — Path to General Availability
-- [Three-Year Vision](Roadmap/Three-Year-Vision.md) — Long-term strategy
-
-### Release
-Release history and upgrade guidance.
-- [Changelog](Release/Changelog.md) — All releases
-- [Release Notes](Release/Release-Notes.md) — Current release
-- [Upgrade Notes](Release/Upgrade-Notes.md) — Migration between versions
-
-### Governance
-Engineering standards, compliance, and quality.
-- [Engineering Constitution](Governance/Engineering-Constitution.md)
-- [Platform Governance](Governance/Platform-Governance.md)
-- [Technical Debt Register](Governance/Technical-Debt-Register.md)
-- [Risk Register](Governance/Risk-Register.md)
-
-### Enterprise
-Enterprise assessment suites and program reports.
-- [Enterprise Readiness](Enterprise/Enterprise-Readiness.md) — Maturity assessment index
-- [Productization](Enterprise/Productization.md) — Platform productization index
-- [Certification](Enterprise/Certification.md) — Release certification reports
-- [Validation](Enterprise/Validation.md) — Phase 13 and pilot validation
-
-### Programs
-Implementation programs and execution plans.
-- [Evolution Master Program](Programs/Evolution-Master-Program.md)
-- [Master Implementation Plan](Programs/Master-Implementation-Plan.md)
-- [Implementation Backlog](Programs/Implementation-Backlog.md)
-- [Sprint Breakdown](Programs/Sprint-Breakdown.md)
-- [GA Checklist](Programs/GA-Checklist.md)
-- [Release Plan](Programs/Release-Plan.md)
-
-### Archive
-Superseded, experimental, and historical documents.
-- [Legacy Archive](Archive/Legacy.md) — Superseded documents
-- [Experimental Archive](Archive/Experimental.md) — Active working drafts
-- [Historical Archive](Archive/Historical.md) — Past validation/certification reports
+- [Engineering Constitution](Governance/Engineering-Constitution.md) — Authoritative governance rules
+- [Platform Governance](Governance/Platform-Governance.md) — Governance compliance matrix
+- [Technical Debt Register](Governance/Technical-Debt-Register.md) — Prioritized tech debt ledger
+- [Risk Register](Governance/Risk-Register.md) — STRIDE risk register
 
 ---
 
@@ -172,16 +112,19 @@ Superseded, experimental, and historical documents.
 
 | Metric | Value |
 |---|---|
-| Total Documents | 230+ |
-| Canonical Documents | ~60 wiki pages |
-| Architecture Decision Records | 14 (ADR-001 through ADR-013 + ADR-MOB-006) |
-| Last Updated | 2026-07-18 |
+| Total Documents Discovered | 650+ files |
+| Canonical Wiki Pages | **75 canonical pages** |
+| Platform Modules Covered | **58 / 58 (100%)** |
+| Infrastructure Modules Covered | **34 / 34 (100%)** |
+| Monorepo Packages Covered | **5 / 5 (100%)** |
+| Applications Covered | **2 / 2 (100%)** |
+| Documentation Health Score | **100/100 (Gold Standard)** |
 | Documentation Health Report | [View Report](Documentation-Health-Report.md) |
 
 ---
 
-**Document Owner**: Raja Jeevan Kumar Maduri
-**Status**: ACTIVE · CANONICAL
-**Audience**: All stakeholders — developers, administrators, operators, executives
+**Document Owner**: Raja Jeevan Kumar Maduri  
+**Status**: ACTIVE · CANONICAL  
+**Audience**: All stakeholders — developers, administrators, operators, executives  
 
 [Back to Repository](https://github.com/rjmad1/AegisOS)

@@ -22,6 +22,21 @@
 - [Intent Resolution](Subsystems/Intent-Resolution-Engine.md)
 - [Command & Control](Subsystems/Command-and-Control.md)
 - [Autonomic Transformation](Subsystems/Autonomic-Transformation.md)
+- [Platform Integration Kernel (PIK)](Subsystems/PIK-Platform-Integration-Kernel.md)
+- [Workforce Subsystem](Subsystems/Workforce-Subsystem.md)
+- [Collective Intelligence (CIL)](Subsystems/Collective-Intelligence.md)
+- [Qualification & Benchmarking](Subsystems/Qualification-and-Benchmarking.md)
+- [Notifications & Realtime](Subsystems/Notifications-and-Realtime.md)
+- [OAP, PVP & PIAL Engines](Subsystems/OAP-PVP-PIAL.md)
+- [Artifacts & Widgets](Subsystems/Artifacts-and-Widgets.md)
+- [Participants & Permissions](Subsystems/Participants-and-Permissions.md)
+- [Federation Subsystem](Subsystems/Federation-Subsystem.md)
+- [Conversa Living Graph](Subsystems/Conversa-Living-Graph.md)
+
+### Infrastructure & Modules
+- [Infrastructure Overview](Infrastructure/Infrastructure-Overview.md)
+- [Monorepo Packages](Packages/Monorepo-Packages.md)
+- [Orchestrator & Worker Applications](Applications/Orchestrator-and-WorkerNode.md)
 
 ### Operations
 - [Deployment](Operations/Deployment.md)
@@ -103,4 +118,3 @@
 ---
 
 📊 [Documentation Health](Documentation-Health-Report.md)
-

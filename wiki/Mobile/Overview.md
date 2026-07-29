@@ -1,19 +1,48 @@
 # Mobile Companion App — Overview
 
-> **Purpose**: AegisOS Mobile Command Center for remote executive monitoring and HITL approval.
-> **Status**: WORKING DRAFT
-> **Source**: [docs/mobile/](../../docs/mobile/)
+> **Purpose**: AegisOS Mobile Command Center for remote executive monitoring, real-time telemetry, and HITL approval gates.  
+> **Status**: ACTIVE · CANONICAL  
+> **Location**: `aegis_mobile/`  
+> **Framework**: Flutter (Dart)  
 
 ---
 
-**Navigation**: [Home](../Home.md) · **Mobile** > Overview
-**Related**: [Command & Control](../Subsystems/Command-and-Control.md) · [Mobile Architecture](Architecture.md) · [Mobile API](API-Reference.md)
+**Navigation**: [Home](../Home.md) · **Mobile** > Overview  
+**Related**: [Command & Control](../Subsystems/Command-and-Control.md) · [Mobile Architecture](Architecture.md) · [Mobile API](API-Reference.md)  
 
 ---
 
-The AegisOS Mobile Companion App is a Flutter-based application for remote workstation monitoring and human-in-the-loop approval gates.
+## 1. Overview
 
-## Documentation Suite
+The **AegisOS Mobile Companion App** (`aegis_mobile/`) is a cross-platform Flutter application enabling remote operators, system administrators, and security officers to inspect workstation health, receive SMS/push notification alerts, and approve cryptographic Human-In-The-Loop (HITL) authorization gates from mobile devices.
+
+---
+
+## 2. Codebase Structure (`aegis_mobile/lib`)
+
+```
+aegis_mobile/
+├── pubspec.yaml            # Flutter package dependencies & assets
+├── analysis_options.yaml   # Dart linter & static analysis rules
+└── lib/
+    ├── main.dart           # Application entry point
+    ├── bootstrap.dart      # Service initialization & mTLS setup
+    ├── config/             # Environment configs & API endpoint bindings
+    ├── infrastructure/     # WebSocket / REST client transport adapters
+    └── features/           # Feature modules (Telemetry, HITL Approvals, Logs)
+```
+
+---
+
+## 3. Core Capabilities
+
+* **Real-time Telemetry Dashboard**: Displays CPU, GPU VRAM, active model inference, and container status via WebSocket streaming.
+* **HITL Cryptographic Gates**: Provides push notifications when system actions require operator approval. Signing keys securely authorize or reject commands.
+* **Tailscale Mesh VPN Binding**: Operates securely over the private Tailscale mesh network without exposing public internet endpoints.
+
+---
+
+## 4. Documentation Suite
 
 | Document | Description |
 |---|---|
@@ -21,23 +50,9 @@ The AegisOS Mobile Companion App is a Flutter-based application for remote works
 | [PRD](../../docs/mobile/PRD.md) | Product requirements document |
 | [Capabilities](../../docs/mobile/Capabilities.md) | Feature capabilities overview |
 | [Roadmap](../../docs/mobile/Roadmap.md) | Mobile development roadmap |
-| [Glossary](../../docs/mobile/Glossary.md) | Mobile-specific terminology |
-| [Security](../../docs/mobile/Security.md) | Mobile security architecture |
+| [Security](../../docs/mobile/Security.md) | Mobile security & mTLS architecture |
 | [Synchronization](../../docs/mobile/Synchronization.md) | Offline-first sync engine |
-
-## Architecture Documentation
-
-See [Mobile Architecture](Architecture.md) for the full 12-document architecture series.
-
-## Design System
-
-| Document | Description |
-|---|---|
-| [Design System](../../docs/mobile/design/DESIGN_SYSTEM.md) | Colors, typography, spacing |
-| [Component Library](../../docs/mobile/design/COMPONENT_LIBRARY.md) | Reusable components |
-| [Screen Specifications](../../docs/mobile/design/SCREEN_SPECIFICATIONS.md) | Screen-by-screen specs |
-| [Navigation & User Flow](../../docs/mobile/design/NAVIGATION_AND_USER_FLOW.md) | App navigation design |
 
 ---
 
-**Next**: [Mobile Architecture](Architecture.md) · **Parent**: [Home](../Home.md)
+**Next**: [Mobile Architecture](Architecture.md) · **Parent**: [Home](../Home.md)  
