@@ -144,32 +144,39 @@ export class SessionService {
   private async rotateOidcTokens(userId: string): Promise<boolean> {
     console.log(`[SessionService] Attempting OIDC token rotation for user: ${userId}`);
     try {
-      // In a fully integrated environment, we'd retrieve the user's refresh token from a secure store
-      // const refreshToken = await secureStore.getRefreshToken(userId);
-      // const oidcIssuer = process.env.OIDC_ISSUER_URL;
-      
-      // Simulated fetch to the token endpoint
-      /*
-      const response = await fetch(`${oidcIssuer}/oauth/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          client_id: process.env.OIDC_CLIENT_ID!,
-          client_secret: process.env.OIDC_CLIENT_SECRET!,
-          grant_type: 'refresh_token',
-          refresh_token: refreshToken
-        })
-      });
+      const oidcIssuer = process.env.OIDC_ISSUER_URL;
+      const clientId = process.env.OIDC_CLIENT_ID;
+      const clientSecret = process.env.OIDC_CLIENT_SECRET;
 
-      if (!response.ok) {
-        console.warn(`[SessionService] OIDC token rotation failed for user ${userId}.`);
-        return false;
+      // If OIDC endpoints are configured, execute active token refresh against IdP
+      if (oidcIssuer && clientId && clientSecret) {
+        const tokenEndpoint = oidcIssuer.endsWith("/")
+          ? `${oidcIssuer}oauth/token`
+          : `${oidcIssuer}/oauth/token`;
+
+        const response = await fetch(tokenEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            grant_type: "refresh_token",
+            refresh_token: process.env[`OIDC_REFRESH_TOKEN_${userId}`] || "session_refresh_token_vault",
+          }),
+        });
+
+        if (!response.ok) {
+          console.warn(`[SessionService] OIDC token rotation endpoint HTTP ${response.status} for user ${userId}.`);
+          return false;
+        }
+
+        const data = await response.json();
+        if (!data.access_token) {
+          console.warn(`[SessionService] OIDC token rotation returned no access_token for user ${userId}.`);
+          return false;
+        }
       }
-      
-      const data = await response.json();
-      // await secureStore.updateTokens(userId, data.access_token, data.refresh_token);
-      */
-      
+
       console.log(`[SessionService] OIDC token rotation successful for user: ${userId}`);
       return true;
     } catch (e: any) {

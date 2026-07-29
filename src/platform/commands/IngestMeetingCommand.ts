@@ -62,10 +62,12 @@ export const IngestMeetingCommand: PlatformCommand<IngestMeetingPayload, any> = 
 
     // Publish Cryptographically Validated Meeting Minutes
     const publisher = new ConversaSemanticPublisher();
-    const validatedMinutes = publisher.publish(
+    const validatedMinutes = await publisher.publish(
       payload.meetingId,
       payload.transcriptText,
       extractedData.actions,
+      [],
+      [],
       { workspaceId: payload.workspaceId, tenantId: payload.tenantId }
     );
 

@@ -633,7 +633,6 @@ export class RuntimeService {
 
     let dbWorkflows: any[] = [];
     try {
-      const { workflowRepository } = require("../repositories/workflow.repository");
       dbWorkflows = await workflowRepository.getWorkflows();
     } catch (err) {
       console.error("[RuntimeService] Failed to load workflows from repository:", err);

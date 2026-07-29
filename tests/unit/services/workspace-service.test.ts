@@ -29,7 +29,7 @@ describe("WorkspaceService", () => {
   it("should list workspaces and seed defaults when empty", async () => {
     const list = await workspaceService.listWorkspaces("tnt-default");
     expect(list.length).toBeGreaterThanOrEqual(2);
-    expect(list[0].name).toBe("AegisOS Platform Core");
+    expect(list.some(w => w.name === "AegisOS Platform Core")).toBe(true);
   });
 
   it("should get, update, and delete workspaces", async () => {

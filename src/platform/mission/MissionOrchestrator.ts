@@ -17,6 +17,9 @@ import { executionRuntimeService } from '@/services/execution-runtime.service';
 import { executionGraphService } from '@/services/execution-graph.service';
 import eventBus from '@/platform/event-bus/EventPlatform';
 
+import { missionRegistry } from './registry';
+import { enterpriseAutomationPlugin } from './plugins/EnterpriseAutomationPlugin';
+
 export class MissionOrchestrator {
   private static instance: MissionOrchestrator | null = null;
 
@@ -26,8 +29,6 @@ export class MissionOrchestrator {
     if (!MissionOrchestrator.instance) {
       MissionOrchestrator.instance = new MissionOrchestrator();
       try {
-        const { missionRegistry } = require('./registry');
-        const { enterpriseAutomationPlugin } = require('./plugins/EnterpriseAutomationPlugin');
         missionRegistry.registerPlugin(enterpriseAutomationPlugin);
       } catch (e: any) {
         console.warn('[MissionOrchestrator] Failed registering automation plugin:', e.message);

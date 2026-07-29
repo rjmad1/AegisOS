@@ -991,6 +991,94 @@ model UserOAuthToken {
   @@unique([userId, providerId])
 }
 
+// ==========================================
+// Conversa Enterprise Cognitive Platform
+// ==========================================
+
+model ConversaMeeting {
+  id                    String    @id @default(uuid())
+  title                 String
+  description           String?
+  status                String    @default("CREATED") // "CREATED" | "TRANSCRIBING" | "EXTRACTING" | "DEBATING" | "PUBLISHED" | "FAILED"
+  workspaceId           String?
+  tenantId              String?
+  privacyClassification String    @default("Internal") // "Public" | "Internal" | "Confidential" | "Restricted" | "Regulated"
+  audioUrl              String?
+  duration              Int?
+  speakerCount          Int?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model ConversaTranscript {
+  id                  String    @id @default(uuid())
+  meetingId           String    @unique
+  rawText             String
+  formattedTranscript String?   // JSON string of diarized segments
+  language            String    @default("en")
+  createdAt           DateTime  @default(now())
+}
+
+model ConversaEvidence {
+  id                    String    @id @default(uuid())
+  meetingId             String
+  claim                 String
+  speaker               String?
+  lineNumbers           String    // JSON string array
+  confidenceScore       Float
+  privacyClassification String    @default("Internal")
+  category              String    // "ActionItem" | "Decision" | "Risk" | "Fact"
+  createdAt             DateTime  @default(now())
+}
+
+model ConversaKnowledgePackage {
+  id                     String    @id @default(uuid())
+  meetingId              String
+  title                  String
+  summary                String
+  actions                String    // JSON string array
+  decisions              String    // JSON string array
+  risks                  String    // JSON string array
+  consensusScore         Float
+  governanceStatus       String    @default("VALIDATED")
+  cryptographicSignature String
+  createdAt              DateTime  @default(now())
+}
+
+model ConversaPublication {
+  id               String    @id @default(uuid())
+  meetingId        String
+  packageId        String
+  publisherName    String
+  publisherVersion String    @default("1.0.0")
+  semanticHash     String
+  contentHash      String
+  provenanceHash   String
+  renderedOutput   String
+  format           String    // "markdown" | "json" | "html"
+  createdAt        DateTime  @default(now())
+}
+
+model ConversaGraphNode {
+  id         String    @id @default(uuid())
+  meetingId  String?
+  label      String
+  type       String    // "Task" | "Decision" | "Risk" | "Meeting" | "Document"
+  properties String    // JSON string payload
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model ConversaGraphEdge {
+  id           String    @id @default(uuid())
+  sourceNodeId String
+  targetNodeId String
+  relationship String    // "DependsOn" | "ExtractedFrom" | "References"
+  properties   String?   // JSON string payload
+  createdAt    DateTime  @default(now())
+}
+
+
 
 
 

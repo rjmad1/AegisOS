@@ -33,6 +33,7 @@ import { benchmarkingModule } from '@/modules/benchmarking/benchmarking.module';
 import { certificationModule } from '@/modules/certification/certification.module';
 import { qualificationModule } from '@/modules/qualification/qualification.module';
 import { architectureExplorerModule } from '@/modules/architecture-explorer/architecture-explorer.module';
+import { conversaModule } from '@/modules/conversa/conversa.module';
 
 export const allModules: PlatformModule[] = [
   platformModule,
@@ -53,6 +54,8 @@ export const allModules: PlatformModule[] = [
   certificationModule,
   qualificationModule,
   architectureExplorerModule,
+  conversaModule,
 ];
 
 export { PlatformKernel };
+

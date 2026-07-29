@@ -1,0 +1,68 @@
+# ============================================================================
+# AegisOS Platform — Automated Canary Traffic Shifting CRD Manifest
+# ============================================================================
+
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: aegisos-platform
+  namespace: aegisos-system
+spec:
+  # Deployment target reference
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: aegisos-platform-app
+  
+  # HPA reference
+  autoscalerRef:
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    name: aegisos-platform-hpa
+
+  # Service mesh / Ingress provider configuration
+  service:
+    port: 3000
+    targetPort: 3000
+    gateways:
+      - aegisos-gateway
+    hosts:
+      - app.aegisos.enterprise.com
+    trafficRouting:
+      nginx:
+        class: nginx
+
+  # Canary progressive analysis rules
+  analysis:
+    interval: 1m
+    threshold: 5 # Maximum failed checks before automated rollback
+    maxWeight: 100
+    stepWeight: 15 # Increment traffic by 15% each step
+    
+    # Automated metrics analysis
+    metrics:
+      - name: request-success-rate
+        thresholdRange:
+          min: 99.0 # Require 99% HTTP 2xx/3xx success rate
+        interval: 1m
+
+      - name: request-duration-latency
+        thresholdRange:
+          max: 500 # Require p99 latency < 500ms
+        interval: 1m
+
+    # Automated webhook verification tests
+    webhooks:
+      - name: acceptance-test
+        type: pre-rollout
+        url: http://aegisos-validator.aegisos-system.svc.cluster.local/validate
+        timeout: 30s
+        metadata:
+          type: "smoke-test"
+
+      - name: load-test
+        type: rollout
+        url: http://flagger-loadtester.aegisos-system.svc.cluster.local/
+        timeout: 5m
+        metadata:
+          cmd: "hey -z 1m -q 10 http://aegisos-platform-canary.aegisos-system:3000/api/health"
