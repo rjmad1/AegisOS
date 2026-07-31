@@ -61,7 +61,7 @@ This maps the host GPU using the `nvidia` container runtime driver, allocating h
 
 ## 4. Port Conflict Resolution System
 
-AegisOS implements a port remapping protocol ([PortManager.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/PortManager.ps1)) to prevent collisions on host workstations:
+AegisOS implements a port remapping protocol ([PortManager.ps1](file:///C:/Users/rajaj/Projects/AegisOS/automation/PortManager.ps1)) to prevent collisions on host workstations:
 
 * **Internal Container Ports**: Remain static (`5432` for Postgres, `6379` for Redis, `3000` for Next.js).
 * **Host-Binding Ports**: Remap dynamically if standard bindings are occupied. 

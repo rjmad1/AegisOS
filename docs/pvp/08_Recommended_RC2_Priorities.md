@@ -33,19 +33,19 @@ To further optimize performance, context efficiency, and multi-agent coordinatio
 
 ### Work Package 1: Semantic AST Knowledge Chunking
 - **PVP Evidence Target**: Resolves Knowledge Engine log/code chunk truncation observed in `PVP-OPS-003` and `PVP-AI-005`.
-- **Scope**: Upgrade [knowledge.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/knowledge.service.ts) from fixed 512-token chunking to AST-aware semantic chunking for TypeScript, Python, and GFM Markdown.
+- **Scope**: Upgrade [knowledge.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/knowledge.service.ts) from fixed 512-token chunking to AST-aware semantic chunking for TypeScript, Python, and GFM Markdown.
 - **Expected Outcome**: Eliminates split stack traces and improves vector retrieval precision by 25%.
 - **Impact**: Zero architectural change; internal service algorithm upgrade.
 
 ### Work Package 2: Dynamic Context Compression & Token Pruner
 - **PVP Evidence Target**: Addresses context window truncation warnings on multi-document research queries (`PVP-RES-001`, `PVP-AI-005`).
-- **Scope**: Introduce intelligent prompt context compression in [ai-runtime.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/ai-runtime.service.ts) before LLM invocation.
+- **Scope**: Introduce intelligent prompt context compression in [ai-runtime.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/ai-runtime.service.ts) before LLM invocation.
 - **Expected Outcome**: Reduces prompt token consumption by 35% without factual information loss.
 - **Impact**: Reuses existing AI Runtime service interfaces.
 
 ### Work Package 3: High-Concurrency Postgres Connection Pooling
 - **PVP Evidence Target**: Eliminates SQLite lock contention observed under high parallel load in `PVP-OPS-005`.
-- **Scope**: Enhance [mission.repository.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/repositories/mission.repository.ts) Postgres repository implementation with PgBouncer connection pooling and optimistic locking.
+- **Scope**: Enhance [mission.repository.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/repositories/mission.repository.ts) Postgres repository implementation with PgBouncer connection pooling and optimistic locking.
 - **Expected Outcome**: Supports 1,000+ concurrent mission write executions with < 5ms DB write latency.
 - **Impact**: Extends existing `PostgresMissionRepository` class.
 
@@ -57,7 +57,7 @@ To further optimize performance, context efficiency, and multi-agent coordinatio
 
 ### Work Package 5: Multi-Agent Reflection & Collaboration Networks
 - **PVP Evidence Target**: Further streamlines reflection cycles for multi-domain missions (`PVP-SWE-001`, `PVP-RES-002`).
-- **Scope**: Expand [mission-reflection.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/mission-reflection.service.ts) to support agent-to-agent peer review routines during graph expansion.
+- **Scope**: Expand [mission-reflection.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/mission-reflection.service.ts) to support agent-to-agent peer review routines during graph expansion.
 - **Expected Outcome**: Reduces average reflection cycle duration from 1.2 to 1.0.
 - **Impact**: Enhances existing reflection service.
 

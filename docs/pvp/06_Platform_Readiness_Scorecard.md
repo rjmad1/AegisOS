@@ -60,7 +60,7 @@
 ### Dimension 5: Failure Recovery & Reflection (15% Weight)
 - **Formula**: $\text{Recovery} = 100 - (\text{Failed Missions} \times 20) - (\text{Mean Retries} \times 10)$
 - **Result**: 49 clean passes, 4 auto-recovered missions yield a sub-score of **88.0**.
-- **Justification**: Dynamic graph expansion ([autoExpandGraph](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/mission-runtime.service.ts#L188-L228)) successfully inserted resolution steps to recover from execution gaps without human intervention.
+- **Justification**: Dynamic graph expansion ([autoExpandGraph](file:///C:/Users/rajaj/Projects/AegisOS/src/services/mission-runtime.service.ts#L188-L228)) successfully inserted resolution steps to recover from execution gaps without human intervention.
 
 ### Dimension 6: Operational Burden & HITL Escalation (10% Weight)
 - **Formula**: $\text{Burden} = (1 - \text{User Intervention Rate}) \times 100$

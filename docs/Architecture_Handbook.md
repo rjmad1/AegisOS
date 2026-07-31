@@ -78,7 +78,7 @@ graph TD
 
 ## 2. Hierarchical 7-Layer Stack Decomposition
 
-AegisOS implements a strict hierarchical 7-layered model (defined in [ADR-009](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md)) where higher planes consume lower plane interfaces, and lower planes are barred from importing or depending on higher planes.
+AegisOS implements a strict hierarchical 7-layered model (defined in [ADR-009](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-009-Autonomic-Operating-System-Architecture.md)) where higher planes consume lower plane interfaces, and lower planes are barred from importing or depending on higher planes.
 
 ### Layer 6: Executive Plane
 Coordinates client interfaces, user ingress routes, and administrative controls.
@@ -126,7 +126,7 @@ Exposes physical GPU resources and CUDA compute kernels.
 ## 3. Core Architectural Subsystems
 
 ### 3.1 Executive Control Plane (ECP)
-The ECP ([PlatformOperationsControlPlane.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/PlatformOperationsControlPlane.ts)) enforces system-wide policies:
+The ECP ([PlatformOperationsControlPlane.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/PlatformOperationsControlPlane.ts)) enforces system-wide policies:
 1. **Prompt Sanitization**: Redacts PII variables and blocks prompt injections.
 2. **Rate Limiting**: Throttles incoming requests based on user token registries.
 3. **Grounding Verification**: Ensures model outputs conform to reference context rules, scoring accuracy.
@@ -134,8 +134,8 @@ The ECP ([PlatformOperationsControlPlane.ts](file:///d:/1_Projects/OpenClawOllam
 
 ### 3.2 Digital Twin & Convergence Engine
 The Digital Twin subsystem maintains an in-memory graph matching active services:
-- **GraphKernel ([GraphKernel.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/digital-twin/core/GraphKernel.ts))**: The underlying topology graph of nodes (resources, processes, capabilities) and edges (dependencies, relationships).
-- **ConvergenceEngine ([ConvergenceEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/digital-twin/synchronization/ConvergenceEngine.ts))**: Subscribes to events, periodically polls discovery engines, and synchronizes state.
+- **GraphKernel ([GraphKernel.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/digital-twin/core/GraphKernel.ts))**: The underlying topology graph of nodes (resources, processes, capabilities) and edges (dependencies, relationships).
+- **ConvergenceEngine ([ConvergenceEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/digital-twin/synchronization/ConvergenceEngine.ts))**: Subscribes to events, periodically polls discovery engines, and synchronizes state.
 - **Self-Healing Framework**: If the Convergence Engine detects that a service is offline (drift), it invokes NSSM restart handlers.
 - **Drift Logging**: Logs mismatches in `DigitalTwinDriftLog` read models.
 
@@ -162,10 +162,10 @@ sequenceDiagram
 ```
 
 ### 3.3 Autonomic Platform Qualification Framework (PQF)
-The PQF ([orchestrator.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/qualification/orchestrator/orchestrator.ts)) qualifies release candidates:
+The PQF ([orchestrator.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/qualification/orchestrator/orchestrator.ts)) qualifies release candidates:
 - **Validation Orchestrators**: Run automated benchmarks, chaos tests, scalability checks, and long-duration stability tests.
-- **Evidence Graph ([evidence-graph.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/certification/evidence-graph.ts))**: Content-addressed nodes linked by SHA-256 parent hashes, forming a Merkle-like integrity tree.
-- **PMI Engine ([pmi-engine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/qualification/maturity/pmi-engine.ts))**: Calculates the Platform Maturity Index across 11 domains (architecture, security, extensibility, performance, etc.).
+- **Evidence Graph ([evidence-graph.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/certification/evidence-graph.ts))**: Content-addressed nodes linked by SHA-256 parent hashes, forming a Merkle-like integrity tree.
+- **PMI Engine ([pmi-engine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/qualification/maturity/pmi-engine.ts))**: Calculates the Platform Maturity Index across 11 domains (architecture, security, extensibility, performance, etc.).
 - **Release Manifest Signing**: The `ReleaseSigner` signs the release manifest with an HMAC-SHA256 signature, linking to the Merkle root hash of the evidence graph.
 
 ---

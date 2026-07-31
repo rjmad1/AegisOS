@@ -886,7 +886,7 @@ Business Goal: Secure local execution bounds
                                          └── Monitor: Alert: DPAPI Key Resolution Failed
 ```
 
-*For details on all primary project mappings, see the master [Bidirectional Traceability Matrix](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/11_traceability_matrix.md).*
+*For details on all primary project mappings, see the master [Bidirectional Traceability Matrix](file:///C:/Users/rajaj/Projects/AegisOS/docs/enterprise/11_traceability_matrix.md).*
 
 ---
 
@@ -921,11 +921,11 @@ Business Goal: Secure local execution bounds
 
 | Document ID | File Path | Purpose | Owner | Version | Current Status |
 |---|---|---|---|---|---|
-| **APGP-2026** | [Platform Governance Package](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/governance/Platform_Governance_Package.md) | Details baseline contracts, schemas, and metrics | SRE Lead | 1.0.0 | Canonical |
-| **EGM-2026** | [Enterprise Gap Matrix](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/01_enterprise_gap_matrix.md) | Analyzes platform maturity gap priorities | Architects Panel | 1.0.0 | Canonical |
-| **PME-2026** | [Product Strategy](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/02_product_management.md) | Product vision, TAM, and personas | CPO | 1.0.0 | Canonical |
-| **PAS-2026** | [Product Architecture Spec](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/productization/02_product_architecture_specification.md) | Component boundary specifications | Lead Architect | 1.0.0 | Canonical |
-| **BTM-2026** | [Traceability Matrix](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/11_traceability_matrix.md) | Maps objectives to code and tests | TPM | 1.0.0 | Canonical |
+| **APGP-2026** | [Platform Governance Package](file:///C:/Users/rajaj/Projects/AegisOS/docs/governance/Platform_Governance_Package.md) | Details baseline contracts, schemas, and metrics | SRE Lead | 1.0.0 | Canonical |
+| **EGM-2026** | [Enterprise Gap Matrix](file:///C:/Users/rajaj/Projects/AegisOS/docs/enterprise/01_enterprise_gap_matrix.md) | Analyzes platform maturity gap priorities | Architects Panel | 1.0.0 | Canonical |
+| **PME-2026** | [Product Strategy](file:///C:/Users/rajaj/Projects/AegisOS/docs/enterprise/02_product_management.md) | Product vision, TAM, and personas | CPO | 1.0.0 | Canonical |
+| **PAS-2026** | [Product Architecture Spec](file:///C:/Users/rajaj/Projects/AegisOS/docs/productization/02_product_architecture_specification.md) | Component boundary specifications | Lead Architect | 1.0.0 | Canonical |
+| **BTM-2026** | [Traceability Matrix](file:///C:/Users/rajaj/Projects/AegisOS/docs/enterprise/11_traceability_matrix.md) | Maps objectives to code and tests | TPM | 1.0.0 | Canonical |
 
 ---
 

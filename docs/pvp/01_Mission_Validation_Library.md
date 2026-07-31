@@ -38,7 +38,7 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 - **Expected Workflows**: `workflow:architecture_audit`, `workflow:security_firewall_scan`
 - **Expected Tools**: `grep_search`, `view_file`, `list_dir`
 - **Expected Models**: `gemini-3.5-flash`, `ollama-llama-3.3-70b`
-- **Expected Knowledge Sources**: [ARCHITECTURE.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/ARCHITECTURE.md), [capability_orchestration_blueprint.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/capability_orchestration_blueprint.md)
+- **Expected Knowledge Sources**: [ARCHITECTURE.md](file:///C:/Users/rajaj/Projects/AegisOS/ARCHITECTURE.md), [capability_orchestration_blueprint.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/capability_orchestration_blueprint.md)
 - **Expected Artifacts**: `telemetry_architecture_audit.md`
 - **Expected Timeline**: `45s`
 - **Expected Metrics**: Max Cost: `$0.50 USD` | Max Retries: `1` | Target Completeness: `100%`
@@ -56,7 +56,7 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 - **Expected Workflows**: `workflow:db_migration_plan`
 - **Expected Tools**: `view_file`, `write_to_file`
 - **Expected Models**: `gemini-3.5-flash`
-- **Expected Knowledge Sources**: [schema.prisma](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/prisma/schema.prisma), [ENGINEERING_CONSTITUTION.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ENGINEERING_CONSTITUTION.md)
+- **Expected Knowledge Sources**: [schema.prisma](file:///C:/Users/rajaj/Projects/AegisOS/prisma/schema.prisma), [ENGINEERING_CONSTITUTION.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/ENGINEERING_CONSTITUTION.md)
 - **Expected Artifacts**: `dual_persistence_architecture_adr.md`
 - **Expected Timeline**: `35s`
 - **Expected Metrics**: Max Cost: `$0.40 USD` | Max Retries: `0` | Target Completeness: `100%`
@@ -74,7 +74,7 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 - **Expected Workflows**: `workflow:ponytail_review`
 - **Expected Tools**: `view_file`, `grep_search`
 - **Expected Models**: `gemini-3.5-flash`
-- **Expected Knowledge Sources**: [AGENTS.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/AGENTS.md), [execution-runtime.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/execution-runtime.service.ts)
+- **Expected Knowledge Sources**: [AGENTS.md](file:///C:/Users/rajaj/Projects/AegisOS/AGENTS.md), [execution-runtime.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/execution-runtime.service.ts)
 - **Expected Artifacts**: `ponytail_code_review_execution_runtime.md`
 - **Expected Timeline**: `30s`
 - **Expected Metrics**: Max Cost: `$0.30 USD` | Max Retries: `0` | Target Completeness: `100%`
@@ -92,7 +92,7 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 - **Expected Workflows**: `workflow:security_firewall_scan`
 - **Expected Tools**: `grep_search`, `view_file`
 - **Expected Models**: `gemini-3.5-flash`
-- **Expected Knowledge Sources**: [SECURITY_ARCHITECTURE.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/SECURITY_ARCHITECTURE.md), [THREAT_MODEL.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/THREAT_MODEL.md)
+- **Expected Knowledge Sources**: [SECURITY_ARCHITECTURE.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/SECURITY_ARCHITECTURE.md), [THREAT_MODEL.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/THREAT_MODEL.md)
 - **Expected Artifacts**: `api_v1_security_review.md`
 - **Expected Timeline**: `40s`
 - **Expected Metrics**: Max Cost: `$0.45 USD` | Max Retries: `0` | Target Completeness: `100%`
@@ -110,7 +110,7 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 - **Expected Workflows**: `workflow:modernize_repo`
 - **Expected Tools**: `view_file`, `write_to_file`
 - **Expected Models**: `gemini-3.5-flash`
-- **Expected Knowledge Sources**: [.env.example](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/.env.example), [next.config.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/next.config.ts)
+- **Expected Knowledge Sources**: [.env.example](file:///C:/Users/rajaj/Projects/AegisOS/.env.example), [next.config.ts](file:///C:/Users/rajaj/Projects/AegisOS/next.config.ts)
 - **Expected Artifacts**: `env_schema_modernization.md`
 - **Expected Timeline**: `50s`
 - **Expected Metrics**: Max Cost: `$0.50 USD` | Max Retries: `1` | Target Completeness: `100%`
@@ -128,7 +128,7 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 - **PVP-SWE-012 (Supply Chain Audit)**: Run supply chain security verification on `package-lock.json` dependencies.
 - **PVP-SWE-013 (SOC2 Evidence Matrix)**: Extract platform compliance evidence for SOC2 Trust Services Criteria.
 - **PVP-SWE-014 (GDPR Compliance Audit)**: Audit workspace and database deletion logic for strict GDPR right-to-be-forgotten.
-- **PVP-SWE-015 (Universal Contract Check)**: Audit runtime execution handlers against [universal_execution_contract.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/universal_execution_contract.md).
+- **PVP-SWE-015 (Universal Contract Check)**: Audit runtime execution handlers against [universal_execution_contract.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/universal_execution_contract.md).
 - **PVP-SWE-016 (Extension Sandbox Audit)**: Audit Extension Runtime sandbox boundaries to ensure extensions cannot execute un-sandboxed shell commands.
 
 ---
@@ -145,7 +145,7 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 - **Expected Workflows**: `workflow:document_decisions`
 - **Expected Tools**: `view_file`, `search_web`
 - **Expected Models**: `gemini-3.5-flash`
-- **Expected Knowledge Sources**: [ModelManifest.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/ModelManifest.json)
+- **Expected Knowledge Sources**: [ModelManifest.json](file:///C:/Users/rajaj/Projects/AegisOS/ModelManifest.json)
 - **Expected Artifacts**: `local_llm_quantization_deep_research.md`
 - **Expected Timeline**: `60s`
 - **Expected Metrics**: Max Cost: `$0.60 USD` | Max Retries: `0` | Target Completeness: `100%`
@@ -177,7 +177,7 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 - **Expected Workflows**: `workflow:document_decisions`
 - **Expected Tools**: `view_file`, `write_to_file`
 - **Expected Models**: `gemini-3.5-flash`
-- **Expected Knowledge Sources**: [ROADMAP.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/ROADMAP.md), [ARCHITECTURE.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/ARCHITECTURE.md)
+- **Expected Knowledge Sources**: [ROADMAP.md](file:///C:/Users/rajaj/Projects/AegisOS/ROADMAP.md), [ARCHITECTURE.md](file:///C:/Users/rajaj/Projects/AegisOS/ARCHITECTURE.md)
 - **Expected Artifacts**: `prd_multi_tenant_workspace_isolation.md`
 - **Expected Timeline**: `45s`
 - **Expected Metrics**: Max Cost: `$0.45 USD` | Max Retries: `0` | Target Completeness: `100%`
@@ -237,4 +237,4 @@ The Mission Validation Library comprises **50 production-quality missions** dist
 ## 3. Verification & Compliance Matrix
 
 All 53 missions have been compiled into the machine-readable catalog file:
-[mission_catalog.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/mission_catalog.json).
+[mission_catalog.json](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/mission_catalog.json).

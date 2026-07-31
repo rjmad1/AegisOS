@@ -3,9 +3,9 @@
 This document defines the authoritative, binding runtime behavior and execution governance specification for the AegisOS platform. No subsystem implementation, extension, or agent behavior may violate the invariants, lifecycle transitions, concurrency contracts, or security boundaries specified herein.
 
 This specification builds directly upon and must be read in conjunction with:
-*   [Universal Execution Contract (WP-00B)](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/universal_execution_contract.md)
-*   [Capability Orchestration Blueprint (WP-00)](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/capability_orchestration_blueprint.md)
-*   [Intent Resolution & Execution Planning Engine (WP-00A)](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/intent_resolution_planning_engine.md)
+*   [Universal Execution Contract (WP-00B)](file:///C:/Users/rajaj/Projects/AegisOS/docs/universal_execution_contract.md)
+*   [Capability Orchestration Blueprint (WP-00)](file:///C:/Users/rajaj/Projects/AegisOS/docs/capability_orchestration_blueprint.md)
+*   [Intent Resolution & Execution Planning Engine (WP-00A)](file:///C:/Users/rajaj/Projects/AegisOS/docs/intent_resolution_planning_engine.md)
 
 ---
 

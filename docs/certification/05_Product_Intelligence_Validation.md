@@ -24,4 +24,4 @@ This report presents the validation details for the Product Intelligence engines
 ### 2.2 Platform Economics (ROI)
 - **Calculated ROI**: Measured by evaluating automated execution costs against developer person-week savings.
 - **Model Sovereignty Savings**: Pre-configured at $3,500/month by utilizing local models (Ollama) instead of paid cloud SaaS APIs.
-- **Evidence**: Verified in [ProductIntelligenceEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control/ProductIntelligenceEngine.ts).
+- **Evidence**: Verified in [ProductIntelligenceEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control/ProductIntelligenceEngine.ts).

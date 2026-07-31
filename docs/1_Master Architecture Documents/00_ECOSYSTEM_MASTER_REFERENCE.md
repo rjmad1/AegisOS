@@ -8,22 +8,22 @@ This document serves as the **central authority** for understanding the planning
 
 AegisOS is an enterprise-grade, local-first, privacy-preserving **Universal Knowledge Work Operating System (UKWOS)**. Built upon a frozen 7-layer architecture stack, it manages model deployments, schedules agent workflows, sandboxes tool execution, and intercepts commands through policy enforcers.
 
-It pairs with the **[Aegis Mobile Companion](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/aegis_mobile/README.md)**, a biometrically-gated mobile dashboard paired over Tailscale, allowing operators to monitor workstation metrics and cryptographically authorize command approvals via ECDSA signature nonces.
+It pairs with the **[Aegis Mobile Companion](file:///C:/Users/rajaj/Projects/AegisOS/aegis_mobile/README.md)**, a biometrically-gated mobile dashboard paired over Tailscale, allowing operators to monitor workstation metrics and cryptographically authorize command approvals via ECDSA signature nonces.
 
 ---
 
 ## 2. Hierarchical Architecture Plane Map
 
-AegisOS aligns with a strict 7-layer architecture stack frozen under the [Engineering Constitution](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ENGINEERING_CONSTITUTION.md):
+AegisOS aligns with a strict 7-layer architecture stack frozen under the [Engineering Constitution](file:///C:/Users/rajaj/Projects/AegisOS/docs/ENGINEERING_CONSTITUTION.md):
 
 | Layer | AegisOS Station Component | Target Status |
 | :--- | :--- | :--- |
-| **Layer 6: Executive / Console** | Next.js SRE Console & [aegis_mobile](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/aegis_mobile/) shell hooks | 🟢 Implemented (GA 1.2 active) |
-| **Layer 5: Control / Policy** | [PlatformOperationsControlPlane](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/PlatformOperationsControlPlane.ts), [SelfHealingFramework](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/SelfHealingFramework.ts), and [ConvergenceEngine](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/digital-twin/synchronization/ConvergenceEngine.ts) | 🟢 Implemented (GA 1.2 active) |
-| **Layer 4: Orchestration** | [WorkflowService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts), Saga checkpoint queues, Command & Control (C2) signatures | 🟢 Implemented (GA 1.2 active) |
-| **Layer 3: Capability** | Model Context Protocol (MCP) Host, [ExtensionRuntimeService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/extension/ExtensionRuntimeService.ts), [LocalCapabilityProvider](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/capability/providers/LocalCapabilityProvider.ts) | 🟢 Implemented (Sandboxing active) |
-| **Layer 2: Runtime** | [OllamaProvider](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/skeletons.ts), [LiteLLMProvider](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/skeletons.ts), and [CloudSpilloverRouter](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/cloud-spillover-router.ts) | 🟢 Implemented (Direct fetch active) |
-| **Layer 1: Infrastructure** | PostgreSQL/SQLite schemas via Prisma client, Tailscale mesh tunnels, [SamlProvider](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/providers/SamlProvider.ts) | 🟢 Implemented (Production active) |
+| **Layer 6: Executive / Console** | Next.js SRE Console & [aegis_mobile](file:///C:/Users/rajaj/Projects/AegisOS/aegis_mobile/) shell hooks | 🟢 Implemented (GA 1.2 active) |
+| **Layer 5: Control / Policy** | [PlatformOperationsControlPlane](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/PlatformOperationsControlPlane.ts), [SelfHealingFramework](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/SelfHealingFramework.ts), and [ConvergenceEngine](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/digital-twin/synchronization/ConvergenceEngine.ts) | 🟢 Implemented (GA 1.2 active) |
+| **Layer 4: Orchestration** | [WorkflowService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/workflow.service.ts), Saga checkpoint queues, Command & Control (C2) signatures | 🟢 Implemented (GA 1.2 active) |
+| **Layer 3: Capability** | Model Context Protocol (MCP) Host, [ExtensionRuntimeService](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/extension/ExtensionRuntimeService.ts), [LocalCapabilityProvider](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/capability/providers/LocalCapabilityProvider.ts) | 🟢 Implemented (Sandboxing active) |
+| **Layer 2: Runtime** | [OllamaProvider](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/skeletons.ts), [LiteLLMProvider](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/skeletons.ts), and [CloudSpilloverRouter](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/cloud-spillover-router.ts) | 🟢 Implemented (Direct fetch active) |
+| **Layer 1: Infrastructure** | PostgreSQL/SQLite schemas via Prisma client, Tailscale mesh tunnels, [SamlProvider](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/providers/SamlProvider.ts) | 🟢 Implemented (Production active) |
 | **Layer 0: Hardware** | CUDA compute engine, GPU VRAM monitoring telemetry | 🟢 Implemented (Host tools active) |
 
 ---
@@ -31,14 +31,14 @@ AegisOS aligns with a strict 7-layer architecture stack frozen under the [Engine
 ## 3. Subsystem Implementation Log (Verified Artifacts)
 
 ### 3.1 AegisOS Core Kernel & Control Plane
-* **[PlatformOperationsControlPlane](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/PlatformOperationsControlPlane.ts)**: Intercepts ingress user inputs, enforces safety filters, and calculates prompt-grounding scorecards.
-* **[SelfHealingFramework](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/SelfHealingFramework.ts)**: Subscribes to event bus state updates, tracks watchdog canary pings, and executes exponential backoff repair routines.
-* **[PlatformServiceManager](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/PlatformServiceManager.ts)**: Controls system daemon life-cycles (starts, stops, restarts, repairs) using nssm/systemd adapters.
-* **[PlatformPlanningEngine](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/pik/kernel/planning/PlatformPlanningEngine.ts)**: Decomposes human intents into execution graphs, runs safety simulations, and logs proposals.
-* **[ChangeImpactAnalyzer](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/pik/kernel/impact-analysis/ChangeImpactAnalyzer.ts)**: Performs static codebase audits to map affected entities, governing ADRs, and validating tests before script executions.
-* **[WorkflowService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts)**: The primary database-backed stateful workflow runner supporting saga compensation rollbacks and cron triggers.
-* **[SamlProvider](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/providers/SamlProvider.ts)**: Bridges enterprise corporate identity providers (Azure Entra ID, Okta) into local station RBAC roles.
-* **[CloudSpilloverRouter](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/cloud-spillover-router.ts)**: Dynamically routes heavy inference tasks to Azure OpenAI when local GPU VRAM capacity is exhausted.
+* **[PlatformOperationsControlPlane](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/PlatformOperationsControlPlane.ts)**: Intercepts ingress user inputs, enforces safety filters, and calculates prompt-grounding scorecards.
+* **[SelfHealingFramework](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/SelfHealingFramework.ts)**: Subscribes to event bus state updates, tracks watchdog canary pings, and executes exponential backoff repair routines.
+* **[PlatformServiceManager](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/PlatformServiceManager.ts)**: Controls system daemon life-cycles (starts, stops, restarts, repairs) using nssm/systemd adapters.
+* **[PlatformPlanningEngine](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/pik/kernel/planning/PlatformPlanningEngine.ts)**: Decomposes human intents into execution graphs, runs safety simulations, and logs proposals.
+* **[ChangeImpactAnalyzer](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/pik/kernel/impact-analysis/ChangeImpactAnalyzer.ts)**: Performs static codebase audits to map affected entities, governing ADRs, and validating tests before script executions.
+* **[WorkflowService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/workflow.service.ts)**: The primary database-backed stateful workflow runner supporting saga compensation rollbacks and cron triggers.
+* **[SamlProvider](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/providers/SamlProvider.ts)**: Bridges enterprise corporate identity providers (Azure Entra ID, Okta) into local station RBAC roles.
+* **[CloudSpilloverRouter](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/cloud-spillover-router.ts)**: Dynamically routes heavy inference tasks to Azure OpenAI when local GPU VRAM capacity is exhausted.
 
 ### 3.2 Aegis Mobile Companion
 * **Pairing Handshake Client**: Initiates token challenges and ECDSA key generation.
@@ -71,24 +71,24 @@ AegisOS aligns with a strict 7-layer architecture stack frozen under the [Engine
 
 ## 5. Governing Architectural Decision Records (ADRs)
 
-The ecosystem is guided by primary ADR specifications located under the [adr/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/) directory:
+The ecosystem is guided by primary ADR specifications located under the [adr/](file:///C:/Users/rajaj/Projects/AegisOS/adr/) directory:
 
-1. **[ADR-001: Contract-First API Boundaries](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md)**
-2. **[ADR-002: Server-Side Decoupled Authentication](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-002-Server-Side-Decoupled-Authentication.md)**
-3. **[ADR-003: Unified Event-Driven Registry](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-003-Unified-Event-Driven-Registry.md)**
-4. **[ADR-004: Pipeline Worker Processing Architecture](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-004-Pipeline-Worker-Processing-Architecture.md)**
-5. **[ADR-005: Information Architecture Rationalization](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-005-Repository-Information-Architecture-Rationalization.md)**
-6. **[ADR-006: Script Engineering Standards](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-006-Script-Engineering-Standards.md)**
-7. **[ADR-007: Portable Configuration Architecture](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-007-Portable-Configuration-Architecture.md)**
-8. **[ADR-008: Platform Asset Catalog Design](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-008-Platform-Asset-Catalog-Design.md)**
-9. **[ADR-009 (Stack): Autonomic Operating System Architecture](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md)**
-10. **[ADR-009 (Kernel): Platform Kernel and State Machine](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-015-Platform-Kernel-and-State-Machine.md)**
-11. **[ADR-010 (Gov): Adaptive Resource Governance Fabric](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-010-Adaptive-Resource-Governance-Fabric.md)**
-12. **[ADR-010 (ECP): Executive Control Plane](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-016-Executive-Control-Plane.md)**
-13. **[ADR-011 (Policy): Declarative Policy Governance Fabric](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-011-Declarative-Policy-Governance-Fabric.md)**
-14. **[ADR-011 (Event): Event-Driven System Decoupling](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-017-Event-Driven-System-Decoupling.md)**
-15. **[ADR-012 (Eval): Cognitive Observability And Continuous Evaluation](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md)**
-16. **[ADR-012 (Context): Immutable Execution Context Fabric](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-018-Immutable-Execution-Context-Fabric.md)**
-17. **[ADR-013: Command & Control Subsystem](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-013-Command-And-Control-Subsystem.md)**
-18. **[ADR-014: Open WebUI Integration](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-014-Open-WebUI-Thin-Client-Integration.md)**
-19. **[ADR-MOB-006: Mobile Domain Driven Architecture](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-MOB-006-domain-driven-data-architecture.md)**
+1. **[ADR-001: Contract-First API Boundaries](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-001-Contract-First-Versioned-API-Boundaries.md)**
+2. **[ADR-002: Server-Side Decoupled Authentication](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-002-Server-Side-Decoupled-Authentication.md)**
+3. **[ADR-003: Unified Event-Driven Registry](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-003-Unified-Event-Driven-Registry.md)**
+4. **[ADR-004: Pipeline Worker Processing Architecture](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-004-Pipeline-Worker-Processing-Architecture.md)**
+5. **[ADR-005: Information Architecture Rationalization](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-005-Repository-Information-Architecture-Rationalization.md)**
+6. **[ADR-006: Script Engineering Standards](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-006-Script-Engineering-Standards.md)**
+7. **[ADR-007: Portable Configuration Architecture](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-007-Portable-Configuration-Architecture.md)**
+8. **[ADR-008: Platform Asset Catalog Design](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-008-Platform-Asset-Catalog-Design.md)**
+9. **[ADR-009 (Stack): Autonomic Operating System Architecture](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-009-Autonomic-Operating-System-Architecture.md)**
+10. **[ADR-009 (Kernel): Platform Kernel and State Machine](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-015-Platform-Kernel-and-State-Machine.md)**
+11. **[ADR-010 (Gov): Adaptive Resource Governance Fabric](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-010-Adaptive-Resource-Governance-Fabric.md)**
+12. **[ADR-010 (ECP): Executive Control Plane](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-016-Executive-Control-Plane.md)**
+13. **[ADR-011 (Policy): Declarative Policy Governance Fabric](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-011-Declarative-Policy-Governance-Fabric.md)**
+14. **[ADR-011 (Event): Event-Driven System Decoupling](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-017-Event-Driven-System-Decoupling.md)**
+15. **[ADR-012 (Eval): Cognitive Observability And Continuous Evaluation](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md)**
+16. **[ADR-012 (Context): Immutable Execution Context Fabric](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-018-Immutable-Execution-Context-Fabric.md)**
+17. **[ADR-013: Command & Control Subsystem](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-013-Command-And-Control-Subsystem.md)**
+18. **[ADR-014: Open WebUI Integration](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-014-Open-WebUI-Thin-Client-Integration.md)**
+19. **[ADR-MOB-006: Mobile Domain Driven Architecture](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-MOB-006-domain-driven-data-architecture.md)**

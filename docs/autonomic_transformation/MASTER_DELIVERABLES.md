@@ -329,7 +329,7 @@ This report assigns operational roles to local models based on performance profi
 The autonomic transformation will follow these implementation phases:
 
 ### Phase 1: Technical Debt Hardening (Days 1 - 2)
-* Modify the database provider to `postgresql` in [prisma/schema.prisma](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/prisma/schema.prisma).
+* Modify the database provider to `postgresql` in [prisma/schema.prisma](file:///C:/Users/rajaj/Projects/AegisOS/prisma/schema.prisma).
 * Add `ioredis` library, resolve compose port collisions, and update backup parameters.
 
 ### Phase 2: Control Plane Integration (Days 3 - 5)
@@ -396,15 +396,15 @@ sequenceDiagram
 ## 19. Updated Documentation (Phase 14 & 15)
 
 The main index has been updated to reference these master transformation deliverables:
-* **[Autonomic Transformation Master Plan](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/autonomic_transformation/MASTER_DELIVERABLES.md)**
-* **[Architecture Handbook](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Architecture_Handbook.md)**
+* **[Autonomic Transformation Master Plan](file:///C:/Users/rajaj/Projects/AegisOS/docs/autonomic_transformation/MASTER_DELIVERABLES.md)**
+* **[Architecture Handbook](file:///C:/Users/rajaj/Projects/AegisOS/docs/Architecture_Handbook.md)**
 
 ---
 
 ## 20. Architectural Decision Records (Phase 13 & 15)
 
 Refer to the newly created ADR records in the repository's adr/ directory:
-* **[ADR-009: 7-Layered Autonomic Stack](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md)**
-* **[ADR-010: Control Plane Middleware](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-016-Executive-Control-Plane.md)**
-* **[ADR-011: Event Bus Integration](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-017-Event-Driven-System-Decoupling.md)**
-* **[ADR-012: Cognitive Telemetry Scorecards](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md)**
+* **[ADR-009: 7-Layered Autonomic Stack](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-009-Autonomic-Operating-System-Architecture.md)**
+* **[ADR-010: Control Plane Middleware](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-016-Executive-Control-Plane.md)**
+* **[ADR-011: Event Bus Integration](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-017-Event-Driven-System-Decoupling.md)**
+* **[ADR-012: Cognitive Telemetry Scorecards](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-012-Cognitive-Observability-And-Continuous-Evaluation.md)**

@@ -2,7 +2,7 @@
 **General Availability (GA) Release Train & Versioning Pipeline**
 
 > [!IMPORTANT]
-> For the upcoming v1.3.0 General Availability release, the promotion workflow and exit criteria have been updated to strictly require **evidence-based validation** and a **production pilot**. Simulated evidence is no longer accepted for GA tagging. Please refer to [V1.3.0 Final Release Gates](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/release/V1.3.0_FINAL_RELEASE_GATES.md) for the authoritative v1.3.0 criteria.
+> For the upcoming v1.3.0 General Availability release, the promotion workflow and exit criteria have been updated to strictly require **evidence-based validation** and a **production pilot**. Simulated evidence is no longer accepted for GA tagging. Please refer to [V1.3.0 Final Release Gates](file:///C:/Users/rajaj/Projects/AegisOS/docs/release/V1.3.0_FINAL_RELEASE_GATES.md) for the authoritative v1.3.0 criteria.
 
 This document establishes the original release governance model, versioning semantics, and the release train schedule from the greenfield baseline to Version 1.0 GA.
 

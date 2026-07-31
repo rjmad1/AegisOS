@@ -35,7 +35,7 @@ graph TD
 
 ## 2. Port Registry Configuration (`ports.json`)
 
-The primary source of truth for all service ports is [ports.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/configs/ports.json). It defines the default host ports, internal container ports, protocol schemes, and dependencies.
+The primary source of truth for all service ports is [ports.json](file:///C:/Users/rajaj/Projects/AegisOS/configs/ports.json). It defines the default host ports, internal container ports, protocol schemes, and dependencies.
 
 ### Registered Services
 
@@ -60,7 +60,7 @@ The primary source of truth for all service ports is [ports.json](file:///d:/1_P
 
 ## 3. Host Conflict Resolution (`PortManager.ps1`)
 
-Before starting containerized stacks or SCM services, the automation controller invokes [PortManager.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/PortManager.ps1).
+Before starting containerized stacks or SCM services, the automation controller invokes [PortManager.ps1](file:///C:/Users/rajaj/Projects/AegisOS/automation/PortManager.ps1).
 
 ### Conflict Detection & Offset Algorithm
 
@@ -77,7 +77,7 @@ Before starting containerized stacks or SCM services, the automation controller 
 
 ### Runtime Resolution (`PortRegistry.ts`)
 
-The Next.js backend leverages [PortRegistry.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ports/PortRegistry.ts) to resolve dynamic URLs at runtime. It checks environment variables first, falling back to registry defaults:
+The Next.js backend leverages [PortRegistry.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/ports/PortRegistry.ts) to resolve dynamic URLs at runtime. It checks environment variables first, falling back to registry defaults:
 
 - `PortRegistry.getHostPort("ollama")` returns the active host port.
 - `PortRegistry.getServiceUrl("litellm")` compiles the fully qualified local base URL.
@@ -100,7 +100,7 @@ const ollamaPort = (() => {
 
 ## 5. Startup Validation Guard (`PortValidator.ts`)
 
-To prevent runtime failures and maintain strict security, [PortValidator.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ports/PortValidator.ts) runs on Next.js startup (`instrumentation.ts`).
+To prevent runtime failures and maintain strict security, [PortValidator.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/ports/PortValidator.ts) runs on Next.js startup (`instrumentation.ts`).
 
 The validator performs the following checks:
 
@@ -115,5 +115,5 @@ If any validation rule fails, the guard prints a diagnostic table and throws a f
 
 The port manager and registry system is fully covered by automated testing:
 
-- **Unit Testing**: [PortRegistry.test.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/tests/unit/platform/ports/PortRegistry.test.ts) validates basic lookups and environment variable overrides.
-- **E2E Integration Testing**: [PortManagementE2E.test.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/tests/unit/platform/ports/PortManagementE2E.test.ts) simulates complete conflict cascades, env file generation, and asserts that the startup guard halts execution on collisions or out-of-range bounds.
+- **Unit Testing**: [PortRegistry.test.ts](file:///C:/Users/rajaj/Projects/AegisOS/tests/unit/platform/ports/PortRegistry.test.ts) validates basic lookups and environment variable overrides.
+- **E2E Integration Testing**: [PortManagementE2E.test.ts](file:///C:/Users/rajaj/Projects/AegisOS/tests/unit/platform/ports/PortManagementE2E.test.ts) simulates complete conflict cascades, env file generation, and asserts that the startup guard halts execution on collisions or out-of-range bounds.

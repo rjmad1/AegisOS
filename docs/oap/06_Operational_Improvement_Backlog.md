@@ -43,7 +43,7 @@ flowchart TD
 
 ### Ticket: OP-BACK-001
 - **Title:** Auto-Grant Permission for Read-Only CLI & Inspection Commands
-- **Associated Friction:** [FRIC-001](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/oap/friction_catalog.json#FRIC-001)
+- **Associated Friction:** [FRIC-001](file:///C:/Users/rajaj/Projects/AegisOS/docs/oap/friction_catalog.json#FRIC-001)
 - **Target Subsystem:** `src/platform/permissions` / `HITL Manager`
 - **Priority:** **P1 (CRITICAL)**
 - **Operational Evidence:** Telemetry shows 46 unnecessary HITL dialog prompts for read-only inspection commands (`git log`, `list_dir`, `view_file`), adding $3.5\text{s} - 8.0\text{s}$ pause per operation.
@@ -54,7 +54,7 @@ flowchart TD
 
 ### Ticket: OP-BACK-002
 - **Title:** Vector Index Pre-Warming During Workspace Startup
-- **Associated Friction:** [FRIC-002](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/oap/friction_catalog.json#FRIC-002)
+- **Associated Friction:** [FRIC-002](file:///C:/Users/rajaj/Projects/AegisOS/docs/oap/friction_catalog.json#FRIC-002)
 - **Target Subsystem:** `src/platform/knowledge` / `Knowledge Engine`
 - **Priority:** **P2 (HIGH)**
 - **Operational Evidence:** Initial query to Knowledge Engine experiences a 3.8s latency spike due to lazy vector index loading on cold start.
@@ -65,7 +65,7 @@ flowchart TD
 
 ### Ticket: OP-BACK-003
 - **Title:** Absolute `file://` Scheme Scheme Enforcement for Markdown Links
-- **Associated Friction:** [FRIC-003](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/oap/friction_catalog.json#FRIC-003)
+- **Associated Friction:** [FRIC-003](file:///C:/Users/rajaj/Projects/AegisOS/docs/oap/friction_catalog.json#FRIC-003)
 - **Target Subsystem:** `src/platform/layout` / `Markdown Generator`
 - **Priority:** **P3 (MEDIUM)**
 - **Operational Evidence:** Relative file references generated in markdown reports fail to navigate when clicked in IDE preview windows.
@@ -76,7 +76,7 @@ flowchart TD
 
 ### Ticket: OP-BACK-004
 - **Title:** Execution Graph DAG Branch Parallelization
-- **Associated Friction:** [FRIC-004](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/oap/friction_catalog.json#FRIC-004)
+- **Associated Friction:** [FRIC-004](file:///C:/Users/rajaj/Projects/AegisOS/docs/oap/friction_catalog.json#FRIC-004)
 - **Target Subsystem:** `src/platform/control` / `Execution Graph`
 - **Priority:** **P1 (CRITICAL)**
 - **Operational Evidence:** Mission plan execution timeline shows independent nodes (e.g. linting + documentation) running strictly serially, taking 45s instead of 15s.
@@ -87,7 +87,7 @@ flowchart TD
 
 ### Ticket: OP-BACK-005
 - **Title:** Preservative Context Chunking for Large Prompt Entrances
-- **Associated Friction:** [FRIC-005](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/oap/friction_catalog.json#FRIC-005)
+- **Associated Friction:** [FRIC-005](file:///C:/Users/rajaj/Projects/AegisOS/docs/oap/friction_catalog.json#FRIC-005)
 - **Target Subsystem:** `src/platform/control-plane` / `Intent Engine`
 - **Priority:** **P1 (CRITICAL)**
 - **Operational Evidence:** Inputs exceeding 8k tokens trigger sliding window context truncation, discarding initial acceptance criteria and forcing manual user correction.
@@ -98,7 +98,7 @@ flowchart TD
 
 ### Ticket: OP-BACK-006
 - **Title:** Auto-Summarization Flag for Excessive CLI Output Logs
-- **Associated Friction:** [FRIC-006](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/oap/friction_catalog.json#FRIC-006)
+- **Associated Friction:** [FRIC-006](file:///C:/Users/rajaj/Projects/AegisOS/docs/oap/friction_catalog.json#FRIC-006)
 - **Target Subsystem:** `src/platform/tools` / `Terminal Tool`
 - **Priority:** **P3 (MEDIUM)**
 - **Operational Evidence:** Command outputs exceeding 800 lines force agents into 3+ follow-up pagination calls.

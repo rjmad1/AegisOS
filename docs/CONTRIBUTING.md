@@ -3,7 +3,7 @@
 Thank you for helping us improve AegisOS Studio! Please review these guidelines before submitting a Pull Request.
 
 ## Code of Conduct
-We enforce respectful, collaborative interaction. Please see our [CODE_OF_CONDUCT.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/CODE_OF_CONDUCT.md).
+We enforce respectful, collaborative interaction. Please see our [CODE_OF_CONDUCT.md](file:///C:/Users/rajaj/Projects/AegisOS/CODE_OF_CONDUCT.md).
 
 ## Development Guidelines
 

@@ -17,7 +17,7 @@ This report documents the validation of the Platform SDK, the Extension Point re
 ## 2. Reference Console Notification Extension
 
 A reference implementation has been created to demonstrate how developer extensions hook into the AegisOS console framework:
-- **File Location**: [ReferenceExtension.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/extension/ReferenceExtension.ts)
+- **File Location**: [ReferenceExtension.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/extension/ReferenceExtension.ts)
 - **Signature**: Valid 64-character hash verifying supply chain authenticity.
 - **Functionality**: Extends the `notification-provider` extension point, intercepting platform alerts and writing them out to the central logger.
 

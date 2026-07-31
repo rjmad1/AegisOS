@@ -27,7 +27,7 @@ To advance from the Pilot Validation phase to production release, the following 
 
 ## 2. General Availability (GA) Quality Gates
 
-Evaluating compliance against the **[GA Checklist](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/GA_CHECKLIST.md)**:
+Evaluating compliance against the **[GA Checklist](file:///C:/Users/rajaj/Projects/AegisOS/docs/GA_CHECKLIST.md)**:
 
 ### 2.1 Security & Network Isolation
 * **Zero-Trust network verification**: Workstation ports (Ollama, PostgreSQL, Redis, LiteLLM) bound only to local loopback interface (`127.0.0.1`) and isolated via local Windows Firewall rules.
@@ -48,4 +48,4 @@ Evaluating compliance against the **[GA Checklist](file:///d:/1_Projects/OpenCla
 Based on the objective verification of PostgreSQL database scaling, 100% success rate on the unit/integration regression suite, and automated backup/restore validation, the platform is **CERTIFIED READY FOR PRODUCTION DEPLOYMENT**.
 
 ### 3.2 Post-Deployment Operations
-Deployments should follow the **[Operations Guide](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Operations_Guide.md)**, utilizing PostgreSQL as the authoritative backend.
+Deployments should follow the **[Operations Guide](file:///C:/Users/rajaj/Projects/AegisOS/docs/Operations_Guide.md)**, utilizing PostgreSQL as the authoritative backend.

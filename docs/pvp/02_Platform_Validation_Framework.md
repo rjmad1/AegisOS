@@ -32,13 +32,13 @@ graph TD
 
 1. **Intent Engine**: Classifies user prompt into structured intent (`ARCHITECTURAL_AUDIT`, `DEEP_RESEARCH`, `PRD_GENERATION`, etc.) and extracts semantic entity payloads.
 2. **Capability Layer**: Dispatches intent to registered platform capabilities (`system_architecture_review`, `deep_technical_research`, `prd_authoring`, etc.).
-3. **Mission Runtime**: Instantiates mission state, initializes metrics, registers constraints, and manages the execution/reflection lifecycle loop ([mission-runtime.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/mission-runtime.service.ts)).
-4. **Execution Graph**: Builds directed acyclic graph (DAG) of execution nodes (`intent`, `agent`, `workflow`, `tool`, `artifact`), manages dependencies, and tracks node state transitions ([execution-graph.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/execution-graph.service.ts)).
-5. **Execution Runtime**: Schedules graph nodes for execution, dispatches agent prompts, tracks tokens/cost, and handles execution timeouts ([execution-runtime.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/execution-runtime.service.ts)).
-6. **Knowledge Engine**: Ingests workspace files, queries vector embeddings, and provides context frames ([knowledge.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/knowledge.service.ts)).
+3. **Mission Runtime**: Instantiates mission state, initializes metrics, registers constraints, and manages the execution/reflection lifecycle loop ([mission-runtime.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/mission-runtime.service.ts)).
+4. **Execution Graph**: Builds directed acyclic graph (DAG) of execution nodes (`intent`, `agent`, `workflow`, `tool`, `artifact`), manages dependencies, and tracks node state transitions ([execution-graph.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/execution-graph.service.ts)).
+5. **Execution Runtime**: Schedules graph nodes for execution, dispatches agent prompts, tracks tokens/cost, and handles execution timeouts ([execution-runtime.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/execution-runtime.service.ts)).
+6. **Knowledge Engine**: Ingests workspace files, queries vector embeddings, and provides context frames ([knowledge.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/knowledge.service.ts)).
 7. **Tool Execution Router**: Executes sandboxed tools (`grep_search`, `view_file`, `write_to_file`, `search_web`, `run_command`).
-8. **Artifact Engine**: Validates, formats, and persists generated markdown/JSON outputs to disk ([artifact.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/artifact.service.ts)).
-9. **Observability**: Records OpenTelemetry spans, step events, token consumption metrics, and cost calculations ([instrumentation.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/instrumentation.ts)).
+8. **Artifact Engine**: Validates, formats, and persists generated markdown/JSON outputs to disk ([artifact.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/artifact.service.ts)).
+9. **Observability**: Records OpenTelemetry spans, step events, token consumption metrics, and cost calculations ([instrumentation.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/instrumentation.ts)).
 
 ---
 
@@ -83,8 +83,8 @@ export interface PVPFailureDetails {
 
 The Platform Validation Program is executed locally or via CI/CD pipelines through the dedicated CLI runner:
 
-- **Core Framework Engine**: [pvp-engine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/pvp/pvp-engine.ts)
-- **CLI Runner**: [pvp-runner.js](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/pvp-runner.js)
+- **Core Framework Engine**: [pvp-engine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/pvp/pvp-engine.ts)
+- **CLI Runner**: [pvp-runner.js](file:///C:/Users/rajaj/Projects/AegisOS/scripts/pvp-runner.js)
 - **Execution Command**:
   ```bash
   npm run pvp

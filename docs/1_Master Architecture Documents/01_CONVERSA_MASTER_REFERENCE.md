@@ -6,13 +6,13 @@ This document serves as the **central authority** for understanding the planning
 
 ## 1. Conversa Overview
 
-**[Conversa](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/conversa_repo/README.md)** is the enterprise cognitive meeting and living workspace platform running on top of AegisOS. It ingests meeting transcripts/audio, runs crew agent debate loops, and publishes 3-hash cryptographically validated meeting minutes.
+**[Conversa](file:///C:/Users/rajaj/Projects/AegisOS/conversa_repo/README.md)** is the enterprise cognitive meeting and living workspace platform running on top of AegisOS. It ingests meeting transcripts/audio, runs crew agent debate loops, and publishes 3-hash cryptographically validated meeting minutes.
 
 ---
 
 ## 2. Hierarchical Architecture Plane Map
 
-Conversa aligns with a strict 7-layer architecture stack frozen under the [Engineering Constitution](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ENGINEERING_CONSTITUTION.md):
+Conversa aligns with a strict 7-layer architecture stack frozen under the [Engineering Constitution](file:///C:/Users/rajaj/Projects/AegisOS/docs/ENGINEERING_CONSTITUTION.md):
 
 | Layer | Conversa Workspace Component |
 | :--- | :--- |

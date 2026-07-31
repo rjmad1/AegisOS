@@ -15,10 +15,10 @@
 This independent certification report assesses the implementation readiness, architectural integrity, and runtime security of **AegisOS**. All assessments are based on direct source code inspection, runtime observation, database inspection, and active execution logs.
 
 ### Key Summary Findings
-- **Architectural Conformance**: The 7-layered autonomic stack defined in [ADR-009](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md) is strictly implemented in the source code directory layouts. Core layers do not possess circular dependencies or violate vertical isolation bounds.
+- **Architectural Conformance**: The 7-layered autonomic stack defined in [ADR-009](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-009-Autonomic-Operating-System-Architecture.md) is strictly implemented in the source code directory layouts. Core layers do not possess circular dependencies or violate vertical isolation bounds.
 - **Runtime Readiness**: Core components (Ollama API, LiteLLM Proxy, OmniRoute Dashboard, and the Next.js Operations Console) are active, healthy, and communicating over local socket interfaces.
 - **Verification Qualification**: 
-  1. The continuous compliance tool [VerifyCompliance.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/VerifyCompliance.ps1) produces a false-negative result on control `CRYP-1` because it searches for the string `aes-256-gcm` inside [secret.repository.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/repositories/secret.repository.ts) instead of the active encryption adapter [secrets-platform.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/security/secrets-platform.ts).
+  1. The continuous compliance tool [VerifyCompliance.ps1](file:///C:/Users/rajaj/Projects/AegisOS/automation/VerifyCompliance.ps1) produces a false-negative result on control `CRYP-1` because it searches for the string `aes-256-gcm` inside [secret.repository.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/repositories/secret.repository.ts) instead of the active encryption adapter [secrets-platform.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/security/secrets-platform.ts).
   2. The Windows SCM service `AegisOSService` is currently missing from the host environment; the Operations Console is instead executed inside a standard Node development process wrapper.
   3. The local RAG folder `knowledge` exists but does not contain active markdown documents, returning `0 assets found` during validation.
 
@@ -68,7 +68,7 @@ Each runtime capability was observed and verified:
 
 ## 4. Digital Twin Certification Report
 
-We verified the claims documented in the candidate baseline [MASTER_DELIVERABLES.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/autonomic_transformation/MASTER_DELIVERABLES.md):
+We verified the claims documented in the candidate baseline [MASTER_DELIVERABLES.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/autonomic_transformation/MASTER_DELIVERABLES.md):
 
 - **7-Layer Stack Claim**: Verified by inspecting import boundaries. Core files under `src/infrastructure/` have zero imports from `src/app/` or `src/components/`, strictly obeying the vertical flow. Confidence: **HIGH**.
 - **Event Catalog Claim**: Verified. The `RequestReceived`, `PolicyViolationDetected`, `ModelSelected`, and `EvaluationCompleted` events conform to JSON models published by `HardenedEventBus`. Confidence: **HIGH**.
@@ -185,12 +185,12 @@ Direct mapping of architectural assertions to evidence:
 
 | Subsystem Claim | Evidence File / Source | Method | Status |
 |---|---|---|---|
-| **ADR-009 (7-Layers)** | [ARCHITECTURE.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/ARCHITECTURE.md) | Source Code inspection | Verified |
-| **ADR-010 (ECP)** | [ExecutiveControlPlane.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control/ExecutiveControlPlane.ts) | Unit Test execution | Verified |
-| **ADR-011 (Event Bus)** | [EventPlatform.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/event-bus/EventPlatform.ts) | Event Audit Log query | Verified |
-| **ADR-012 (Observability)** | [EvaluationPlatform.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/EvaluationPlatform.ts) | Database inspection | Verified |
-| **AC-1 (RBAC Control)** | [authorization.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/authorization.ts) | Compliance check script | Verified |
-| **CRYP-1 (Encryption)** | [secrets-platform.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/security/secrets-platform.ts) | Source Code inspection | Verified with Qualification |
+| **ADR-009 (7-Layers)** | [ARCHITECTURE.md](file:///C:/Users/rajaj/Projects/AegisOS/ARCHITECTURE.md) | Source Code inspection | Verified |
+| **ADR-010 (ECP)** | [ExecutiveControlPlane.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control/ExecutiveControlPlane.ts) | Unit Test execution | Verified |
+| **ADR-011 (Event Bus)** | [EventPlatform.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/event-bus/EventPlatform.ts) | Event Audit Log query | Verified |
+| **ADR-012 (Observability)** | [EvaluationPlatform.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/ai-runtime/EvaluationPlatform.ts) | Database inspection | Verified |
+| **AC-1 (RBAC Control)** | [authorization.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/authorization.ts) | Compliance check script | Verified |
+| **CRYP-1 (Encryption)** | [secrets-platform.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/security/secrets-platform.ts) | Source Code inspection | Verified with Qualification |
 
 ---
 

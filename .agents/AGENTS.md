@@ -78,7 +78,7 @@ Always:
 
 # AegisOS Engineering Constitution
 
-The authoritative AegisOS Engineering Constitution has been unified and resides in [docs/ENGINEERING_CONSTITUTION.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ENGINEERING_CONSTITUTION.md).
+The authoritative AegisOS Engineering Constitution has been unified and resides in [docs/ENGINEERING_CONSTITUTION.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/ENGINEERING_CONSTITUTION.md).
 
 All contributors, including AI coding assistants, must consult and strictly adhere to the Constitution's:
 - Preamble (Transition to stewardship and ecosystem pivot)
@@ -86,5 +86,5 @@ All contributors, including AI coding assistants, must consult and strictly adhe
 - Subordinate Bylaws (Architecture Rules, Coding Standards, Quality Gates, and Testing Rules)
 - Constitutional Exception Register (CER) & Governance Compliance Matrix (GCM) frameworks
 
-No duplicate or divergent governance definitions are permitted in this file. Please reference [docs/ENGINEERING_CONSTITUTION.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ENGINEERING_CONSTITUTION.md) for normative architectural requirements.
+No duplicate or divergent governance definitions are permitted in this file. Please reference [docs/ENGINEERING_CONSTITUTION.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/ENGINEERING_CONSTITUTION.md) for normative architectural requirements.
 

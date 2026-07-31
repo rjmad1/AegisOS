@@ -38,5 +38,5 @@ The top scorecards in the console reflect the following source telemetry:
 ## 3. Telemetry Integrity Verification
 
 Simulated metrics for `cap-biolock` and `cap-telemetry` have been successfully replaced by direct database audits and loopback port queries.
-- **Evidence**: Verified in the main dashboard view (<a href="file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/(console)/mission-control/page.tsx">page.tsx</a>).
+- **Evidence**: Verified in the main dashboard view (<a href="file:///C:/Users/rajaj/Projects/AegisOS/src/app/(console)/mission-control/page.tsx">page.tsx</a>).
 - **Result**: Visual indicators align with live metrics, displaying no hardcoded simulated warnings.

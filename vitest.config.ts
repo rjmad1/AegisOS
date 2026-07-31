@@ -4,6 +4,12 @@ import path from 'path';
 export default defineConfig({
   test: {
     fileParallelism: false,
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true
+      }
+    },
     exclude: ['tests/e2e/**/*', '**/node_modules/**', 'node_modules_backup/**/*', '.next/**/*', 'dist/**/*', 'conversa_repo/**/*'],
     alias: {
       '@': path.resolve(__dirname, './src')
@@ -11,7 +17,7 @@ export default defineConfig({
     env: {
       // These are TEST-ONLY values used exclusively for vitest execution.
       // They are intentionally fake and must NEVER match any real deployment credentials.
-      DATABASE_URL: 'file:./databases/test.db',
+      DATABASE_URL: 'file:../databases/test.db',
       NODE_ENV: 'test',
       AUTH_SECRET: 'test-only-auth-secret-not-for-production-use-aaaa-bbbb-cccc-dddd-1234567890',
       OPS_JWT_SECRET: 'test-only-jwt-secret-not-for-production-use-eeee-ffff-0000-1111-0987654321',

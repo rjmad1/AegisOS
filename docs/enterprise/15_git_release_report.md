@@ -16,7 +16,7 @@
 
 ## 1. Repository Cleanup Report
 The repository has been audited for untracked, cache, and temporary files:
-- **Exclusions Configured**: Updated [.gitignore](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/.gitignore) to exclude:
+- **Exclusions Configured**: Updated [.gitignore](file:///C:/Users/rajaj/Projects/AegisOS/.gitignore) to exclude:
   - `/release/` (Release metadata, CycloneDX SBOM, SHA256 checksums)
   - `/support_bundle_*/` (Diagnostics logs and environment states)
   - SQLite journal, shm, and WAL files (`*.db-journal`, `*.db-shm`, `*.db-wal`)
@@ -26,33 +26,33 @@ The repository has been audited for untracked, cache, and temporary files:
 ## 2. File Classification Report
 Staged and committed changes are organized into the following logical boundaries:
 - **Core Platform & Auth**:
-  - [EntraProvider.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/providers/EntraProvider.ts) â€” Microsoft Entra OIDC login provider.
-  - [LdapProvider.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/providers/LdapProvider.ts) â€” Credentials validation provider.
-  - [LdapLoginForm.tsx](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/login/LdapLoginForm.tsx) â€” Credentials inputs form component.
-  - [page.tsx](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/login/page.tsx) â€” Dynamic login selector.
-  - [route.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/api/auth/login/route.ts) â€” Auth login API handler.
-  - [session.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/session.service.ts) â€” Token rotation checking.
+  - [EntraProvider.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/providers/EntraProvider.ts) â€” Microsoft Entra OIDC login provider.
+  - [LdapProvider.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/providers/LdapProvider.ts) â€” Credentials validation provider.
+  - [LdapLoginForm.tsx](file:///C:/Users/rajaj/Projects/AegisOS/src/app/login/LdapLoginForm.tsx) â€” Credentials inputs form component.
+  - [page.tsx](file:///C:/Users/rajaj/Projects/AegisOS/src/app/login/page.tsx) â€” Dynamic login selector.
+  - [route.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/app/api/auth/login/route.ts) â€” Auth login API handler.
+  - [session.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/session.service.ts) â€” Token rotation checking.
 - **Infrastructure**:
-  - [object-storage.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/object-storage.ts) â€” Swappable object storage adapter.
-  - [provider-factory.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/factories/provider-factory.ts) â€” Factory register.
-  - [event-bus.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/events/event-bus.ts) â€” mTLS signature checks.
+  - [object-storage.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/object-storage.ts) â€” Swappable object storage adapter.
+  - [provider-factory.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/factories/provider-factory.ts) â€” Factory register.
+  - [event-bus.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/events/event-bus.ts) â€” mTLS signature checks.
 - **AI Runtime & Workflows**:
-  - [AIRuntimeKernel.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/AIRuntimeKernel.ts) â€” Circuit breaking, grounding, and budgets checking.
-  - [WorkflowRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts) â€” DB workflow persistence and saga checkpoints.
+  - [AIRuntimeKernel.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/ai-runtime/AIRuntimeKernel.ts) â€” Circuit breaking, grounding, and budgets checking.
+  - [WorkflowRuntime.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/workflow.service.ts) â€” DB workflow persistence and saga checkpoints.
 - **Release Engineering & Installers**:
-  - [generate-release-assets.js](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/generate-release-assets.js) â€” Release bundler.
-  - [install-windows.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/install-windows.ps1) â€” Windows fleet installer.
-  - [install-linux.sh](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/install-linux.sh) â€” Linux daemon installer.
-  - [install-macos.sh](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/install-macos.sh) â€” macOS setup script.
-  - [Dockerfile.prod](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/Dockerfile.prod) & [docker-compose.prod.yml](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/installers/docker-compose.prod.yml) â€” Hardened runner container composition.
-  - [upgrade-rollback.sh](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/upgrade-rollback.sh) â€” Database backups and migration rollback coordinator.
+  - [generate-release-assets.js](file:///C:/Users/rajaj/Projects/AegisOS/scripts/generate-release-assets.js) â€” Release bundler.
+  - [install-windows.ps1](file:///C:/Users/rajaj/Projects/AegisOS/installers/install-windows.ps1) â€” Windows fleet installer.
+  - [install-linux.sh](file:///C:/Users/rajaj/Projects/AegisOS/installers/install-linux.sh) â€” Linux daemon installer.
+  - [install-macos.sh](file:///C:/Users/rajaj/Projects/AegisOS/installers/install-macos.sh) â€” macOS setup script.
+  - [Dockerfile.prod](file:///C:/Users/rajaj/Projects/AegisOS/installers/Dockerfile.prod) & [docker-compose.prod.yml](file:///C:/Users/rajaj/Projects/AegisOS/installers/docker-compose.prod.yml) â€” Hardened runner container composition.
+  - [upgrade-rollback.sh](file:///C:/Users/rajaj/Projects/AegisOS/scripts/upgrade-rollback.sh) â€” Database backups and migration rollback coordinator.
 - **Diagnostics & Support**:
-  - [system-doctor.js](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/system-doctor.js) â€” Support bundle collector.
-  - [release-validation-suite.js](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/release-validation-suite.js) â€” Release certification gate.
+  - [system-doctor.js](file:///C:/Users/rajaj/Projects/AegisOS/scripts/system-doctor.js) â€” Support bundle collector.
+  - [release-validation-suite.js](file:///C:/Users/rajaj/Projects/AegisOS/scripts/release-validation-suite.js) â€” Release certification gate.
 - **Documentation**:
-  - [14_release_governance.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/14_release_governance.md) â€” SemVer and hotfixes policies.
-  - [GA_Readiness_Report.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/GA_Readiness_Report.md) â€” Remediation matrix.
-  - [GA_Certification_Certificate.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/enterprise/GA_Certification_Certificate.md) â€” Official release certificate.
+  - [14_release_governance.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/enterprise/14_release_governance.md) â€” SemVer and hotfixes policies.
+  - [GA_Readiness_Report.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/enterprise/GA_Readiness_Report.md) â€” Remediation matrix.
+  - [GA_Certification_Certificate.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/enterprise/GA_Certification_Certificate.md) â€” Official release certificate.
 
 ## 3. Security Review Report
 - **Secrets check**: Audited files for connection strings, private keys, API secrets, and tokens. None were committed; all values fall back to process environment variables (`process.env`).

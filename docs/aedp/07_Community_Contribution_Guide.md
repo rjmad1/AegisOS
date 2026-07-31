@@ -12,7 +12,7 @@
 The **AegisOS Community Contribution Guide** establishes rules of engagement, code standards, review standards, and automated quality gates for community contributors building open-source extensions, mission packs, templates, and documentation for AegisOS.
 
 ### 1.1 Core Principles
-- **Welcoming & Inclusive**: Adhere to the AegisOS [CODE_OF_CONDUCT.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/CODE_OF_CONDUCT.md).
+- **Welcoming & Inclusive**: Adhere to the AegisOS [CODE_OF_CONDUCT.md](file:///C:/Users/rajaj/Projects/AegisOS/CODE_OF_CONDUCT.md).
 - **Quality Over Quantity**: Every contribution must include tests, type safety, and clear documentation.
 - **Zero Core Bloat**: Community additions belong in `extensions/` or community mission packs, preserving the core platform kernel.
 

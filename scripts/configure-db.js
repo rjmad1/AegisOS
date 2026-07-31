@@ -44,13 +44,19 @@ function configureDb() {
     console.log(`[ConfigureDB] Updated schema.prisma successfully.`);
   }
 
-  // Generate Prisma Client
+  // Generate Prisma Client & Push DB schema if SQLite
   try {
     console.log('[ConfigureDB] Running "prisma generate" to build Client binaries...');
     execSync('npx --no-install prisma generate', { stdio: 'inherit' });
     console.log('[ConfigureDB] Prisma Client compiled successfully.');
+
+    if (provider === 'sqlite') {
+      console.log('[ConfigureDB] Initializing SQLite database schema (npx prisma db push)...');
+      execSync('npx --no-install prisma db push --skip-generate', { stdio: 'inherit' });
+      console.log('[ConfigureDB] SQLite database schema synchronized.');
+    }
   } catch (err) {
-    console.error('[ConfigureDB] Failed to run prisma generate:', err.message);
+    console.error('[ConfigureDB] Failed to configure database:', err.message);
     process.exit(1);
   }
 }

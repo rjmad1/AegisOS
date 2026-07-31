@@ -98,20 +98,20 @@ graph TD
 
 # Repository Structure
 
-*   **[.agents/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/.agents/)**: Customizations, style rules, and developer guidelines.
-*   **[adr/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/)**: 19 Architectural Decision Records (ADRs) detailing core stack layers, auth, and schema rules.
-*   **[aegis_mobile/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/aegis_mobile/)**: React Native source files for the Aegis Mobile Companion client.
-*   **[conversa_repo/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/conversa_repo/)**: Ingested codebase for the Conversa cognitive workspace.
-*   **[docs/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/)**: Enterprise specifications, constitution guidelines, and playbooks.
-    *   **[1_Master Architecture Documents/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/1_Master%20Architecture%20Documents/)**: Root folder containing the EKB and unified ecosystem master references.
-*   **[prisma/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/prisma/)**: Prisma database schema (`schema.prisma`) and migrations.
-*   **[src/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/)**: Source files.
-    *   **[app/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/)**: Next.js route directory (Console layouts and API routers).
-    *   **[components/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/components/)**: Primative React grid elements, dashboard graphs, and forms.
-    *   **[infrastructure/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/)**: Security policies, OTel telemetry pipelines, database providers, and model skeletons.
-    *   **[platform/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/)**: Runtimes, self-healing frameworks, registries, and control planes.
-    *   **[services/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/)**: 19 core workstation services interfacing with the database.
-*   **[tests/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/tests/)**: Global verification unit tests.
+*   **[.agents/](file:///C:/Users/rajaj/Projects/AegisOS/.agents/)**: Customizations, style rules, and developer guidelines.
+*   **[adr/](file:///C:/Users/rajaj/Projects/AegisOS/adr/)**: 19 Architectural Decision Records (ADRs) detailing core stack layers, auth, and schema rules.
+*   **[aegis_mobile/](file:///C:/Users/rajaj/Projects/AegisOS/aegis_mobile/)**: React Native source files for the Aegis Mobile Companion client.
+*   **[conversa_repo/](file:///C:/Users/rajaj/Projects/AegisOS/conversa_repo/)**: Ingested codebase for the Conversa cognitive workspace.
+*   **[docs/](file:///C:/Users/rajaj/Projects/AegisOS/docs/)**: Enterprise specifications, constitution guidelines, and playbooks.
+    *   **[1_Master Architecture Documents/](file:///C:/Users/rajaj/Projects/AegisOS/docs/1_Master%20Architecture%20Documents/)**: Root folder containing the EKB and unified ecosystem master references.
+*   **[prisma/](file:///C:/Users/rajaj/Projects/AegisOS/prisma/)**: Prisma database schema (`schema.prisma`) and migrations.
+*   **[src/](file:///C:/Users/rajaj/Projects/AegisOS/src/)**: Source files.
+    *   **[app/](file:///C:/Users/rajaj/Projects/AegisOS/src/app/)**: Next.js route directory (Console layouts and API routers).
+    *   **[components/](file:///C:/Users/rajaj/Projects/AegisOS/src/components/)**: Primative React grid elements, dashboard graphs, and forms.
+    *   **[infrastructure/](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/)**: Security policies, OTel telemetry pipelines, database providers, and model skeletons.
+    *   **[platform/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/)**: Runtimes, self-healing frameworks, registries, and control planes.
+    *   **[services/](file:///C:/Users/rajaj/Projects/AegisOS/src/services/)**: 19 core workstation services interfacing with the database.
+*   **[tests/](file:///C:/Users/rajaj/Projects/AegisOS/tests/)**: Global verification unit tests.
 
 ---
 
@@ -137,43 +137,43 @@ graph TD
 # Subsystems
 
 ### 1. PlatformOperationsControlPlane
-*   **File:** [PlatformOperationsControlPlane.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/PlatformOperationsControlPlane.ts)
+*   **File:** [PlatformOperationsControlPlane.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/PlatformOperationsControlPlane.ts)
 *   **Status:** `🟢 Implemented`. Intercepts all requests, enforces PII masking, and checks budgets.
 
 ### 2. SelfHealingFramework
-*   **File:** [SelfHealingFramework.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/SelfHealingFramework.ts)
+*   **File:** [SelfHealingFramework.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/SelfHealingFramework.ts)
 *   **Status:** `🟢 Implemented`. Watchdog canary analyzer checking platform services for socket drift.
 
 ### 3. PlatformServiceManager
-*   **File:** [PlatformServiceManager.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/PlatformServiceManager.ts)
+*   **File:** [PlatformServiceManager.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/PlatformServiceManager.ts)
 *   **Status:** `🟢 Implemented`. Starts/stops system daemons via local system execution calls.
 
 ### 4. PlatformPlanningEngine
-*   **File:** [PlatformPlanningEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/pik/kernel/planning/PlatformPlanningEngine.ts)
+*   **File:** [PlatformPlanningEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/pik/kernel/planning/PlatformPlanningEngine.ts)
 *   **Status:** `🟢 Implemented`. Generates plan graphs mapping required tools for user instructions.
 
 ### 5. ChangeImpactAnalyzer
-*   **File:** [ChangeImpactAnalyzer.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/pik/kernel/impact-analysis/ChangeImpactAnalyzer.ts)
+*   **File:** [ChangeImpactAnalyzer.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/pik/kernel/impact-analysis/ChangeImpactAnalyzer.ts)
 *   **Status:** `🟢 Implemented`. Scans local git indexes and source trees to map dependency change hazards.
 
 ### 6. ConvergenceEngine
-*   **File:** [ConvergenceEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/digital-twin/synchronization/ConvergenceEngine.ts)
+*   **File:** [ConvergenceEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/digital-twin/synchronization/ConvergenceEngine.ts)
 *   **Status:** `🟢 Implemented`. Periodic sync engine aligning local database state maps with memory contexts.
 
 ### 7. GraphKernel
-*   **File:** [GraphKernel.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/digital-twin/core/GraphKernel.ts)
+*   **File:** [GraphKernel.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/digital-twin/core/GraphKernel.ts)
 *   **Status:** `🟢 Implemented`. In-memory network topology mapper for entities.
 
 ### 8. InfrastructureDiscoveryEngine
-*   **File:** [InfrastructureDiscoveryEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/InfrastructureDiscoveryEngine.ts)
+*   **File:** [InfrastructureDiscoveryEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/InfrastructureDiscoveryEngine.ts)
 *   **Status:** `🟢 Implemented`. Port and server configuration discovery scanner.
 
 ### 9. ExtensionLoader
-*   **File:** [ExtensionRuntimeService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/extension/ExtensionRuntimeService.ts)
+*   **File:** [ExtensionRuntimeService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/extension/ExtensionRuntimeService.ts)
 *   **Status:** `🟡 In Progress`. Dynamic packages are executed using `eval('require')`. Needs worker thread VM isolation.
 
 ### 10. ToolRuntime
-*   **File:** [ToolRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/ToolRuntime.ts)
+*   **File:** [ToolRuntime.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/ai-runtime/ToolRuntime.ts)
 *   **Status:** `🟡 In Progress`. Tool executions (filesystem/web search) return mocked text logs.
 
 ---
@@ -181,25 +181,25 @@ graph TD
 # Services
 
 AegisOS exports 19 core services managing business operations:
-1.  **[workflowService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts):** Runs multi-node pipelines, processes conditions, delay timers, and manages approvals.
-2.  **[executionRuntimeService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/execution-runtime.service.ts):** Stateful executor running task paths.
-3.  **[runtimeService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/runtime.service.ts):** Core platform gateway configuration reader.
-4.  **[skillsService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/skills.service.ts):** Domain triggers binder.
-5.  **[workspaceService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workspace.service.ts):** Maps local folders and executes static file analyses.
-6.  **[projectService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/project.service.ts):** Coordinates multi-project repositories.
-7.  **[infrastructureService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/infrastructure.service.ts):** Port availability checker.
-8.  **[knowledgeService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/knowledge.service.ts):** RAG and hybrid keyword query vector resolver.
-9.  **[aiRuntimeService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/ai-runtime.service.ts):** Enforces model routing policies.
-10. **[artifactService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/artifact.service.ts):** Handles file uploads, metadata tag bindings, and lifecycle states.
-11. **[engineeringIntelligenceService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/engineering-intelligence.service.ts):** Serves SRE analytics dashboard.
-12. **[executionGraphService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/execution-graph.service.ts):** Compiles and schedules parallel task execution graphs.
-13. **[executionQueryService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/execution-query.service.ts):** Database query parser for historical runs.
-14. **[missionRuntimeService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/mission-runtime.service.ts):** Orchestrates meeting crews.
-15. **[missionMemoryService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/mission-memory.service.ts):** Short-term workspace memory store.
-16. **[missionPlannerService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/mission-planner.service.ts):** Decomposes meetings plans.
-17. **[missionReflectionService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/mission-reflection.service.ts):** Evaluates agent claim critiques.
-18. **[missionEvaluationService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/mission-evaluation.service.ts):** Scores meeting minutes accuracy.
-19. **[adminService](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/admin.service.ts):** Station user management controls.
+1.  **[workflowService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/workflow.service.ts):** Runs multi-node pipelines, processes conditions, delay timers, and manages approvals.
+2.  **[executionRuntimeService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/execution-runtime.service.ts):** Stateful executor running task paths.
+3.  **[runtimeService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/runtime.service.ts):** Core platform gateway configuration reader.
+4.  **[skillsService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/skills.service.ts):** Domain triggers binder.
+5.  **[workspaceService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/workspace.service.ts):** Maps local folders and executes static file analyses.
+6.  **[projectService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/project.service.ts):** Coordinates multi-project repositories.
+7.  **[infrastructureService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/infrastructure.service.ts):** Port availability checker.
+8.  **[knowledgeService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/knowledge.service.ts):** RAG and hybrid keyword query vector resolver.
+9.  **[aiRuntimeService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/ai-runtime.service.ts):** Enforces model routing policies.
+10. **[artifactService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/artifact.service.ts):** Handles file uploads, metadata tag bindings, and lifecycle states.
+11. **[engineeringIntelligenceService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/engineering-intelligence.service.ts):** Serves SRE analytics dashboard.
+12. **[executionGraphService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/execution-graph.service.ts):** Compiles and schedules parallel task execution graphs.
+13. **[executionQueryService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/execution-query.service.ts):** Database query parser for historical runs.
+14. **[missionRuntimeService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/mission-runtime.service.ts):** Orchestrates meeting crews.
+15. **[missionMemoryService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/mission-memory.service.ts):** Short-term workspace memory store.
+16. **[missionPlannerService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/mission-planner.service.ts):** Decomposes meetings plans.
+17. **[missionReflectionService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/mission-reflection.service.ts):** Evaluates agent claim critiques.
+18. **[missionEvaluationService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/mission-evaluation.service.ts):** Scores meeting minutes accuracy.
+19. **[adminService](file:///C:/Users/rajaj/Projects/AegisOS/src/services/admin.service.ts):** Station user management controls.
 
 ---
 
@@ -336,7 +336,7 @@ AegisOS maintains 10 active registries:
 # Configuration
 
 *   **Environment Variables:** `.env` and `.env.production` set `DATABASE_URL`, `AEGISOS_STATE_DIR`, and `REDIS_URL`.
-*   **Model Manifest:** [ModelManifest.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/ModelManifest.json) maps approved models.
+*   **Model Manifest:** [ModelManifest.json](file:///C:/Users/rajaj/Projects/AegisOS/ModelManifest.json) maps approved models.
 *   **Feature Flags:** Gated configuration values (e.g., enabling context compression).
 
 ---
@@ -387,11 +387,11 @@ AegisOS maintains 10 active registries:
 
 | Capability | Implemented | Partial | Missing | Files | Dependencies |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| **Self-Healing Watchdog** | 🟢 | | | [SelfHealingFramework.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/control-plane/SelfHealingFramework.ts) | Event Bus |
-| **Active LLM Connections**| 🟢 | | | [skeletons.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/skeletons.ts) | Node `fetch` |
-| **Saga Checkpoint Rollbacks**| 🟢 | | | [workflow.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts) | Prisma client |
-| **Extension Isolation** | | 🟡 | | [ExtensionRuntimeService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/extension/ExtensionRuntimeService.ts) | Node `worker_threads` |
-| **Mobile Signature Verification**| | | 🔴 | [aegis_mobile/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/aegis_mobile/) | Node `crypto` |
+| **Self-Healing Watchdog** | 🟢 | | | [SelfHealingFramework.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/control-plane/SelfHealingFramework.ts) | Event Bus |
+| **Active LLM Connections**| 🟢 | | | [skeletons.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/skeletons.ts) | Node `fetch` |
+| **Saga Checkpoint Rollbacks**| 🟢 | | | [workflow.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/workflow.service.ts) | Prisma client |
+| **Extension Isolation** | | 🟡 | | [ExtensionRuntimeService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/extension/ExtensionRuntimeService.ts) | Node `worker_threads` |
+| **Mobile Signature Verification**| | | 🔴 | [aegis_mobile/](file:///C:/Users/rajaj/Projects/AegisOS/aegis_mobile/) | Node `crypto` |
 
 ---
 

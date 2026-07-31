@@ -30,7 +30,7 @@ The core infrastructure operates using seven interconnected service boundaries m
 
 ## 2. Models Inventory
 
-AegisOS is configured to utilize the following GGUF, VRAM-optimized models registered in [ModelManifest.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/ModelManifest.json):
+AegisOS is configured to utilize the following GGUF, VRAM-optimized models registered in [ModelManifest.json](file:///C:/Users/rajaj/Projects/AegisOS/ModelManifest.json):
 
 | Model ID | Size | parameters | Alias | Role |
 |---|---|---|---|---|
@@ -51,7 +51,7 @@ AegisOS is configured to utilize the following GGUF, VRAM-optimized models regis
 
 ## 3. Platform Kernel Services (PECS, PRM, PPS, PAOS)
 
-The Platform Kernel ([PlatformKernel.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/PlatformKernel.ts)) acts as the central orchestrator and dependency injection container. At boot time, it registers four vital built-in Kernel Services in the Service Registry:
+The Platform Kernel ([PlatformKernel.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/PlatformKernel.ts)) acts as the central orchestrator and dependency injection container. At boot time, it registers four vital built-in Kernel Services in the Service Registry:
 
 ### PECS: Platform Execution Context Service
 - **Token**: `PECS`

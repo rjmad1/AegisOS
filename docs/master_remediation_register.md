@@ -9,15 +9,15 @@ This document tracks all identified platform and architectural anomalies within 
 * **Category**: Configuration / Persistence
 * **Affected Components**: Prisma Client, console container, environment files
 * **Evidence**:
-  * [prisma/schema.prisma:L1-L8](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/prisma/schema.prisma#L1-L8) (`provider = "sqlite"`)
-  * [docker-compose.yml:L182-L183](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docker-compose.yml#L182-L183) (`DATABASE_URL=postgresql://...`)
-  * [.env.production:L33](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/.env.production#L33) (`DATABASE_URL="file:D:/AI-Operations/runtime/databases/production.db"`)
+  * [prisma/schema.prisma:L1-L8](file:///C:/Users/rajaj/Projects/AegisOS/prisma/schema.prisma#L1-L8) (`provider = "sqlite"`)
+  * [docker-compose.yml:L182-L183](file:///C:/Users/rajaj/Projects/AegisOS/docker-compose.yml#L182-L183) (`DATABASE_URL=postgresql://...`)
+  * [.env.production:L33](file:///C:/Users/rajaj/Projects/AegisOS/.env.production#L33) (`DATABASE_URL="file:D:/AI-Operations/runtime/databases/production.db"`)
 * **Root Cause**: The console container runs PostgreSQL in production compose, but the client package compiles exclusively for SQLite database endpoints.
 * **Current State**: Relational queries fail instantly on PG deployments due to sqlite dialect engine mismatches.
 * **Desired State**: Both dev, build, and compose run PostgreSQL as the core backend, using the `postgresql` provider inside `schema.prisma`.
 * **Dependencies**: None
 * **Implementation Tasks**:
-  1. Modify [prisma/schema.prisma](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/prisma/schema.prisma) database provider to `postgresql`.
+  1. Modify [prisma/schema.prisma](file:///C:/Users/rajaj/Projects/AegisOS/prisma/schema.prisma) database provider to `postgresql`.
   2. Recompile client engine with `npx prisma generate`.
 * **Validation Tests**: Run `npx prisma validate` and verify build success.
 * **Regression Tests**: Execute `npm test` ensuring existing DB mock frameworks do not break.
@@ -34,8 +34,8 @@ This document tracks all identified platform and architectural anomalies within 
 * **Category**: Dependencies / Runtime
 * **Affected Components**: `package.json`, `src/infrastructure/providers/redis-platform.ts`
 * **Evidence**:
-  * [package.json:L14-L41](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/package.json#L14-L41) (no declaration of `ioredis`)
-  * [src/infrastructure/providers/redis-platform.ts:L440](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/redis-platform.ts#L440) (`require('ioredis')`)
+  * [package.json:L14-L41](file:///C:/Users/rajaj/Projects/AegisOS/package.json#L14-L41) (no declaration of `ioredis`)
+  * [src/infrastructure/providers/redis-platform.ts:L440](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/redis-platform.ts#L440) (`require('ioredis')`)
 * **Root Cause**: The `redis-platform` loader expects `ioredis` package imports when running in clusters with `REDIS_URL` active, but the package was never declared.
 * **Current State**: Next.js logs warning and silently drops session/cache data back into individual in-memory instances inside the container.
 * **Desired State**: `ioredis` is installed, allowing persistent socket links with the compose Redis container.
@@ -58,8 +58,8 @@ This document tracks all identified platform and architectural anomalies within 
 * **Category**: Configuration / Infrastructure
 * **Affected Components**: `docker-compose.yml`
 * **Evidence**:
-  * [docker-compose.yml:L120](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docker-compose.yml#L120) (`${HOST_PORT_OTEL_GRPC:-4317}:4317`)
-  * [docker-compose.yml:L154](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docker-compose.yml#L154) (`${HOST_PORT_OTEL_GRPC:-4317}:4317`)
+  * [docker-compose.yml:L120](file:///C:/Users/rajaj/Projects/AegisOS/docker-compose.yml#L120) (`${HOST_PORT_OTEL_GRPC:-4317}:4317`)
+  * [docker-compose.yml:L154](file:///C:/Users/rajaj/Projects/AegisOS/docker-compose.yml#L154) (`${HOST_PORT_OTEL_GRPC:-4317}:4317`)
 * **Root Cause**: Copy-paste mapping error where Jaeger's receiver overrides the host port allocated to the main OpenTelemetry Collector.
 * **Trigger**: Booting the compose cluster on local systems.
 * **Blast Radius**: Jaeger or Otel-collector fails to boot.
@@ -67,7 +67,7 @@ This document tracks all identified platform and architectural anomalies within 
 * **Desired State**: Jaeger OTLP receiver is mapped to a dedicated host port, resolving the conflict.
 * **Dependencies**: None
 * **Implementation Tasks**:
-  1. Modify [docker-compose.yml](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docker-compose.yml) port parameter for Jaeger OTLP to `${HOST_PORT_JAEGER_OTLP:-4319}:4317`.
+  1. Modify [docker-compose.yml](file:///C:/Users/rajaj/Projects/AegisOS/docker-compose.yml) port parameter for Jaeger OTLP to `${HOST_PORT_JAEGER_OTLP:-4319}:4317`.
 * **Validation Tests**: Spin up the compose cluster and verify all containers are healthy.
 * **Regression Tests**: None.
 * **Rollback Plan**: Revert ports in `docker-compose.yml`.
@@ -83,13 +83,13 @@ This document tracks all identified platform and architectural anomalies within 
 * **Category**: Security
 * **Affected Components**: `automation/Configure.ps1`
 * **Evidence**:
-  * [automation/Configure.ps1:L125-L126](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/Configure.ps1#L125-L126) (`$servicePass = "AegisPassword123!@#"`)
+  * [automation/Configure.ps1:L125-L126](file:///C:/Users/rajaj/Projects/AegisOS/automation/Configure.ps1#L125-L126) (`$servicePass = "AegisPassword123!@#"`)
 * **Root Cause**: Simplification of local service provisioning.
 * **Current State**: Host workstation creates a local OS user `AI_Service_User` with a hardcoded static password, violating security hygiene policies.
 * **Desired State**: Password is generated securely at runtime, or the script prompts the administrator.
 * **Dependencies**: None
 * **Implementation Tasks**:
-  1. Replace hardcoded password in [automation/Configure.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/Configure.ps1) with a dynamic generator or interactive prompt.
+  1. Replace hardcoded password in [automation/Configure.ps1](file:///C:/Users/rajaj/Projects/AegisOS/automation/Configure.ps1) with a dynamic generator or interactive prompt.
 * **Validation Tests**: Execute `Configure.ps1` and verify no plaintext defaults exist.
 * **Regression Tests**: Check Windows Service Manager execution status.
 * **Rollback Plan**: Revert scripting to static definitions.
@@ -105,7 +105,7 @@ This document tracks all identified platform and architectural anomalies within 
 * **Category**: Reliability / Disaster Recovery
 * **Affected Components**: `automation/RestoreProduction.ps1`
 * **Evidence**:
-  * [automation/RestoreProduction.ps1:L73-L98](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/RestoreProduction.ps1#L73-L98) (only SQLite and JSON file moves)
+  * [automation/RestoreProduction.ps1:L73-L98](file:///C:/Users/rajaj/Projects/AegisOS/automation/RestoreProduction.ps1#L73-L98) (only SQLite and JSON file moves)
 * **Root Cause**: Incomplete disaster recovery automation.
 * **Current State**: Production backups cannot restore PostgreSQL tables or MinIO object archives.
 * **Desired State**: Recovery scripts execute containerized Postgres restores and unpack volume tarballs.
@@ -128,7 +128,7 @@ This document tracks all identified platform and architectural anomalies within 
 * **Category**: Product Engineering / Architecture
 * **Affected Components**: `UsageMeteringEngine.ts`
 * **Evidence**:
-  * [src/enterprise/billing/UsageMeteringEngine.ts:L84](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/billing/UsageMeteringEngine.ts#L84) (`private records: UsageRecord[] = [];`)
+  * [src/enterprise/billing/UsageMeteringEngine.ts:L84](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/billing/UsageMeteringEngine.ts#L84) (`private records: UsageRecord[] = [];`)
 * **Root Cause**: Volatile storage design for billing records.
 * **Current State**: Billing records are stored in-memory and are lost upon Next.js console restart.
 * **Desired State**: Metering records are persisted in the database via Prisma.
@@ -150,7 +150,7 @@ This document tracks all identified platform and architectural anomalies within 
 * **Category**: Dependency Governance
 * **Affected Components**: `package.json`
 * **Evidence**:
-  * [package.json:L21](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/package.json#L21) (`"@react-pdf/renderer": "^4.5.1"`)
+  * [package.json:L21](file:///C:/Users/rajaj/Projects/AegisOS/package.json#L21) (`"@react-pdf/renderer": "^4.5.1"`)
 * **Root Cause**: Leftover dependency from early designs.
 * **Current State**: Unused package bloating builds and security audits.
 * **Desired State**: Dependency is pruned.
@@ -173,7 +173,7 @@ This document tracks all identified platform and architectural anomalies within 
 * **Category**: Documentation Drift
 * **Affected Components**: `docs/MasterIndexRegistry.json`
 * **Evidence**:
-  * `docs/MasterIndexRegistry.json` contains old references to `D:/1_Projects/OpenClawOllamaLiteLLM_Transparency/...`
+  * `docs/MasterIndexRegistry.json` contains old references to `C:/Users/rajaj/Projects/AegisOS/...`
 * **Root Cause**: Registry index was not regenerated for the active workspace.
 * **Current State**: Dead documentation links during searches.
 * **Desired State**: Paths are fully updated to the current workspace root.

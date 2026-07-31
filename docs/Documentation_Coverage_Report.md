@@ -47,8 +47,8 @@ The AegisOS repository has undergone a complete synchronization audit, verifying
 ## 3. Knowledge Gaps & Outdated Documents
 
 During Phase 2 audits, the following legacy documentation states were detected and resolved:
-- **Legacy 5-System Model**: The system topology diagram in the handbooks mapped components to 5 layers. This has been updated to the strict 7-layer stack layout of [ADR-009](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-009-Autonomic-Operating-System-Architecture.md).
-- **Prisma Schema Discrepancy**: The database schema listed in the Platform Governance Package omitted 30+ production models (e.g. commands, SaaS tenancy, digital twin snap/drift logs, and qualification history). This has been synchronized with [schema.prisma](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/prisma/schema.prisma) exactly.
+- **Legacy 5-System Model**: The system topology diagram in the handbooks mapped components to 5 layers. This has been updated to the strict 7-layer stack layout of [ADR-009](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-009-Autonomic-Operating-System-Architecture.md).
+- **Prisma Schema Discrepancy**: The database schema listed in the Platform Governance Package omitted 30+ production models (e.g. commands, SaaS tenancy, digital twin snap/drift logs, and qualification history). This has been synchronized with [schema.prisma](file:///C:/Users/rajaj/Projects/AegisOS/prisma/schema.prisma) exactly.
 - **Dead File Reference**: 14 relative and absolute links pointed to superseded file targets (such as `docs/SECURITY.md` and `docs/Deployment_Guide.md`). These were corrected to resolve all linter warnings.
 
 ---

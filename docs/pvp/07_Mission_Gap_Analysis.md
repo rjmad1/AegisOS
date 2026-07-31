@@ -24,21 +24,21 @@ Unrecoverable Failures : 0.0%  (0 Missions)
 
 ### Gap 1: Knowledge Engine Chunk Truncation on Large Log Files
 - **Observed Symptoms**: High token consumption and minor reflection cycle during mission `PVP-OPS-003` (Incident Investigation).
-- **Subsystem Responsible**: Knowledge Engine ([knowledge.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/knowledge.service.ts)).
+- **Subsystem Responsible**: Knowledge Engine ([knowledge.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/knowledge.service.ts)).
 - **Root Cause**: Fixed chunk sizes (512 tokens) caused log trace lines to be split across chunk boundaries, losing stack trace context.
 - **PVP Auto-Recovery Action**: `MissionReflectionService` detected missing log context, triggered `autoExpandGraph`, and appended a secondary knowledge re-indexing node with sliding window overlap.
 - **RC1 Mitigation**: Verified that re-indexing resolves context loss.
 
 ### Gap 2: Context Limit Truncation in Complex Multi-Doc Queries
 - **Observed Symptoms**: Token truncation warning during mission `PVP-AI-005` (Documentation RAG Synthesis).
-- **Subsystem Responsible**: Execution Runtime Service ([execution-runtime.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/execution-runtime.service.ts)).
+- **Subsystem Responsible**: Execution Runtime Service ([execution-runtime.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/execution-runtime.service.ts)).
 - **Root Cause**: Aggregating 15+ markdown documentation files into a single prompt frame approached model context window boundaries.
 - **PVP Auto-Recovery Action**: Mission planner executed sliding window token pruner before dispatching to LLM runtime.
 - **RC1 Mitigation**: Retained prompt context within safe token limits.
 
 ### Gap 3: SQLite Read Lock Contention Under Batch Execution
 - **Observed Symptoms**: Intermittent 150ms retry delay during parallel database persistence writes in mission `PVP-OPS-005`.
-- **Subsystem Responsible**: SQLite Mission Repository ([mission.repository.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/repositories/mission.repository.ts)).
+- **Subsystem Responsible**: SQLite Mission Repository ([mission.repository.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/repositories/mission.repository.ts)).
 - **Root Cause**: SQLite default journal mode caused short write locks when multiple executions wrote status updates simultaneously.
 - **PVP Auto-Recovery Action**: SQLite repository retried write operations using exponential backoff (10ms, 50ms, 200ms).
 - **RC1 Mitigation**: Enabled SQLite WAL (Write-Ahead Logging) mode in database configuration script.

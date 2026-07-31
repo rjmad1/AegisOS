@@ -13,7 +13,7 @@ This document provides a complete, forensic representation of the AegisOS enterp
 
 ### Overall Enterprise Readiness Score: **100.0%**
 
-The platform exhibits a complete degree of architectural completion, adhering strictly to the **AegisOS Engineering Constitution** ([docs/ENGINEERING_CONSTITUTION.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ENGINEERING_CONSTITUTION.md)), SOLID design principles, and modular microkernel abstractions.
+The platform exhibits a complete degree of architectural completion, adhering strictly to the **AegisOS Engineering Constitution** ([docs/ENGINEERING_CONSTITUTION.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/ENGINEERING_CONSTITUTION.md)), SOLID design principles, and modular microkernel abstractions.
 
 ---
 
@@ -55,12 +55,12 @@ Determine whether the platform supports multiple enterprise user types, granular
 
 ### Checklist
 #### Identity & Access
-* [x] **User management exists** — Implemented in [IdentityPlatform.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/identity/IdentityPlatform.ts) and [TenantLifecycle.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/tenant/TenantLifecycle.ts).
-* [x] **Authentication framework implemented** — Implemented in [adminAuth.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/adminAuth.ts), [session.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/session.service.ts), and [mobile-auth.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/mobile-auth.service.ts).
-* [x] **Authorization framework implemented** — Implemented in [authorization.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/authorization.ts) and [PolicyEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/identity/PolicyEngine.ts).
-* [x] **RBAC implemented** — Role-based access control with inheritance tree in [RoleHierarchy.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/identity/RoleHierarchy.ts).
-* [x] **ABAC or Policy-based authorization supported** — Attribute-based policy evaluation in [PolicyEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/identity/PolicyEngine.ts) supporting subject, action, resource, and context rules.
-* [x] **Multi-tenancy supported** — Full isolation via [TenantContext.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/tenant/TenantContext.ts), [TenantResolver.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/tenant/TenantResolver.ts), and [TenantScopedPrisma.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/tenant/TenantScopedPrisma.ts).
+* [x] **User management exists** — Implemented in [IdentityPlatform.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/identity/IdentityPlatform.ts) and [TenantLifecycle.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/tenant/TenantLifecycle.ts).
+* [x] **Authentication framework implemented** — Implemented in [adminAuth.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/adminAuth.ts), [session.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/session.service.ts), and [mobile-auth.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/mobile-auth.service.ts).
+* [x] **Authorization framework implemented** — Implemented in [authorization.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/authorization.ts) and [PolicyEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/identity/PolicyEngine.ts).
+* [x] **RBAC implemented** — Role-based access control with inheritance tree in [RoleHierarchy.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/identity/RoleHierarchy.ts).
+* [x] **ABAC or Policy-based authorization supported** — Attribute-based policy evaluation in [PolicyEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/identity/PolicyEngine.ts) supporting subject, action, resource, and context rules.
+* [x] **Multi-tenancy supported** — Full isolation via [TenantContext.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/tenant/TenantContext.ts), [TenantResolver.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/tenant/TenantResolver.ts), and [TenantScopedPrisma.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/tenant/TenantScopedPrisma.ts).
 
 #### Personas
 * [x] **Business Users** — Supported via executive dashboards and high-level Conversa UI.
@@ -71,10 +71,10 @@ Determine whether the platform supports multiple enterprise user types, granular
 * [x] **Administrators** — Supported via enterprise administration center and tenant lifecycle controls.
 
 #### Evaluation
-* [x] **Persona-specific workflows** — Defined in [src/enterprise/index.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/enterprise/index.ts).
+* [x] **Persona-specific workflows** — Defined in [src/enterprise/index.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/enterprise/index.ts).
 * [x] **Persona-specific permissions** — Enforced via `RoleHierarchy` permission maps.
 * [x] **Persona-specific dashboards** — Implemented across Next.js app routes (`src/app/admin`, `src/app/developer`, `src/app/workspace`).
-* [x] **Persona-specific APIs** — Scoped API endpoints under [src/app/api/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/api).
+* [x] **Persona-specific APIs** — Scoped API endpoints under [src/app/api/](file:///C:/Users/rajaj/Projects/AegisOS/src/app/api).
 
 ---
 
@@ -85,26 +85,26 @@ Determine whether the platform supports multiple interaction modalities, flexibl
 
 ### Checklist
 #### UI
-* [x] **Web UI** — Modern Next.js 15 App Router web application in [src/app/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app).
-* [x] **Mobile UI** — Dedicated mobile application module in [aegis_mobile/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/aegis_mobile).
-* [x] **Adaptive UI** — Context-aware layout engine in [src/platform/layout/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/layout).
+* [x] **Web UI** — Modern Next.js 15 App Router web application in [src/app/](file:///C:/Users/rajaj/Projects/AegisOS/src/app).
+* [x] **Mobile UI** — Dedicated mobile application module in [aegis_mobile/](file:///C:/Users/rajaj/Projects/AegisOS/aegis_mobile).
+* [x] **Adaptive UI** — Context-aware layout engine in [src/platform/layout/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/layout).
 * [x] **Responsive UI** — Mobile-first glassmorphic CSS styling in Next.js frontend components.
-* [x] **Dynamic Component Framework** — Widget registry and dynamic rendering in [WidgetRegistry.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/widgets/WidgetRegistry.ts) and [ConsoleKernel.tsx](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/console/ConsoleKernel.tsx).
+* [x] **Dynamic Component Framework** — Widget registry and dynamic rendering in [WidgetRegistry.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/widgets/WidgetRegistry.ts) and [ConsoleKernel.tsx](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/console/ConsoleKernel.tsx).
 
 #### Interaction
-* [x] **Chat Interface** — Multi-modal conversational interface powered by Conversa engine ([src/platform/conversa/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/conversa)).
+* [x] **Chat Interface** — Multi-modal conversational interface powered by Conversa engine ([src/platform/conversa/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/conversa)).
 * [x] **Command Center** — Enterprise operational console registered in `ConsoleRegistry`.
 * [x] **Dashboard Framework** — Modularity for custom analytics widgets in `src/modules/observability`.
-* [x] **Workspace Management** — Multi-tenant project workspace manager in [src/modules/projects/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/modules/projects).
-* [x] **Workflow Builder** — Visual and code-driven workflow builder in [src/platform/workflow/builder/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workflow/builder).
-* [x] **Visual Agent Builder** — Implemented via [VisualAgentCompiler.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workflow/builder/VisualAgentCompiler.ts) and [VisualAgentRuntimeBridge.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workflow/builder/VisualAgentRuntimeBridge.ts).
+* [x] **Workspace Management** — Multi-tenant project workspace manager in [src/modules/projects/](file:///C:/Users/rajaj/Projects/AegisOS/src/modules/projects).
+* [x] **Workflow Builder** — Visual and code-driven workflow builder in [src/platform/workflow/builder/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workflow/builder).
+* [x] **Visual Agent Builder** — Implemented via [VisualAgentCompiler.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workflow/builder/VisualAgentCompiler.ts) and [VisualAgentRuntimeBridge.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workflow/builder/VisualAgentRuntimeBridge.ts).
 
 #### APIs
-* [x] **REST APIs** — Full RESTful API surface defined in [src/app/api/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/api) and documented via [openapi-spec.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/openapi-spec.json).
+* [x] **REST APIs** — Full RESTful API surface defined in [src/app/api/](file:///C:/Users/rajaj/Projects/AegisOS/src/app/api) and documented via [openapi-spec.json](file:///C:/Users/rajaj/Projects/AegisOS/docs/openapi-spec.json).
 * [x] **GraphQL** — *Standardized API Contract*: Platform explicitly standardizes on REST and OpenAPI specs for simplicity and performance.
-* [x] **SDK** — Programmatic TypeScript/JavaScript SDK implemented in [MissionAwareSdk.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/sdk/MissionAwareSdk.ts).
-* [x] **CLI** — Command line interface tool in [aegis-verify-infra.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/cli/aegis-verify-infra.ts).
-* [x] **Webhooks** — Event-driven webhook ingestion & dispatch system in [src/app/api/v1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/app/api/v1).
+* [x] **SDK** — Programmatic TypeScript/JavaScript SDK implemented in [MissionAwareSdk.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/sdk/MissionAwareSdk.ts).
+* [x] **CLI** — Command line interface tool in [aegis-verify-infra.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/cli/aegis-verify-infra.ts).
+* [x] **Webhooks** — Event-driven webhook ingestion & dispatch system in [src/app/api/v1](file:///C:/Users/rajaj/Projects/AegisOS/src/app/api/v1).
 
 ---
 
@@ -115,15 +115,15 @@ Determine whether the system is intent-driven, capable of parsing high-level goa
 
 ### Checklist
 #### Intent
-* [x] **Intent Parser** — Implemented in [AutonomousPlanner.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workforce/AutonomousPlanner.ts) and documented in [intent_resolution_planning_engine.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/intent_resolution_planning_engine.md).
-* [x] **Intent Resolution Engine** — Core kernel resolution service in [PlatformKernel.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/PlatformKernel.ts).
+* [x] **Intent Parser** — Implemented in [AutonomousPlanner.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workforce/AutonomousPlanner.ts) and documented in [intent_resolution_planning_engine.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/intent_resolution_planning_engine.md).
+* [x] **Intent Resolution Engine** — Core kernel resolution service in [PlatformKernel.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/PlatformKernel.ts).
 * [x] **Intent Classification** — Automatic categorization of user requests into domain execution contexts.
 * [x] **Intent Validation** — Semantic and syntax validation against capability contracts.
-* [x] **Intent Prioritization** — Queue and scheduling prioritization in [ExecutionContextService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/ExecutionContextService.ts).
+* [x] **Intent Prioritization** — Queue and scheduling prioritization in [ExecutionContextService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/ExecutionContextService.ts).
 * [x] **Intent Routing** — Routing logic directing parsed intents to matching agent runtimes or workflow engines.
 
 #### Planning
-* [x] **Planning Engine** — Multi-step planning engine in [AutonomousPlanner.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workforce/AutonomousPlanner.ts).
+* [x] **Planning Engine** — Multi-step planning engine in [AutonomousPlanner.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workforce/AutonomousPlanner.ts).
 * [x] **Goal Decomposition** — Hierarchical goal breakdown into sub-tasks.
 * [x] **Dependency Resolution** — Topological ordering of interdependent task execution nodes.
 * [x] **Task Graph Creation** — DAG creation for complex multi-agent execution plans.
@@ -138,19 +138,19 @@ Assess whether system functionality is dynamically discoverable, versioned, and 
 
 ### Checklist
 #### Capability Registry
-* [x] **Capability Registry** — Implemented in [CapabilityRegistry.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/capability/CapabilityRegistry.ts).
+* [x] **Capability Registry** — Implemented in [CapabilityRegistry.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/capability/CapabilityRegistry.ts).
 * [x] **Metadata** — Rich JSON metadata registration for tool and module capabilities.
 * [x] **Tags** — Semantic search tags for automatic intent matching.
 * [x] **Versioning** — Semantic versioning tracking in capability module descriptors.
 * [x] **Dependencies** — Graph dependency tracking between capabilities.
-* [x] **Health Status** — Dynamic health monitoring via [CapabilityTelemetryService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/capability/CapabilityTelemetryService.ts).
+* [x] **Health Status** — Dynamic health monitoring via [CapabilityTelemetryService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/capability/CapabilityTelemetryService.ts).
 
 #### Marketplace
-* [x] **Capability Marketplace** — Enterprise capability catalog in [MarketplaceService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/marketplace/MarketplaceService.ts).
+* [x] **Capability Marketplace** — Enterprise capability catalog in [MarketplaceService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/marketplace/MarketplaceService.ts).
 * [x] **Dynamic Loading** — Runtime hot-loading of registered capabilities.
 * [x] **Dynamic Registration** — Dynamic onboarding of external tool capabilities without platform restarts.
-* [x] **Capability Lifecycle** — State transition management in [CapabilityLifecycleManager.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/capability/CapabilityLifecycleManager.ts).
-* [x] **Extension Framework** — Pluggable extension architecture in [src/platform/extension/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/extension).
+* [x] **Capability Lifecycle** — State transition management in [CapabilityLifecycleManager.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/capability/CapabilityLifecycleManager.ts).
+* [x] **Extension Framework** — Pluggable extension architecture in [src/platform/extension/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/extension).
 
 ---
 
@@ -161,17 +161,17 @@ Determine whether complex multi-step processes can be orchestrated reliably.
 
 ### Checklist
 #### Workflow Engine
-* [x] **Workflow Runtime** — Orchestration engine implemented in [ExecutionNodeRegistry.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workflow/runtime/ExecutionNodeRegistry.ts).
-* [x] **State Machine** — Managed state machine powered by [packages/state-manager/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/packages/state-manager).
+* [x] **Workflow Runtime** — Orchestration engine implemented in [ExecutionNodeRegistry.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workflow/runtime/ExecutionNodeRegistry.ts).
+* [x] **State Machine** — Managed state machine powered by [packages/state-manager/](file:///C:/Users/rajaj/Projects/AegisOS/packages/state-manager).
 * [x] **DAG Support** — Directed Acyclic Graph execution engine in `src/platform/workflow`.
 * [x] **Conditional Execution** — Branching evaluation nodes for dynamic workflow flows.
-* [x] **Retry Policies** — Configurable exponential backoff retries in [src/platform/workflow/recovery/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workflow/recovery).
+* [x] **Retry Policies** — Configurable exponential backoff retries in [src/platform/workflow/recovery/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workflow/recovery).
 * [x] **Compensation Logic** — Rollback and saga pattern compensation handlers.
 
 #### Execution
 * [x] **Parallel Execution** — Concurrent async node execution.
 * [x] **Sequential Execution** — Step-by-step pipeline progression.
-* [x] **Event-driven Execution** — Asynchronous reactive triggering via [EventBus.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/event-bus/EventBus.ts).
+* [x] **Event-driven Execution** — Asynchronous reactive triggering via [EventBus.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/event-bus/EventBus.ts).
 * [x] **Long-running Workflows** — Persistent background execution engine backed by job store in `src/infrastructure/jobs`.
 
 ---
@@ -183,11 +183,11 @@ Assess state management, context retention, and session continuity across multi-
 
 ### Checklist
 #### Conversation
-* [x] **Session Management** — Implemented in [session.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/session.service.ts).
+* [x] **Session Management** — Implemented in [session.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/session.service.ts).
 * [x] **Multi-turn Conversations** — Full support for multi-message dialog trees in Conversa engine.
-* [x] **Conversation State** — State persistence in [conversa-repository.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/conversa/conversa-repository.ts).
-* [x] **Context Preservation** — Graph context management via [ConversaLivingGraphEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/conversa/ConversaLivingGraphEngine.ts).
-* [x] **Conversation History** — Indexed history storage with cryptographic hash integrity in [conversa-hashing.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/conversa/conversa-hashing.ts).
+* [x] **Conversation State** — State persistence in [conversa-repository.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/conversa/conversa-repository.ts).
+* [x] **Context Preservation** — Graph context management via [ConversaLivingGraphEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/conversa/ConversaLivingGraphEngine.ts).
+* [x] **Conversation History** — Indexed history storage with cryptographic hash integrity in [conversa-hashing.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/conversa/conversa-hashing.ts).
 
 ---
 
@@ -198,18 +198,18 @@ Evaluate how enterprise knowledge is structured, indexed, queried, and transform
 
 ### Checklist
 #### Knowledge Sources
-* [x] **Knowledge Graph** — Property graph and relationship mapping engine in [KnowledgeGraphEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/KnowledgeGraphEngine.ts).
-* [x] **Vector Store** — Vector embeddings storage and retrieval integrated in [RAGPlatform.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/RAGPlatform.ts) and [knowledge-providers.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/knowledge-providers.ts).
-* [x] **Semantic Search** — Context-aware semantic similarity search in [SemanticMemory.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/SemanticMemory.ts).
+* [x] **Knowledge Graph** — Property graph and relationship mapping engine in [KnowledgeGraphEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/KnowledgeGraphEngine.ts).
+* [x] **Vector Store** — Vector embeddings storage and retrieval integrated in [RAGPlatform.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/RAGPlatform.ts) and [knowledge-providers.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/knowledge-providers.ts).
+* [x] **Semantic Search** — Context-aware semantic similarity search in [SemanticMemory.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/SemanticMemory.ts).
 * [x] **Enterprise Documents** — Unstructured document indexing and enterprise knowledge parsing.
 * [x] **Project Knowledge** — Repository-level knowledge extraction and CodeGraph integration.
 * [x] **Conversation Memory** — Long-term conversational knowledge extraction.
 
 #### Intelligence
-* [x] **Ontology Engine** — Dynamic schema and domain relation mapping in [KnowledgeFabric.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/KnowledgeFabric.ts).
-* [x] **Reasoning Engine** — Multi-step logical reasoning in [DecisionIntelligence.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/DecisionIntelligence.ts) and [OrganizationalIntelligence.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/OrganizationalIntelligence.ts).
-* [x] **Learning Engine** — Experience reflection and adaptation repository in [LearningRepository.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/collective-intelligence/LearningRepository.ts).
-* [x] **Model Registry** — Model catalog and governance configuration in [ModelManifest.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/ModelManifest.json) and [registry.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/registry.ts).
+* [x] **Ontology Engine** — Dynamic schema and domain relation mapping in [KnowledgeFabric.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/KnowledgeFabric.ts).
+* [x] **Reasoning Engine** — Multi-step logical reasoning in [DecisionIntelligence.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/DecisionIntelligence.ts) and [OrganizationalIntelligence.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/OrganizationalIntelligence.ts).
+* [x] **Learning Engine** — Experience reflection and adaptation repository in [LearningRepository.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/collective-intelligence/LearningRepository.ts).
+* [x] **Model Registry** — Model catalog and governance configuration in [ModelManifest.json](file:///C:/Users/rajaj/Projects/AegisOS/ModelManifest.json) and [registry.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/registry.ts).
 * [x] **Embedding Pipeline** — Automatic chunking and vector generation pipeline in `RAGPlatform.ts`.
 
 ---
@@ -226,11 +226,11 @@ Evaluate the depth and sophistication of the agent and platform memory systems.
 * [x] **Working Memory** — Active scratchpad for currently executing tasks.
 * [x] **Episodic Memory** — Historical event sequence memory.
 * [x] **Semantic Memory** — Fact and relationship conceptual memory.
-  * *Implementation Evidence*: [memory-architecture.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/memory/memory-architecture.ts) natively implements **9 Memory Domains**: `working`, `conversation`, `session`, `agent`, `semantic`, `procedural`, `episodic`, `long-term`, and `knowledge` with TTL decay, LRU eviction, and conflict resolution options (`override`, `merge`, `ignore`).
+  * *Implementation Evidence*: [memory-architecture.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/memory/memory-architecture.ts) natively implements **9 Memory Domains**: `working`, `conversation`, `session`, `agent`, `semantic`, `procedural`, `episodic`, `long-term`, and `knowledge` with TTL decay, LRU eviction, and conflict resolution options (`override`, `merge`, `ignore`).
 
 #### Context
-* [x] **Context Manager** — Context scope engine in [src/platform/context/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/context).
-* [x] **Context Window Optimization** — Dynamic pruning and token headroom optimization in [src/infrastructure/compression/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/compression).
+* [x] **Context Manager** — Context scope engine in [src/platform/context/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/context).
+* [x] **Context Window Optimization** — Dynamic pruning and token headroom optimization in [src/infrastructure/compression/](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/compression).
 * [x] **Context Compression** — Semantic summarization for long conversation context windows.
 * [x] **Context Persistence** — Database backed context state save/restore cycles.
 
@@ -243,23 +243,23 @@ Determine whether the core runtime functions as an operating system kernel for A
 
 ### Checklist
 #### Core Services
-* [x] **Intent Resolution Engine** — Core resolution dispatch in [PlatformKernel.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/PlatformKernel.ts).
-* [x] **Agent Runtime** — Execution engine for autonomous agents in [src/platform/ai-runtime/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime).
+* [x] **Intent Resolution Engine** — Core resolution dispatch in [PlatformKernel.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/PlatformKernel.ts).
+* [x] **Agent Runtime** — Execution engine for autonomous agents in [src/platform/ai-runtime/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/ai-runtime).
 * [x] **Planning Engine** — Task planning service integrated into kernel boot cycle.
-* [x] **Execution Engine** — Execution context manager in [ExecutionContextService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/ExecutionContextService.ts).
+* [x] **Execution Engine** — Execution context manager in [ExecutionContextService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/ExecutionContextService.ts).
 * [x] **Memory Engine** — Unified memory interface bindings in `memory-architecture.ts`.
-* [x] **Policy Engine** — Governance and policy enforcement in [PolicyService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/PolicyService.ts).
+* [x] **Policy Engine** — Governance and policy enforcement in [PolicyService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/PolicyService.ts).
 * [x] **Security Engine** — Identity, token introspection, and permission checks.
-* [x] **Scheduling Engine** — Priority task scheduler in [src/infrastructure/scheduling/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/scheduling).
-* [x] **Resource Manager** — System compute and memory throttling service in [ResourceManager.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/ResourceManager.ts).
-* [x] **Event Bus** — Decoupled pub/sub event backbone in [EventBus.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/event-bus/EventBus.ts).
+* [x] **Scheduling Engine** — Priority task scheduler in [src/infrastructure/scheduling/](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/scheduling).
+* [x] **Resource Manager** — System compute and memory throttling service in [ResourceManager.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/ResourceManager.ts).
+* [x] **Event Bus** — Decoupled pub/sub event backbone in [EventBus.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/event-bus/EventBus.ts).
 
 #### Kernel Characteristics
 * [x] **Modular** — Microkernel pattern with strictly isolated service contracts.
-* [x] **Service-oriented** — Registered services in [ServiceRegistry.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/ServiceRegistry.ts).
-* [x] **Plugin-based** — Hot-pluggable architecture in [src/platform/plugin/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/plugin).
+* [x] **Service-oriented** — Registered services in [ServiceRegistry.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/ServiceRegistry.ts).
+* [x] **Plugin-based** — Hot-pluggable architecture in [src/platform/plugin/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/plugin).
 * [x] **Event-driven** — Fully asynchronous reactive messaging pattern.
-* [x] **Fault-tolerant** — Self-healing, circuit breakers, and crash recovery in [src/infrastructure/reliability/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/reliability).
+* [x] **Fault-tolerant** — Self-healing, circuit breakers, and crash recovery in [src/infrastructure/reliability/](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/reliability).
 
 ---
 
@@ -270,18 +270,18 @@ Assess the diversity of autonomous agent types and their runtime lifecycle contr
 
 ### Checklist
 #### Agent Types
-* [x] **Planner Agents** — Dedicated goal decomposition agent in [agents/planner/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/agents/planner).
-* [x] **Developer Agents** — Implementation agents in [agents/core/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/agents/core).
+* [x] **Planner Agents** — Dedicated goal decomposition agent in [agents/planner/](file:///C:/Users/rajaj/Projects/AegisOS/agents/planner).
+* [x] **Developer Agents** — Implementation agents in [agents/core/](file:///C:/Users/rajaj/Projects/AegisOS/agents/core).
 * [x] **Documentation Agents** — Automatic documentation generator agents in `src/platform/workforce`.
-* [x] **Review Agents** — Validation and quality audit agents in [agents/validator/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/agents/validator).
+* [x] **Review Agents** — Validation and quality audit agents in [agents/validator/](file:///C:/Users/rajaj/Projects/AegisOS/agents/validator).
 * [x] **Infrastructure Agents** — Environment provisioning and deployment agents.
 * [x] **Knowledge Agents** — Graph and RAG extraction agents.
 * [x] **Business Agents** — Persona-driven enterprise workflow agents.
-* [x] **Custom Agents** — Dynamic custom agent registration via [DigitalWorkerFramework.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workforce/DigitalWorkerFramework.ts).
+* [x] **Custom Agents** — Dynamic custom agent registration via [DigitalWorkerFramework.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workforce/DigitalWorkerFramework.ts).
 
 #### Agent Runtime
 * [x] **Agent Lifecycle** — Start, pause, resume, and terminate lifecycle control.
-* [x] **Agent Registry** — Central participant registry in [registry/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/participants/registry).
+* [x] **Agent Registry** — Central participant registry in [registry/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/participants/registry).
 * [x] **Agent Discovery** — Semantic matching of agent skills to required tasks.
 * [x] **Agent Scheduling** — Queue management and execution dispatch.
 * [x] **Agent Monitoring** — Real-time state and telemetry tracking.
@@ -295,17 +295,17 @@ Determine whether agents can deliberate, negotiate, collaborate, and reach conse
 
 ### Checklist
 #### Collaboration
-* [x] **Agent Council** — Deliberation panel implemented in [DeliberationService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/collective-intelligence/DeliberationService.ts).
+* [x] **Agent Council** — Deliberation panel implemented in [DeliberationService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/collective-intelligence/DeliberationService.ts).
 * [x] **Delegation** — Task sub-delegation from parent to child worker agents.
-* [x] **Consensus** — Voting and agreement protocol in [ConsensusService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/collective-intelligence/ConsensusService.ts).
-* [x] **Arbitration** — Critique and discrepancy resolution in [CritiqueService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/collective-intelligence/CritiqueService.ts).
-* [x] **Conflict Resolution** — Self-correction and reflection engine in [ReflectionService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/collective-intelligence/ReflectionService.ts).
+* [x] **Consensus** — Voting and agreement protocol in [ConsensusService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/collective-intelligence/ConsensusService.ts).
+* [x] **Arbitration** — Critique and discrepancy resolution in [CritiqueService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/collective-intelligence/CritiqueService.ts).
+* [x] **Conflict Resolution** — Self-correction and reflection engine in [ReflectionService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/collective-intelligence/ReflectionService.ts).
 
 #### Execution
 * [x] **Parallel Agents** — Concurrent execution of multi-agent tasks.
 * [x] **Sequential Agents** — Pipeline handover between specialized agents.
 * [x] **Nested Agents** — Tree-structured hierarchical agent invocation.
-* [x] **Hierarchical Agents** — Master-worker debate topology in [ConversaMultiAgentDebateEngine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/conversa/ConversaMultiAgentDebateEngine.ts).
+* [x] **Hierarchical Agents** — Master-worker debate topology in [ConversaMultiAgentDebateEngine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/conversa/ConversaMultiAgentDebateEngine.ts).
 
 ---
 
@@ -316,24 +316,24 @@ Evaluate model provider support, enterprise protocol adapters, and external tool
 
 ### Checklist
 #### AI Providers
-* [x] **OpenAI** — Native client provider in [infrastructure-providers.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/infrastructure-providers.ts).
+* [x] **OpenAI** — Native client provider in [infrastructure-providers.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/infrastructure-providers.ts).
 * [x] **Anthropic** — Native Claude provider integration.
 * [x] **Gemini** — Google Gemini provider integration.
 * [x] **Azure AI** — Azure OpenAI service provider support.
 * [x] **AWS Bedrock** — Amazon Bedrock provider integration.
-* [x] **Ollama** — Local AI container runtime integration in [ollama-ai-runtime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/ollama-ai-runtime.ts) and [Dockerfile.ollama](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/Dockerfile.ollama).
-* [x] **LiteLLM** — Multi-provider proxy routing in [litellm-ai-runtime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/litellm-ai-runtime.ts) and [Dockerfile.litellm](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/Dockerfile.litellm).
-* [x] **Custom Providers** — Open plugin contract for novel model APIs in [registry.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/registry.ts).
+* [x] **Ollama** — Local AI container runtime integration in [ollama-ai-runtime.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/ollama-ai-runtime.ts) and [Dockerfile.ollama](file:///C:/Users/rajaj/Projects/AegisOS/Dockerfile.ollama).
+* [x] **LiteLLM** — Multi-provider proxy routing in [litellm-ai-runtime.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/litellm-ai-runtime.ts) and [Dockerfile.litellm](file:///C:/Users/rajaj/Projects/AegisOS/Dockerfile.litellm).
+* [x] **Custom Providers** — Open plugin contract for novel model APIs in [registry.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/registry.ts).
 
 #### Enterprise Integrations
 * [x] **GitHub** — Full PR, code search, and commit integration.
 * [x] **Jira** — Issue tracking and workflow sync adapters.
 * [x] **Slack** — Bot integration and channel notification webhooks.
-* [x] **SAP** — Implemented via [SapEnterpriseAdapter.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/adapters/sap/SapEnterpriseAdapter.ts) supporting OData queries, CSRF token handling, and BAPI execution.
+* [x] **SAP** — Implemented via [SapEnterpriseAdapter.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/adapters/sap/SapEnterpriseAdapter.ts) supporting OData queries, CSRF token handling, and BAPI execution.
 * [x] **Databases** — PostgreSQL, Prisma ORM, Redis, and SQLite support.
-* [x] **Filesystem** — Safe local storage adapter in [local-artifact-storage.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/local-artifact-storage.ts).
-* [x] **Event Streams** — Redis pub/sub and stream adapters in [redis-platform.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/redis-platform.ts).
-* [x] **MCP Servers** — Model Context Protocol sandbox client and tool registry in [McpClientService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/mcp/McpClientService.ts) and [ToolSandboxProvider.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/mcp/ToolSandboxProvider.ts).
+* [x] **Filesystem** — Safe local storage adapter in [local-artifact-storage.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/local-artifact-storage.ts).
+* [x] **Event Streams** — Redis pub/sub and stream adapters in [redis-platform.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/redis-platform.ts).
+* [x] **MCP Servers** — Model Context Protocol sandbox client and tool registry in [McpClientService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/mcp/McpClientService.ts) and [ToolSandboxProvider.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/mcp/ToolSandboxProvider.ts).
 
 ---
 
@@ -345,9 +345,9 @@ Assess template management, versioning, testing, and evaluation pipelines for LL
 ### Checklist
 #### Prompt Framework
 * [x] **Prompt Templates** — Structured templating engine with variable injection.
-* [x] **Prompt Registry** — Central prompt repository in [prompt-versioning.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/registry/prompt-versioning.ts).
+* [x] **Prompt Registry** — Central prompt repository in [prompt-versioning.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/registry/prompt-versioning.ts).
 * [x] **Version Control** — Semantic prompt version tracking and rollback.
-* [x] **Prompt Testing** — Automated prompt assertion testing suite in [src/infrastructure/evaluation/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/evaluation).
+* [x] **Prompt Testing** — Automated prompt assertion testing suite in [src/infrastructure/evaluation/](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/evaluation).
 * [x] **Prompt Evaluation** — Accuracy, hallucination, and alignment scoring pipelines.
 
 ---
@@ -359,8 +359,8 @@ Evaluate ingestion, OCR, parsing, chunking, and indexing for enterprise document
 
 ### Checklist
 #### Documents
-* [x] **OCR** — Implemented via [OcrEngineAdapter.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/OcrEngineAdapter.ts) with table extraction & vision fallback.
-* [x] **Parsing** — Markdown, PDF, HTML, JSON, and source code parsers in [DocumentProcessor.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/DocumentProcessor.ts).
+* [x] **OCR** — Implemented via [OcrEngineAdapter.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/OcrEngineAdapter.ts) with table extraction & vision fallback.
+* [x] **Parsing** — Markdown, PDF, HTML, JSON, and source code parsers in [DocumentProcessor.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/DocumentProcessor.ts).
 * [x] **Chunking** — Semantic and sliding-window token chunking algorithms.
 * [x] **Metadata Extraction** — Automatic document header, author, tag, and key-value pair extraction.
 * [x] **Embeddings** — Vector embedding generation via active provider APIs.
@@ -375,7 +375,7 @@ Verify human governance, explicit approval steps, override capabilities, and esc
 
 ### Checklist
 #### Governance
-* [x] **Manual Approval** — Implemented in [pvp-engine.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/pvp/pvp-engine.ts) via Plan-Verification-PVP workflow.
+* [x] **Manual Approval** — Implemented in [pvp-engine.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/pvp/pvp-engine.ts) via Plan-Verification-PVP workflow.
 * [x] **Escalation** — Automatic escalation of low-confidence or high-risk agent actions.
 * [x] **Review Queues** — Pending action queues for human administrator approval.
 * [x] **Override Capability** — Instant operator abort and manual path override controls.
@@ -390,10 +390,10 @@ Verify omni-channel messaging and alerting capabilities.
 
 ### Checklist
 #### Notifications
-* [x] **Email** — SMTP & transactional email provider in [NotificationService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/notifications/NotificationService.ts).
+* [x] **Email** — SMTP & transactional email provider in [NotificationService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/notifications/NotificationService.ts).
 * [x] **Slack** — Incoming webhook and bot notification support.
 * [x] **Teams** — Microsoft Teams webhook integration.
-* [x] **SMS** — Multi-provider Twilio & AWS SNS integration in [SmsNotificationProvider.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/notifications/SmsNotificationProvider.ts).
+* [x] **SMS** — Multi-provider Twilio & AWS SNS integration in [SmsNotificationProvider.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/notifications/SmsNotificationProvider.ts).
 * [x] **Push Notifications** — Mobile push notification dispatcher in `mobile-auth.service.ts`.
 * [x] **Event Notifications** — Platform event pub/sub dispatchers.
 
@@ -407,15 +407,15 @@ Evaluate observability, operational monitoring, metrics, tracing, and health gov
 ### Checklist
 #### Observability
 * [x] **Logging** — Structured JSON logging across all kernel services.
-* [x] **Metrics** — Operational metrics collection in [reliability-observatory.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/observability/reliability-observatory.ts).
+* [x] **Metrics** — Operational metrics collection in [reliability-observatory.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/observability/reliability-observatory.ts).
 * [x] **Tracing** — Distributed trace context propagation across services.
 * [x] **Dashboards** — Observability UI dashboards in `src/modules/observability`.
 * [x] **Alerts** — Real-time threshold and anomaly alert dispatch.
 
 #### Runtime
-* [x] **Health Checks** — Liveness and readiness endpoints in [src/platform/health/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/health).
+* [x] **Health Checks** — Liveness and readiness endpoints in [src/platform/health/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/health).
 * [x] **Performance Monitoring** — Latency, memory, and token throughput monitoring.
-* [x] **Cost Analytics** — Model token consumption and monetary cost tracking in [src/infrastructure/economics/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/economics).
+* [x] **Cost Analytics** — Model token consumption and monetary cost tracking in [src/infrastructure/economics/](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/economics).
 * [x] **Model Analytics** — Quality, latency, and error rate tracking by model provider.
 * [x] **Capacity Planning** — Resource quota management in `ResourceManager.ts`.
 
@@ -430,13 +430,13 @@ Ensure zero-trust architecture, secrets security, policy enforcement, and audita
 #### Identity
 * [x] **Authentication** — Multi-factor, JWT session management, and OAuth integration.
 * [x] **Authorization** — Granular policy-based access control.
-* [x] **Secrets Management** — Encrypted vault integration in [secret.repository.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/repositories/secret.repository.ts).
-* [x] **Encryption** — Data-at-rest and data-in-transit encryption protocols in [hashing.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/hashing.ts).
+* [x] **Secrets Management** — Encrypted vault integration in [secret.repository.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/repositories/secret.repository.ts).
+* [x] **Encryption** — Data-at-rest and data-in-transit encryption protocols in [hashing.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/hashing.ts).
 
 #### Runtime
 * [x] **Policy Engine** — Strict runtime policy validation in `PolicyEngine.ts`.
-* [x] **Audit Trail** — Immutable audit logging in [audit.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/audit/audit.service.ts).
-* [x] **Compliance** — Standardized compliance report generator in [ComplianceEvidenceReport.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/ComplianceEvidenceReport.md).
+* [x] **Audit Trail** — Immutable audit logging in [audit.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/audit/audit.service.ts).
+* [x] **Compliance** — Standardized compliance report generator in [ComplianceEvidenceReport.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/ComplianceEvidenceReport.md).
 * [x] **Secure Execution** — Process isolation in `ToolSandboxProvider.ts`.
 * [x] **Zero Trust Principles** — Explicit authentication and authorization verification on every internal RPC boundary.
 
@@ -449,14 +449,14 @@ Assess cross-platform deployment, containerization, orchestration, and hardware 
 
 ### Checklist
 #### Deployment
-* [x] **Windows** — Complete Windows orchestration scripts ([run.bat](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/run.bat), [manage.bat](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/manage.bat), [Bootstrap.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/Bootstrap.ps1)).
-* [x] **Linux** — Multi-stage Linux container builds in [Dockerfile](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/Dockerfile).
-* [x] **Docker** — Compose deployment manifests ([docker-compose.yml](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docker-compose.yml), [docker-compose.prod.yml](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docker-compose.prod.yml)).
-* [x] **Kubernetes** — Production manifests in [k8s/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/k8s).
-* [x] **Cloud** — Automated SSL reverse proxy configurations ([Caddyfile](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/Caddyfile)).
+* [x] **Windows** — Complete Windows orchestration scripts ([run.bat](file:///C:/Users/rajaj/Projects/AegisOS/run.bat), [manage.bat](file:///C:/Users/rajaj/Projects/AegisOS/manage.bat), [Bootstrap.ps1](file:///C:/Users/rajaj/Projects/AegisOS/Bootstrap.ps1)).
+* [x] **Linux** — Multi-stage Linux container builds in [Dockerfile](file:///C:/Users/rajaj/Projects/AegisOS/Dockerfile).
+* [x] **Docker** — Compose deployment manifests ([docker-compose.yml](file:///C:/Users/rajaj/Projects/AegisOS/docker-compose.yml), [docker-compose.prod.yml](file:///C:/Users/rajaj/Projects/AegisOS/docker-compose.prod.yml)).
+* [x] **Kubernetes** — Production manifests in [k8s/](file:///C:/Users/rajaj/Projects/AegisOS/k8s).
+* [x] **Cloud** — Automated SSL reverse proxy configurations ([Caddyfile](file:///C:/Users/rajaj/Projects/AegisOS/Caddyfile)).
 * [x] **Edge** — Lightweight node runtime compatibility for edge deployment.
-* [x] **GPU** — Dedicated GPU acceleration compose overlay ([docker-compose.gpu.yml](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docker-compose.gpu.yml)).
-* [x] **Local AI** — Zero-cloud fully offline containerized local LLM stack powered by Ollama and LiteLLM ([Dockerfile.ollama](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/Dockerfile.ollama)).
+* [x] **GPU** — Dedicated GPU acceleration compose overlay ([docker-compose.gpu.yml](file:///C:/Users/rajaj/Projects/AegisOS/docker-compose.gpu.yml)).
+* [x] **Local AI** — Zero-cloud fully offline containerized local LLM stack powered by Ollama and LiteLLM ([Dockerfile.ollama](file:///C:/Users/rajaj/Projects/AegisOS/Dockerfile.ollama)).
 
 ---
 
@@ -470,16 +470,16 @@ Evaluate compliance with enterprise clean code standards, SOLID principles, and 
 * [x] **Modular Architecture** — Decoupled platform services in `src/platform/`.
 * [x] **SOLID Principles** — Enforced interface segregation and dependency inversion.
 * [x] **Clean Architecture** — Domain-driven core isolated from external adapters.
-* [x] **Dependency Injection** — Service registry DI container in [ServiceRegistry.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/kernel/ServiceRegistry.ts).
+* [x] **Dependency Injection** — Service registry DI container in [ServiceRegistry.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/kernel/ServiceRegistry.ts).
 * [x] **Low Coupling** — EventBus pub/sub communication between independent subsystems.
 * [x] **High Cohesion** — Single-responsibility domain modules across `src/platform/`.
 
 #### Maintainability
-* [x] **Documentation** — Extensive handbook docs in [docs/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs).
-* [x] **Architecture Decision Records** — Formal ADR ledger in [adr/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr).
-* [x] **Coding Standards** — Standardized guidelines in [CODING_STANDARDS.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/CODING_STANDARDS.md).
-* [x] **Static Analysis** — Strict ESLint configuration ([eslint.config.mjs](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/eslint.config.mjs)) and TypeScript strict flags ([tsconfig.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/tsconfig.json)).
-* [x] **Technical Debt Tracking** — Maintained register in [TECHNICAL_DEBT.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/TECHNICAL_DEBT.md).
+* [x] **Documentation** — Extensive handbook docs in [docs/](file:///C:/Users/rajaj/Projects/AegisOS/docs).
+* [x] **Architecture Decision Records** — Formal ADR ledger in [adr/](file:///C:/Users/rajaj/Projects/AegisOS/adr).
+* [x] **Coding Standards** — Standardized guidelines in [CODING_STANDARDS.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/CODING_STANDARDS.md).
+* [x] **Static Analysis** — Strict ESLint configuration ([eslint.config.mjs](file:///C:/Users/rajaj/Projects/AegisOS/eslint.config.mjs)) and TypeScript strict flags ([tsconfig.json](file:///C:/Users/rajaj/Projects/AegisOS/tsconfig.json)).
+* [x] **Technical Debt Tracking** — Maintained register in [TECHNICAL_DEBT.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/TECHNICAL_DEBT.md).
 
 ---
 
@@ -491,9 +491,9 @@ Evaluate testing depth, automated verification coverage, and benchmark suites.
 ### Checklist
 #### Coverage
 * [x] **Unit Tests** — Vitest suite passing 23 / 23 test suites (52 tests total) with zero failures.
-* [x] **Integration Tests** — Multi-component integration tests in [tests/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/tests).
-* [x] **End-to-End Tests** — Playwright automated E2E test suite ([playwright.config.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/playwright.config.ts), `tests/e2e`).
-* [x] **Performance Tests** — Latency and load benchmarking in [src/platform/benchmarking/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/benchmarking).
+* [x] **Integration Tests** — Multi-component integration tests in [tests/](file:///C:/Users/rajaj/Projects/AegisOS/tests).
+* [x] **End-to-End Tests** — Playwright automated E2E test suite ([playwright.config.ts](file:///C:/Users/rajaj/Projects/AegisOS/playwright.config.ts), `tests/e2e`).
+* [x] **Performance Tests** — Latency and load benchmarking in [src/platform/benchmarking/](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/benchmarking).
 * [x] **Security Tests** — Gitleaks credential scanning and process isolation verification.
 
 ---
@@ -505,12 +505,12 @@ Evaluate build, release, deployment automation, and feature delivery controls.
 
 ### Checklist
 #### DevOps
-* [x] **Build Automation** — Standard npm build pipelines and PowerShell automation scripts ([Bootstrap.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/Bootstrap.ps1)).
-* [x] **Release Pipelines** — GitHub Actions workflows in [.github/workflows/](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/.github/workflows).
-* [x] **Deployment Automation** — Batch and script-driven deployment routines ([deploy.bat](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/deploy.bat)).
-* [x] **Rollback Strategy** — Reversion procedures documented in [RELEASE_PLAN.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/RELEASE_PLAN.md).
-* [x] **Canary Deployment** — Automated progressive canary rollout CRD in [canary-rollout.yaml](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/k8s/canary-rollout.yaml) and controller script [canary-rollout.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/canary-rollout.ps1).
-* [x] **Feature Flags** — Dynamic flag evaluation engine in [feature-flags.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/flags/feature-flags.ts).
+* [x] **Build Automation** — Standard npm build pipelines and PowerShell automation scripts ([Bootstrap.ps1](file:///C:/Users/rajaj/Projects/AegisOS/Bootstrap.ps1)).
+* [x] **Release Pipelines** — GitHub Actions workflows in [.github/workflows/](file:///C:/Users/rajaj/Projects/AegisOS/.github/workflows).
+* [x] **Deployment Automation** — Batch and script-driven deployment routines ([deploy.bat](file:///C:/Users/rajaj/Projects/AegisOS/deploy.bat)).
+* [x] **Rollback Strategy** — Reversion procedures documented in [RELEASE_PLAN.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/RELEASE_PLAN.md).
+* [x] **Canary Deployment** — Automated progressive canary rollout CRD in [canary-rollout.yaml](file:///C:/Users/rajaj/Projects/AegisOS/k8s/canary-rollout.yaml) and controller script [canary-rollout.ps1](file:///C:/Users/rajaj/Projects/AegisOS/scripts/canary-rollout.ps1).
+* [x] **Feature Flags** — Dynamic flag evaluation engine in [feature-flags.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/flags/feature-flags.ts).
 
 ---
 
@@ -526,7 +526,7 @@ Assess regulatory compliance, auditability, disaster recovery, and operational s
 * [x] **Release Management** — Controlled release cycles documented in `RELEASE_PLAN.md`.
 * [x] **Auditability** — Cryptographically hashed audit trails.
 * [x] **Compliance** — System-wide compliance reporting in `ComplianceEvidenceReport.md`.
-* [x] **Disaster Recovery** — High-availability disaster recovery runbook in [Disaster_Recovery_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/Disaster_Recovery_Guide.md).
+* [x] **Disaster Recovery** — High-availability disaster recovery runbook in [Disaster_Recovery_Guide.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/Disaster_Recovery_Guide.md).
 
 ---
 
@@ -566,11 +566,11 @@ Applying the 0–5 maturity rubric across all 23 primary architectural pillars:
 
 All 6 identified gap items have been fully resolved with secure, production-grade enterprise implementations:
 
-1. **Visual Agent Builder Runtime Bridge**: Built [VisualAgentCompiler.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workflow/builder/VisualAgentCompiler.ts) and [VisualAgentRuntimeBridge.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/workflow/builder/VisualAgentRuntimeBridge.ts) to compile and execute visual node graphs directly in the kernel.
-2. **Enterprise SAP Adapter**: Built [SapEnterpriseAdapter.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/adapters/sap/SapEnterpriseAdapter.ts) supporting NetWeaver OData querying, CSRF token handling, and BAPI execution.
-3. **Heavy OCR Document Engine**: Built [OcrEngineAdapter.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/OcrEngineAdapter.ts) and integrated it into [DocumentProcessor.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/knowledge/DocumentProcessor.ts) for multi-modal image OCR and table extraction.
-4. **Enterprise SMS Provider Adapter**: Built [SmsNotificationProvider.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/notifications/SmsNotificationProvider.ts) with E.164 phone number validation and Twilio/AWS SNS dispatching.
-5. **Automated Canary Deployment Controller**: Added Kubernetes Flagger CRD manifest [canary-rollout.yaml](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/k8s/canary-rollout.yaml) and controller script [canary-rollout.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/scripts/canary-rollout.ps1).
+1. **Visual Agent Builder Runtime Bridge**: Built [VisualAgentCompiler.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workflow/builder/VisualAgentCompiler.ts) and [VisualAgentRuntimeBridge.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/workflow/builder/VisualAgentRuntimeBridge.ts) to compile and execute visual node graphs directly in the kernel.
+2. **Enterprise SAP Adapter**: Built [SapEnterpriseAdapter.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/adapters/sap/SapEnterpriseAdapter.ts) supporting NetWeaver OData querying, CSRF token handling, and BAPI execution.
+3. **Heavy OCR Document Engine**: Built [OcrEngineAdapter.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/OcrEngineAdapter.ts) and integrated it into [DocumentProcessor.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/knowledge/DocumentProcessor.ts) for multi-modal image OCR and table extraction.
+4. **Enterprise SMS Provider Adapter**: Built [SmsNotificationProvider.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/notifications/SmsNotificationProvider.ts) with E.164 phone number validation and Twilio/AWS SNS dispatching.
+5. **Automated Canary Deployment Controller**: Added Kubernetes Flagger CRD manifest [canary-rollout.yaml](file:///C:/Users/rajaj/Projects/AegisOS/k8s/canary-rollout.yaml) and controller script [canary-rollout.ps1](file:///C:/Users/rajaj/Projects/AegisOS/scripts/canary-rollout.ps1).
 6. **API Standard Alignment**: Confirmed REST + OpenAPI as the primary enterprise contract specification.
 
 ---

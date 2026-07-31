@@ -12,7 +12,7 @@ This document tracks all audited review findings, their description, status, evi
 * **Source:** Final Architectural Certification Review (2026-07-21)
 * **Description:** Parallel workflow execution modules (`WorkflowRuntime` and `WorkflowService`) exist in the codebase, causing state synchronization drift.
 * **Status:** 🔴 **Open**
-* **Evidence:** Duplicate loops found in [WorkflowRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts) and [workflow.service.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/services/workflow.service.ts).
+* **Evidence:** Duplicate loops found in [WorkflowRuntime.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/workflow.service.ts) and [workflow.service.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/services/workflow.service.ts).
 * **Resolution:** Open backlog item to deprecate `WorkflowRuntime.ts`.
 
 #### F-02: Host Remote Code Execution via Extensions
@@ -20,7 +20,7 @@ This document tracks all audited review findings, their description, status, evi
 * **Source:** Final Architectural Certification Review (2026-07-21)
 * **Description:** Dynamic third-party plugins are loaded on the main process thread using standard require calls, allowing sandbox escapes.
 * **Status:** 🔴 **Open**
-* **Evidence:** Direct eval require in [ExtensionRuntimeService.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/extension/ExtensionRuntimeService.ts#L330).
+* **Evidence:** Direct eval require in [ExtensionRuntimeService.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/extension/ExtensionRuntimeService.ts#L330).
 * **Resolution:** Open backlog item to implement worker threads with VM sandboxes.
 
 #### F-03: Mocked Provider Inference Endpoints
@@ -28,7 +28,7 @@ This document tracks all audited review findings, their description, status, evi
 * **Source:** Final Architectural Certification Review (2026-07-21)
 * **Description:** Ollama and LiteLLM providers return static, simulated text responses.
 * **Status:** 🔴 **Open**
-* **Evidence:** Provider skeletons in [skeletons.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/skeletons.ts).
+* **Evidence:** Provider skeletons in [skeletons.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/skeletons.ts).
 * **Resolution:** Open backlog item to establish real client HTTP connections to local ports.
 
 #### F-04: Simulated Tool Execution sandboxing
@@ -36,7 +36,7 @@ This document tracks all audited review findings, their description, status, evi
 * **Source:** Final Architectural Certification Review (2026-07-21)
 * **Description:** The tool execution runner returns simulated sandbox string responses instead of executing real IO.
 * **Status:** 🔴 **Open**
-* **Evidence:** Mock code inside [ToolRuntime.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/ai-runtime/ToolRuntime.ts#L154-L165).
+* **Evidence:** Mock code inside [ToolRuntime.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/ai-runtime/ToolRuntime.ts#L154-L165).
 * **Resolution:** Open backlog item to implement actual disk and network execution loops in sandboxed folders.
 
 #### F-05: Missing Model Context Protocol (MCP) transport SDK
@@ -44,5 +44,5 @@ This document tracks all audited review findings, their description, status, evi
 * **Source:** Final Architectural Certification Review (2026-07-21)
 * **Description:** No MCP SDK client library packages exist in dependencies, making static server configurations unusable.
 * **Status:** 🔴 **Open**
-* **Evidence:** Omission of `@modelcontextprotocol/sdk` inside [package.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/package.json).
+* **Evidence:** Omission of `@modelcontextprotocol/sdk` inside [package.json](file:///C:/Users/rajaj/Projects/AegisOS/package.json).
 * **Resolution:** Open backlog item to install SDK and implement stdio transports.

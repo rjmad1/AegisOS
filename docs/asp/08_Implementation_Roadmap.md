@@ -3,7 +3,7 @@
 
 > **Status**: APPROVED  
 > **Authority**: AegisOS Engineering Steering Committee & Program Office  
-> **Reference Document**: [00_Master_ASP_Framework.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/00_Master_ASP_Framework.md)  
+> **Reference Document**: [00_Master_ASP_Framework.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/00_Master_ASP_Framework.md)  
 
 ---
 

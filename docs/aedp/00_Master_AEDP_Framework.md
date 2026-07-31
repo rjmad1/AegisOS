@@ -82,13 +82,13 @@ Everything built during AEDP must consume existing certified platform APIs (`src
 
 The AEDP specification suite consists of nine master documentation deliverables located in `docs/aedp/`:
 
-1. [00_Master_AEDP_Framework.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/00_Master_AEDP_Framework.md) — Master Program Charter & Governance Framework
-2. [01_Ecosystem_Architecture.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/01_Ecosystem_Architecture.md) — Ecosystem Architecture & 8 Core API Contracts
-3. [02_Reference_Product_Portfolio.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/02_Reference_Product_Portfolio.md) — Reference Application Portfolio Specifications
-4. [03_Official_Mission_Pack_Specifications.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/03_Official_Mission_Pack_Specifications.md) — Specifications for 8 Reusable Mission Packs
-5. [04_Marketplace_Architecture.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/04_Marketplace_Architecture.md) — 5-Tiered Marketplace System Architecture
-6. [05_SDK_Roadmap.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/05_SDK_Roadmap.md) — SDK Roadmap, Aegis CLI, Testing & Certification Tools
-7. [06_Partner_Development_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/06_Partner_Development_Guide.md) — Partner & Enterprise Developer Handbook
-8. [07_Community_Contribution_Guide.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/07_Community_Contribution_Guide.md) — Community Guidelines & Open Source Contribution Flow
-9. [08_Version_2_Vision.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/08_Version_2_Vision.md) — AegisOS v2.0 Autonomous Mesh & Future Vision
-10. [ecosystem_manifest.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/aedp/ecosystem_manifest.json) — Machine-Readable Catalog of Ecosystem Assets
+1. [00_Master_AEDP_Framework.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/00_Master_AEDP_Framework.md) — Master Program Charter & Governance Framework
+2. [01_Ecosystem_Architecture.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/01_Ecosystem_Architecture.md) — Ecosystem Architecture & 8 Core API Contracts
+3. [02_Reference_Product_Portfolio.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/02_Reference_Product_Portfolio.md) — Reference Application Portfolio Specifications
+4. [03_Official_Mission_Pack_Specifications.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/03_Official_Mission_Pack_Specifications.md) — Specifications for 8 Reusable Mission Packs
+5. [04_Marketplace_Architecture.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/04_Marketplace_Architecture.md) — 5-Tiered Marketplace System Architecture
+6. [05_SDK_Roadmap.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/05_SDK_Roadmap.md) — SDK Roadmap, Aegis CLI, Testing & Certification Tools
+7. [06_Partner_Development_Guide.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/06_Partner_Development_Guide.md) — Partner & Enterprise Developer Handbook
+8. [07_Community_Contribution_Guide.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/07_Community_Contribution_Guide.md) — Community Guidelines & Open Source Contribution Flow
+9. [08_Version_2_Vision.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/08_Version_2_Vision.md) — AegisOS v2.0 Autonomous Mesh & Future Vision
+10. [ecosystem_manifest.json](file:///C:/Users/rajaj/Projects/AegisOS/docs/aedp/ecosystem_manifest.json) — Machine-Readable Catalog of Ecosystem Assets

@@ -107,5 +107,5 @@ This document records the design decisions and trade-offs made during the UAWOS 
 * **Consequences**: 
   - Prevents security exposure from direct model/executor access.
   - Ensures multi-user isolation and access audits.
-  - Formally documented in global decision registry as [ADR-014](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/adr/ADR-014-Open-WebUI-Thin-Client-Integration.md).
+  - Formally documented in global decision registry as [ADR-014](file:///C:/Users/rajaj/Projects/AegisOS/adr/ADR-014-Open-WebUI-Thin-Client-Integration.md).
 

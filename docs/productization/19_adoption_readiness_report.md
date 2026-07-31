@@ -35,7 +35,7 @@ To transition AegisOS into a self-sustaining product, the platform establishes f
 
 ## 2. Extension & Custom Plugin Development
 
-AegisOS enables loose architectural coupling by providing five harvested extension points in the [ExtensionRegistry](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/extension/ExtensionFramework.ts):
+AegisOS enables loose architectural coupling by providing five harvested extension points in the [ExtensionRegistry](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/extension/ExtensionFramework.ts):
 
 1. `workspace-provider`: Allows developers to register custom storage backends (e.g. MinIO, local workspace directories).
 2. `execution-provider`: Custom execution routines.

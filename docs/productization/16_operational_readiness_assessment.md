@@ -45,14 +45,14 @@ All core system services are verified active. Continuous health monitoring is pe
 
 Reliability has been hardened via containerized volume backups and database SQL dumps. Recovery behaviors are managed by the following orchestrators:
 
-* **Backup Engine** ([BackupProduction.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/BackupProduction.ps1)):
+* **Backup Engine** ([BackupProduction.ps1](file:///C:/Users/rajaj/Projects/AegisOS/automation/BackupProduction.ps1)):
   * Automatically exports all local configurations (`.env.production`, `Caddyfile`, `console_config.json`).
   * Backs up services registry keys from the Windows registry.
   * Captures PostgreSQL database schema and records via containerized `pg_dump`.
   * Archives MinIO Docker volumes by compressing storage directories into a `.tar.gz` archive.
   * Consolidates all directories into a timestamped ZIP archive under `D:\AI-Operations\backups\`.
 
-* **Restore Engine** ([RestoreProduction.ps1](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/automation/RestoreProduction.ps1)):
+* **Restore Engine** ([RestoreProduction.ps1](file:///C:/Users/rajaj/Projects/AegisOS/automation/RestoreProduction.ps1)):
   * Stops running SCM/NSSM services to release active locks.
   * Restores configuration files and re-imports registry settings.
   * Re-instates PostgreSQL databases using `psql` command streams.

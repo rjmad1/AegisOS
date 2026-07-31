@@ -18,7 +18,7 @@ This report certifies the enterprise preparedness of the AegisOS console environ
 
 ### 2.1 Role-Based Access Control (RBAC)
 - **Control AC-1**: Users are strictly segmented into `admin`, `developer`, and `reviewer` roles.
-- **Evidence**: Verified in [authorization.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/authorization.ts).
+- **Evidence**: Verified in [authorization.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/authorization.ts).
 - **Test Verdict**: **PASS** (Asserted in `EnterpriseReadiness.test.ts` where Admin role successfully validates sensitive commands and Viewer is restricted to read-only views).
 
 ### 2.2 Pre-Upgrade Backup & Rollback (Disaster Recovery)

@@ -59,17 +59,17 @@ Every execution flowed end-to-end through this pipeline without shortcuts, mocke
 
 The complete Platform Validation Program evidence suite comprises the following 8 formal documents and data assets:
 
-1. [00_Master_PVP_Certification_Package.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/00_Master_PVP_Certification_Package.md) - Master Executive & Technical Release Certification.
-2. [01_Mission_Validation_Library.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/01_Mission_Validation_Library.md) - Granular 53-mission production specification catalog.
-3. [02_Platform_Validation_Framework.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/02_Platform_Validation_Framework.md) - Validation engine architecture, state machine, and decision rules.
-4. [03_Mission_Certification_Dashboard.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/03_Mission_Certification_Dashboard.md) - Live certification dashboard visualization.
-5. [04_Mission_Success_Matrix.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/04_Mission_Success_Matrix.md) - Granular 53-mission outcome & duration matrix.
-6. [05_Capability_Coverage_Matrix.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/05_Capability_Coverage_Matrix.md) - 100% subsystem and capability utilization mapping.
-7. [06_Platform_Readiness_Scorecard.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/06_Platform_Readiness_Scorecard.md) - Multi-dimensional quantitative scoring model.
-8. [07_Mission_Gap_Analysis.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/07_Mission_Gap_Analysis.md) - Empirical gap analysis & auto-recovery telemetry.
-9. [08_Recommended_RC2_Priorities.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/08_Recommended_RC2_Priorities.md) - Data-driven engineering roadmap for RC2.
-10. [mission_catalog.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/mission_catalog.json) - Raw machine-readable mission specifications.
-11. [pvp_execution_results.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/pvp_execution_results.json) - Recorded execution evidence and telemetry logs.
+1. [00_Master_PVP_Certification_Package.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/00_Master_PVP_Certification_Package.md) - Master Executive & Technical Release Certification.
+2. [01_Mission_Validation_Library.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/01_Mission_Validation_Library.md) - Granular 53-mission production specification catalog.
+3. [02_Platform_Validation_Framework.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/02_Platform_Validation_Framework.md) - Validation engine architecture, state machine, and decision rules.
+4. [03_Mission_Certification_Dashboard.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/03_Mission_Certification_Dashboard.md) - Live certification dashboard visualization.
+5. [04_Mission_Success_Matrix.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/04_Mission_Success_Matrix.md) - Granular 53-mission outcome & duration matrix.
+6. [05_Capability_Coverage_Matrix.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/05_Capability_Coverage_Matrix.md) - 100% subsystem and capability utilization mapping.
+7. [06_Platform_Readiness_Scorecard.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/06_Platform_Readiness_Scorecard.md) - Multi-dimensional quantitative scoring model.
+8. [07_Mission_Gap_Analysis.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/07_Mission_Gap_Analysis.md) - Empirical gap analysis & auto-recovery telemetry.
+9. [08_Recommended_RC2_Priorities.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/08_Recommended_RC2_Priorities.md) - Data-driven engineering roadmap for RC2.
+10. [mission_catalog.json](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/mission_catalog.json) - Raw machine-readable mission specifications.
+11. [pvp_execution_results.json](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/pvp_execution_results.json) - Recorded execution evidence and telemetry logs.
 
 ---
 

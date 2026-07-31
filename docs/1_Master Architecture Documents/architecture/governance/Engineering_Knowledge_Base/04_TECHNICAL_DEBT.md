@@ -30,7 +30,7 @@ This register tracks structural, security, implementation, and architectural tec
 * **Severity:** Medium | **Priority:** High
 * **Status:** 🟡 **Active (Under Engineering Focus - Sprint 1)**
 * **Opened:** 2026-07-21 | **Owner:** Infrastructure Engineering
-* **Evidence:** [CloudSpilloverRouter.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/infrastructure/providers/cloud-spillover-router.ts)
+* **Evidence:** [CloudSpilloverRouter.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/infrastructure/providers/cloud-spillover-router.ts)
 * **Mitigation Plan:** Wire Layer 0 CUDA telemetry event bus directly into the router for precision free VRAM failover evaluation.
 
 #### [TD-07] Manual SAML Assertion Group Claim Role Assignment
@@ -40,7 +40,7 @@ This register tracks structural, security, implementation, and architectural tec
 * **Severity:** Low | **Priority:** Medium
 * **Status:** 🟡 **Active (Under Engineering Focus - Sprint 1)**
 * **Opened:** 2026-07-21 | **Owner:** Core Security Engineering
-* **Evidence:** [SamlProvider.ts](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/src/platform/auth/providers/SamlProvider.ts)
+* **Evidence:** [SamlProvider.ts](file:///C:/Users/rajaj/Projects/AegisOS/src/platform/auth/providers/SamlProvider.ts)
 * **Mitigation Plan:** Implement automated Group Claim XML assertion parser to map Entra ID security groups directly to Prisma `Role` records.
 
 #### [TD-08] Custom Vector Database (Raja RAG) Remnants

@@ -92,4 +92,4 @@
 ## 6. Accessing Live Telemetry
 
 Raw JSON execution logs for all 53 missions are persisted at:
-[pvp_execution_results.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/pvp/pvp_execution_results.json).
+[pvp_execution_results.json](file:///C:/Users/rajaj/Projects/AegisOS/docs/pvp/pvp_execution_results.json).

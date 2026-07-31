@@ -57,17 +57,17 @@ The AegisOS Studio Program is specified across eleven comprehensive specificatio
 
 | Module ID | Document Title | Primary Scope |
 | :--- | :--- | :--- |
-| **`ASP-00`** | [00_Master_ASP_Framework.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/00_Master_ASP_Framework.md) | Program Charter, Principles, Architecture, Governance |
-| **`ASP-01`** | [01_Studio_Product_Vision.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/01_Studio_Product_Vision.md) | Hybrid Vision (VS Code + Notion + Claude + Copilot + Cursor + Tana) |
-| **`ASP-02`** | [02_Information_Architecture.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/02_Information_Architecture.md) | Domain Model, Entity Taxonomy, Caching & State Topology |
-| **`ASP-03`** | [03_Navigation_and_Perspective_System.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/03_Navigation_and_Perspective_System.md) | Shell Hierarchy, Navigation System, 6 Persona Perspectives |
-| **`ASP-04`** | [04_UX_Flows_and_Interaction_Model.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/04_UX_Flows_and_Interaction_Model.md) | End-to-End User Journeys, Live Execution & HITL Workflows |
-| **`ASP-05`** | [05_Screen_Specifications.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/05_Screen_Specifications.md) | Exhaustive Specifications & Wireframes for 11 Core Experiences |
-| **`ASP-06`** | [06_Design_System.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/06_Design_System.md) | Visual Tokens, Typography, Themes, Layouts & Micro-Interactions |
-| **`ASP-07`** | [07_Platform_Consumption_Matrix.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/07_Platform_Consumption_Matrix.md) | Zero-Privilege REST & WebSocket API Binding Contract Matrix |
-| **`ASP-08`** | [08_Implementation_Roadmap.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/08_Implementation_Roadmap.md) | 4-Phase Engineering Delivery Plan & Governance Quality Gates |
-| **`ASP-09`** | [09_MVP_Definition.md](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/09_MVP_Definition.md) | Reference MVP Scope, Target KPI Benchmarks & Acceptance Criteria |
-| **`ASP-MANIFEST`** | [asp_manifest.json](file:///d:/1_Projects/OpenClawOllamaLiteLLM_Transparency/docs/asp/asp_manifest.json) | Machine-Readable Studio Configuration, Screen & API Schema |
+| **`ASP-00`** | [00_Master_ASP_Framework.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/00_Master_ASP_Framework.md) | Program Charter, Principles, Architecture, Governance |
+| **`ASP-01`** | [01_Studio_Product_Vision.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/01_Studio_Product_Vision.md) | Hybrid Vision (VS Code + Notion + Claude + Copilot + Cursor + Tana) |
+| **`ASP-02`** | [02_Information_Architecture.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/02_Information_Architecture.md) | Domain Model, Entity Taxonomy, Caching & State Topology |
+| **`ASP-03`** | [03_Navigation_and_Perspective_System.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/03_Navigation_and_Perspective_System.md) | Shell Hierarchy, Navigation System, 6 Persona Perspectives |
+| **`ASP-04`** | [04_UX_Flows_and_Interaction_Model.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/04_UX_Flows_and_Interaction_Model.md) | End-to-End User Journeys, Live Execution & HITL Workflows |
+| **`ASP-05`** | [05_Screen_Specifications.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/05_Screen_Specifications.md) | Exhaustive Specifications & Wireframes for 11 Core Experiences |
+| **`ASP-06`** | [06_Design_System.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/06_Design_System.md) | Visual Tokens, Typography, Themes, Layouts & Micro-Interactions |
+| **`ASP-07`** | [07_Platform_Consumption_Matrix.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/07_Platform_Consumption_Matrix.md) | Zero-Privilege REST & WebSocket API Binding Contract Matrix |
+| **`ASP-08`** | [08_Implementation_Roadmap.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/08_Implementation_Roadmap.md) | 4-Phase Engineering Delivery Plan & Governance Quality Gates |
+| **`ASP-09`** | [09_MVP_Definition.md](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/09_MVP_Definition.md) | Reference MVP Scope, Target KPI Benchmarks & Acceptance Criteria |
+| **`ASP-MANIFEST`** | [asp_manifest.json](file:///C:/Users/rajaj/Projects/AegisOS/docs/asp/asp_manifest.json) | Machine-Readable Studio Configuration, Screen & API Schema |
 
 ---
 

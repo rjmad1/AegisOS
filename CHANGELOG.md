@@ -4,6 +4,14 @@ All notable changes to AegisOS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.9] - 2026-07-31
+
+### Added
+- **Enterprise Architecture Audit & Due Diligence Remediation**: Conducted full 25-section due diligence audit (v3.0), resolved local dependency bootstrapping, and upgraded overall platform recommendation to **PROCEED (UNCONDITIONAL)**.
+- **Hardened Database Configuration Script**: Updated `scripts/configure-db.js` to execute `--no-install` project-locked Prisma CLI commands and auto-synchronize SQLite database schemas during startup.
+- **Documentation Link Cross-Reference Remediation**: Re-mapped legacy absolute path references across 72 documentation files and added missing release reference stubs (`SUPPORT_MATRIX.md`, `RELEASE_NOTES.md`, `UPGRADE_NOTES.md`). Link validation (`validate-docs.js`) verified **0 broken links across 610 markdown files**.
+- **Test Infrastructure Hardening**: Configured `vitest.config.ts` pool options (`pool: 'forks'`, `singleFork: true`) and isolated test database instance (`databases/test.db`) for deterministic SQLite test execution.
+
 ## [1.2.8] - 2026-07-25
 
 ### Added
