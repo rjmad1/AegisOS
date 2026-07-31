@@ -57,7 +57,6 @@ describe("EKOS Knowledge Platform Suite", () => {
   describe("RAG Platform", () => {
     it("should match relevant content in hybrid search and provide grounding verification", async () => {
       const searchResult = await ragPlatform.retrieveAndGenerate("incident response escalations");
-      
       expect(searchResult.answer).toBeDefined();
       expect(searchResult.confidence).toBeGreaterThan(0.5);
       expect(searchResult.grounding.isGrounded).toBe(true);

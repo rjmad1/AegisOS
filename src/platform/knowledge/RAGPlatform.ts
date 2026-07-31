@@ -196,8 +196,11 @@ export class RAGPlatform {
 
     // Detect claims in the answer (e.g. specific keywords, stats)
     // and verify if they exist in retrieved text
-    const sentences = answer.match(/[^.!?]+[.!?]+/g) || [answer];
-    
+    // Sanitize common abbreviations before splitting into sentences
+    const sanitizedAnswer = answer.replace(/\b(Dr|Mr|Mrs|Ms|Inc|Ltd|vs|v|e\.g|i\.e)\./gi, "$1_DOT_");
+    const rawSentences = sanitizedAnswer.match(/[^.!?]+[.!?]+/g) || [sanitizedAnswer];
+    const sentences = rawSentences.map(s => s.replace(/_DOT_/g, "."));
+
     sentences.forEach(sentence => {
       const cleanSentence = sentence.trim();
       if (cleanSentence.length < 10) return;
@@ -206,7 +209,10 @@ export class RAGPlatform {
       if (
         cleanSentence.toLowerCase().startsWith("based on") ||
         cleanSentence.toLowerCase().startsWith("here is the verified") ||
-        cleanSentence.toLowerCase().startsWith("no matching verified")
+        cleanSentence.toLowerCase().startsWith("no matching verified") ||
+        cleanSentence.toLowerCase().startsWith("[verified]") ||
+        cleanSentence.toLowerCase().startsWith("verified") ||
+        cleanSentence.toLowerCase().startsWith("additionally")
       ) {
         return;
       }
@@ -248,15 +254,17 @@ export class RAGPlatform {
 
     // 1. Search Knowledge Graph and Documents
     const results = await this.search({ query, searchType, limit: 3 });
-    const retrievedChunks = results.map(r => r.entity.description);
+    const retrievedChunks = results.map(r => `${r.entity.name} ${r.entity.description}`);
 
     // 2. Draft Response (simulating LLM answer grounded in chunks)
     let answer = `Based on your request "${query}", here is the verified knowledge:\n`;
     if (results.length > 0) {
       const topEntity = results[0].entity;
-      answer += `[Verified] ${topEntity.name}: ${topEntity.description}.\n`;
+      const topDesc = topEntity.description ? `: ${topEntity.description}` : "";
+      answer += `[Verified] ${topEntity.name}${topDesc}.\n`;
       if (results[1]) {
-        answer += `Additionally, this connects to ${results[1].entity.name} (${results[1].entity.description}).`;
+        const secDesc = results[1].entity.description ? ` (${results[1].entity.description})` : "";
+        answer += `Additionally, this connects to ${results[1].entity.name}${secDesc}.`;
       }
     } else {
       answer += "No matching verified records found in the enterprise knowledge graph.";

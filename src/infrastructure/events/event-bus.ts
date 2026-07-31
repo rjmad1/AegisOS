@@ -181,15 +181,23 @@ export class HardenedEventBus {
   }
 
   public getDLQ(): any[] {
-    if (fs.existsSync(this.dlqPath)) {
-      return JSON.parse(fs.readFileSync(this.dlqPath, "utf-8"));
+    try {
+      if (fs.existsSync(this.dlqPath)) {
+        return JSON.parse(fs.readFileSync(this.dlqPath, "utf-8"));
+      }
+    } catch (err) {
+      console.warn("[EventBus] Failed to read DLQ log file:", err);
     }
     return [];
   }
 
   public getAuditTrail(): HardenedEvent[] {
-    if (fs.existsSync(this.auditLogPath)) {
-      return JSON.parse(fs.readFileSync(this.auditLogPath, "utf-8"));
+    try {
+      if (fs.existsSync(this.auditLogPath)) {
+        return JSON.parse(fs.readFileSync(this.auditLogPath, "utf-8"));
+      }
+    } catch (err) {
+      console.warn("[EventBus] Failed to read audit log file:", err);
     }
     return [];
   }
