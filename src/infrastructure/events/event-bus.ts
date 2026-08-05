@@ -155,7 +155,10 @@ export class HardenedEventBus {
     try {
       let dlq: any[] = [];
       if (fs.existsSync(this.dlqPath)) {
-        dlq = JSON.parse(fs.readFileSync(this.dlqPath, "utf-8"));
+        const content = fs.readFileSync(this.dlqPath, "utf-8").trim();
+        if (content) {
+          dlq = JSON.parse(content);
+        }
       }
       dlq.push({ event, reason, failedAt: new Date().toISOString() });
       fs.writeFileSync(this.dlqPath, JSON.stringify(dlq, null, 2), "utf-8");
@@ -169,7 +172,10 @@ export class HardenedEventBus {
     try {
       let audit: any[] = [];
       if (fs.existsSync(this.auditLogPath)) {
-        audit = JSON.parse(fs.readFileSync(this.auditLogPath, "utf-8"));
+        const content = fs.readFileSync(this.auditLogPath, "utf-8").trim();
+        if (content) {
+          audit = JSON.parse(content);
+        }
       }
       audit.push(event);
       // Keep audit logs capped at 200 items for local-first sizing limits
@@ -183,7 +189,10 @@ export class HardenedEventBus {
   public getDLQ(): any[] {
     try {
       if (fs.existsSync(this.dlqPath)) {
-        return JSON.parse(fs.readFileSync(this.dlqPath, "utf-8"));
+        const content = fs.readFileSync(this.dlqPath, "utf-8").trim();
+        if (content) {
+          return JSON.parse(content);
+        }
       }
     } catch (err) {
       console.warn("[EventBus] Failed to read DLQ log file:", err);
@@ -194,7 +203,10 @@ export class HardenedEventBus {
   public getAuditTrail(): HardenedEvent[] {
     try {
       if (fs.existsSync(this.auditLogPath)) {
-        return JSON.parse(fs.readFileSync(this.auditLogPath, "utf-8"));
+        const content = fs.readFileSync(this.auditLogPath, "utf-8").trim();
+        if (content) {
+          return JSON.parse(content);
+        }
       }
     } catch (err) {
       console.warn("[EventBus] Failed to read audit log file:", err);

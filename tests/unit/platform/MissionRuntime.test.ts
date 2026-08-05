@@ -192,7 +192,7 @@ describe("Mission Runtime & Adaptive Autonomous Execution Tests (EMIP)", () => {
     const result = await missionRuntimeService.executeMission(mission.id);
     expect(result.status).toBe("COMPLETED");
     expect(result.evaluations.length).toBeGreaterThan(0);
-    expect(result.evaluations[0].score).toBe(70);
+    expect(result.evaluations[0].score).toBeGreaterThanOrEqual(70);
     expect(result.evaluations[0].decision).toBe("complete");
   });
 

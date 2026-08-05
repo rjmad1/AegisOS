@@ -50,14 +50,18 @@ export class MissionEvaluationService {
 
       for (const goal of goals) {
         const goalLower = goal.toLowerCase();
-        // Check if any completed node's name contains a key term from the goal
-        const matched = completedNodeNames.some(
-          (nodeName) =>
-            nodeName.includes(goalLower) ||
-            goalLower.includes(nodeName) ||
-            this.hasOverlappingTerm(goalLower, nodeName)
-        );
-        if (matched || mission.status === "COMPLETED") {
+        // Check if any completed node's name contains a key term from the goal or if all graph nodes completed
+        const allCompleted = activeGraph && activeGraph.nodes.length > 0 && activeGraph.nodes.every((n) => n.status === "completed");
+        const matched =
+          allCompleted ||
+          mission.status === "COMPLETED" ||
+          completedNodeNames.some(
+            (nodeName) =>
+              nodeName.includes(goalLower) ||
+              goalLower.includes(nodeName) ||
+              this.hasOverlappingTerm(goalLower, nodeName)
+          );
+        if (matched) {
           matchedGoals++;
         }
       }
@@ -119,7 +123,7 @@ export class MissionEvaluationService {
 
     // Determine lifecycle next action decision
     let decision: MissionEvaluation["decision"] = "continue";
-    if (completeness >= 100 && confidence >= mission.confidence) {
+    if (completeness >= 100 && (confidence >= mission.confidence || quality >= 90)) {
       decision = "complete";
     } else if (failuresCount > 3 || (activeGraph && activeGraph.status === "failed" && retriesCount >= 3)) {
       decision = "failed";

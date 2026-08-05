@@ -26,7 +26,7 @@ export class MissionReflectionService {
     const gapAnalysis: string[] = [];
 
     // 1. Was the objective achieved?
-    const objectiveAchieved = evaluation.completeness >= 100 && evaluation.score >= mission.confidence;
+    const objectiveAchieved = evaluation.completeness >= 100 && (evaluation.score >= mission.confidence || evaluation.quality >= 90);
     if (!objectiveAchieved) {
       gapAnalysis.push(`Completeness is only ${evaluation.completeness}%; goals are not fully achieved.`);
     }

@@ -32,7 +32,7 @@
   {
     "name": "test-prompt-template",
     "purpose": "Unit testing prompt template loading",
-    "activeVersion": 14,
+    "activeVersion": 22,
     "versions": [
       {
         "version": 1,
@@ -145,6 +145,70 @@
         "author": "Quality Assurance",
         "changeDescription": "Dynamic registration by extension Test Unit Extension",
         "commitHash": "local-201b72e"
+      },
+      {
+        "version": 15,
+        "content": "Hello World testing.",
+        "timestamp": "2026-08-05T00:42:59.772Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-39aa2ad"
+      },
+      {
+        "version": 16,
+        "content": "Hello World testing.",
+        "timestamp": "2026-08-05T00:49:26.515Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-5d6a32b"
+      },
+      {
+        "version": 17,
+        "content": "Hello World testing.",
+        "timestamp": "2026-08-05T00:51:08.140Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-b8e10eb"
+      },
+      {
+        "version": 18,
+        "content": "Hello World testing.",
+        "timestamp": "2026-08-05T00:54:09.041Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-dffb3fe"
+      },
+      {
+        "version": 19,
+        "content": "Hello World testing.",
+        "timestamp": "2026-08-05T00:56:12.781Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-aeb2d87"
+      },
+      {
+        "version": 20,
+        "content": "Hello World testing.",
+        "timestamp": "2026-08-05T00:59:42.366Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-e29a595"
+      },
+      {
+        "version": 21,
+        "content": "Hello World testing.",
+        "timestamp": "2026-08-05T01:03:09.140Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-86184db"
+      },
+      {
+        "version": 22,
+        "content": "Hello World testing.",
+        "timestamp": "2026-08-05T01:05:06.292Z",
+        "author": "Quality Assurance",
+        "changeDescription": "Dynamic registration by extension Test Unit Extension",
+        "commitHash": "local-1fca57a"
       }
     ]
   }
