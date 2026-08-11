@@ -1,5 +1,5 @@
 # Stage 1: Install LiteLLM
-FROM python:3.11-slim AS builder
+FROM python:3.14-slim AS builder
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir --user litellm[router]
 
 # Stage 2: Runner
-FROM python:3.11-slim AS runner
+FROM python:3.14-slim AS runner
 WORKDIR /app
 
 RUN groupadd -r litellm && useradd -r -g litellm litellm
